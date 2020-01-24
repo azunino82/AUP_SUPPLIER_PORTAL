@@ -26,7 +26,11 @@
 				"i18n": "i18n/defaultGroupId.properties"
 			},
 			"payload": {
-				"viz": []
+				"viz": [{
+					"id": "it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER-0-1579860186109",
+					"appId": "it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER",
+					"vizId": "AppSemantic-Display"
+				}]
 			}
 		}],
 		"sites": [{
