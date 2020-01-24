@@ -42,6 +42,7 @@ modules:
       - name: uaa_AUP_SUPPLIER_PORTAL
       - name: AUP_SUPPLIER_PORTAL_html5_repo_host
       - name: AUP_SUPPLIER_PORTAL_ui_deployer
+	  - name: SaasRegistry         
     properties:
       TENANT_HOST_PATTERN: '^(.*)-${space}-aup_supplier_portal_approuter.cfapps.eu10.hana.ondemand.com'         
       
@@ -94,3 +95,17 @@ resources:
       service-plan: lite
       service: destination
     type: org.cloudfoundry.managed-service
+  - name: SaasRegistry
+    parameters:
+      service: saas-registry
+      service-plan: application
+      config:
+        appId: AUP_SUPPLIER_PORTAL!t34707 #preso da env variable del app router per averlo bisogna prima deployare tutto su CF poi si prende l'ID
+        #appName: mta-portal-approuter-${org}-${space}
+        appUrls:
+          onSubscription: https://${org}-${space}-aup_supplier_portal_approuter.${default-domain}/callback/v1.0/tenants/{tenantId}
+          getDependencies: https://${org}-${space}-aup_supplier_portal_approuter.${default-domain}/callback/v1.0/dependencies
+        category: ePaas
+        description: Supplier Portal
+        displayName: Altea Supplier Portal
+    type: org.cloudfoundry.managed-service      
