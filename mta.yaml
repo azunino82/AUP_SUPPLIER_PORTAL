@@ -42,6 +42,8 @@ modules:
       - name: uaa_AUP_SUPPLIER_PORTAL
       - name: AUP_SUPPLIER_PORTAL_html5_repo_host
       - name: AUP_SUPPLIER_PORTAL_ui_deployer
+    properties:
+      TENANT_HOST_PATTERN: '^(.*)-${space}-aup_supplier_portal_approuter.cfapps.eu10.hana.ondemand.com'         
       
   - name: AUPSUP_HTML5_METASUPPLIER
     type: html5
