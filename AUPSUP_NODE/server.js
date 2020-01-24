@@ -147,7 +147,7 @@ var router = require("./router")(app, server);
 
 // subscribe/onboard a subscriber tenant
 app.put("/callback/v1.0/tenants/*", function (req, res) {
-	var tenantAppURL = "https:\/\/" + req.body.subscribedSubdomain + "-dev-mta-altea-portal-approuter.cfapps.eu10.hana.ondemand.com";
+	var tenantAppURL = "https:\/\/" + req.body.subscribedSubdomain + "-dev-aup_supplier_portal_approuter.cfapps.eu10.hana.ondemand.com";
 	res.status(200).send(tenantAppURL);
 });
 
