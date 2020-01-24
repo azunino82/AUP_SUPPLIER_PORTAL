@@ -14,6 +14,7 @@ modules:
       - name: AUP_SUPPLIER_PORTAL_html5_repo_runtime
       - name: portal_resources_AUP_SUPPLIER_PORTAL
       - name: uaa_AUP_SUPPLIER_PORTAL
+      
   - name: AUP_SUPPLIER_PORTAL_ui_deployer
     type: com.sap.html5.application-content
     path: AUP_SUPPLIER_PORTAL_ui_deployer
@@ -25,6 +26,7 @@ modules:
           artifacts:
             - './*'
           target-path: resources/AUPSUP_HTML5_METASUPPLIER
+          
   - name: AUPSUP_LAUNCHPAD
     type: com.sap.portal.content
     path: AUPSUP_LAUNCHPAD
@@ -37,6 +39,7 @@ modules:
       - name: uaa_AUP_SUPPLIER_PORTAL
       - name: AUP_SUPPLIER_PORTAL_html5_repo_host
       - name: AUP_SUPPLIER_PORTAL_ui_deployer
+      
   - name: AUPSUP_HTML5_METASUPPLIER
     type: html5
     path: AUPSUP_HTML5_METASUPPLIER
@@ -52,6 +55,8 @@ modules:
      - name: AUPSUP_NODE_api
        properties:
           url: ${default-url}
+    requires:
+     - {name: uaa_AUP_SUPPLIER_PORTAL}      
 
 resources:
   - name: AUP_SUPPLIER_PORTAL_html5_repo_runtime
