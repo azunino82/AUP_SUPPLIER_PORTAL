@@ -70,6 +70,13 @@ modules:
      - name: uaa_AUP_SUPPLIER_PORTAL
      - name: SaasRegistry       
 
+
+  - name: AUPSUP_DATABASE
+    type: hdb
+    path: AUPSUP_DATABASE
+    requires:
+     - name: hdi_AUPSUP_DATABASE
+
 resources:
   - name: AUP_SUPPLIER_PORTAL_html5_repo_runtime
     parameters:
@@ -111,3 +118,9 @@ resources:
         description: Supplier Portal
         displayName: Altea Supplier Portal
     type: org.cloudfoundry.managed-service      
+
+  - name: hdi_AUPSUP_DATABASE
+    properties:
+       hdi-container-name: ${service-name}
+    type: com.sap.xs.hdi-container
+
