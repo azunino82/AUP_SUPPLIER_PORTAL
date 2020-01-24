@@ -55,6 +55,10 @@ modules:
      - name: AUPSUP_NODE_api
        properties:
           url: ${default-url}
+    parameters:
+        app-name: AUPSUP_NODE
+        disk-quota: 500M
+        memory: 256M          
     requires:
      - {name: uaa_AUP_SUPPLIER_PORTAL}      
 
