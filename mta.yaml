@@ -4,6 +4,7 @@ parameters:
   deploy_mode: html5-repo
 version: 0.0.1
 modules:
+
   - name: AUP_SUPPLIER_PORTAL_appRouter
     type: approuter.nodejs
     path: AUP_SUPPLIER_PORTAL_appRouter
@@ -14,6 +15,8 @@ modules:
       - name: AUP_SUPPLIER_PORTAL_html5_repo_runtime
       - name: portal_resources_AUP_SUPPLIER_PORTAL
       - name: uaa_AUP_SUPPLIER_PORTAL
+    properties:
+      TENANT_HOST_PATTERN: '^(.*)-${space}-aup_supplier_portal_approuter.cfapps.eu10.hana.ondemand.com'         
       
   - name: AUP_SUPPLIER_PORTAL_ui_deployer
     type: com.sap.html5.application-content
@@ -60,7 +63,7 @@ modules:
         disk-quota: 500M
         memory: 256M          
     requires:
-     - {name: uaa_AUP_SUPPLIER_PORTAL}      
+     - {name: uaa_AUP_SUPPLIER_PORTAL}
 
 resources:
   - name: AUP_SUPPLIER_PORTAL_html5_repo_runtime
