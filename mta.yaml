@@ -44,6 +44,15 @@ modules:
       builder: grunt
       supported-platforms: []
       build-result: dist
+
+  - name: AUPSUP_NODE
+    type: nodejs
+    path: AUPSUP_NODE
+    provides:
+     - name: AUPSUP_NODE_api
+       properties:
+          url: ${default-url}
+
 resources:
   - name: AUP_SUPPLIER_PORTAL_html5_repo_runtime
     parameters:
