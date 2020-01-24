@@ -169,7 +169,7 @@ app.get("/callback/v1.0/dependencies", function (req, res) {
 		"xsappname": "AUP_SUPPLIER_PORTAL!t34707"
 	});
 	xsappnames.push({
-		"xsappname": "9a32a61e-dbec-4a02-9766-4f64bba4f996!b31492|html5-apps-repo-uaa!b1685"
+		"xsappname": "4f6023f9-b563-461d-9615-2790206b7a8e!b34707|html5-apps-repo-uaa!b1685"
 	}); // env var dell app_router
 	xsappnames.push({
 		"xsappname": "81ca53fa-dd37-44aa-b488-83e6d6021063!b34707|html5-apps-repo-uaa!b1685"
