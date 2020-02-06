@@ -17,7 +17,9 @@ modules:
       - name: uaa_AUP_SUPPLIER_PORTAL
       - name: SaasRegistry        
     properties:
-      TENANT_HOST_PATTERN: '^(.*)-${space}-aup_supplier_portal_approuter.cfapps.eu10.hana.ondemand.com'         
+      TENANT_HOST_PATTERN: '^(.*)-${space}-aup_supplier_portal_approuter.cfapps.eu10.hana.ondemand.com'   
+      SEND_XFRAMEOPTIONS: false
+      destinations: '[ { "forwardAuthToken" : true, "name" : "Backend", "url" : "https://${org}-${space}-backend.cfapps.eu10.hana.ondemand.com" } ]'      
       
   - name: AUP_SUPPLIER_PORTAL_ui_deployer
     type: com.sap.html5.application-content

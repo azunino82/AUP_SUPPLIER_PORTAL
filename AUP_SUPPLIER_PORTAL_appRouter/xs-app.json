@@ -1,5 +1,9 @@
 {
 	"authenticationMethod": "none",
-	"routes": [],
+	"routes": [{
+		"source": "/backend",
+		"target": "/",
+		"destination": "Backend"
+	}],
 	"welcomeFile": "/cp.portal"
 }
