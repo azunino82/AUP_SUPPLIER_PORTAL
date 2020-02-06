@@ -68,14 +68,19 @@ modules:
         memory: 256M          
     requires:
      - name: uaa_AUP_SUPPLIER_PORTAL
-     - name: SaasRegistry       
+     - name: SaasRegistry
+     - name: hdi_AUPSUP_DATABASE
 
 
   - name: AUPSUP_DATABASE
     type: hdb
     path: AUPSUP_DATABASE
+    parameters:
+        app-name: AUPSUP_DATABASE_Deployer
+        memory: 256M
+        disk-quota: 256M    
     requires:
-     - name: hdi_AUPSUP_DATABASE
+     - {name: hdi_AUPSUP_DATABASE, properties: {TARGET_CONTAINER: '~{hdi-master-container}'}}
 
 resources:
   - name: AUP_SUPPLIER_PORTAL_html5_repo_runtime
@@ -120,7 +125,10 @@ resources:
     type: org.cloudfoundry.managed-service      
 
   - name: hdi_AUPSUP_DATABASE
+    parameters:
+        service-name: devalteaups4
+        config: {schema: devalteaups4}
     properties:
-       hdi-container-name: ${service-name}
+        hdi-master-container: '${service-name}'
     type: com.sap.xs.hdi-container
 
