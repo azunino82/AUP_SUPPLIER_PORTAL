@@ -9,9 +9,7 @@ var passport = require("passport");
 var stringifyObj = require("stringify-object");
 var bodyParser = require("body-parser");
 
-
 var app = express();
-
 
 function mtMiddleware(req, res, next) {
 
@@ -111,24 +109,79 @@ app.get("/get_legal_entity", function (req, res) {
 	var conn = hdbext.createConnection(req.tenantContainer, (err, client) => {
 		if (err) {
 			reqStr += "ERROR: ${err.toString()}";
-			var responseStr = "<!DOCTYPE HTML><html><head><title>MTApp</title></head><body><h1>MTApp Legal Entities</h1><h2>Legal Entities</h2><p><pre>" + reqStr + "</pre>" + "<br /> <a href=\"/\">Back</a><br /></body></html>";
+			var responseStr =
+				"<!DOCTYPE HTML><html><head><title>MTApp</title></head><body><h1>MTApp Legal Entities</h1><h2>Legal Entities</h2><p><pre>" + reqStr +
+				"</pre>" + "<br /> <a href=\"/\">Back</a><br /></body></html>";
 			return res.status(200).send(responseStr);
 		} else {
 			client.exec('SELECT * FROM "AUPSUP_DATABASE.data.tables::T_BCKND_SYSTEMS"', (err, result) => {
 				if (err) {
 					reqStr += "ERROR: ${err.toString()}";
-					var responseStr = "<!DOCTYPE HTML><html><head><title>MTApp</title></head><body><h1>MTApp Legal Entities</h1><h2>Legal Entities</h2><p><pre>" + reqStr + "</pre>" + "<br /> <a href=\"/\">Back</a><br /></body></html>";
+					var responseStr =
+						"<!DOCTYPE HTML><html><head><title>MTApp</title></head><body><h1>MTApp Legal Entities</h1><h2>Legal Entities</h2><p><pre>" +
+						reqStr + "</pre>" + "<br /> <a href=\"/\">Back</a><br /></body></html>";
 					return res.status(200).send(responseStr);
 				} else {
-					reqStr += "RESULTSET: \n\n" + stringifyObj(result, {indent: "   ",singleQuotes: false}) +  "\n\n";
-					var responseStr = "<!DOCTYPE HTML><html><head><title>MTApp</title></head><body><h1>MTApp Legal Entities</h1><h2>Legal Entities</h2><p><pre>" + reqStr + "</pre>" + "<br /> <a href=\"/\">Back</a><br /></body></html>";
+					reqStr += "RESULTSET: \n\n" + stringifyObj(result, {
+						indent: "   ",
+						singleQuotes: false
+					}) + "\n\n";
+					var responseStr =
+						"<!DOCTYPE HTML><html><head><title>MTApp</title></head><body><h1>MTApp Legal Entities</h1><h2>Legal Entities</h2><p><pre>" +
+						reqStr + "</pre>" + "<br /> <a href=\"/\">Back</a><br /></body></html>";
 					return res.status(200).send(responseStr);
 				}
 			});
 		}
-	});	
-	
+	});
+
 });
+
+app.get("/callProcedure", function (req, res) {
+	var reqStr = stringifyObj(req.authInfo.userInfo, {
+		indent: "   ",
+		singleQuotes: false
+	});
+
+	reqStr += "\n\n";
+
+	reqStr += stringifyObj(req.authInfo.scopes, {
+		indent: "   ",
+		singleQuotes: false
+	});
+
+	//SELECT * FROM "LEGAL_ENTITY"
+	//connect
+	var conn = hdbext.createConnection(req.tenantContainer, (err, client) => {
+		if (err) {
+			reqStr += "ERROR: ${err.toString()}";
+			var responseStr =
+				"<!DOCTYPE HTML><html><head><title>MTApp</title></head><body><h1>MTApp Legal Entities</h1><h2>Legal Entities</h2><p><pre>" + reqStr +
+				"</pre>" + "<br /> <a href=\"/\">Back</a><br /></body></html>";
+			return res.status(200).send(responseStr);
+		} else {
+			conn.loadProcedure(client, null, "AUPSUP_DATABASE.data.procedures.Utils::getCurrentSystem", function (err, sp) {
+				sp(null, (err, parameters, results) => {
+					if (err) {
+						console.log("ErroreStoredProcedures: " + err);
+					} else {
+						reqStr += "RESULTSET: \n\n" + stringifyObj(results, {
+							indent: "   ",
+							singleQuotes: false
+						}) + "\n\n";
+						var responseStr =
+							"<!DOCTYPE HTML><html><head><title>MTApp</title></head><body><h1>MTApp Legal Entities</h1><h2>Legal Entities</h2><p><pre>" +
+							reqStr + "</pre>" + "<br /> <a href=\"/\">Back</a><br /></body></html>";
+						return res.status(200).send(responseStr);
+					}
+
+				});
+			});
+		}
+	});
+
+});
+
 
 app.get("/ping", function (req, res) {
 
@@ -140,7 +193,7 @@ app.get("/ping", function (req, res) {
 	res.status(200).send(responseStr);
 
 });
- 
+
 app.get("/getUser", function (req, res) {
 
 	var data = {
@@ -151,13 +204,11 @@ app.get("/getUser", function (req, res) {
 		"origin": req.authInfo.origin
 	};
 
-	res.status(200).send(JSON.stringify(data)); 
-  
+	res.status(200).send(JSON.stringify(data));
+
 });
 
 //var router = require("./router")(app, server);
-
-
 
 // subscribe/onboard a subscriber tenant
 app.put("/callback/v1.0/tenants/*", function (req, res) {
