@@ -19,7 +19,7 @@ modules:
     properties:
       TENANT_HOST_PATTERN: '^(.*)-${space}-aup_supplier_portal_approuter.cfapps.eu10.hana.ondemand.com'   
       SEND_XFRAMEOPTIONS: false
-      destinations: '[ { "forwardAuthToken" : true, "name" : "Backend", "url" : "https://${org}-${space}-backend.cfapps.eu10.hana.ondemand.com" } ]'      
+      destinations: '[ { "forwardAuthToken" : true, "name" : "Backend", "url" : "https://${org}-${space}-aupsup-node.cfapps.eu10.hana.ondemand.com" } ]'      
       
   - name: AUP_SUPPLIER_PORTAL_ui_deployer
     type: com.sap.html5.application-content
@@ -116,7 +116,7 @@ resources:
       service: saas-registry
       service-plan: application
       config:
-        appId: AUP_SUPPLIER_PORTAL!t34707 #preso da env variable del app router per averlo bisogna prima deployare tutto su CF poi si prende l'ID
+        appId: AUP_SUPPLIER_PORTAL!t34981 #preso da env variable del app router per averlo bisogna prima deployare tutto su CF poi si prende l'ID
         #appName: mta-portal-approuter-${org}-${space}
         appUrls:
           onSubscription: https://${org}-${space}-aup_supplier_portal_approuter.${default-domain}/callback/v1.0/tenants/{tenantId}

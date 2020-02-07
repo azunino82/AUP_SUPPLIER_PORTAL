@@ -163,19 +163,19 @@ app.get("/callback/v1.0/dependencies", function (req, res) {
 	// chiamare il comando cf env FLP | grep xsappname su CF per avere i parametri
 
 	xsappnames.push({
-		"xsappname": "8caa4a32-b00f-49b1-802c-11d29d1ab976-clone!b34707|lps-registry-broker!b14"
+		"xsappname": "8f949584-36ef-40fd-9c47-d36393da7ef9-clone!b34981|lps-registry-broker!b14"
 	}); // env var dell app_router
 	xsappnames.push({
-		"xsappname": "AUP_SUPPLIER_PORTAL!t34707"
+		"xsappname": "AUP_SUPPLIER_PORTAL!t34981"
 	});
 	xsappnames.push({
-		"xsappname": "4f6023f9-b563-461d-9615-2790206b7a8e!b34707|html5-apps-repo-uaa!b1685"
+		"xsappname": "3d1e7904-5886-443c-898e-92a52e79375e!b34981|html5-apps-repo-uaa!b1685"
 	}); // env var dell app_router
 	xsappnames.push({
-		"xsappname": "81ca53fa-dd37-44aa-b488-83e6d6021063!b34707|html5-apps-repo-uaa!b1685"
+		"xsappname": "48bc0ddc-0e65-4d5e-9a03-b0406109ed96!b34981|html5-apps-repo-uaa!b1685"
 	}); // env var dell FLP
 	xsappnames.push({
-		"xsappname": "02ea1bcc-0fba-4dda-848b-c99ad2afda23!b34707|portal-cf-service!b3664"
+		"xsappname": "ac1fa580-64cb-40fd-aa86-b6197b7a0b1d!b34981|portal-cf-service!b3664"
 	}); // env var dell app_router
 
 	res.status(200).send(JSON.stringify(xsappnames));
