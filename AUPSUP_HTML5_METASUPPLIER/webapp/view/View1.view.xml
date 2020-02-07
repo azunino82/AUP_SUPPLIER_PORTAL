@@ -4,7 +4,23 @@
 		<App id="app">
 			<pages>
 				<Page id="page" title="{i18n>title}">
-					<content></content>
+					<content>
+					<Table items="{OutJSONModel>/results}">
+					
+											<columns>
+												<Column id="EBELN" minScreenWidth="Desktop" demandPopin="true" width="6rem">
+													<Label text="CLIENT ID" class="columnLabelStyle" wrapping="true"/>
+												</Column>
+												
+											</columns>
+											<items>
+												<ColumnListItem>
+													<cells>
+														<Text text="{OutJSONModel>CUSTOMER}"/>
+													</cells>
+												</ColumnListItem>
+											</items>
+										</Table></content>
 				</Page>
 			</pages>
 		</App>

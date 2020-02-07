@@ -138,41 +138,30 @@ app.get("/get_legal_entity", function (req, res) {
 });
 
 app.get("/callProcedure", function (req, res) {
-	var reqStr = stringifyObj(req.authInfo.userInfo, {
-		indent: "   ",
-		singleQuotes: false
-	});
-
-	reqStr += "\n\n";
-
-	reqStr += stringifyObj(req.authInfo.scopes, {
-		indent: "   ",
-		singleQuotes: false
-	});
+	var reqStr = "";
 
 	//SELECT * FROM "LEGAL_ENTITY"
 	//connect
-	var conn = hdbext.createConnection(req.tenantContainer, (err, client) => {
+	hdbext.createConnection(req.tenantContainer, (err, client) => {
 		if (err) {
-			reqStr += "ERROR: ${err.toString()}";
-			var responseStr =
-				"<!DOCTYPE HTML><html><head><title>MTApp</title></head><body><h1>MTApp Legal Entities</h1><h2>Legal Entities</h2><p><pre>" + reqStr +
-				"</pre>" + "<br /> <a href=\"/\">Back</a><br /></body></html>";
-			return res.status(200).send(responseStr);
+			return res.status(500).send("CREATE CONNECTION ERROR: " + stringifyObj(err));
 		} else {
-			conn.loadProcedure(client, null, "AUPSUP_DATABASE.data.procedures.Utils::getCurrentSystem", function (err, sp) {
-				sp(null, (err, parameters, results) => {
+	
+			hdbext.loadProcedure(client, null, "AUPSUP_DATABASE.data.procedures.Utils::getCurrentSystem", function (err, sp) {
+			
+				sp((err, parameters, results) => {
+				
 					if (err) {
-						console.log("ErroreStoredProcedures: " + err);
+						return res.status(500).send(stringifyObj(err));
 					} else {
-						reqStr += "RESULTSET: \n\n" + stringifyObj(results, {
-							indent: "   ",
-							singleQuotes: false
-						}) + "\n\n";
-						var responseStr =
-							"<!DOCTYPE HTML><html><head><title>MTApp</title></head><body><h1>MTApp Legal Entities</h1><h2>Legal Entities</h2><p><pre>" +
-							reqStr + "</pre>" + "<br /> <a href=\"/\">Back</a><br /></body></html>";
-						return res.status(200).send(responseStr);
+						//reqStr = stringifyObj(results);
+						//var outJson = {"results":reqStr};
+						var outArr = [];
+						results.forEach(element => { 
+							outArr.push(element); 
+						  }); 
+						  
+						return res.status(200).send({"results":outArr});
 					}
 
 				});
