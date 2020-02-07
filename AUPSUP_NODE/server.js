@@ -16,34 +16,32 @@ var app = express();
 function mtMiddleware(req, res, next) {
 
 	// Assumes the HDI container was tagged with a tag of the form subdomain:<subdomain> and is bound to the MTAppBackend
-	var tagStr = "subdomain:" + req.authInfo.subdomain;
-
+	//var tagStr = "subdomain:" + req.authInfo.subdomain;
+	var tagStr = req.authInfo.subdomain;
 	// reqStr += "\nSearching for a bound hana container with tag: " + tagStr + "\n";
-
+	console.log("tagStr: " + tagStr);
 	try {
 
 		try {
 
 			var services = xsenv.getServices({
-				hana: {
-					tag: tagStr
-				}
+				hana: tagStr
 			});
 
 		} catch (error) {
-
+			console.log("mtMiddleware error: 1 " + error);
 			var services = xsenv.getServices({
 				hanatrial: {
 					tag: tagStr
 				}
 			});
-
+			console.log("mtMiddleware error: 2");
 		}
 
 		req.tenantContainer = services.hana;
-
+		console.log('req.tenantContainer: ' + req.tenantContainer);
 	} catch (error) {
-
+		console.log("mtMiddleware error: " + error);
 	}
 	// If a container service binding was found
 	// Else throw an error?  Not handled yet
@@ -109,10 +107,26 @@ app.get("/get_legal_entity", function (req, res) {
 	});
 
 	//SELECT * FROM "LEGAL_ENTITY"
-
 	//connect
-	reqStr = "<p><b>tenantContainer:</b> " + req.tenantContainer + "</p></body></html>";
-	res.status(200).send(reqStr);
+	var conn = hdbext.createConnection(req.tenantContainer, (err, client) => {
+		if (err) {
+			reqStr += "ERROR: ${err.toString()}";
+			var responseStr = "<!DOCTYPE HTML><html><head><title>MTApp</title></head><body><h1>MTApp Legal Entities</h1><h2>Legal Entities</h2><p><pre>" + reqStr + "</pre>" + "<br /> <a href=\"/\">Back</a><br /></body></html>";
+			return res.status(200).send(responseStr);
+		} else {
+			client.exec('SELECT * FROM "AUPSUP_DATABASE.data.tables::T_BCKND_SYSTEMS"', (err, result) => {
+				if (err) {
+					reqStr += "ERROR: ${err.toString()}";
+					var responseStr = "<!DOCTYPE HTML><html><head><title>MTApp</title></head><body><h1>MTApp Legal Entities</h1><h2>Legal Entities</h2><p><pre>" + reqStr + "</pre>" + "<br /> <a href=\"/\">Back</a><br /></body></html>";
+					return res.status(200).send(responseStr);
+				} else {
+					reqStr += "RESULTSET: \n\n" + stringifyObj(result, {indent: "   ",singleQuotes: false}) +  "\n\n";
+					var responseStr = "<!DOCTYPE HTML><html><head><title>MTApp</title></head><body><h1>MTApp Legal Entities</h1><h2>Legal Entities</h2><p><pre>" + reqStr + "</pre>" + "<br /> <a href=\"/\">Back</a><br /></body></html>";
+					return res.status(200).send(responseStr);
+				}
+			});
+		}
+	});	
 	
 });
 

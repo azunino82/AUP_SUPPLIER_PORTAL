@@ -12,7 +12,7 @@ sap.ui.define([
 			var aData = jQuery.ajax({
 				type: "GET",
 				contentType: "application/json",
-				url: "/backend/getUser",
+				url: "/backend/get_legal_entity",
 				async: false,
 				success: function (data, textStatus, jqXHR) {
 
