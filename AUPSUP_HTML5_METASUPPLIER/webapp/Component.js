@@ -25,6 +25,11 @@ sap.ui.define([
 
 			// set the device model
 			this.setModel(models.createDeviceModel(), "device");
+
+			var userModel = new sap.ui.model.json.JSONModel("/services/userapi/currentUser");
+			sap.ui.getCore().setModel(userModel, "userapi");
+
+			
 		}
 	});
 });

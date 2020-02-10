@@ -3,12 +3,12 @@
 	<Shell id="shell">
 		<App id="app">
 			<pages>
-				<Page id="page" title="{i18n>title}">
+				<Page id="page">
 					<content>
 					<Table items="{OutJSONModel>/results}">
 					
 											<columns>
-												<Column id="EBELN" minScreenWidth="Desktop" demandPopin="true" width="6rem">
+												<Column minScreenWidth="Desktop" demandPopin="true">
 													<Label text="CLIENT ID" class="columnLabelStyle" wrapping="true"/>
 												</Column>
 												

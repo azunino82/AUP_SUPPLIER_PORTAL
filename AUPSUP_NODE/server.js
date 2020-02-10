@@ -161,7 +161,9 @@ app.get("/callProcedure", function (req, res) {
 							outArr.push(element); 
 						  }); 
 						  
-						return res.status(200).send({"results":outArr});
+						return res.status(200).send({"results":outArr,
+					"CurrentUser":req.user.id,
+				"Scope" : req.authInfo.scopes});
 					}
 
 				});

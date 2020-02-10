@@ -1,5 +1,5 @@
 sap.ui.define([
-	"sap/ui/core/mvc/Controller",
+	"it/alteaup/supplier/portal/metasupplier/AUPSUP_HTML5_METASUPPLIER/controller/BaseController",
 	"sap/ui/model/json/JSONModel"
 ], function (Controller,JSONModel) {
 	"use strict";
@@ -10,6 +10,8 @@ sap.ui.define([
 			this.getDataFromXS();
 		},
 		getDataFromXS: function () {
+
+			//var user =  this.getCurrentUserId();
 
 			jQuery.ajax({
 				type: "GET",
