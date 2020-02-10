@@ -199,7 +199,7 @@ app.get("/getUser", function (req, res) {
 
 });
 
-//var router = require("./router")(app, server);
+var router = require("./router")(app, server);
 
 // subscribe/onboard a subscriber tenant
 app.put("/callback/v1.0/tenants/*", function (req, res) {
