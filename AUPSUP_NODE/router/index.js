@@ -1,5 +1,5 @@
 "use strict";
 
 module.exports = function(app, server){
-	app.use("/getUserBU", require("../it/alteaup/supplier/portal/utils/GetUserBU")());
+	app.use("/Utils/GetPurchaseOrganizations", require("../it/alteaup/supplier/portal/utils/GetPurchaseOrganizations")());
 };    

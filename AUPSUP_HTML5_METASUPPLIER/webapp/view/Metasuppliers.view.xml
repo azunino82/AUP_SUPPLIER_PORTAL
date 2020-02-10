@@ -1,0 +1,122 @@
+<mvc:View controllerName="it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER.controller.Metasuppliers" xmlns:mvc="sap.ui.core.mvc"
+	displayBlock="true" xmlns="sap.m" xmlns:u="sap.ui.unified" xmlns:core="sap.ui.core" xmlns:fb="sap.ui.comp.filterbar">
+	<Shell id="shell" appWidthLimited="false">
+		<App id="app">
+			<pages>
+				<Page id="page">
+					<customHeader>
+						<Bar>
+							<contentLeft>
+								<Text text="{userapi>/firstname} {userapi>/lastname}"></Text>
+							</contentLeft>
+							<contentMiddle>
+								<Text text="{titleJSONModel>/AppTitle}" class="sapMTitle sapMTitleStyleAuto sapMTitleMaxWidth"></Text>
+							</contentMiddle>
+						</Bar>
+					</customHeader>
+					<content>
+						<fb:FilterBar clear="onClearFilters" search="onSearch" showRestoreButton="false" showClearButton="true" showClearOnFB="true">
+							<fb:filterItems>
+								<fb:FilterItem name="codiceMetafornitore" id="codiceMetafornitoreFiltro" label="{i18n>codiceMetafornitore}" mandatory="false">
+									<fb:control>
+										<Input id="InputCodiceMetafornitore" type="Text" class="sapUiSmallMarginBottom" submit="onSearch"/>
+									</fb:control>
+								</fb:FilterItem>
+								<fb:FilterItem name="ragSocialeMetafornitore" id="ragSocialeMetafornitoreFiltro" label="{i18n>ragSocialeMetafornitore}" mandatory="false">
+									<fb:control>
+										<Input id="InputRagSocialeMetafornitore" type="Text" class="sapUiSmallMarginBottom" submit="onSearch"/>
+									</fb:control>
+								</fb:FilterItem>
+								<fb:FilterItem name="statoMetafornitore" id="statoMetafornitoreFiltro" label="{i18n>statoMetafornitore}" mandatory="false">
+									<fb:control>
+										<ComboBox id="InputStatoMetafornitore"></ComboBox>
+									</fb:control>
+								</fb:FilterItem>
+								<fb:FilterItem name="pivaMetafornitore" id="pivaMetafornitoreFiltro" label="{i18n>pivaMetafornitore}" mandatory="false">
+									<fb:control>
+										<Input id="InputPivaMetafornitore" type="Text" class="sapUiSmallMarginBottom" submit="onSearch"/>
+									</fb:control>
+								</fb:FilterItem>
+								<fb:FilterItem name="paeseMetafornitore" id="paeseMetafornitoreFiltro" label="{i18n>paeseMetafornitore}" mandatory="false">
+									<fb:control>
+										<Input id="InputPaeseMetafornitore" type="Text" class="sapUiSmallMarginBottom" submit="onSearch"/>
+									</fb:control>
+								</fb:FilterItem>
+							</fb:filterItems>
+						</fb:FilterBar>
+						<Table id="idMetasuppliersTable" inset="false" items="{ path: 'tableModelMetasuppliers>/', sorter: { path: 'RAG_SOCIALE' } }">
+							<headerToolbar>
+								<Toolbar>
+									<Title text="" level="H2"/>
+									<ToolbarSpacer/>
+									<Button icon="sap-icon://add" press="handleCreateSupplierPressed" id="createButton" text="{i18n>createSupplier}"/>
+									<Button icon="sap-icon://excel-attachment" press="onExport" tooltip="{i18n>Export_Excel}"/>
+									<!--<Button tooltip="View Sort Settings" icon="sap-icon://sort" press="handleSortButtonPressed" text="{i18n>sort}"/>-->
+								</Toolbar>
+							</headerToolbar>
+							<columns>
+								<!--<Column demandPopin="true" width="12em">-->
+								<!--	<Text text="{i18n>LIFNR}"/>-->
+								<!--</Column>-->
+								<Column demandPopin="true">
+									<Text text="{i18n>ragSocialeMetafornitore}"/>
+								</Column>
+								<Column minScreenWidth="Desktop" demandPopin="true">
+									<Text text="{i18n>indirizzo}"/>
+								</Column>
+								<Column minScreenWidth="Desktop" demandPopin="true">
+									<Text text="{i18n>nCivico}"/>
+								</Column>
+								<Column minScreenWidth="Desktop" demandPopin="true">
+									<Text text="{i18n>paeseMetafornitore}"/>
+								</Column>
+								<Column minScreenWidth="Desktop" demandPopin="true">
+									<Text text="{i18n>lingua}"/>
+								</Column>
+								<Column minScreenWidth="Desktop" demandPopin="true">
+									<Text text="{i18n>pivaMetafornitore}"/>
+								</Column>
+								<Column minScreenWidth="Desktop" demandPopin="true">
+									<Text text="{i18n>statoMetafornitore}"/>
+								</Column>
+								<Column minScreenWidth="Desktop" demandPopin="true">
+									<Text text="{i18n>BU}"/>
+								</Column>
+								<Column minScreenWidth="Desktop" demandPopin="true" hAlign="End"></Column>
+								<Column minScreenWidth="Desktop" demandPopin="true" hAlign="End"></Column>
+								<Column minScreenWidth="Desktop" demandPopin="true" hAlign="End"></Column>
+							</columns>
+							<items>
+								<ColumnListItem>
+									<cells>
+										<!--<Text text="{tableModelMetasuppliers>LIFNR}"/>-->
+										<Text text="{tableModelMetasuppliers>RAG_SOCIALE}"/>
+										<Text text="{tableModelMetasuppliers>INDIRIZZO}"/>
+										<Text text="{tableModelMetasuppliers>N_CIVICO}"/>
+										<Text text="{tableModelMetasuppliers>PAESE}"/>
+										<Text text="{tableModelMetasuppliers>LINGUA}"/>
+										<Text text="{tableModelMetasuppliers>PIVA}"/>
+										<Text text="{tableModelMetasuppliers>STATO_FORNITORE}"/>
+										<Text text="{tableModelMetasuppliers>BU}"/>
+										<Button id="edit" icon="sap-icon://edit" type="Default" enabled="true" press="editSupplier" visible="{tableModelMetasuppliers>editVisible}"/>
+										<Button id="delete" icon="sap-icon://delete" type="Reject" enabled="true" press="deleteSupplier"
+											visible="{tableModelMetasuppliers>deleteVisible}"/>
+										<Button id="contacts" icon="sap-icon://contacts" type="Default" enabled="true" press="contactsSupplier"
+											visible="{tableModelMetasuppliers>contactsVisible}"/>
+									</cells>
+								</ColumnListItem>
+							</items>
+						</Table>
+					</content>
+					<!--<footer>
+						<Bar>
+							<contentRight>
+							<Button id="create" text="{i18n>Upload}" enabled="true" visible="true" press="handleUploadPress"/>
+						</contentRight>
+						</Bar>
+					</footer>-->
+				</Page>
+			</pages>
+		</App>
+	</Shell>
+</mvc:View>
