@@ -17,9 +17,9 @@ module.exports = function () {
 				return res.status(500).send("CREATE CONNECTION ERROR: " + stringifyObj(err));
 			} else {
 
-				hdbext.loadProcedure(client, null, "AUPSUP_DATABASE.data.procedures.Utils::getCurrentSystem", function (err, sp) {
+				hdbext.loadProcedure(client, null, "AUPSUP_DATABASE.data.procedures.Utils::GetPurchaseOrganizations", function (err, sp) {
 
-					sp((err, parameters, results) => {
+					sp(req.user.id,(err, parameters, results) => {
 
 						if (err) {
 							return res.status(500).send(stringifyObj(err));
@@ -32,9 +32,7 @@ module.exports = function () {
 							});
 
 							return res.status(200).send({
-								"results": outArr,
-								"CurrentUser": req.user.id,
-								"Scope": req.authInfo.scopes
+								"results": outArr
 							});
 						}
 
