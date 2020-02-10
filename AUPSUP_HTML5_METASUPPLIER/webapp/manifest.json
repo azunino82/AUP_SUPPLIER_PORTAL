@@ -19,7 +19,10 @@
 					"signature": {
 						"parameters": {
 							"mode": {
-								"required": true
+								"required": true,
+								"defaultValue": {
+									"value": "BC"
+								}
 							}
 						},
 						"additionalParameters": "allowed"
@@ -82,11 +85,9 @@
 			}
 		},
 		"resources": {
-			"css": [
-				{
-					"uri": "css/style.css"
-				}
-			]
+			"css": [{
+				"uri": "css/style.css"
+			}]
 		},
 		"routing": {
 			"config": {
@@ -98,43 +99,37 @@
 				"controlId": "idAppControl",
 				"clearControlAggregation": false
 			},
-			"routes": [
-				{
-					"name": "TargetApp",
-					"pattern": "app",
-					"target": [
-						"TargetApp"
-					]
-				},
-				{
-					"name": "RouteMetasuppliers",
-					"pattern": "home",
-					"target": [
-						"TargetMetasuppliers"
-					]
-				},
-				{
-					"name": "RouteSuppliers",
-					"pattern": "suppliers",
-					"target": [
-						"TargetSuppliers"
-					]
-				},
-				{
-					"name": "RouteCreateMetasuppliers",
-					"pattern": "create/metasuppliers/{suppliers}",
-					"target": [
-						"TargetCreateMetasuppliers"
-					]
-				},
-				{
-					"name": "RouteMetasupplierContacts",
-					"pattern": "metasuppliers/{metaid}/contacts",
-					"target": [
-						"TargetMetasupplierContacts"
-					]
-				}
-			],
+			"routes": [{
+				"name": "TargetApp",
+				"pattern": "app",
+				"target": [
+					"TargetApp"
+				]
+			}, {
+				"name": "RouteMetasuppliers",
+				"pattern": "home",
+				"target": [
+					"TargetMetasuppliers"
+				]
+			}, {
+				"name": "RouteSuppliers",
+				"pattern": "suppliers",
+				"target": [
+					"TargetSuppliers"
+				]
+			}, {
+				"name": "RouteCreateMetasuppliers",
+				"pattern": "create/metasuppliers/{suppliers}",
+				"target": [
+					"TargetCreateMetasuppliers"
+				]
+			}, {
+				"name": "RouteMetasupplierContacts",
+				"pattern": "metasuppliers/{metaid}/contacts",
+				"target": [
+					"TargetMetasupplierContacts"
+				]
+			}],
 			"targets": {
 				"TargetApp": {
 					"viewType": "XML",
