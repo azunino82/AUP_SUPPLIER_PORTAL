@@ -30,6 +30,7 @@
 	},
 
 	"sap.ui": {
+		"fullWidth": true,
 		"technology": "UI5",
 		"icons": {
 			"icon": "",
@@ -49,10 +50,10 @@
 	"sap.ui5": {
 		"flexEnabled": false,
 		"rootView": {
-			"viewName": "it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER.view.View1",
+			"viewName": "it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER.view.App",
 			"type": "XML",
 			"async": true,
-			"id": "View1"
+			"id": "App"
 		},
 		"dependencies": {
 			"minUI5Version": "1.65.6",
@@ -86,21 +87,80 @@
 				"async": true,
 				"viewPath": "it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER.view",
 				"controlAggregation": "pages",
-				"controlId": "app",
+				"controlId": "idAppControl",
 				"clearControlAggregation": false
 			},
-			"routes": [{
-				"name": "RouteView1",
-				"pattern": "RouteView1",
-				"target": ["TargetView1"]
-			}],
+			"routes": [
+				{
+					"name": "TargetApp",
+					"pattern": "app",
+					"target": [
+						"TargetApp"
+					]
+				},
+				{
+					"name": "RouteMetasuppliers",
+					"pattern": "home",
+					"target": [
+						"TargetMetasuppliers"
+					]
+				},
+				{
+					"name": "RouteSuppliers",
+					"pattern": "suppliers",
+					"target": [
+						"TargetSuppliers"
+					]
+				},
+				{
+					"name": "RouteCreateMetasuppliers",
+					"pattern": "create/metasuppliers/{suppliers}",
+					"target": [
+						"TargetCreateMetasuppliers"
+					]
+				},
+				{
+					"name": "RouteMetasupplierContacts",
+					"pattern": "metasuppliers/{metaid}/contacts",
+					"target": [
+						"TargetMetasupplierContacts"
+					]
+				}
+			],
 			"targets": {
-				"TargetView1": {
+				"TargetApp": {
 					"viewType": "XML",
 					"transition": "slide",
 					"clearControlAggregation": false,
-					"viewId": "View1",
-					"viewName": "View1"
+					"viewName": "App"
+				},
+				"TargetMetasuppliers": {
+					"viewType": "XML",
+					"transition": "slide",
+					"clearControlAggregation": false,
+					"viewId": "Metasuppliers",
+					"viewName": "Metasuppliers"
+				},
+				"TargetSuppliers": {
+					"viewType": "XML",
+					"transition": "slide",
+					"clearControlAggregation": false,
+					"viewId": "Suppliers",
+					"viewName": "Suppliers"
+				},
+				"TargetCreateMetasuppliers": {
+					"viewType": "XML",
+					"transition": "slide",
+					"clearControlAggregation": false,
+					"viewId": "CreateMetasuppliers",
+					"viewName": "CreateMetasupplier"
+				},
+				"TargetMetasupplierContacts": {
+					"viewType": "XML",
+					"transition": "slide",
+					"clearControlAggregation": false,
+					"viewId": "MetasupplierContacts",
+					"viewName": "MetasupplierContacts"
 				}
 			}
 		}
