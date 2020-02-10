@@ -17,18 +17,21 @@
 			"inbounds": {
 				"intent1": {
 					"signature": {
-						"parameters": {},
+						"parameters": {
+							"mode": {
+								"required": true
+							}
+						},
 						"additionalParameters": "allowed"
 					},
 					"semanticObject": "AppSemantic",
 					"action": "Display",
 					"title": "{{appTitle}}",
-					"icon": "sap-icon://action"
+					"icon": "sap-icon://SAP-icons-TNT/actor"
 				}
 			}
 		}
 	},
-
 	"sap.ui": {
 		"fullWidth": true,
 		"technology": "UI5",
@@ -46,7 +49,6 @@
 			"phone": true
 		}
 	},
-
 	"sap.ui5": {
 		"flexEnabled": false,
 		"rootView": {
@@ -60,7 +62,11 @@
 			"libs": {
 				"sap.ui.core": {},
 				"sap.m": {},
-				"sap.ui.layout": {}
+				"sap.ui.layout": {},
+				"sap.ushell": {},
+				"sap.collaboration": {},
+				"sap.ui.comp": {},
+				"sap.uxap": {}
 			}
 		},
 		"contentDensities": {
@@ -76,9 +82,11 @@
 			}
 		},
 		"resources": {
-			"css": [{
-				"uri": "css/style.css"
-			}]
+			"css": [
+				{
+					"uri": "css/style.css"
+				}
+			]
 		},
 		"routing": {
 			"config": {

@@ -53,7 +53,7 @@ sap.ui.define([
 
 			var metasupplierFilters = [];
 
-			if (user !== "" && user.userType !== null) {
+			if (user !== undefined && user !== "" && user.userType !== null) {
 				var appTitle = {
 					"AppTitle": ""
 				};
@@ -103,7 +103,8 @@ sap.ui.define([
 				that.getOwnerComponent().setModel(jsonModel, "titleJSONModel");
 			}
 
-			var filter = new sap.ui.model.Filter({
+		// TODO Servizio
+		/*	var filter = new sap.ui.model.Filter({
 				path: "ATTIVO",
 				operator: "EQ",
 				value1: 1
@@ -136,7 +137,7 @@ sap.ui.define([
 						var lang = sap.ui.getCore().getConfiguration().getLanguage();
 						var oSelectStatoFornitore = that.getView().byId("InputStatoMetafornitore");
 						for (var i = 0; i < oDataRes.results.length; i++) {
-							/*Inserimento Record Vuoto per ComboBox*/
+							//Inserimento Record Vuoto per ComboBox
 							if (i === 0) {
 								var nl = new sap.ui.core.Item({
 									key: "",
@@ -153,7 +154,7 @@ sap.ui.define([
 					},
 					error: function (oError) {}
 				});
-			}
+			}*/
 
 		},
 
