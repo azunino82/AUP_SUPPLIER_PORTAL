@@ -10,8 +10,9 @@ module.exports = function () {
 	var app = express.Router();
 
 
-	//Hello Router
-	app.get("/", function (req, res) {
+    //GET PRUCHASE ORGANIZATIONS
+    
+	app.get("/GetPurchaseOrganizations", function (req, res) {
 		hdbext.createConnection(req.tenantContainer, (err, client) => {
 			if (err) {
 				return res.status(500).send("CREATE CONNECTION ERROR: " + stringifyObj(err));
@@ -40,10 +41,41 @@ module.exports = function () {
 				});
 			}
 		});
-	});
+    });
+    
+    //GET USER BU
+    
+	app.get("/GetUserBU", function (req, res) {
+		hdbext.createConnection(req.tenantContainer, (err, client) => {
+			if (err) {
+				return res.status(500).send("CREATE CONNECTION ERROR: " + stringifyObj(err));
+			} else {
+
+				hdbext.loadProcedure(client, null, "AUPSUP_DATABASE.data.procedures.Utils::GetUserBU", function (err, sp) {
+
+					sp(req.user.id,(err, parameters, results) => {
+
+						if (err) {
+							return res.status(500).send(stringifyObj(err));
+						} else {
+							var outArr = [];
+							results.forEach(element => {
+								outArr.push(element);
+							});
+
+							return res.status(200).send({
+								"results": outArr
+							});
+						}
+
+					});
+				});
+			}
+		});
+	});    
 
 	// Parse URL-encoded bodies (as sent by HTML forms)
-	app.use(express.urlencoded());
+	//app.use(express.urlencoded());
 
 	// Parse JSON bodies (as sent by API clients)
 	app.use(express.json());
