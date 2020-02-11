@@ -1,0 +1,49 @@
+<core:FragmentDefinition 
+	xmlns:m="sap.m" 
+	xmlns:l="sap.ui.layout" 
+	xmlns:f="sap.ui.layout.form" 
+	xmlns:core="sap.ui.core"
+	xmlns:u="sap.ui.unified">
+	<m:Dialog 
+		title="{i18n>ChooseDefaultSupplier}" 
+		id="ChooseSupplier" 
+		class="sapUiTinyMargin" 
+		contentWidth="30%">
+		
+		<l:Grid defaultSpan="L12 M12 S12" width="auto" id="idGridSupplier">
+			<m:Table 
+				id="ChooseSupplierTable"
+				items="{ path: '/', sorter: { path: 'NAME1' } }"
+				mode="SingleSelectLeft">
+				<m:columns>
+					<m:Column width="auto">
+						<m:Text text="{i18n>LIFNR}"/>
+					</m:Column>
+					<m:Column width="auto">
+						<m:Text text="{i18n>ragioneSocialeFornitore}"/>
+					</m:Column>
+					<m:Column width="auto">
+						<m:Text text="{i18n>pivaFornitore}"/>
+					</m:Column>
+				</m:columns>
+				<m:items> 
+					<m:ColumnListItem>
+						<m:cells>
+							<m:ObjectIdentifier text="{LIFNR}"/>
+						</m:cells>
+						<m:cells>
+							<m:ObjectIdentifier text="{NAME1}"/>
+						</m:cells>
+						<m:cells>
+							<m:ObjectIdentifier text="{I_STCEG}"/>
+						</m:cells>
+					</m:ColumnListItem>
+				</m:items>
+			</m:Table>
+		</l:Grid>
+		<m:buttons>
+			<m:Button text="{i18n>Confirm}" press="chooseSupplierConfirm"/>
+			<m:Button text="{i18n>Cancel}"  press="closeDialog"/> 
+		</m:buttons>
+	</m:Dialog>
+</core:FragmentDefinition>

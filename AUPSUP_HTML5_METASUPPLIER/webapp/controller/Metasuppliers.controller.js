@@ -723,13 +723,8 @@ sap.ui.define([
 				if (oData) {
 					var oModel = new JSONModel();
 					oModel.setData(oData);
-					that.getView().setModel(oModel, "MetasupplierJSONModel");
-					//Valorizzazione Campo Lifnr per Servizio
-					var oLifnr = that.getModel("filterOrdersJSONModel");
-					oLifnr = oData.results;
-					var oModelLF = new JSONModel();
-					oModelLF.setData(oLifnr);
-					that.getView().setModel(oModelLF, "filterOrdersJSONModel");
+					var oComponent = that.getOwnerComponent();
+					oComponent.setModel(oModel, "PurchaseOrganizationJSONModel");
 				}
 			});
 

@@ -1,0 +1,102 @@
+<mvc:View controllerName="it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER.controller.Suppliers" xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
+	xmlns="sap.m" xmlns:u="sap.ui.unified" xmlns:core="sap.ui.core" xmlns:fb="sap.ui.comp.filterbar">
+	<Shell id="shell" appWidthLimited="false">
+		<App id="app">
+			<pages>
+				<Page id="page" title="{titleJSONModel>/AppTitle}">
+					<content>
+						<fb:FilterBar clear="onClearFilters" search="onSearch" showRestoreButton="true" showClearButton="true" showClearOnFB="true">
+							<fb:filterItems>
+								<fb:FilterItem name="ragioneSociale" id="ragioneSocialeFiltro" label="{i18n>ragioneSocialeFornitore}" mandatory="false">
+									<fb:control>
+										<Input id="InputRagioneSociale" type="Text" class="sapUiSmallMarginBottom"/>
+									</fb:control>
+								</fb:FilterItem>
+								<fb:FilterItem name="pivaFornitore" id="pivaFornitoreFiltro" label="{i18n>pivaFornitore}" mandatory="false">
+									<fb:control>
+										<Input id="InputPivaFornitore" type="Text" class="sapUiSmallMarginBottom"/>
+									</fb:control>
+								</fb:FilterItem>
+								<fb:FilterItem name="Ekorg" label="{i18n>purchaseOrganization}">
+									<fb:control>
+										<MultiComboBox id="InputOrganizzazioneAcquisti" showSecondaryValues="true"
+											items="{ path: 'PurchaseOrganizationJSONModel>/results', sorter: { path: 'PURCH_ORG' } }">
+											<core:ListItem key="{PurchaseOrganizationJSONModel>PURCH_ORG}" text="{PurchaseOrganizationJSONModel>DESCR}"
+												additionalText="{PurchaseOrganizationJSONModel>PURCH_ORG}"/>
+										</MultiComboBox>
+									</fb:control>
+								</fb:FilterItem>
+								<!--<fb:FilterItem name="chiaveRicerca" id="chiaveRicercaFiltro" label="{i18n>chiaveRicerca}" mandatory="false">-->
+								<!--	<fb:control>-->
+								<!--		<Input id="InputChiaveRicerca" type="Text" class="sapUiSmallMarginBottom"/>-->
+								<!--	</fb:control>-->
+								<!--</fb:FilterItem>-->
+							</fb:filterItems>
+						</fb:FilterBar>
+						<Table id="idSuppliersTable" inset="false" items="{ path: 'tableModelSuppliers>/', sorter: { path: 'RagioneSociale' } }" mode="MultiSelect">
+							<headerToolbar>
+								<Toolbar>
+									<Title text="" level="H2"/>
+									<ToolbarSpacer/>
+									<!--<Button icon="sap-icon://add" press="handleCreateSupplierPressed" text="{i18n>createMetasupplier}"/>-->
+									<!--<Button tooltip="View Sort Settings" icon="sap-icon://sort" press="handleSortButtonPressed" text="{i18n>sort}"/>-->
+								</Toolbar>
+							</headerToolbar>
+							<columns>
+								<Column minScreenWidth="Desktop" demandPopin="true">
+									<Text text="{i18n>Supplier}"/>
+								</Column>
+								<Column minScreenWidth="Desktop" demandPopin="true">
+									<Text text="{i18n>ragioneSocialeFornitore}"/>
+								</Column>
+								<Column minScreenWidth="Desktop" demandPopin="true">
+									<Text text="{i18n>EKORG}"/>
+								</Column>
+								<Column minScreenWidth="Desktop" demandPopin="true">
+									<Text text="{i18n>street}"/>
+								</Column>
+								<Column minScreenWidth="Desktop" demandPopin="true">
+									<Text text="{i18n>paeseFornitore}"/>
+								</Column>
+								<Column minScreenWidth="Desktop" demandPopin="true">
+									<Text text="{i18n>cap}"/>
+								</Column>
+								<Column minScreenWidth="Desktop" demandPopin="true">
+									<Text text="{i18n>provincia}"/>
+								</Column>
+								<Column minScreenWidth="Desktop" demandPopin="true">
+									<Text text="{i18n>lingua}"/>
+								</Column>
+								<Column minScreenWidth="Desktop" demandPopin="true">
+									<Text text="{i18n>pivaFornitore}"/>
+								</Column>
+							</columns>
+							<items>
+								<ColumnListItem>
+									<cells>
+										<Text text="{tableModelSuppliers>LIFNR}"/>
+										<Text text="{tableModelSuppliers>NAME1}"/>
+										<Text text="{tableModelSuppliers>EKORG}"/>
+										<Text text="{tableModelSuppliers>STREET}"/>
+										<Text text="{tableModelSuppliers>ORT01}"/>
+										<Text text="{tableModelSuppliers>PSTLZ}"/>
+										<Text text="{tableModelSuppliers>REGIX}"/>
+										<Text text="{tableModelSuppliers>LANDX}"/>
+										<Text text="{tableModelSuppliers>STCEG}"/>
+									</cells>
+								</ColumnListItem>
+							</items>
+						</Table>
+					</content>
+					<footer>
+						<Bar>
+							<contentRight>
+								<Button id="create" text="{i18n>createMetasupplier}" type="Accept" enabled="true" visible="true" press="handleCreatePress"/>
+							</contentRight>
+						</Bar>
+					</footer>
+				</Page>
+			</pages>
+		</App>
+	</Shell>
+</mvc:View>
