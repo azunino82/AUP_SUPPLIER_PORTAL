@@ -14,11 +14,11 @@ sap.ui.define([
 		onInit: function () {
 			that = this;
 
-		//	that.getCurrentSYSID();
-			this.getView().setModel(sap.ui.getCore().getModel("userapi"), "userapi"); 
+			//	that.getCurrentSYSID();
+			this.getView().setModel(sap.ui.getCore().getModel("userapi"), "userapi");
 
 			// gestione delle permissions per il documentale
-		//	that.getDocumentCustomizingData();
+			//TODO da fare servizio	that.getDocumentCustomizingData();
 
 			var startupParams = undefined;
 			if (that.getOwnerComponent().getComponentData() != undefined) {
@@ -58,103 +58,99 @@ sap.ui.define([
 					"AppTitle": ""
 				};
 				switch (user.userType) {
-				case "BC":
-					editVisibleBool = true;
-					deleteVisibleBool = true;
-					contactsVisibleBool = false;
-					createVisibleBool = true;
-					appTitle.AppTitle = that.getResourceBundle().getText("BC");
-					break;
-				case "BM":
-					editVisibleBool = false;
-					deleteVisibleBool = false;
-					contactsVisibleBool = true;
-					createVisibleBool = false;
-					appTitle.AppTitle = that.getResourceBundle().getText("BM");
-					break;
-				case "M":
-					editVisibleBool = false;
-					deleteVisibleBool = false;
-					contactsVisibleBool = true;
-					createVisibleBool = false;
-					appTitle.AppTitle = that.getResourceBundle().getText("M");
-					for (var i = 0; i < user.metaIDs.length; i++) {
-						var filter = new sap.ui.model.Filter({
-							path: "METAID",
-							operator: "EQ",
-							value1: user.metaIDs[i]
-						});
+					case "BC":
+						editVisibleBool = true;
+						deleteVisibleBool = true;
+						contactsVisibleBool = false;
+						createVisibleBool = true;
+						appTitle.AppTitle = that.getResourceBundle().getText("BC");
+						break;
+					case "BM":
+						editVisibleBool = false;
+						deleteVisibleBool = false;
+						contactsVisibleBool = true;
+						createVisibleBool = false;
+						appTitle.AppTitle = that.getResourceBundle().getText("BM");
+						break;
+					case "M":
+						editVisibleBool = false;
+						deleteVisibleBool = false;
+						contactsVisibleBool = true;
+						createVisibleBool = false;
+						appTitle.AppTitle = that.getResourceBundle().getText("M");
+						for (var i = 0; i < user.metaIDs.length; i++) {
+							var filter = new sap.ui.model.Filter({
+								path: "METAID",
+								operator: "EQ",
+								value1: user.metaIDs[i]
+							});
 
-						metasupplierFilters.push(filter);
-					}
+							metasupplierFilters.push(filter);
+						}
 
-					if (user.metaIDs.length === 0) {
-						var filter = new sap.ui.model.Filter({
-							path: "METAID",
-							operator: "EQ",
-							value1: " "
-						});
-						metasupplierFilters.push(filter);
-					}
-					break;
+						if (user.metaIDs.length === 0) {
+							var filter = new sap.ui.model.Filter({
+								path: "METAID",
+								operator: "EQ",
+								value1: " "
+							});
+							metasupplierFilters.push(filter);
+						}
+						break;
 				}
 				var jsonModel = new sap.ui.model.json.JSONModel();
 				jsonModel.setData(appTitle);
 				that.getOwnerComponent().setModel(jsonModel, "titleJSONModel");
 			}
 
-		// TODO Servizio
-		/*	var filter = new sap.ui.model.Filter({
-				path: "ATTIVO",
-				operator: "EQ",
-				value1: 1
-			});
-			metasupplierFilters.push(filter);
 
-			var oModel = that.getOwnerComponent().getModel();
-			oModel.read("/MetasupplierDataSet", {
-				filters: metasupplierFilters,
-				success: function (oDataRes, oResponse) {
-					that.getView().byId("createButton").setVisible(createVisibleBool);
-					for (var x = 0; x < oDataRes.results.length; x++) {
-						oDataRes.results[x].editVisible = editVisibleBool;
-						oDataRes.results[x].deleteVisible = deleteVisibleBool;
-						oDataRes.results[x].contactsVisible = contactsVisibleBool;
-					}
-					var jsonModel = new sap.ui.model.json.JSONModel();
-					jsonModel.setData(oDataRes.results);
-					that.getView().setModel(jsonModel, "tableModelMetasuppliers");
-					that.getView().byId("idMetasuppliersTable").getColumns()[8].setVisible(editVisibleBool);
-					that.getView().byId("idMetasuppliersTable").getColumns()[9].setVisible(deleteVisibleBool);
-					that.getView().byId("idMetasuppliersTable").getColumns()[10].setVisible(contactsVisibleBool);
-				},
-				error: function (oError) {}
+			var url = "/backend/MetasupplierManagement/GetMetasupplier?I_ATTIVO=1";
+			this.showBusyDialog();
+			that.ajaxGet(url, function (oDataRes) {
+				that.hideBusyDialog();
+
+				that.getView().byId("createButton").setVisible(createVisibleBool);
+				for (var x = 0; x < oDataRes.results.length; x++) {
+					oDataRes.results[x].editVisible = editVisibleBool;
+					oDataRes.results[x].deleteVisible = deleteVisibleBool;
+					oDataRes.results[x].contactsVisible = contactsVisibleBool;
+				}
+				var jsonModel = new sap.ui.model.json.JSONModel();
+				jsonModel.setData(oDataRes.results);
+				that.getView().setModel(jsonModel, "tableModelMetasuppliers");
+				that.getView().byId("idMetasuppliersTable").getColumns()[8].setVisible(editVisibleBool);
+				that.getView().byId("idMetasuppliersTable").getColumns()[9].setVisible(deleteVisibleBool);
+				that.getView().byId("idMetasuppliersTable").getColumns()[10].setVisible(contactsVisibleBool);
+
 			});
+
 
 			if (that.getView().byId("InputStatoMetafornitore").getItems().length === 0) {
-				oModel.read("/SupplierStateSet", {
-					success: function (oDataRes, oResponse) {
-						var lang = sap.ui.getCore().getConfiguration().getLanguage();
-						var oSelectStatoFornitore = that.getView().byId("InputStatoMetafornitore");
-						for (var i = 0; i < oDataRes.results.length; i++) {
-							//Inserimento Record Vuoto per ComboBox
-							if (i === 0) {
-								var nl = new sap.ui.core.Item({
-									key: "",
-									text: ""
-								});
-								oSelectStatoFornitore.insertItem(nl);
-							}
-							var item = new sap.ui.core.Item({
-								key: oDataRes.results[i].KEY,
-								text: (lang === "it-IT") ? oDataRes.results[i].VALUE_IT : oDataRes.results[i].VALUE_EN
+
+				url = "/backend/MetasupplierManagement/GetSupplierStates";
+				that.ajaxGet(url, function (oDataRes) {
+
+					var lang = sap.ui.getCore().getConfiguration().getLanguage();
+					var oSelectStatoFornitore = that.getView().byId("InputStatoMetafornitore");
+					for (var i = 0; i < oDataRes.results.length; i++) {
+						//Inserimento Record Vuoto per ComboBox
+						if (i === 0) {
+							var nl = new sap.ui.core.Item({
+								key: "",
+								text: ""
 							});
-							oSelectStatoFornitore.insertItem(item);
+							oSelectStatoFornitore.insertItem(nl);
 						}
-					},
-					error: function (oError) {}
+						var item = new sap.ui.core.Item({
+							key: oDataRes.results[i].KEY,
+							text: (lang === "it-IT") ? oDataRes.results[i].VALUE_IT : oDataRes.results[i].VALUE_EN
+						});
+						oSelectStatoFornitore.insertItem(item);
+					}
+
 				});
-			}*/
+
+			}
 
 		},
 
@@ -217,142 +213,74 @@ sap.ui.define([
 
 		editSupplier: function (oEvent) {
 			/*Valorizzo i filtri per lettura riga selezionata*/
-			var path = oEvent.getSource().getParent().getBindingContext("tableModelMetasuppliers");
-			var data = that.byId("idMetasuppliersTable").getModel("tableModelMetasuppliers").getProperty(path.sPath);
+			var path = oEvent.getSource().getParent().getBindingContext("tableModelMetasuppliers").sPath;
+			var data = that.getModel("tableModelMetasuppliers").getProperty(path);
+
 			that.getView().setModel(null, "tableModelSuppliers");
 			if (data.METAID !== "" && data.METAID !== undefined) {
-				/*Leggo Anagrafica Metafornitore*/
-				var lifnrOut = [];
-				var filters = [];
-				var filter = new sap.ui.model.Filter({
-					path: "METAID",
-					operator: "EQ",
-					value1: data.METAID
-				});
+				var url = "/backend/MetasupplierManagement/GetMetaidSuppliers?I_METAID=" + data.METAID;
+				this.showBusyDialog();
+				that.ajaxGet(url, function (oDatalf) {
+					that.hideBusyDialog();
+					if (oDatalf) {
+						var lifnrMetaid = new sap.ui.model.json.JSONModel();
+						lifnrMetaid.setData(oDatalf);
+						that.getView().setModel(lifnrMetaid, "lifnrMetaidJSONModel");
 
-				filters.push(filter);
-				/*Leggo anagrafica Metasupplier*/
-				that.showBusyDialog();
-				var oModel = that.getOwnerComponent().getModel();
-				oModel.read("/MetasupplierDataSet", {
-					filters: filters,
-					success: function (oDataRes, oResponse) {
-						if (oDataRes.results.length !== 0) {
-							/*Fornitori attualmente attivi*/
-							var oModelData = that.getOwnerComponent().getModel();
-							oModelData.read("/MetasupplierSupplierSet", {
-								filters: filters,
-								success: function (oDatalf, oResponself) {
-									if (oDatalf) {
-										var lifnrMetaid = new sap.ui.model.json.JSONModel();
-										lifnrMetaid.setData(oDatalf);
-										that.getView().setModel(lifnrMetaid, "lifnrMetaidJSONModel");
-
-										/*Fornitori possibili*/
-										var jsonModel = new sap.ui.model.json.JSONModel();
-										var elem = oDataRes.results[0];
-										if (elem !== undefined) {
-											elem.ATTIVO = elem.ATTIVO !== undefined && elem.ATTIVO === 1 ? true : false;
-										}
-										jsonModel.setData(elem);
-										that.getView().setModel(jsonModel, "metasupplierData");
-
-										/*cerco i dati dei fornitori associati al metafornitore*/
-										if (oDatalf.results && oDatalf.results.length > 0) {
-											var url = "/SupplierPortal_Utils/xsOdata/GetVendorList.xsjs?I_USERID=" + that.getCurrentUserId();
-											that.showBusyDialog();
-											var body = {
-												"lifnr": []
-											};
-
-											oDatalf.results.forEach(function (lifnrElem) {
-												body.lifnr.push(lifnrElem.LIFNR);
-											});
-
-											that.ajaxPost(url, body, "/SupplierPortal_Utils", function (oData) { // funzione generica su BaseController
-												that.hideBusyDialog();
-												if (oData && oData.results && oData.results.length > 0) {
-													var lookup = {};
-													for (var item, i = 0; item = oData.results[i++];) {
-														var lifnr = item.LIFNR;
-
-														if (!(lifnr in lookup)) {
-															lookup[lifnr] = 1;
-															item.Rank = 1;
-														}
-													}
-													// oData.results.forEach(function (lifnrElem) {
-													// 	lifnrElem.Rank = 1;
-													// });
-													var jsonModelLf = new JSONModel();
-													jsonModelLf.setData(oData);
-													that.getView().setModel(jsonModelLf, "tableModelSuppliers");
-												}
-											});
-										}
-
-										// that.ajaxGet(url, function (oData) {
-										// 	that.hideBusyDialog();
-										// 	if (oData) {
-										// 		if (oData.results !== undefined) {
-										// 			$.each(oData.results, function (key, value) {
-										// 				var trovato = false;
-										// 				$.each(lifnrOut, function (index, elem) {
-										// 					if (elem.LIFNR === value.LIFNR) {
-										// 						trovato = true;
-										// 						return;
-										// 					}
-										// 				});
-										// 				if (trovato === false) {
-										// 					lifnrOut.push(value);
-										// 				}
-										// 			});
-										// 		}
-										// 		//seleziono a video i fornitori associati in anagrafica
-										// 		var lifnrtot = that.getView().getModel("lifnrMetaidJSONModel");
-										// 		$.each(lifnrOut, function (index, elem) {
-										// 			for (var i = 0; i < lifnrtot.oData["results"].length; i++) {
-										// 				if (lifnrtot.oData["results"][i].LIFNR === elem.LIFNR) {
-										// 					elem.isSelected = true;
-										// 					elem.Rank = 1;
-										// 					break;
-										// 				} else {
-										// 					elem.isSelected = false;
-										// 					elem.Rank = 0;
-										// 				}
-										// 			}
-										// 		});
-
-										// 		// var sorter = new Sorter("isSelected", true, false);
-										// 		// lifnrOut.sort(sorter);
-										// 		var jsonModelLf = new JSONModel();
-										// 		jsonModelLf.setData(lifnrOut);
-										// 		that.getView().setModel(jsonModelLf, "tableModelSuppliers");
-
-										// 	}
-										// });
-
-									} else {
-										sap.m.MessageBox.error(that.getOwnerComponent().getModel("i18n").getResourceBundle().getText(
-											"noMetasupplierFoundForUser"));
-									}
-
-								},
-								error: function (err) {
-									// fCompletion();
-								}
-
-							});
+						/*Fornitori possibili*/
+						var jsonModel = new sap.ui.model.json.JSONModel();
+						
+						if (data !== undefined) {
+							data.ATTIVO = data.ATTIVO !== undefined && data.ATTIVO === 1 ? true : false;
 						}
-					},
-					error: function (oError) {}
+						jsonModel.setData(data);
+						that.getView().setModel(jsonModel, "metasupplierData");
+
+						/*TODO fare servizio cerco i dati dei fornitori associati al metafornitore
+						if (oDatalf.results && oDatalf.results.length > 0) {
+							var url = "/SupplierPortal_Utils/xsOdata/GetVendorList.xsjs?I_USERID=" + that.getCurrentUserId();
+							that.showBusyDialog();
+							var body = {
+								"lifnr": []
+							};
+
+							oDatalf.results.forEach(function (lifnrElem) {
+								body.lifnr.push(lifnrElem.LIFNR);
+							});
+
+							that.ajaxPost(url, body, "/SupplierPortal_Utils", function (oData) { // funzione generica su BaseController
+								that.hideBusyDialog();
+								if (oData && oData.results && oData.results.length > 0) {
+									var lookup = {};
+									for (var item, i = 0; item = oData.results[i++];) {
+										var lifnr = item.LIFNR;
+
+										if (!(lifnr in lookup)) {
+											lookup[lifnr] = 1;
+											item.Rank = 1;
+										}
+									}
+									// oData.results.forEach(function (lifnrElem) {
+									// 	lifnrElem.Rank = 1;
+									// });
+									var jsonModelLf = new JSONModel();
+									jsonModelLf.setData(oData);
+									that.getView().setModel(jsonModelLf, "tableModelSuppliers");
+								}
+							});
+						}*/
+
+					} else {
+						sap.m.MessageBox.error(that.getOwnerComponent().getModel("i18n").getResourceBundle().getText(
+							"noMetasupplierFoundForUser"));
+					}
 				});
+
 				if (!that.oModMetaSupFragment) {
 					that.oModMetaSupFragment = sap.ui.xmlfragment(
-						"it.alteaup.supplier.portal.zmetasuppliers.fragments.ModMetasupplier", that);
+						"it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER.fragments.ModMetasupplier", that);
 					that.getView().addDependent(that.oModMetaSupFragment);
 				}
-				that.hideBusyDialog();
 				that.getBuyerBu();
 				that.oModMetaSupFragment.open();
 			}
@@ -360,8 +288,7 @@ sap.ui.define([
 
 		getBuyerBu: function () {
 
-			//var url = "/SupplierPortal_JAVA_Services/GetUserBU?I_USERID=" + thatCreateMetasuppliers.getCurrentUserId();
-			var url = "/SupplierPortal_Utils/xsOdata/GetUserBU.xsjs?I_USERID=" + that.getCurrentUserId();
+			var url = "/backend/Utils/UtilsManagement/GetUserBU";
 			that.ajaxGet(url, function (oData) {
 				if (oData) {
 					var jsonModel = new sap.ui.model.json.JSONModel();
@@ -369,17 +296,18 @@ sap.ui.define([
 					that.getView().setModel(jsonModel, "buyerBuJSONModel");
 				}
 			});
+
 		},
 
 		deleteMetasupplierRow: function (id) {
 
 			if (id !== "" && id !== undefined) {
-
-				var url = "/SupplierPortal_Utils/xsOdata/DeleteMetaid.xsjs?I_METAID=" + id;
+				var url = "/backend/Utils/MetasupplierManagement/DeleteMetaid?I_METAID=" + id;
 				that.ajaxGet(url, function (oData) {
-					that.handleRoutePatternMatched(null);
+					if (oData) {
+						that.handleRoutePatternMatched(null);
+					}
 				});
-
 			}
 		},
 
@@ -493,9 +421,9 @@ sap.ui.define([
 
 												oModel.create("/MetasupplierSupplierSet",
 													updateData, {
-														success: function () {},
-														error: function (err) {}
-													});
+													success: function () { },
+													error: function (err) { }
+												});
 											}
 										});
 									});
@@ -753,7 +681,7 @@ sap.ui.define([
 
 			var lifnrStorico;
 			if (that.getView().getModel("tableModelSuppliers") !== undefined && that.getView().getModel(
-					"tableModelSuppliers").getData() !== undefined) {
+				"tableModelSuppliers").getData() !== undefined) {
 				lifnrStorico = that.getView().getModel("tableModelSuppliers").getData();
 				if (lifnrStorico && lifnrStorico.results && lifnrStorico.results.length > 0) {
 					var oldArrayLifnr = [];
@@ -784,13 +712,13 @@ sap.ui.define([
 				}
 			});
 
-        },
-        
+		},
+
 		getPurchaseOrganizations: function () {
 
-			var url = "/backend/Utils/GetPurchaseOrganizations";
+			var url = "/backend/Utils/UtilsManagement/GetPurchaseOrganizations";
 			this.showBusyDialog();
-			that.ajaxGet(url, function (oData) { 
+			that.ajaxGet(url, function (oData) {
 				that.hideBusyDialog();
 				if (oData) {
 					var oModel = new JSONModel();
