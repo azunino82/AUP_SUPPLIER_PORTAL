@@ -6,7 +6,8 @@
 		"express": "~4.16.0",
 		"passport": "^0.4.0",
 		"stringify-object": "latest",
-		"body-parser": "latest"
+		"body-parser": "latest",
+		"async": "latest"
 	},
 	"description": "my description",
 	"devDependencies": {

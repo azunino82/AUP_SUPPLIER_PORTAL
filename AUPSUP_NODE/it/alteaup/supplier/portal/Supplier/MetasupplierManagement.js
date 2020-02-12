@@ -6,9 +6,20 @@
 var express = require('express')
 var stringifyObj = require('stringify-object')
 var hdbext = require('@sap/hdbext')
+var async = require('async')
 
 module.exports = function () {
     var app = express.Router()
+
+    const bodyParser = require('body-parser')
+
+    app.use(
+        bodyParser.urlencoded({
+            extended: true
+        })
+    )
+
+    app.use(bodyParser.json())
 
     // LISTA METASUPPLIERS by status e/o by ID
     app.get('/GetMetasupplier', function (req, res) {
@@ -21,28 +32,43 @@ module.exports = function () {
         }
 
         if (metaID !== undefined) {
-            sql = "SELECT * FROM \"AUPSUP_DATABASE.data.tables::T_METASUPPLIER_DATA\" WHERE METAID = \'" + metaID + "\'" 
-        } else { 
+            sql = "SELECT * FROM \"AUPSUP_DATABASE.data.tables::T_METASUPPLIER_DATA\" WHERE METAID = \'" + metaID + "\'"
+        } else {
             sql = 'SELECT * FROM "AUPSUP_DATABASE.data.tables::T_METASUPPLIER_DATA" WHERE ATTIVO = ' + parseInt(metasupplierStatus)
         }
-        hdbext.createConnection(req.tenantContainer, (err, client) => {
-            if (err) {
-                var responseStr = 'Error during GetPurchaseOrganizations.js Connection'
-                return res.status(500).send(responseStr)
-            } else {
-                client.exec(sql, (err, results) => {
-                    if (err) {
-                        return res.status(500).send('Error during SELECT on table T_METASUPPLIER_DATA: ' + stringifyObj(err) +
-                            ' parm ATTIVO = ' + metasupplierStatus + ' parm METAID = ' + metaID)
-                    } else {
-                        var outArr = []
-                        results.forEach(element => {
-                            outArr.push(element)
-                        })
 
-                        return res.status(200).send({
-                            results: outArr
+        hdbext.createConnection(req.tenantContainer, function (error, client) {
+            if (error) {
+                console.error(error)
+            }
+            if (client) {
+                async.waterfall([
+
+                    function prepare (callback) {
+                        client.prepare(sql,
+                            function (err, statement) {
+                                callback(null, err, statement)
+                            })
+                    },
+
+                    function execute (_err, statement, callback) {
+                        statement.exec([], function (execErr, results) {
+                            callback(null, execErr, results)
                         })
+                    },
+
+                    function response (err, results, callback) {
+                        if (err) {
+                            res.type('application/json').status(500).send({ ERROR: err })
+                            return
+                        } else {
+                            res.type('application/json').status(200).send({ results: results })
+                        }
+                        callback()
+                    }
+                ], function done (err, parameters, rows) {
+                    if (err) {
+                        return console.error('Done error', err)
                     }
                 })
             }
@@ -51,23 +77,39 @@ module.exports = function () {
 
     // LISTA STATI PER METASUPPLIER
     app.get('/GetSupplierStates', function (req, res) {
-        hdbext.createConnection(req.tenantContainer, (err, client) => {
-            if (err) {
-                var responseStr = 'Error during GetSupplierStates.js Connection'
-                return res.status(500).send(responseStr)
-            } else {
-                client.exec('SELECT * FROM "AUPSUP_DATABASE.data.tables::T_SUPPLIER_STATE"', (err, results) => {
-                    if (err) {
-                        return res.status(500).send('Error during SELECT on table T_SUPPLIER_STATE: ' + stringifyObj(err))
-                    } else {
-                        var outArr = []
-                        results.forEach(element => {
-                            outArr.push(element)
-                        })
+        const sql = 'SELECT * FROM "AUPSUP_DATABASE.data.tables::T_SUPPLIER_STATE"'
+        hdbext.createConnection(req.tenantContainer, function (error, client) {
+            if (error) {
+                console.error(error)
+            }
+            if (client) {
+                async.waterfall([
 
-                        return res.status(200).send({
-                            results: outArr
+                    function prepare (callback) {
+                        client.prepare(sql,
+                            function (err, statement) {
+                                callback(null, err, statement)
+                            })
+                    },
+
+                    function execute (_err, statement, callback) {
+                        statement.exec([], function (execErr, results) {
+                            callback(null, execErr, results)
                         })
+                    },
+
+                    function response (err, results, callback) {
+                        if (err) {
+                            res.type('application/json').status(500).send({ ERROR: err })
+                            return
+                        } else {
+                            res.type('application/json').status(200).send({ results: results })
+                        }
+                        callback()
+                    }
+                ], function done (err, parameters, rows) {
+                    if (err) {
+                        return console.error('Done error', err)
                     }
                 })
             }
@@ -77,27 +119,42 @@ module.exports = function () {
     // LISTA DEI FORNITORI dato METAFORNITORE
     app.get('/GetMetaidSuppliers', function (req, res) {
         var metaID = req.query.I_METAID
-        var sql = ''
-        if (metaID !== undefined) {
-            sql = "SELECT * FROM \"AUPSUP_DATABASE.data.tables::T_METAID_FORN\" WHERE METAID = \'" + metaID + "\'"
-            hdbext.createConnection(req.tenantContainer, (err, client) => {
-                if (err) {
-                    var responseStr = 'Error during GetMetaidSuppliers.js Connection'
-                    return res.status(500).send(responseStr)
-                } else {
-                    client.exec(sql, (err, results) => {
-                        if (err) {
-                            return res.status(500).send('Error during SELECT on table T_METASUPPLIER_DATA: ' + stringifyObj(err) +
-                                ' parm METAID = ' + metaID)
-                        } else {
-                            var outArr = []
-                            results.forEach(element => {
-                                outArr.push(element)
-                            })
 
-                            return res.status(200).send({
-                                results: outArr
+        if (metaID !== undefined) {
+            const sql = "SELECT * FROM \"AUPSUP_DATABASE.data.tables::T_METAID_FORN\" WHERE METAID = \'" + metaID + "\'"
+
+            hdbext.createConnection(req.tenantContainer, function (error, client) {
+                if (error) {
+                    console.error(error)
+                }
+                if (client) {
+                    async.waterfall([
+
+                        function prepare (callback) {
+                            client.prepare(sql,
+                                function (err, statement) {
+                                    callback(null, err, statement)
+                                })
+                        },
+
+                        function execute (_err, statement, callback) {
+                            statement.exec([], function (execErr, results) {
+                                callback(null, execErr, results)
                             })
+                        },
+
+                        function response (err, results, callback) {
+                            if (err) {
+                                res.type('application/json').status(500).send({ ERROR: err })
+                                return
+                            } else {
+                                res.type('application/json').status(200).send({ results: results })
+                            }
+                            callback()
+                        }
+                    ], function done (err, parameters, rows) {
+                        if (err) {
+                            return console.error('Done error', err)
                         }
                     })
                 }
@@ -138,8 +195,56 @@ module.exports = function () {
     // Parse JSON bodies (as sent by API clients)
     app.use(express.json())
 
-    app.post('/', function (req, res) {
-        return res.status(200).send({ POST: true })
+    // Create Metasupplier
+    app.post('/CreateMetasupplier', function (req, res) {
+        const body = req.body
+        console.log({ body_in: JSON.stringify(body) })
+
+        if (body !== undefined && body !== '' && body !== null && body.METAID !== undefined && body.METAID !== '') {
+            const sql = 'INSERT INTO "AUPSUP_DATABASE.data.tables::T_METASUPPLIER_DATA" VALUES (?, ?, ?, ?, ?,?, ?, ?, ?, ?)'
+
+            hdbext.createConnection(req.tenantContainer, function (error, client) {
+                if (error) {
+                    console.error(error)
+                }
+                if (client) {
+                    async.waterfall([
+
+                        function prepare (callback) {
+                            client.prepare(sql,
+                                function (err, statement) {
+                                    callback(null, err, statement)
+                                })
+                        },
+
+                        function execute (_err, statement, callback) {
+                            statement.exec([body.METAID, body.RAG_SOCIALE, body.INDIRIZZO, body.N_CIVICO, body.PAESE, body.LINGUA, body.PIVA, body.STATO_FORNITORE, parseInt(body.ATTIVO), body.BU], function (execErr, results) {
+                                callback(null, execErr, results)
+                            })
+                        },
+
+                        function response (err, results, callback) {
+                            if (err) {
+                                res.type('application/json').status(500).send({ ERROR: err })
+                                return
+                            } else {
+                                var result = JSON.stringify({
+                                    Objects: results
+                                })
+                                res.type('application/json').status(200).send({ results: result })
+                            }
+                            callback()
+                        }
+                    ], function done (err, parameters, rows) {
+                        if (err) {
+                            return console.error('Done error', err)
+                        }
+                    })
+                }
+            })
+        } else {
+            return res.status(500).send('BODY is Mandatory')
+        }
     })
 
     return app
