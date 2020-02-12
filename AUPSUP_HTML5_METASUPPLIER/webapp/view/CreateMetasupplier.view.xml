@@ -1,0 +1,65 @@
+<mvc:View controllerName="it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER.controller.CreateMetasupplier" xmlns:mvc="sap.ui.core.mvc"
+	displayBlock="true" xmlns="sap.m" xmlns:u="sap.ui.unified" xmlns:l="sap.ui.layout" xmlns:core="sap.ui.core" xmlns:fb="sap.ui.comp.filterbar"
+	xmlns:f="sap.ui.layout.form">
+	<Shell id="shell"  appWidthLimited="false">
+		<App id="app">
+			<pages>
+				<Page id="page" title="{titleJSONModel>/AppTitle}">
+					<content align="center">
+						<l:VerticalLayout id="containerLayout" width="100%">
+							<VBox class="sapUiSmallMargin">
+								<f:SimpleForm id="SimpleFormChange480_12120Dual" editable="true" layout="ResponsiveGridLayout" title="" labelSpanXL="4" labelSpanL="4"
+									labelSpanM="12" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="0" emptySpanL="0" emptySpanM="0" emptySpanS="0" columnsXL="2"
+									columnsL="2" columnsM="2" singleContainerFullSize="false">
+									<f:content>
+										<core:Title text=""/>
+										<Label text="{i18n>ragSocialeMetafornitore}" labelFor="ragSocialeMetafornitore"/>
+										<Input id="ragSocialeMetafornitore" type="Text" class="sapUiSmallMarginBottom" placeholder="" maxLength="30"/>
+										<Label text="{i18n>indirizzo} / {i18n>nCivico}" labelFor="indirizzo"/>
+										<Input id="indirizzo" type="Text" class="sapUiSmallMarginBottom" placeholder="" maxLength="50"/>
+										<!--<Label text="{i18n>nCivico}" labelFor="nCivico"/>-->
+										<Input id="nCivico" type="Text" class="sapUiSmallMarginBottom" placeholder="" maxLength="30">
+											<layoutData>
+												<l:GridData span="XL2 L3 M4 S4"/>
+											</layoutData>
+										</Input>
+										<Label text="{i18n>paeseMetafornitore} / {i18n>lingua}" labelFor="paeseMetafornitore"/>
+										<Input id="paeseMetafornitore" type="Text" class="sapUiSmallMarginBottom" placeholder="" maxLength="3"/>
+										<!--<Label text="{i18n>lingua}" labelFor="lingua"/>-->
+										<Input id="lingua" type="Text" class="sapUiSmallMarginBottom" placeholder="" maxLength="1">
+											<layoutData>
+												<l:GridData span="XL2 L3 M4 S4"/>
+											</layoutData>
+										</Input>
+										<core:Title text=""/>
+										<Label text="{i18n>pivaMetafornitore}" labelFor="pivaMetafornitore"/>
+										<Input id="pivaMetafornitore" type="Text" class="sapUiSmallMarginBottom" placeholder="" maxLength="16"/>
+										<Label text="{i18n>BU}" labelFor="BU"/>
+										<ComboBox id="BU"  width="100%" items="{ path: 'buyerBuJSONModel>/results', sorter: { path: 'DESCR' } }">
+											<core:Item key="{buyerBuJSONModel>CODE}" text="{buyerBuJSONModel>DESCR}"/>
+										</ComboBox>
+										<Label text="{i18n>statoMetafornitore}" labelFor="statoMetafornitore"/>
+										<ComboBox id="statoMetafornitore" width="100%">
+											<core:Item key="RE" text="{i18n&gt;registrazione}"/>
+											<core:Item key="AP" text="{i18n&gt;approvato}"/>
+											<core:Item key="OB" text="{i18n&gt;obsoleto}"/>
+										</ComboBox>
+										<CheckBox id="active" text="{i18n>active}"/>
+										<Input id="sapSorgente" type="Text" visible="false" class="sapUiSmallMarginBottom"/>
+									</f:content>
+								</f:SimpleForm>
+							</VBox>
+						</l:VerticalLayout>
+					</content>
+					<footer>
+						<Bar>
+							<contentRight>
+								<Button id="create" text="{i18n>createMetasupplier}" type="Accept" enabled="true" visible="true" press="handleCreatePress"/>
+							</contentRight>
+						</Bar>
+					</footer>
+				</Page>
+			</pages>
+		</App>
+	</Shell>
+</mvc:View>

@@ -51,6 +51,17 @@ sap.ui.define([
 			var ragioneSociale = that.getView().byId("InputRagioneSociale").getValue();
 			var pIvaFornitore = that.getView().byId("InputPivaFornitore").getValue();
 
+			// AZ RIMUOVERE
+			var jsonModel = new sap.ui.model.json.JSONModel();
+			var arrDistinct = [{"LIFNR":"0090099","NAME1":"test"}];
+
+			jsonModel.setData(arrDistinct);
+			that.getView().byId("idSuppliersTable").setModel(jsonModel, "tableModelSuppliers");
+			var list = that.getView().byId("idSuppliersTable");
+			var binding = list.getBinding("items");
+			binding.filter(filters);
+			// FINE AZ
+
 			/*TODO servizio var body = {
 				"ekorg": []
 			};

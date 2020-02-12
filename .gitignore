@@ -17,3 +17,4 @@ APIExternalProducer.js
 /mta_archives/
 preview.json
 cp.project.properties.json
+/node_modules/*
