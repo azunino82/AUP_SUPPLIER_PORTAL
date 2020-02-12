@@ -201,7 +201,7 @@ module.exports = function () {
         console.log({ body_in: JSON.stringify(body) })
 
         if (body !== undefined && body !== '' && body !== null && body.METAID !== undefined && body.METAID !== '') {
-            const sql = 'INSERT INTO "AUPSUP_DATABASE.data.tables::T_METASUPPLIER_DATA" VALUES (?, ?, ?, ?, ?,?, ?, ?, ?, ?)'
+            var sql = 'INSERT INTO "AUPSUP_DATABASE.data.tables::T_METASUPPLIER_DATA" VALUES (?, ?, ?, ?, ?,?, ?, ?, ?, ?)'
 
             hdbext.createConnection(req.tenantContainer, function (error, client) {
                 if (error) {
@@ -228,10 +228,73 @@ module.exports = function () {
                                 res.type('application/json').status(500).send({ ERROR: err })
                                 return
                             } else {
-                                var result = JSON.stringify({
-                                    Objects: results
-                                })
-                                res.type('application/json').status(200).send({ results: result })
+                                // IL MEDAID è STATO CREATO ORA SALVO LE BU se ci sono
+                                var errBU = ''
+                                if (body.BUDATA !== undefined && body.BUDATA !== null && body.BUDATA.METAID !== undefined && body.BUDATA.METAID !== '') {
+                                        sql = 'INSERT INTO "AUPSUP_DATABASE.data.tables::T_METAID_BU" VALUES (?, ?, ?)'
+                                        async.waterfall([
+
+                                            function prepare (callback) {
+                                                client.prepare(sql,
+                                                    function (err, statement) {
+                                                        callback(null, err, statement)
+                                                    })
+                                            },
+    
+                                            function execute (_err, statement, callback) {
+                                                statement.exec([body.BUDATA.METAID, body.BUDATA.BU, body.BUDATA.STATO], function (execErr, results) {
+                                                    callback(null, execErr, results)
+                                                })
+                                            },
+    
+                                            function response (err, results, callback) {
+                                                console.error({ erroreBU: err })
+                                                if (err) {
+                                                    errBU = err
+                                                    return
+                                                }
+                                                callback()
+                                            }
+                                        ])
+                                }
+
+                                // AGGANCIO IL METAFORNITORE al FORNITORE SAP
+                                var errSupplier = ''
+                                if (body.SUPPLIERS !== undefined && body.SUPPLIERS !== null && body.SUPPLIERS.length > 0) {
+                                    sql = 'INSERT INTO "AUPSUP_DATABASE.data.tables::T_METAID_FORN" VALUES (?, ?, ?)'
+                                    body.SUPPLIERS.forEach(element => {
+                                        async.waterfall([
+
+                                            function prepare (callback) {
+                                                client.prepare(sql,
+                                                    function (err, statement) {
+                                                        callback(null, err, statement)
+                                                    })
+                                            },
+    
+                                            function execute (_err, statement, callback) {
+                                                statement.exec([element.METAID, element.LIFNR, element.SYSID], function (execErr, results) {
+                                                    callback(null, execErr, results)
+                                                })
+                                            },
+    
+                                            function response (err, results, callback) {
+                                                console.error({ erroreSUPPLIER: err })
+                                                if (err) {
+                                                    errSupplier += err
+                                                    return
+                                                }
+                                                callback()
+                                            }
+                                        ])
+                                    })
+                                }                                
+
+                                if (errBU === '' && errSupplier === '') {
+                                    res.type('application/json').status(200).send({ results: results })
+                                } else {
+                                    res.type('application/json').status(500).send({ ERROR: 'BU or SUPPLIER creation error' })
+                                }
                             }
                             callback()
                         }
