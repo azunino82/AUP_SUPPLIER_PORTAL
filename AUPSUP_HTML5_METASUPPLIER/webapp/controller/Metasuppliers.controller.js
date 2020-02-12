@@ -229,7 +229,7 @@ sap.ui.define([
 
 						/*Fornitori possibili*/
 						var jsonModel = new sap.ui.model.json.JSONModel();
-						
+
 						if (data !== undefined) {
 							data.ATTIVO = data.ATTIVO !== undefined && data.ATTIVO === 1 ? true : false;
 						}
@@ -399,34 +399,29 @@ sap.ui.define([
 							}
 						}
 
-						/*Conferma modifiche a video*/
 						if (data.METAID !== "" && data.METAID !== undefined) {
-							/*Leggo Anagrafica Metafornitore*/
+							var url = "/backend/MetasupplierManagement/UpdateMetasupplier?I_METAID=" + data.METAID;
+							var supplierARR = [];
+							lifnrMod.results.forEach(function (lifnrElem) {
+								if (lifnrElem.Rank === 1) {
+									var updateData = {};
+									updateData.METAID = data.METAID;
+									updateData.SYSID = sap.ui.getCore().getModel("sysIdJSONModel") !== undefined && sap.ui.getCore().getModel(
+										"sysIdJSONModel").getData() !== undefined ? sap.ui.getCore().getModel("sysIdJSONModel").getData().SYSID : "";
+									updateData.LIFNR = lifnrElem.LIFNR;
+									supplierARR.push(updateData);
+								}
+							});
+
+							// lista dei supplier da associare ai metafornitore
+							data.SUPPLIERS = supplierARR;
+
 							that.showBusyDialog();
-							var oModel = that.getOwnerComponent().getModel();
-							oModel.update("/MetasupplierDataSet(METAID='" + data.METAID + "')", data, {
-								success: function (oData, oResponse) {
-									that.hideBusyDialog();
-									/*Chiamo servizio per cancellazione MetaId dalla tabella Fornitori*/
-									var url = "/SupplierPortal_Utils/xsOdata/DeleteMetaIdForn.xsjs?I_METAID=" + data.METAID;
-									that.ajaxGet(url, function (oDataF) {
-
-										lifnrMod.results.forEach(function (lifnrElem) {
-											if (lifnrElem.Rank === 1) {
-												var updateData = {};
-												updateData.METAID = data.METAID;
-												updateData.SYSID = sap.ui.getCore().getModel("sysIdJSONModel") !== undefined && sap.ui.getCore().getModel(
-													"sysIdJSONModel").getData() !== undefined ? sap.ui.getCore().getModel("sysIdJSONModel").getData().SYSID : "";
-												updateData.LIFNR = lifnrElem.LIFNR;
-
-												oModel.create("/MetasupplierSupplierSet",
-													updateData, {
-													success: function () { },
-													error: function (err) { }
-												});
-											}
-										});
-									});
+							that.ajaxPut(url, data, function (oData) {
+								that.hideBusyDialog();
+								if (oData && oData.results) {
+									sap.m.MessageToast.show(that.getOwnerComponent().getModel("i18n").getResourceBundle().getText(
+										"metasupplierModify"));
 
 									if (that.oModMetaSupFragment) {
 										that.setModel(null, "metasupplierData");
@@ -435,11 +430,50 @@ sap.ui.define([
 										that.oModMetaSupFragment.destroy();
 										that.oModMetaSupFragment = undefined;
 									}
-								},
-								error: function (err) {
-									that.hideBusyDialog();
+
 								}
 							});
+
+
+							/*	var oModel = that.getOwnerComponent().getModel();
+								oModel.update("/MetasupplierDataSet(METAID='" + data.METAID + "')", data, {
+									success: function (oData, oResponse) {
+										that.hideBusyDialog();
+										// Chiamo servizio per cancellazione MetaId dalla tabella Fornitori
+										var url = "/SupplierPortal_Utils/xsOdata/DeleteMetaIdForn.xsjs?I_METAID=" + data.METAID;
+										that.ajaxGet(url, function (oDataF) {
+	
+											lifnrMod.results.forEach(function (lifnrElem) {
+												if (lifnrElem.Rank === 1) {
+													var updateData = {};
+													updateData.METAID = data.METAID;
+													updateData.SYSID = sap.ui.getCore().getModel("sysIdJSONModel") !== undefined && sap.ui.getCore().getModel(
+														"sysIdJSONModel").getData() !== undefined ? sap.ui.getCore().getModel("sysIdJSONModel").getData().SYSID : "";
+													updateData.LIFNR = lifnrElem.LIFNR;
+	
+													oModel.create("/MetasupplierSupplierSet",
+														updateData, {
+														success: function () { },
+														error: function (err) { }
+													});
+												}
+											});
+										});
+	
+										if (that.oModMetaSupFragment) {
+											that.setModel(null, "metasupplierData");
+											that.handleRoutePatternMatched(null);
+											that.oModMetaSupFragment.close();
+											that.oModMetaSupFragment.destroy();
+											that.oModMetaSupFragment = undefined;
+										}
+									},
+									error: function (err) {
+										that.hideBusyDialog();
+									}
+								}); */
+
+
 						}
 					}
 				}

@@ -310,5 +310,113 @@ module.exports = function () {
         }
     })
 
+    // UPDATE METAFORNITORE
+    app.put('/UpdateMetasupplier', function (req, res) {
+        var metaID = req.query.I_METAID
+        const body = req.body
+        console.log({ body_in: JSON.stringify(body) })
+
+        if (metaID !== undefined) {
+            // eslint-disable-next-line quotes
+            var sql = "UPDATE \"AUPSUP_DATABASE.data.tables::T_METASUPPLIER_DATA\" SET RAG_SOCIALE = '" + body.RAG_SOCIALE + "', INDIRIZZO = '" + body.INDIRIZZO + "', N_CIVICO = '" + body.N_CIVICO + "' , PAESE = '" + body.PAESE + "', LINGUA = '" + body.LINGUA + "', PIVA = '" + body.PIVA + "', STATO_FORNITORE = '" + body.STATO_FORNITORE + "', ATTIVO = " + parseInt(body.ATTIVO) + ", BU = '" + body.BU + "' WHERE METAID = \'" + metaID + "\'"
+            console.log({ sqlUPDATE: sql })
+            hdbext.createConnection(req.tenantContainer, function (error, client) {
+                if (error) {
+                    console.error(error)
+                }
+                if (client) {
+                    async.waterfall([
+
+                        function prepare (callback) {
+                            client.prepare(sql,
+                                function (err, statement) {
+                                    callback(null, err, statement)
+                                })
+                        },
+
+                        function execute (_err, statement, callback) {
+                            statement.exec([], function (execErr, results) {
+                                callback(null, execErr, results)
+                            })
+                        },
+
+                        function response (err, results, callback) {
+                            if (err) {
+                                res.type('application/json').status(500).send({ ERROR: err })
+                                return
+                            } else {
+                                // Cancello il legame METAFORNITORE - FORNITORE SAP
+                                sql = 'DELETE FROM \"AUPSUP_DATABASE.data.tables::T_METAID_FORN\" WHERE METAID = \'' + metaID + '\''
+                                async.waterfall([
+
+                                    function prepare (callback) {
+                                        client.prepare(sql,
+                                            function (err, statement) {
+                                                callback(null, err, statement)
+                                            })
+                                    },
+
+                                    function execute (_err, statement, callback) {
+                                        statement.exec([], function (execErr, results) {
+                                            callback(null, execErr, results)
+                                        })
+                                    },
+
+                                    function response (err, results, callback) {
+                                        console.error({ erroreSUPPLIER: err })
+                                        if (err) {
+                                            return
+                                        } else {
+                                            // RICREO IL LEGAME METAFORNITORE - FORNITORE SAP
+                                            if (body.SUPPLIERS !== undefined && body.SUPPLIERS !== null && body.SUPPLIERS.length > 0) {
+                                                body.SUPPLIERS.forEach(element => {
+                                                    sql = 'INSERT INTO "AUPSUP_DATABASE.data.tables::T_METAID_FORN" VALUES (?, ?, ?)'
+                                                    body.SUPPLIERS.forEach(element => {
+                                                        async.waterfall([
+
+                                                            function prepare (callback) {
+                                                                client.prepare(sql,
+                                                                    function (err, statement) {
+                                                                        callback(null, err, statement)
+                                                                    })
+                                                            },
+                    
+                                                            function execute (_err, statement, callback) {
+                                                                statement.exec([element.METAID, element.LIFNR, element.SYSID], function (execErr, results) {
+                                                                    callback(null, execErr, results)
+                                                                })
+                                                            },
+                    
+                                                            function response (err, results, callback) {
+                                                                console.error({ erroreSUPPLIER: err })
+                                                                if (err) {
+                                                                    return
+                                                                }
+                                                                callback()
+                                                            }
+                                                        ])
+                                                    })
+                                                })
+                                            }
+                                        }
+                                        callback()
+                                    }
+                                ])
+                                res.type('application/json').status(200).send({ results: results })
+                            }
+                            callback()
+                        }
+                    ], function done (err, parameters, rows) {
+                        if (err) {
+                            return console.error('Done error', err)
+                        }
+                    })
+                }
+            })
+        } else {
+            return res.status(500).send('I_METAID is Mandatory')
+        }
+    })
+
     return app
 }

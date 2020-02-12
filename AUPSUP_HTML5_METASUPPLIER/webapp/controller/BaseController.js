@@ -60,29 +60,56 @@ sap.ui.define([
 
 		ajaxPost: function (url, body, fCompletion) {
 
-				jQuery.ajax({
-					url: url,
-					data: JSON.stringify(body),
-					method: 'POST',
-					contentType: 'application/json',
-					success: function (data) {
-						if (data) {
-							fCompletion(data);
-						}
-					},
-					error: function (e) {
-						try {
-							if (e.responseText) {
-								fCompletion(JSON.parse(e.responseText));
-							} else
-								fCompletion();
-						} catch (err) {
-							fCompletion({
-								"errLog": e.responseText
-							});
-						}
+			jQuery.ajax({
+				url: url,
+				data: JSON.stringify(body),
+				method: 'POST',
+				contentType: 'application/json',
+				success: function (data) {
+					if (data) {
+						fCompletion(data);
 					}
-				});
+				},
+				error: function (e) {
+					try {
+						if (e.responseText) {
+							fCompletion(JSON.parse(e.responseText));
+						} else
+							fCompletion();
+					} catch (err) {
+						fCompletion({
+							"errLog": e.responseText
+						});
+					}
+				}
+			});
+		},
+
+		ajaxPut: function (url, body, fCompletion) {
+
+			jQuery.ajax({
+				url: url,
+				data: JSON.stringify(body),
+				method: 'PUT',
+				contentType: 'application/json',
+				success: function (data) {
+					if (data) {
+						fCompletion(data);
+					}
+				},
+				error: function (e) {
+					try {
+						if (e.responseText) {
+							fCompletion(JSON.parse(e.responseText));
+						} else
+							fCompletion();
+					} catch (err) {
+						fCompletion({
+							"errLog": e.responseText
+						});
+					}
+				}
+			});
 		},
 
 		ajaxGet: function (url, fCompletion) {
@@ -175,7 +202,7 @@ sap.ui.define([
 						"SYSID": oData.results[0].SYSID
 					});
 					sap.ui.getCore().setModel(sysModel, "sysIdJSONModel");
-				}else{
+				} else {
 					return null;
 				}
 			});
