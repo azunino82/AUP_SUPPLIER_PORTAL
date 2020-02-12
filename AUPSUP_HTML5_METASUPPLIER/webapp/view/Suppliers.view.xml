@@ -9,17 +9,17 @@
 							<fb:filterItems>
 								<fb:FilterItem name="ragioneSociale" id="ragioneSocialeFiltro" label="{i18n>ragioneSocialeFornitore}" mandatory="false">
 									<fb:control>
-										<Input id="InputRagioneSociale" type="Text" class="sapUiSmallMarginBottom"/>
+										<Input id="InputRagioneSociale" value="{filterOrdersJSONModel>/NAME1}" type="Text" class="sapUiSmallMarginBottom"/>
 									</fb:control>
 								</fb:FilterItem>
 								<fb:FilterItem name="pivaFornitore" id="pivaFornitoreFiltro" label="{i18n>pivaFornitore}" mandatory="false">
 									<fb:control>
-										<Input id="InputPivaFornitore" type="Text" class="sapUiSmallMarginBottom"/>
+										<Input id="InputPivaFornitore"  value="{filterOrdersJSONModel>/STCEG}" type="Text" class="sapUiSmallMarginBottom"/>
 									</fb:control>
 								</fb:FilterItem>
 								<fb:FilterItem name="Ekorg" label="{i18n>purchaseOrganization}">
 									<fb:control>
-										<MultiComboBox id="InputOrganizzazioneAcquisti" showSecondaryValues="true"
+										<MultiComboBox id="InputOrganizzazioneAcquisti" showSecondaryValues="true" selectedKeys="{filterOrdersJSONModel>/EKORG}" 
 											items="{ path: 'PurchaseOrganizationJSONModel>/results', sorter: { path: 'PURCH_ORG' } }">
 											<core:ListItem key="{PurchaseOrganizationJSONModel>PURCH_ORG}" text="{PurchaseOrganizationJSONModel>DESCR}"
 												additionalText="{PurchaseOrganizationJSONModel>PURCH_ORG}"/>

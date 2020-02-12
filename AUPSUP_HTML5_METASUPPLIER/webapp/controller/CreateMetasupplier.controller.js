@@ -10,10 +10,10 @@ sap.ui.define([
 	return BaseController.extend("it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER.controller.CreateMetasupplier", {
 		onInit: function () {
 			that = this;
-
-			that.getOwnerComponent().getRouter().getRoute("RouteCreateMetasuppliers").attachPatternMatched(
-				that.handleRoutePatternMatched(),
-				this);
+			that.getRouter().getRoute("RouteCreateMetasuppliers").attachPatternMatched(that.handleRoutePatternMatched, that);
+		//	that.getOwnerComponent().getRouter().getRoute("RouteCreateMetasuppliers").attachPatternMatched(
+		//		that.handleRoutePatternMatched(),
+		//		this);
 			that.getBuyerBu();
 		},
 

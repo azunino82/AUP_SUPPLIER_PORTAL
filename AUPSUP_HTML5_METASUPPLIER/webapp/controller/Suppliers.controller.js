@@ -12,6 +12,16 @@ sap.ui.define([
 		onInit: function () {
 			that = this;
 
+			var filterJSON = {
+				"NAME1": "",
+				"STCEG": "",
+				"EKORG": []
+			};			
+
+			var oModelFI = new JSONModel();
+			oModelFI.setData(filterJSON);
+			this.getView().setModel(oModelFI, "filterOrdersJSONModel");			
+
 			that.getOwnerComponent().getRouter().getRoute("RouteSuppliers").attachPatternMatched(that.handleRoutePatternMatched,
 				this);
 			that.getPurchaseOrganizations();
@@ -46,10 +56,7 @@ sap.ui.define([
 
 			var filters = [];
 
-			var ekorgs = that.getView().byId("InputOrganizzazioneAcquisti");
-
-			var ragioneSociale = that.getView().byId("InputRagioneSociale").getValue();
-			var pIvaFornitore = that.getView().byId("InputPivaFornitore").getValue();
+			var body = 	that.getModel("filterOrdersJSONModel").getData();
 
 			// AZ RIMUOVERE
 			var jsonModel = new sap.ui.model.json.JSONModel();
