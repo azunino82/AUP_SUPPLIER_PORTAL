@@ -58,35 +58,10 @@ sap.ui.define([
 			};
 		},
 
-		getToken: function (tokenUrl, fCompletion) {
-			// var url = "/SupplierPortal_OrdersManagement";
-			var url = tokenUrl;
-			jQuery.ajax({
-				url: url,
-				headers: {
-					'x-csrf-token': 'fetch'
-				},
-				method: 'HEAD',
-				body: '',
-				contentType: 'application/json',
-				success: function (data, textStatus, request) {
-					fCompletion(request.getResponseHeader('x-csrf-token'));
-				},
-				error: function (request, textStatus, errorThrown) {
-					fCompletion(request.getResponseHeader('x-csrf-token'));
-				}
-			});
-		},
-
-		ajaxPost: function (url, body, tokenUrl, fCompletion) {
-
-			this.getToken(url, function (token) {
+		ajaxPost: function (url, body, fCompletion) {
 
 				jQuery.ajax({
 					url: url,
-					headers: {
-						'x-csrf-token': token
-					},
 					data: JSON.stringify(body),
 					method: 'POST',
 					contentType: 'application/json',
@@ -108,9 +83,6 @@ sap.ui.define([
 						}
 					}
 				});
-
-			});
-
 		},
 
 		ajaxGet: function (url, fCompletion) {
@@ -194,19 +166,16 @@ sap.ui.define([
 		},
 
 		getCurrentSYSID: function (fCompletion) {
-			var oModelData = this.getOwnerComponent().getModel("CustomizingModel");
 
-			oModelData.read("/BackendSystem", {
-				success: function (oData, oResponse) {
-					if (oData && oData.results && oData.results.length > 0) {
-						var sysModel = new JSONModel({
-							"SYSID": oData.results[0].SYSID
-						});
-						sap.ui.getCore().setModel(sysModel, "sysIdJSONModel");
 
-					}
-				},
-				error: function (err) {
+			var url = "/backend/Utils/UtilsManagement/GetSYSID";
+			this.ajaxGet(url, function (oData) {
+				if (oData && oData.results && oData.results.length > 0) {
+					var sysModel = new JSONModel({
+						"SYSID": oData.results[0].SYSID
+					});
+					sap.ui.getCore().setModel(sysModel, "sysIdJSONModel");
+				}else{
 					return null;
 				}
 			});

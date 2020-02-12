@@ -11,9 +11,9 @@ sap.ui.define([
 		onInit: function () {
 			that = this;
 			that.getRouter().getRoute("RouteCreateMetasuppliers").attachPatternMatched(that.handleRoutePatternMatched, that);
-		//	that.getOwnerComponent().getRouter().getRoute("RouteCreateMetasuppliers").attachPatternMatched(
-		//		that.handleRoutePatternMatched(),
-		//		this);
+			//	that.getOwnerComponent().getRouter().getRoute("RouteCreateMetasuppliers").attachPatternMatched(
+			//		that.handleRoutePatternMatched(),
+			//		this);
 			that.getBuyerBu();
 		},
 
@@ -62,53 +62,91 @@ sap.ui.define([
 			dataBu.BU = oView.byId("BU").getSelectedKey();
 			dataBu.STATO = oView.byId("statoMetafornitore").getSelectedKey();
 
-			var oModel = that.getOwnerComponent().getModel();
-			oModel.create("/MetasupplierDataSet", dataMetafornitore, {
-				success: function (oDataRes, oResponse) {
-					oModel.create("/MetasupplierBu", dataBu, {
-						success: function (oDataRes, oResponse) {
-							sap.m.MessageToast.show(that.getOwnerComponent().getModel("i18n").getResourceBundle().getText(
-								"metasupplierCreated"));
+			// aggiungo le BU da salvare su T_METAID_BU
+			dataMetafornitore.BUDATA = dataBu;
 
-							setTimeout(function () {
-								that.getOwnerComponent().getRouter().navTo("RouteMetasuppliers");
-							}, 1000);
+			// AGGIUNGO I SUPPLIER da AGGANCIARE AL METASUPPLIER
 
-							var suppliers = selectedSuppliers.split(",");
+			var currentSYSID = sap.ui.getCore().getModel("sysIdJSONModel") !== undefined && sap.ui.getCore().getModel(
+				"sysIdJSONModel").getData() !==
+			undefined ? sap.ui.getCore().getModel("sysIdJSONModel").getData().SYSID : "";
+			
+			var suppliers = selectedSuppliers.split(",");
+			var ArrSuppliers = [];
+			for (var i = 0; i < suppliers.length - 1; i++) {
+				var data = {};
+				var [lifnr, desc] = suppliers[i].split("-");
+				data.METAID = dataMetafornitore.METAID;
+				data.LIFNR = lifnr;
+				data.SYSID = currentSYSID;
+				ArrSuppliers.push(data);
+			}			
+			dataMetafornitore.SUPPLIERS = ArrSuppliers;
 
-							var currentSYSID = sap.ui.getCore().getModel("sysIdJSONModel") !== undefined && sap.ui.getCore().getModel(
-									"sysIdJSONModel").getData() !==
-								undefined ? sap.ui.getCore().getModel("sysIdJSONModel").getData().SYSID : "";
+			var url = "/backend/MetasupplierManagement/CreateMetasupplier";
 
-							for (var i = 0; i < suppliers.length - 1; i++) {
-								var data = {};
-								var [lifnr, desc] = suppliers[i].split("-");
-								data.METAID = dataMetafornitore.METAID;
-								data.LIFNR = lifnr;
-								data.SYSID = currentSYSID;
+			that.showBusyDialog();
 
-								oModel.create("/MetasupplierSupplierSet", data, {
-									success: function (oDataRes, oResponse) {
+			that.ajaxPost(url, dataMetafornitore, function (oData) {
+				that.hideBusyDialog();
+				if (oData && oData.results) {
+					sap.m.MessageToast.show(that.getOwnerComponent().getModel("i18n").getResourceBundle().getText(
+						"metasupplierCreated"));
 
-									},
-									error: function (oError) {}
-								});
-							}
-						},
-						error: function (oError) {}
-					});
-				},
-				error: function (oError) {
-					sap.m.MessageBox.error(that.getOwnerComponent().getModel("i18n").getResourceBundle().getText(
-						"errorCreatingMetasupplier"));
+					setTimeout(function () {
+						that.getOwnerComponent().getRouter().navTo("RouteMetasuppliers");
+					}, 1000);
+
 				}
-			})
+			});
+
+
+			/*	oModel.create("/MetasupplierDataSet", dataMetafornitore, {
+					success: function (oDataRes, oResponse) {
+						oModel.create("/MetasupplierBu", dataBu, {
+							success: function (oDataRes, oResponse) {
+								sap.m.MessageToast.show(that.getOwnerComponent().getModel("i18n").getResourceBundle().getText(
+									"metasupplierCreated"));
+	
+								setTimeout(function () {
+									that.getOwnerComponent().getRouter().navTo("RouteMetasuppliers");
+								}, 1000);
+	
+								var suppliers = selectedSuppliers.split(",");
+	
+								var currentSYSID = sap.ui.getCore().getModel("sysIdJSONModel") !== undefined && sap.ui.getCore().getModel(
+										"sysIdJSONModel").getData() !==
+									undefined ? sap.ui.getCore().getModel("sysIdJSONModel").getData().SYSID : "";
+	
+								for (var i = 0; i < suppliers.length - 1; i++) {
+									var data = {};
+									var [lifnr, desc] = suppliers[i].split("-");
+									data.METAID = dataMetafornitore.METAID;
+									data.LIFNR = lifnr;
+									data.SYSID = currentSYSID;
+	
+									oModel.create("/MetasupplierSupplierSet", data, {
+										success: function (oDataRes, oResponse) {
+	
+										},
+										error: function (oError) {}
+									});
+								}
+							},
+							error: function (oError) {}
+						});
+					},
+					error: function (oError) {
+						sap.m.MessageBox.error(that.getOwnerComponent().getModel("i18n").getResourceBundle().getText(
+							"errorCreatingMetasupplier"));
+					}
+				}) */
 
 		},
 
-		editSupplier: function () {},
+		editSupplier: function () { },
 
-		deleteSupplier: function () {},
+		deleteSupplier: function () { },
 
 		contactsSupplier: function () {
 

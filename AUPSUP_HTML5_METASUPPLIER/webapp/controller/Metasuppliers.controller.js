@@ -14,7 +14,7 @@ sap.ui.define([
 		onInit: function () {
 			that = this;
 
-			//	that.getCurrentSYSID();
+			that.getCurrentSYSID();
 			this.getView().setModel(sap.ui.getCore().getModel("userapi"), "userapi");
 
 			// gestione delle permissions per il documentale
