@@ -59,6 +59,13 @@ modules:
       builder: grunt
       supported-platforms: []
       build-result: dist
+  - name: AUPSUP_HTML5_PLANNING
+    type: html5
+    path: AUPSUP_HTML5_PLANNING
+    build-parameters:
+      builder: grunt
+      supported-platforms: []
+      build-result: dist    
   - name: AUPSUP_NODE
     type: nodejs
     path: AUPSUP_NODE
@@ -85,13 +92,7 @@ modules:
       - name: hdi_AUPSUP_DATABASE
         properties:
           TARGET_CONTAINER: '~{hdi-master-container}'
-  - name: AUPSUP_HTML5_PLANNING
-    type: html5
-    path: AUPSUP_HTML5_PLANNING
-    build-parameters:
-      builder: grunt
-      supported-platforms: []
-      build-result: dist
+
 resources:
   - name: AUP_SUPPLIER_PORTAL_html5_repo_runtime
     parameters:
