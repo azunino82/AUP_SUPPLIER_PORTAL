@@ -16,7 +16,3 @@ COLUMN TABLE "AUPSUP_DATABASE.data.tables::T_ORDERS_TYPES"(
 		"BSART"
 	)
 ) UNLOAD PRIORITY 5 AUTO MERGE;
-COMMENT ON COLUMN "AUPSUP_DATABASE.data.tables::T_ORDERS_TYPES"."BSTYP" is 'Categoria documento acquisti';
-COMMENT ON COLUMN "AUPSUP_DATABASE.data.tables::T_ORDERS_TYPES"."BSART" is 'Tipo doc. d''acquisto';
-COMMENT ON COLUMN "AUPSUP_DATABASE.data.tables::T_ORDERS_TYPES"."MESSAGE_TYPE" is 'Tipo Messaggio Planning PDC'
-;

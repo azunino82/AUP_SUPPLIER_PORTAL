@@ -12,9 +12,4 @@ COLUMN TABLE "AUPSUP_DATABASE.data.tables::T_NOTIF_MASTER"(
 		"DIREZIONE"
 	)
 ) UNLOAD PRIORITY 5 AUTO MERGE;
-COMMENT ON COLUMN "AUPSUP_DATABASE.data.tables::T_NOTIF_MASTER"."FLUSSO" is 'Nome generale del flusso (Quality, Operatio, Procurement)';
-COMMENT ON COLUMN "AUPSUP_DATABASE.data.tables::T_NOTIF_MASTER"."TIPO_STRUTTURA" is 'es: BU=Business Unit, PL=Plant';
-COMMENT ON COLUMN "AUPSUP_DATABASE.data.tables::T_NOTIF_MASTER"."APPLICAZIONE" is 'Codice dell''applicazione fiori (dalla tabella T_NOTIF_APP)';
-COMMENT ON COLUMN "AUPSUP_DATABASE.data.tables::T_NOTIF_MASTER"."EVENTO" is 'Codice dell''evento che scatena l''invio della mail (dalla tabella T_NOTIF_EVENTS)';
-COMMENT ON COLUMN "AUPSUP_DATABASE.data.tables::T_NOTIF_MASTER"."DIREZIONE" is 'Verso Buyer, verso Cliente ecc...'
-;
+
