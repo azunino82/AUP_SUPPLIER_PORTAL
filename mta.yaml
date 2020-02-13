@@ -4,7 +4,6 @@ parameters:
   deploy_mode: html5-repo
 version: 0.0.1
 modules:
-
   - name: AUP_SUPPLIER_PORTAL_appRouter
     type: approuter.nodejs
     path: AUP_SUPPLIER_PORTAL_appRouter
@@ -14,14 +13,15 @@ modules:
     requires:
       - name: AUP_SUPPLIER_PORTAL_html5_repo_runtime
       - name: portal_resources_AUP_SUPPLIER_PORTAL
+      - name: SaasRegistry
       - name: uaa_AUP_SUPPLIER_PORTAL
-      - name: SaasRegistry        
     properties:
-      SAP_JWT_TRUST_ACL: [{clientid: '*', identityzone: sap-provisioning}]
-      TENANT_HOST_PATTERN: '^(.*)-${space}-aup-supplier-portal-approuter.cfapps.eu10.hana.ondemand.com'   
+      SAP_JWT_TRUST_ACL:
+        - clientid: '*'
+          identityzone: sap-provisioning
+      TENANT_HOST_PATTERN: '^(.*)-${space}-aup-supplier-portal-approuter.cfapps.eu10.hana.ondemand.com'
       SEND_XFRAMEOPTIONS: false
-      destinations: '[ { "forwardAuthToken" : true, "name" : "Backend", "url" : "https://${org}-${space}-aupsup-node.cfapps.eu10.hana.ondemand.com" } ]'      
-      
+      destinations: '[ { "forwardAuthToken" : true, "name" : "Backend", "url" : "https://${org}-${space}-aupsup-node.cfapps.eu10.hana.ondemand.com" } ]'
   - name: AUP_SUPPLIER_PORTAL_ui_deployer
     type: com.sap.html5.application-content
     path: AUP_SUPPLIER_PORTAL_ui_deployer
@@ -33,7 +33,10 @@ modules:
           artifacts:
             - './*'
           target-path: resources/AUPSUP_HTML5_METASUPPLIER
-          
+        - name: AUPSUP_HTML5_PLANNING
+          artifacts:
+            - './*'
+          target-path: resources/AUPSUP_HTML5_PLANNING
   - name: AUPSUP_LAUNCHPAD
     type: com.sap.portal.content
     path: AUPSUP_LAUNCHPAD
@@ -46,10 +49,9 @@ modules:
       - name: uaa_AUP_SUPPLIER_PORTAL
       - name: AUP_SUPPLIER_PORTAL_html5_repo_host
       - name: AUP_SUPPLIER_PORTAL_ui_deployer
-      - name: SaasRegistry         
+      - name: SaasRegistry
     properties:
-      TENANT_HOST_PATTERN: '^(.*)-${space}-aup-supplier-portal-approuter.cfapps.eu10.hana.ondemand.com'         
-      
+      TENANT_HOST_PATTERN: '^(.*)-${space}-aup-supplier-portal-approuter.cfapps.eu10.hana.ondemand.com'
   - name: AUPSUP_HTML5_METASUPPLIER
     type: html5
     path: AUPSUP_HTML5_METASUPPLIER
@@ -57,34 +59,39 @@ modules:
       builder: grunt
       supported-platforms: []
       build-result: dist
-
   - name: AUPSUP_NODE
     type: nodejs
     path: AUPSUP_NODE
     provides:
-     - name: AUPSUP_NODE_api
-       properties:
-          url: ${default-url}
+      - name: AUPSUP_NODE_api
+        properties:
+          url: '${default-url}'
     parameters:
-        app-name: AUPSUP_NODE
-        disk-quota: 500M
-        memory: 256M          
+      app-name: AUPSUP_NODE
+      disk-quota: 500M
+      memory: 256M
     requires:
-     - name: uaa_AUP_SUPPLIER_PORTAL
-     - name: SaasRegistry
-     - name: hdi_AUPSUP_DATABASE
-
-
+      - name: uaa_AUP_SUPPLIER_PORTAL
+      - name: SaasRegistry
+      - name: hdi_AUPSUP_DATABASE
   - name: AUPSUP_DATABASE
     type: hdb
     path: AUPSUP_DATABASE
     parameters:
-        app-name: AUPSUP_DATABASE_Deployer
-        memory: 256M
-        disk-quota: 256M    
+      app-name: AUPSUP_DATABASE_Deployer
+      memory: 256M
+      disk-quota: 256M
     requires:
-     - {name: hdi_AUPSUP_DATABASE, properties: {TARGET_CONTAINER: '~{hdi-master-container}'}}
-
+      - name: hdi_AUPSUP_DATABASE
+        properties:
+          TARGET_CONTAINER: '~{hdi-master-container}'
+  - name: AUPSUP_HTML5_PLANNING
+    type: html5
+    path: AUPSUP_HTML5_PLANNING
+    build-parameters:
+      builder: grunt
+      supported-platforms: []
+      build-result: dist
 resources:
   - name: AUP_SUPPLIER_PORTAL_html5_repo_runtime
     parameters:
@@ -117,21 +124,19 @@ resources:
       service: saas-registry
       service-plan: application
       config:
-        appId: AUP_SUPPLIER_PORTAL!t34981 #preso da env variable del app router per averlo bisogna prima deployare tutto su CF poi si prende l'ID
-        #appName: mta-portal-approuter-${org}-${space}
+        appId: 'AUP_SUPPLIER_PORTAL!t34981'
         appUrls:
-          onSubscription: https://${org}-${space}-aup-supplier-portal-approuter.${default-domain}/callback/v1.0/tenants/{tenantId}
-          getDependencies: https://${org}-${space}-aup-supplier-portal-approuter.${default-domain}/callback/v1.0/dependencies
+          onSubscription: 'https://${org}-${space}-aup-supplier-portal-approuter.${default-domain}/callback/v1.0/tenants/{tenantId}'
+          getDependencies: 'https://${org}-${space}-aup-supplier-portal-approuter.${default-domain}/callback/v1.0/dependencies'
         category: ePaas
         description: Supplier Portal
         displayName: Altea Supplier Portal
-    type: org.cloudfoundry.managed-service      
-
+    type: org.cloudfoundry.managed-service
   - name: hdi_AUPSUP_DATABASE
     parameters:
-        service-name: devalteaups4
-        config: {schema: devalteaups4}
+      service-name: devalteaups4
+      config:
+        schema: devalteaups4
     properties:
-        hdi-master-container: '${service-name}'
+      hdi-master-container: '${service-name}'
     type: com.sap.xs.hdi-container
-
