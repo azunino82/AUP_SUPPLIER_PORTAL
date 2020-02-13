@@ -14,8 +14,3 @@ COLUMN TABLE "AUPSUP_DATABASE.data.tables::T_NOTIF_TEXT"(
 		"LANGUAGE"
 	)
 ) UNLOAD PRIORITY 5 AUTO MERGE;
-COMMENT ON COLUMN "AUPSUP_DATABASE.data.tables::T_NOTIF_TEXT"."FLUSSO" is 'Nome generale del flusso (Quality, Operation, Procurement)';
-COMMENT ON COLUMN "AUPSUP_DATABASE.data.tables::T_NOTIF_TEXT"."APP" is 'Codice dell''applicazione fiori (dalla tabella T_NOTIF_APP)';
-COMMENT ON COLUMN "AUPSUP_DATABASE.data.tables::T_NOTIF_TEXT"."EVENT" is 'Codice dell''evento che scatena l''invio della mail (dalla tabella T_NOTIF_EVENTS)';
-COMMENT ON COLUMN "AUPSUP_DATABASE.data.tables::T_NOTIF_TEXT"."TEXT_TYPE" is 'Tipo di testo (title,subject,object,...)'
-;
