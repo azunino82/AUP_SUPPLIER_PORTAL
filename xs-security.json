@@ -11,15 +11,30 @@
 	}, {
 		"name": "uaa.user",
 		"description": "UAA"
+	}, {
+		"name": "$XSAPPNAME.Z_RL_BUYER",
+		"description": "Role Buyer uaa"
+	}, {
+		"name": "$XSAPPNAME.Z_RL_SUPPLIER",
+		"description": "Role Supplier uaa"
 	}],
-	"authorities": [
-		"$XSAPPNAME.Callback"
-	],
 	"role-templates": [{
 		"name": "Token_Exchange",
 		"description": "UAA",
 		"scope-references": [
 			"uaa.user"
+		]
+	}, {
+		"name": "Role_Buyer",
+		"description": "Role buyer on xs-security",
+		"scope-references": [
+			"$XSAPPNAME.Z_RL_BUYER"
+		]
+	}, {
+		"name": "Role_Supplier",
+		"description": "Role supplier on xs-security",
+		"scope-references": [
+			"$XSAPPNAME.Z_RL_SUPPLIER"
 		]
 	}]
 }

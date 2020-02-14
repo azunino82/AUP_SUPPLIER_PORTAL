@@ -214,11 +214,11 @@ app.get('/callback/v1.0/dependencies', function (req, res) {
   }) // env var dell app_router
   xsappnames.push({
     // eslint-disable-next-line quote-props
-    'xsappname': '48bc0ddc-0e65-4d5e-9a03-b0406109ed96!b34981|html5-apps-repo-uaa!b1685'
+    'xsappname': 'c6eebb6c-f814-4b78-88a6-2b6831275167!b34981|html5-apps-repo-uaa!b1685'
   }) // env var dell FLP
   xsappnames.push({
     // eslint-disable-next-line quote-props
-    'xsappname': 'ac1fa580-64cb-40fd-aa86-b6197b7a0b1d!b34981|portal-cf-service!b3664'
+    'xsappname': '26fa7f48-7c0b-4fff-9bee-5aac7457d5fa!b34981|portal-cf-service!b3664'
   }) // env var dell app_router
 
   res.status(200).send(JSON.stringify(xsappnames))
