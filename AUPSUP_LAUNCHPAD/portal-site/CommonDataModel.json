@@ -34,6 +34,14 @@
 					"id": "AUPSUP_HTML5_PLANNING",
 					"appId": "it.alteaup.supplier.portal.planning.AUPSUP_HTML5_PLANNING",
 					"vizId": "PlanningDisplay-Display"
+				}, {
+					"id": "AUPSUP_HTML5_METASUPPLIER_M",
+					"appId": "it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER",
+					"vizId": "MetasupplierManagementM-Display"
+				}, {
+					"id": "AUPSUP_HTML5_METASUPPLIER_BM",
+					"appId": "it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER",
+					"vizId": "MetasupplierManagementBM-Display"
 				}]
 			}
 		}],
