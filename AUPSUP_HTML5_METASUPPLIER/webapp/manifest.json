@@ -31,40 +31,6 @@
 					"action": "Display",
 					"title": "{{appTitle}}",
 					"icon": "sap-icon://SAP-icons-TNT/actor"
-				},
-				"intent2": {
-					"signature": {
-						"parameters": {
-							"mode": {
-								"required": true,
-								"defaultValue": {
-									"value": "M"
-								}
-							}
-						},
-						"additionalParameters": "allowed"
-					},
-					"semanticObject": "MetasupplierManagementM",
-					"action": "Display",
-					"title": "{{appTitle_M}}",
-					"icon": "sap-icon://customer-briefing"
-				},
-				"intent3": {
-					"signature": {
-						"parameters": {
-							"mode": {
-								"required": true,
-								"defaultValue": {
-									"value": "BM"
-								}
-							}
-						},
-						"additionalParameters": "allowed"
-					},
-					"semanticObject": "MetasupplierManagementBM",
-					"action": "Display",
-					"title": "{{appTitle_BM}}",
-					"icon": "sap-icon://customer-briefing"
 				}
 			}
 		}
