@@ -30,6 +30,10 @@
 					"id": "AUPSUP_HTML5_PLANNING",
 					"appId": "it.alteaup.supplier.portal.planning.AUPSUP_HTML5_PLANNING",
 					"vizId": "PlanningDisplay-Display"
+				}, {
+					"id": "AUPSUP_HTML5_METASUPPLIER",
+					"appId": "it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER",
+					"vizId": "AppSemantic-Display"
 				}]
 			}
 		}],
