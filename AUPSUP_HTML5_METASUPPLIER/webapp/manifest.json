@@ -16,7 +16,7 @@
 		"crossNavigation": {
 			"inbounds": {
 				"intent1": {
-					"signature": {
+					"signature": { 
 						"parameters": {
 							"mode": {
 								"required": true,
