@@ -131,6 +131,32 @@ module.exports = function () {
     })
   })
 
+  // GET LIST OF METASUPPLIER by userId
+
+  app.get('/GetMetasupplierList', function (req, res) {
+    hdbext.createConnection(req.tenantContainer, (err, client) => {
+      if (err) {
+        return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
+      } else {
+        hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Utils::GetMetasupplierList', function (_err, sp) {
+          sp(req.user.id, (err, parameters, results) => {
+            if (err) {
+              return res.status(500).send(stringifyObj(err))
+            } else {
+              var outArr = []
+              results.forEach(element => {
+                outArr.push(element)
+              })
+              return res.status(200).send({
+                results: outArr
+              })
+            }
+          })
+        })
+      }
+    })
+  })
+
   // Parse URL-encoded bodies (as sent by HTML forms)
   // app.use(express.urlencoded());
 
