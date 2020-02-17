@@ -30,6 +30,7 @@
 	},
 
 	"sap.ui": {
+		"fullWidth": true,
 		"technology": "UI5",
 		"icons": {
 			"icon": "",
@@ -47,12 +48,15 @@
 	},
 
 	"sap.ui5": {
+		"config": {
+			"fullWidth": true
+		},		
 		"flexEnabled": false,
 		"rootView": {
-			"viewName": "it.alteaup.supplier.portal.planning.AUPSUP_HTML5_PLANNING.view.View1",
+			"viewName": "it.alteaup.supplier.portal.planning.AUPSUP_HTML5_PLANNING.view.App",
 			"type": "XML",
 			"async": true,
-			"id": "View1"
+			"id": "App"
 		},
 		"dependencies": {
 			"minUI5Version": "1.65.6",
@@ -86,21 +90,23 @@
 				"async": true,
 				"viewPath": "it.alteaup.supplier.portal.planning.AUPSUP_HTML5_PLANNING.view",
 				"controlAggregation": "pages",
-				"controlId": "app",
+				"controlId": "idAppControl",
 				"clearControlAggregation": false
 			},
-			"routes": [{
-				"name": "RouteView1",
-				"pattern": "RouteView1",
-				"target": ["TargetView1"]
-			}],
+			"routes": [
+				{
+					"pattern": "",
+					"name": "worklist",
+					"greedy": false,
+					"target": [
+						"worklist"
+					]
+				}
+			],
 			"targets": {
-				"TargetView1": {
-					"viewType": "XML",
-					"transition": "slide",
-					"clearControlAggregation": false,
-					"viewId": "View1",
-					"viewName": "View1"
+				"worklist": {
+					"viewLevel": 1,
+					"viewName": "Worklist"
 				}
 			}
 		}

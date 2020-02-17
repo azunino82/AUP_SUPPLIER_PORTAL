@@ -1,0 +1,245 @@
+<mvc:View controllerName="it.alteaup.supplier.portal.planning.AUPSUP_HTML5_PLANNING.controller.Worklist" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.uxap"
+	xmlns:layout="sap.ui.layout" xmlns:m="sap.m" xmlns:ui="sap.ui.table" xmlns:table="sap.ui.table" xmlns:core="sap.ui.core"
+	xmlns:personal="sap.uxap.sample.SharedBlocks.personal" xmlns:form="sap.ui.layout.form" xmlns:fb="sap.ui.comp.filterbar" xmlns:f="sap.f">
+	<m:Shell id="shell" appWidthLimited="false">
+		<m:App id="app">
+			<m:pages>
+				<m:Page id="page">
+					<m:customHeader>
+						<m:Bar>
+							<m:contentLeft>
+								<m:Text text="{userapi>/firstname} {userapi>/lastname}"></m:Text>
+							</m:contentLeft>
+							<m:contentMiddle>
+								<m:Text text="{i18n>appTitle}" class="sapMTitle sapMTitleStyleAuto sapMTitleMaxWidth"></m:Text>
+							</m:contentMiddle>
+						</m:Bar>
+					</m:customHeader>
+					<ObjectPageLayout id="ObjectPageLayout" headerContentPinnable="true" showFooter="true">
+						<headerContent>
+							<fb:FilterBar clear="onClearFilters" search="onSearchOrders" showRestoreButton="true" showClearButton="true" showClearOnFB="true">
+								<fb:filterItems>
+									<fb:FilterItem name="Documento" label="{i18n>EBELN}">
+										<fb:control>
+											<m:Input value="{filterPlanningJSONModel>/ebeln}"/>
+										</fb:control>
+									</fb:FilterItem>
+									<fb:FilterItem name="Metasupplier" label="{i18n>METASUP}" visible="{VisibilityJSONModel>/isBuyer}">
+										<fb:control>
+											<m:MultiComboBox selectedKeys="{MetasupplierJSONModel>/METAID}" selectionChange="onChangeMetasupplier"
+												items="{ path: 'MetasupplierJSONModel>/results', sorter: { path: 'METAID' } }">
+												<core:Item key="{MetasupplierJSONModel>METAID}" text="{MetasupplierJSONModel>DESC}"/>
+											</m:MultiComboBox>
+										</fb:control>
+									</fb:FilterItem>
+									<fb:FilterItem name="Lifnr" label="{i18n>supplier}" visible="{VisibilityJSONModel>/isBuyer}">
+										<fb:control>
+											<m:MultiComboBox selectionChange="onChangeMetalifnr" showSecondaryValues="true"
+												items="{ path: 'lifnrJSONModel>/', sorter: { path: 'LIFNR' } }">
+												<core:ListItem key="{lifnrJSONModel>LIFNR}" text="{lifnrJSONModel>DESCR}" additionalText="{lifnrJSONModel>LIFNR}"/>
+											</m:MultiComboBox>
+										</fb:control>
+									</fb:FilterItem>
+									<fb:FilterItem name="Matnr" label="{i18n>MATNR}">
+										<fb:control>
+											<m:Input type="Text" value="{filterPlanningJSONModel>/MatnrDesc}" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="handleMatnr"
+												class="sapUiSmallMarginBottom"/>
+										</fb:control>
+									</fb:FilterItem>
+									<fb:FilterItem name="Ekorg" label="{i18n>EKORG}">
+										<fb:control>
+											<m:MultiComboBox selectedKeys="{filterPlanningJSONModel>/ekorg}"
+												items="{ path: 'PurchaseOrganizationJSONModel>/results', sorter: { path: 'PURCH_ORG' } }">
+												<core:Item key="{PurchaseOrganizationJSONModel>PURCH_ORG}" text="{PurchaseOrganizationJSONModel>DESCR}"/>
+											</m:MultiComboBox>
+										</fb:control>
+									</fb:FilterItem>
+									<fb:FilterItem name="GrAcq" label="{i18n>EKGRP}">
+										<fb:control>
+											<m:MultiComboBox selectedKeys="{filterPlanningJSONModel>/ekgrp}"
+												items="{ path: 'PurchaseGroupJSONModel>/results', sorter: { path: 'CODE' } }" showSecondaryValues="true">
+												<core:ListItem key="{PurchaseGroupJSONModel>CODE}" text="{PurchaseGroupJSONModel>DESCR}" additionalText="{PurchaseGroupJSONModel>CODE}"/>
+											</m:MultiComboBox>
+										</fb:control>
+									</fb:FilterItem>
+								</fb:filterItems>
+							</fb:FilterBar>
+						</headerContent>
+						<sections>
+							<ObjectPageSection showTitle="false">
+								<subSections>
+									<ObjectPageSubSection >
+										<ui:Table id="OrderHeadersTable" rows="{PlanningJSONModel>/results}" selectionMode="None" fixedColumnCount="2">
+											<ui:extension>
+												<m:OverflowToolbar>
+													<m:Title text="{i18n>appTitle}" level="H2"/>
+													<m:ToolbarSpacer/>
+													<m:ToggleButton icon="sap-icon://excel-attachment" press="onExport" tooltip="{i18n>Export_Excel}"/>
+												</m:OverflowToolbar>
+											</ui:extension>
+											<ui:columns>
+												<ui:Column id="NAME1" width="12rem">
+													<m:Label text="{i18n>NAME1}" class="columnLabelStyle" wrapping="true"/>
+													<ui:template>
+														<m:Text text="{PlanningJSONModel>NAME1}" wrapping="true"/>
+													</ui:template>
+												</ui:Column>
+												<ui:Column id="MATNR" width="6rem">
+													<m:Label text="{i18n>MATNR}" class="columnLabelStyle" wrapping="true"/>
+													<ui:template>
+														<m:Text text="{PlanningJSONModel>MATNR}" wrapping="true"/>
+													</ui:template>
+												</ui:Column>
+												<ui:Column id="TXZ01" width="10rem">
+													<m:Label text="{i18n>TXZ01}" class="columnLabelStyle" wrapping="false"/>
+													<ui:template>
+														<m:Text text="{PlanningJSONModel>TXZ01}" wrapping="false"/>
+													</ui:template>
+												</ui:Column>
+												<ui:Column id="IDNLF" width="8rem">
+													<m:Label text="{i18n>IDNLF}" class="columnLabelStyle" wrapping="true"/>
+													<ui:template>
+														<m:Text text="{PlanningJSONModel>IDNLF}" wrapping="true"/>
+													</ui:template>
+												</ui:Column>
+												<ui:Column id="MEINS" width="4rem">
+													<m:Label text="{i18n>MEINS}" class="columnLabelStyle" wrapping="true"/>
+													<ui:template>
+														<m:Text text="{PlanningJSONModel>MEINS}" wrapping="true"/>
+													</ui:template>
+												</ui:Column>
+												<ui:Column id="KONNR" width="8rem">
+													<m:Label text="{i18n>KONNR}" class="columnLabelStyle" wrapping="true"/>
+													<ui:template>
+														<m:Text text="{PlanningJSONModel>KONNR}" wrapping="true"/>
+													</ui:template>
+												</ui:Column>
+												<ui:Column id="KTPNR" width="5rem">
+													<m:Label text="{i18n>KTPNR}" class="columnLabelStyle" wrapping="true"/>
+													<ui:template>
+														<m:Text text="{PlanningJSONModel>KTPNR}" wrapping="true"/>
+													</ui:template>
+												</ui:Column>
+												<ui:Column id="ZQUANTITA" width="6rem">
+													<m:Label text="{i18n>ZQUANTITA}" class="columnLabelStyle" wrapping="true"/>
+													<ui:template>
+														<m:Text text="{PlanningJSONModel>ZQUANTITA}" wrapping="true"/>
+													</ui:template>
+												</ui:Column>
+												<ui:Column id="EBELN" width="10rem">
+													<m:Label text="{i18n>EBELN}" class="columnLabelStyle" wrapping="true"/>
+													<ui:template>
+														<m:Link text="{PlanningJSONModel>EBELN} {PlanningJSONModel>EBELP}" subtle="true" press="onPressOrder"/>
+													</ui:template>
+												</ui:Column>
+												<ui:Column id="TYPE" width="10rem">
+													<m:Label text="{i18n>Tipo}" class="columnLabelStyle" wrapping="true"/>
+													<ui:template>
+														<m:Text
+															text="{= ${PlanningJSONModel>BSTYP} === 'L' ? 'Piano di consegna' : ${PlanningJSONModel>BSTYP} === 'F' ? 'Ordine' : 'Previsionale' }"
+															wrapping="true"/>
+													</ui:template>
+												</ui:Column>
+												<ui:Column id="OPENCLOSE" width="3rem">
+													<m:Label text="{i18n>OPENCLOSE}" class="columnLabelStyle" wrapping="true"/>
+													<ui:template>
+														<m:Text text="{= ${PlanningJSONModel>BSTYP} === 'L' ? 'A' : ${PlanningJSONModel>BSTYP} === 'F' ? 'C' : 'R' }" wrapping="true"/>
+													</ui:template>
+												</ui:Column>
+												<ui:Column id="WERKS" width="6rem">
+													<m:Label text="{i18n>WERKS}" class="columnLabelStyle" wrapping="true"/>
+													<ui:template>
+														<m:Text text="{PlanningJSONModel>WERKS} - {PlanningJSONModel>WERKS_DESCR}" wrapping="true"/>
+													</ui:template>
+												</ui:Column>
+												<!--	<ui:Column id="LWEDT" width="5rem">
+													<m:Label text="{i18n>LWEDT}" class="columnLabelStyle" wrapping="true"/>
+													<ui:template>
+														<m:Text text="{PlanningJSONModel>LWEDT}" wrapping="true"/>
+													</ui:template>
+												</ui:Column>
+												<ui:Column id="LWEMG" width="5rem">
+													<m:Label text="{i18n>LWEMG}" class="columnLabelStyle" wrapping="true"/>
+													<ui:template>
+														<m:Text text="{PlanningJSONModel>LWEMG}" wrapping="true"/>
+													</ui:template>
+												</ui:Column>
+												<ui:Column id="ABEFZ" width="5rem">
+													<m:Label text="{i18n>ABEFZ}" class="columnLabelStyle" wrapping="true"/>
+													<ui:template>
+														<m:Text text="{PlanningJSONModel>ABEFZ}" wrapping="true"/>
+													</ui:template>
+												</ui:Column> -->
+												<ui:Column id="PREGRESSO" width="6rem">
+													<m:Label text="{i18n>it_pregresso}" class="columnLabelStyle" wrapping="true"/>
+													<ui:template>
+														<m:Text text="{PlanningJSONModel>PREGRESSO}" wrapping="true"/>
+													</ui:template>
+												</ui:Column>
+												<!--SCROLLED -->
+												<ui:Column id="SOMMA_WK1" width="12rem">
+													<m:Label text="{headersDateJSONModel>/wk1}" class="columnLabelStyle" wrapping="false"/>
+													<ui:template>
+														<m:Text text="{PlanningJSONModel>SOMMA_WK1}" wrapping="false"/>
+													</ui:template>
+												</ui:Column>
+												<ui:Column id="SOMMA_WK2" width="12rem">
+													<m:Label text="{headersDateJSONModel>/wk2}" class="columnLabelStyle" wrapping="false"/>
+													<ui:template>
+														<m:Text text="{PlanningJSONModel>SOMMA_WK2}" wrapping="true"/>
+													</ui:template>
+												</ui:Column>
+												<ui:Column id="SOMMA_WK3" width="12rem">
+													<m:Label text="{headersDateJSONModel>/wk3}" class="columnLabelStyle" wrapping="false"/>
+													<ui:template>
+														<m:Text text="{PlanningJSONModel>SOMMA_WK3}" wrapping="true"/>
+													</ui:template>
+												</ui:Column>
+												<ui:Column id="SOMMA_WK4" width="12rem">
+													<m:Label text="{headersDateJSONModel>/wk4}" class="columnLabelStyle" wrapping="false"/>
+													<ui:template>
+														<m:Text text="{PlanningJSONModel>SOMMA_WK4}" wrapping="true"/>
+													</ui:template>
+												</ui:Column>
+												<ui:Column id="SOMMA_MN1" width="12rem">
+													<m:Label text="{headersDateJSONModel>/mn1}" class="columnLabelStyle" wrapping="false"/>
+													<ui:template>
+														<m:Text text="{PlanningJSONModel>SOMMA_MN1}" wrapping="true"/>
+													</ui:template>
+												</ui:Column>
+												<ui:Column id="SOMMA_MN2" width="12rem">
+													<m:Label text="{headersDateJSONModel>/mn2}" class="columnLabelStyle" wrapping="false"/>
+													<ui:template>
+														<m:Text text="{PlanningJSONModel>SOMMA_MN2}" wrapping="true"/>
+													</ui:template>
+												</ui:Column>
+												<ui:Column id="SOMMA_MN3" width="12rem">
+													<m:Label text="{headersDateJSONModel>/mn3}" class="columnLabelStyle" wrapping="false"/>
+													<ui:template>
+														<m:Text text="{PlanningJSONModel>SOMMA_MN3}" wrapping="true"/>
+													</ui:template>
+												</ui:Column>
+												<ui:Column id="SOMMA_MN4" width="12rem">
+													<m:Label text="{headersDateJSONModel>/mn4}" class="columnLabelStyle" wrapping="false"/>
+													<ui:template>
+														<m:Text text="{PlanningJSONModel>SOMMA_MN4}" wrapping="true"/>
+													</ui:template>
+												</ui:Column>
+												<ui:Column id="SOMMA_MN5" width="12rem">
+													<m:Label text="{headersDateJSONModel>/mn5}" class="columnLabelStyle" wrapping="false"/>
+													<ui:template>
+														<m:Text text="{PlanningJSONModel>SOMMA_MN5}" wrapping="true"/>
+													</ui:template>
+												</ui:Column>
+											</ui:columns>
+										</ui:Table>
+									</ObjectPageSubSection>
+								</subSections>
+							</ObjectPageSection>
+						</sections>
+					</ObjectPageLayout>
+				</m:Page>
+			</m:pages>
+		</m:App>
+	</m:Shell>
+</mvc:View>
