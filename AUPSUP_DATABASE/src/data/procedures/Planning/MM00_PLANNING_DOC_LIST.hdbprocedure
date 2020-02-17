@@ -6,7 +6,7 @@ PROCEDURE "AUPSUP_DATABASE.data.procedures.Planning::MM00_PLANNING_DOC_LIST"(
     IN IT_MATNR TABLE (MATNR NVARCHAR(40)),
     IN IT_EBELN NVARCHAR(10),
     IN IT_LIFNR TABLE (ELIFN NVARCHAR(10)),
-    OUT out_table TABLE "AUPSUP_DATABASE.data.structures.Planning::OUT_PLANNINGStructure"
+    OUT out_table "AUPSUP_DATABASE.data.structures.Planning::OUT_PLANNINGStructure"
 )
     LANGUAGE SQLSCRIPT
     SQL SECURITY INVOKER  AS 
@@ -44,12 +44,6 @@ DECLARE IT_DOC_BSTYP TABLE(BSTYP NVARCHAR(1));
 DECLARE T_WERKS TABLE (EWERK NVARCHAR(4), DESCR NVARCHAR(255));
 --DECLARE IT_LIFNR_VENDOR TABLE (LIFNR NVARCHAR(10));
 
-/*Inizializzazione a SPACE per campi attualmente non utilizzati*/
-create local temporary table #IT_REQ_BANFN (BANFN NVARCHAR(10));
-create local temporary table #IT_REQ_BSART (BBSRT NVARCHAR(4));
-create local temporary table #IT_VENDOR (LIFNR NVARCHAR(10),EKORG NVARCHAR(4));
-create local temporary table #IT_LIFNR_VENDOR (LIFNR NVARCHAR(10));
-create local temporary table #IT_DOC_EBELN (EBELN NVARCHAR(10));
 --DECLARE IT_REQ_BANFN TABLE (BANFN NVARCHAR(10));
 --DECLARE IT_REQ_BSART TABLE (BBSRT NVARCHAR(4));
 --DECLARE IT_VENDOR TABLE (LIFNR NVARCHAR(10),EKORG NVARCHAR(4));
@@ -82,9 +76,16 @@ DECLARE NEXT_MONT_4_MORE_4 DATE;
 DECLARE NEXT_MONT_5 DATE;
 --DECLARE out_table TABLE(EBELN NVARCHAR(10),EBELP VARCHAR(4),EINDT DATE, SOMMA_WK_1 DECIMAL(14,3) );
 /*TABELLA che contiene i LIFNR del buyer*/
-DECLARE BUYER_LIFNR TABLE "AUPSUP_DATABASE.data.structures.Orders::MM00_VENDOR_LIST_ET_VENDORStructure";
+DECLARE BUYER_LIFNR "AUPSUP_DATABASE.data.structures.Orders::MM00_VENDOR_LIST_ET_VENDORStructure";
 
 DECLARE CURRENT_SYSID NVARCHAR(30);
+
+/*Inizializzazione a SPACE per campi attualmente non utilizzati*/
+create local temporary table #IT_REQ_BANFN (BANFN NVARCHAR(10));
+create local temporary table #IT_REQ_BSART (BBSRT NVARCHAR(4));
+create local temporary table #IT_VENDOR (LIFNR NVARCHAR(10),EKORG NVARCHAR(4));
+create local temporary table #IT_LIFNR_VENDOR (LIFNR NVARCHAR(10));
+create local temporary table #IT_DOC_EBELN (EBELN NVARCHAR(10));
 
 /*inizializzazione tabelle input*/
 SELECT 'X' INTO I_DOC_EGLKZ_P_EXCL FROM DUMMY;
