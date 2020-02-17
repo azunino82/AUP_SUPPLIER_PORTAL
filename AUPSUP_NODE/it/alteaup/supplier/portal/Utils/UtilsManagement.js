@@ -9,6 +9,29 @@ var async = require('async')
 module.exports = function () {
   var app = express.Router()
 
+  app.get('/GetUserInfo', function (req, res) {
+    var outData = {
+      firstname: req.authInfo.userInfo.givenName,
+      lastname: req.authInfo.userInfo.familyName,
+      userId: req.user.id,
+      isSupplier: false,
+      isBuyer: false
+    }
+
+    if (req.authInfo.scopes !== null && req.authInfo.scopes !== undefined && req.authInfo.scopes !== '') {
+      req.authInfo.scopes.forEach(element => {
+        if (element.includes('Z_RL_SUPPLIER')) {
+          outData.isBuyer = true
+        }
+        if (element.includes('Z_RL_BUYER')) {
+          outData.isSupplier = true
+        }
+      })
+    }
+
+    return res.status(200).send(outData)
+  })
+
   // GET PRUCHASE ORGANIZATIONS
 
   app.get('/GetPurchaseOrganizations', function (req, res) {
