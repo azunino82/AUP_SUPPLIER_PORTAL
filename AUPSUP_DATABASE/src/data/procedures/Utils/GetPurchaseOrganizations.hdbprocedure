@@ -36,11 +36,11 @@ BEGIN
  	ELSE
 	 	BEGIN
 	 	/*Se non esiste il metaid provo a cercare l'utente come buyer*/
-	 		SELECT "USERID" into buyer FROM "AUPSUP_DATABASE.data.tables::T_BUYSERS" WHERE USERID = :userid;
+	 		SELECT "USERID" into buyer FROM "AUPSUP_DATABASE.data.tables::T_BUYERS" WHERE USERID = :userid;
 	 		/* se esiste come buyer estraggo le purchase org del buyer e le splitto con l'apposita funzione TMP::TF_SPLIT_STRING*/
 	 		IF :buyer <> '' THEN
 		 		BEGIN
-		 			SELECT PURCH_ORG into purch_org FROM "AUPSUP_DATABASE.data.tables::T_BUYSERS" WHERE USERID = :userid;
+		 			SELECT PURCH_ORG into purch_org FROM "AUPSUP_DATABASE.data.tables::T_BUYERS" WHERE USERID = :userid;
 		 			IF :purch_org <> '' THEN
 			 			BEGIN
 			 			

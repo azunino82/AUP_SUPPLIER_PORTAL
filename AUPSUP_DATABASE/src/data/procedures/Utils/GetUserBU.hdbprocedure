@@ -24,13 +24,13 @@ SELECT COUNT(*) into exist_metaid FROM "AUPSUP_DATABASE.data.tables::T_USERID_ME
  	ELSE
 	 	BEGIN
 	 	/*Se non esiste il metaid provo a cercare l'utente come buyer*/
-	 		SELECT "USERID" into buyer FROM "AUPSUP_DATABASE.data.tables::T_BUYSERS" WHERE USERID = :userid;
+	 		SELECT "USERID" into buyer FROM "AUPSUP_DATABASE.data.tables::T_BUYERS" WHERE USERID = :userid;
 	 		/* se esiste come buyer estraggo i plant del buyer e le splitto con l'apposita funzione TMP::TF_SPLIT_STRING*/
 	 		IF :buyer <> '' THEN
 		 		BEGIN
 		 		
-		 		out_table = SELECT a.BU AS CODE, b.DESCRIPTION as DESCR FROM "AUPSUP_DATABASE.data.tables::T_BUYSERS" as a INNER JOIN "AUPSUP_DATABASE.data.tables::T_BU" as b ON a.BU = b.CODE WHERE a.USERID = :userid;
-		 			/*SELECT PLANTS into plants FROM "AUPSUP_DATABASE.data.tables::T_BUYSERS" WHERE USERID = :userid;
+		 		out_table = SELECT a.BU AS CODE, b.DESCRIPTION as DESCR FROM "AUPSUP_DATABASE.data.tables::T_BUYERS" as a INNER JOIN "AUPSUP_DATABASE.data.tables::T_BU" as b ON a.BU = b.CODE WHERE a.USERID = :userid;
+		 			/*SELECT PLANTS into plants FROM "AUPSUP_DATABASE.data.tables::T_BUYERS" WHERE USERID = :userid;
 		 			IF :plants <> '' THEN
 			 			BEGIN
 							o_bu = SELECT BU FROM "AUPSUP_DATABASE.data.tables::T_BU_PLANT" WHERE PLANT IN (SELECT OUTPUT_SPLIT AS EWERK FROM "_SYS_BIC"."TMP::TF_SPLIT_STRING" (:plants));

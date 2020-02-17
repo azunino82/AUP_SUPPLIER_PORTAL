@@ -1,0 +1,7 @@
+{   "AUPSUP_DATABASE.data.synonyms::DUMMY" : { 
+     "target" : { 
+      "object": "DUMMY",
+      "schema": "SYS"
+     }
+  }
+}

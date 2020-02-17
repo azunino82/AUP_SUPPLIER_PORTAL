@@ -1,0 +1,81 @@
+PROCEDURE "AUPSUP_DATABASE.data.procedures.Utils::GetMetasupplierList" (
+IN userid NVARCHAR(250),
+/*out_anagrafica contiene codice e descrizione da mettere nella combobox*/
+OUT out_anagrafica TABLE(METAID VARCHAR(50), DESCR NVARCHAR(255)),
+/*out_lifnr contiene la lista dei fornitori per ogni METAFORNITORE*/
+OUT out_lifnr TABLE(METAID VARCHAR(50), LIFNR NVARCHAR(10), DESCR NVARCHAR(35))
+)
+    LANGUAGE SQLSCRIPT
+    SQL SECURITY INVOKER AS 
+BEGIN 
+
+DECLARE exist_metaid INTEGER;
+DECLARE counter INTEGER;
+DECLARE metaid VARCHAR(50);
+DECLARE bu NVARCHAR(20);
+DECLARE buyer NVARCHAR(20);
+DECLARE plants NVARCHAR(255);
+DECLARE bu_user_list TABLE (BU NVARCHAR(20));
+DECLARE IT_EKORG TABLE (EKORG NVARCHAR(4));
+
+DECLARE IT_LIFNR TABLE (LIFNR NVARCHAR(10));
+DECLARE OUT_LIFNR_TRANS "AUPSUP_DATABASE.data.structures.Orders::MM00_VENDOR_LIST_ET_VENDORStructure";
+
+create local temporary table #IT_EKORG (EKORG NVARCHAR(4));
+
+IT_EKORG = SELECT * FROM #IT_EKORG;
+/* controllo se l'utente è fornitore o buyer*/
+SELECT COUNT(*) into exist_metaid FROM "AUPSUP_DATABASE.data.tables::T_USERID_METAID" WHERE USERID = :userid;
+ 	IF  exist_metaid > 0 THEN	 	
+ 		BEGIN
+ 			/*prendo il metadata id dell'utente connesso*/
+ 			SELECT METAID into metaid FROM "AUPSUP_DATABASE.data.tables::T_USERID_METAID" WHERE USERID = :userid; 	
+ 			/*vado diretto sull'anagrafica del metafornitore*/		
+		 	out_anagrafica = SELECT METAID as METAID, RAG_SOCIALE as DESCR FROM "AUPSUP_DATABASE.data.tables::T_METASUPPLIER_DATA" WHERE METAID = :metaid and STATO_FORNITORE = 'AP';
+		 	/*trascodifico le descrizione dei fornitori*/
+		 	IT_LIFNR = SELECT LIFNR FROM "AUPSUP_DATABASE.data.tables::T_METAID_FORN" WHERE METAID = :metaid;
+		 	CALL "AUPSUP_DATABASE.data.procedures.Orders::MM00_VENDOR_LIST"(:userid,'','',:IT_LIFNR,:IT_EKORG,:OUT_LIFNR_TRANS);
+		 	
+		 	/*estraggo tutti i fornitori di quel metafornitore*/
+		 	out_lifnr = SELECT DISTINCT a.METAID AS METAID, b.LIFNR AS LIFNR, b.NAME1 AS DESCR FROM "AUPSUP_DATABASE.data.tables::T_METAID_FORN" AS a INNER JOIN :OUT_LIFNR_TRANS AS b ON a.LIFNR = b.LIFNR WHERE a.METAID = :metaid;
+		 	
+	 	END;
+ 	ELSE
+	 	BEGIN
+	 	/*Se non esiste il metaid provo a cercare l'utente come buyer*/
+	 		SELECT "USERID" into buyer FROM "AUPSUP_DATABASE.data.tables::T_BUYERS" WHERE USERID = :userid;
+	 		/* se esiste come buyer estraggo i plant del buyer e le splitto con l'apposita funzione TMP::TF_SPLIT_STRING*/
+	 		IF :buyer <> '' THEN
+		 		BEGIN
+					CALL "AUPSUP_DATABASE.data.procedures.Utils::GetUserPurchaseOrgs"(:userid,:IT_EKORG);
+					SELECT COUNT(*) INTO counter FROM :IT_EKORG;
+					IF counter > 0 THEN
+					
+					 out_anagrafica = SELECT DISTINCT METAID as METAID, RAG_SOCIALE as DESCR FROM "AUPSUP_DATABASE.data.tables::T_METASUPPLIER_DATA" WHERE METAID IN ( 
+					  SELECT METAID FROM "AUPSUP_DATABASE.data.tables::T_METAID_BU" WHERE BU IN 
+					  (SELECT BU FROM "AUPSUP_DATABASE.data.tables::T_BU_PURCH_ORG" WHERE PURCH_ORG IN (select EKORG FROM :IT_EKORG)) AND STATO = 'AP') AND ATTIVO = '1';
+					  /*
+					  out_anagrafica = SELECT e.METAID as METAID, e.RAG_SOCIALE as DESCR FROM "AUPSUP_DATABASE.data.tables::T_METASUPPLIER_DATA" as e INNER JOIN (
+					  SELECT METAID FROM "AUPSUP_DATABASE.data.tables::T_METAID_BU" as c INNER JOIN (
+					  SELECT a.BU FROM "AUPSUP_DATABASE.data.tables::T_BU_PURCH_ORG" a INNER JOIN :IT_EKORG AS b ON a.PURCH_ORG = b.EKORG) as d ON c.BU = d.BU) as f ON e.METAID = f.METAID;
+					  */
+					  
+					  /*tracodifico le descrizione dei fornitori*/
+					  IT_LIFNR = SELECT LIFNR FROM "AUPSUP_DATABASE.data.tables::T_METAID_FORN" WHERE METAID IN (SELECT METAID FROM :out_anagrafica);
+					  
+					  SELECT COUNT(*) INTO counter FROM :IT_LIFNR;
+				      IF counter > 0 THEN
+					    CALL "AUPSUP_DATABASE.data.procedures.Orders::MM00_VENDOR_LIST"(:userid,'','',:IT_LIFNR,:IT_EKORG,:OUT_LIFNR_TRANS);
+					  END IF;
+				  	  /*estraggo tutti i fornitori di quel metafornitore*/
+					  out_lifnr = SELECT DISTINCT a.METAID AS METAID, b.LIFNR AS LIFNR, b.NAME1 AS DESCR FROM "AUPSUP_DATABASE.data.tables::T_METAID_FORN" AS a INNER JOIN :OUT_LIFNR_TRANS AS b ON a.LIFNR = b.LIFNR WHERE a.METAID IN (SELECT METAID FROM :out_anagrafica);
+					 						 
+					
+					END IF;
+		 		END;
+	 		END IF;
+	 	END;
+ 	END IF; 
+
+DROP TABLE #IT_EKORG;
+END;
