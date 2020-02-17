@@ -36,7 +36,7 @@ SELECT COUNT(*) INTO counter FROM :IT_EKORG;
 IF counter <= 0 THEN
 	/* lifnr <> null = sto cercando le descrizioni dei fornitori*/
 	/* prendo le organizzazioni commerciali dell'utente connesso*/
-	CALL "AUPSUP_DATABASE.data.procedures.Utils::GetPurchaseOrganizations"(:userid,:IT_EKORG);
+	CALL "AUPSUP_DATABASE.data.procedures.Utils::GetUserPurchaseOrgs"(:userid,:IT_EKORG);
 END IF;
 
 IT_CUST_FIELDS = SELECT * FROM "AUPSUP_DATABASE.data.tables::T_MM00_VENDOR_LIST_IT_CUST_FIELDS";

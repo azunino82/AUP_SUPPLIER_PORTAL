@@ -1,0 +1,46 @@
+PROCEDURE "AUPSUP_DATABASE.data.procedures.Utils::GetUserPurchaseOrgs"( 
+	IN userid VARCHAR(250),
+	OUT IT_EKORG TABLE (EKORG NVARCHAR(4))) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	--DEFAULT SCHEMA <default_schema_name>
+	READS SQL DATA AS
+BEGIN
+
+DECLARE exist_metaid INTEGER;
+DECLARE metaid VARCHAR(50);
+DECLARE bu NVARCHAR(20);
+DECLARE buyer NVARCHAR(20);
+DECLARE purch_org NVARCHAR(255);
+
+/* cerco le purchase org. dell'utente connesso */
+SELECT COUNT(*) into exist_metaid FROM "AUPSUP_DATABASE.data.tables::T_USERID_METAID" WHERE USERID = :userid;
+ 	IF  exist_metaid > 0 THEN	 	
+ 		BEGIN
+ 			SELECT "METAID" into metaid FROM "AUPSUP_DATABASE.data.tables::T_USERID_METAID" WHERE USERID = :userid;
+
+		 	/*cerco la BU nella tabella apposita se il metafornitore è attivo AP*/
+		 	SELECT "BU" into bu FROM "AUPSUP_DATABASE.data.tables::T_METAID_BU" WHERE METAID = :metaid and STATO = 'AP';
+		 	
+		 	/*estraggo le purchase organizations dalla tabella */
+		 	IT_EKORG = SELECT PURCH_ORG AS EKORG FROM "AUPSUP_DATABASE.data.tables::T_BU_PURCH_ORG" WHERE BU = :bu GROUP BY PURCH_ORG /*and SYSID = 'ECC1'*/;
+	 	END;
+ 	ELSE
+	 	BEGIN
+	 	/*Se non esiste il metaid provo a cercare l'utente come buyer*/
+	 		SELECT "USERID" into buyer FROM "AUPSUP_DATABASE.data.tables::T_BUYSERS" WHERE USERID = :userid;
+	 		/* se esiste come buyer estraggo le purchase org del buyer e le splitto con l'apposita funzione TMP::TF_SPLIT_STRING*/
+	 		IF :buyer <> '' THEN
+		 		BEGIN
+		 			SELECT PURCH_ORG into purch_org FROM "AUPSUP_DATABASE.data.tables::T_BUYSERS" WHERE USERID = :userid;
+		 			IF :purch_org <> '' THEN
+			 			BEGIN
+							IT_EKORG = SELECT OUTPUT_SPLIT AS EKORG FROM "AUPSUP_DATABASE.data.functions::TF_SPLIT_STRING" (:purch_org);
+			 			END;
+		 			END IF;
+		 		END;
+	 		END IF;
+	 	END;
+ 	END IF; 
+ 	
+END;
