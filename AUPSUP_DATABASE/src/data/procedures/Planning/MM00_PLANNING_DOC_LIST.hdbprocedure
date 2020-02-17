@@ -91,7 +91,7 @@ create local temporary table #IT_DOC_EBELN (EBELN NVARCHAR(10));
 I_DOC_EGLKZ_P_EXCL:='X';
 I_DOC_ELIKZ_P_EXCL:='X';
 I_DOC_LOEKZ_K_EXCL:='X';
-I_DOC_LOEKZ_P_EXC:='X';
+I_DOC_LOEKZ_P_EXCL:='X';
 I_DOC_MEMORY_EXCL:='X';
 I_DOC_READ :='X';
 I_DOC_RETPO_P_EXCL:='X';
@@ -122,7 +122,7 @@ IF IT_EBELN = '' THEN
         SELECT COUNT(*) into counterRow FROM :IT_EKORG WHERE EKORG <> '';
         IF counterRow = 0 THEN
             /* prendo le organizzazioni commerciali dell'utente connesso*/
-            CALL "AUPSUP_DATABASE.data.procedures.Utils::GetPurchaseOrganizations"(:userid,:IT_EKORG);
+            CALL "AUPSUP_DATABASE.data.procedures.Utils::GetUserPurchaseOrgs"(:userid,:IT_EKORG);
         END IF;
         
         /*Controllo che non siano stati passati lifnr in input*/
