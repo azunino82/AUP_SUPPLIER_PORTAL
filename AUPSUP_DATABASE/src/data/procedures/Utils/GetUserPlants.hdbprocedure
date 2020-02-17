@@ -1,0 +1,52 @@
+PROCEDURE "AUPSUP_DATABASE.data.procedures.Utils::GetUserPlants"( 
+	IN userid NVARCHAR(250),
+	OUT out_table TABLE(EWERK NVARCHAR(4),DESCR NVARCHAR(255))
+	) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	READS SQL DATA AS
+BEGIN
+
+DECLARE exist_metaid INTEGER;
+DECLARE metaid VARCHAR(50);
+DECLARE bu NVARCHAR(20);
+DECLARE buyer NVARCHAR(20);
+DECLARE plants NVARCHAR(255); 
+DECLARE o_plants TABLE(EWERK NVARCHAR(4));
+DECLARE CURRENT_SYSID NVARCHAR(30); 
+
+/*PRENDO IL SYD DA PASSARE AL SERVIZIO*/
+SELECT SYSID INTO CURRENT_SYSID FROM "AUPSUP_DATABASE.data.tables::T_BCKND_SYSTEMS";
+
+/* cerco le purchase org. dell'utente connesso */
+SELECT COUNT(*) into exist_metaid FROM "AUPSUP_DATABASE.data.tables::T_USERID_METAID" WHERE USERID = :userid;
+ 	IF  exist_metaid > 0 THEN	 	
+ 		BEGIN
+ 			SELECT "METAID" into metaid FROM "AUPSUP_DATABASE.data.tables::T_USERID_METAID" WHERE USERID = :userid;
+
+		 	/*cerco la BU nella tabella apposita se il metafornitore è attivo AP*/
+		 	SELECT "BU" into bu FROM "AUPSUP_DATABASE.data.tables::T_METAID_BU" WHERE METAID = :metaid and STATO = 'AP';
+		 	 		
+ 			out_table = SELECT PLANT AS EWERK, PLANT_DESCR AS DESCR FROM "AUPSUP_DATABASE.data.tables::T_BU_PLANT" WHERE BU = :bu AND SYSID = :CURRENT_SYSID;
+	 	END;
+ 	ELSE
+	 	BEGIN
+	 	/*Se non esiste il metaid provo a cercare l'utente come buyer*/
+	 		SELECT "USERID" into buyer FROM "AUPSUP_DATABASE.data.tables::T_BUYSERS" WHERE USERID = :userid;
+	 		/* se esiste come buyer estraggo i plant del buyer e le splitto con l'apposita funzione TMP::TF_SPLIT_STRING*/
+	 		IF :buyer <> '' THEN
+		 		BEGIN
+		 			SELECT PLANTS into plants FROM "AUPSUP_DATABASE.data.tables::T_BUYSERS" WHERE USERID = :userid;
+		 			IF :plants <> '' THEN
+			 			BEGIN
+							out_table = SELECT PLANT AS EWERK, PLANT_DESCR AS DESCR FROM "AUPSUP_DATABASE.data.tables::T_BU_PLANT" WHERE PLANT IN (SELECT OUTPUT_SPLIT AS EWERK FROM "AUPSUP_DATABASE.data.functions::TF_SPLIT_STRING" (:plants));
+			 			END;
+		 			END IF;
+		 		END;
+	 		END IF;
+	 	END;
+ 	END IF; 
+
+
+
+END;
