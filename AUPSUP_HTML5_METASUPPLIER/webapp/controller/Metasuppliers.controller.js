@@ -14,8 +14,8 @@ sap.ui.define([
 		onInit: function () {
 			that = this;
 
+			that.getUserInfo();
 			that.getCurrentSYSID();
-			this.getView().setModel(sap.ui.getCore().getModel("userapi"), "userapi");
 
 			// gestione delle permissions per il documentale
 			//TODO da fare servizio	that.getDocumentCustomizingData();
@@ -36,6 +36,8 @@ sap.ui.define([
 			that.getOwnerComponent().getRouter().getRoute("RouteMetasuppliers").attachPatternMatched(that.handleRoutePatternMatched,
 				this);
 			that.getPurchaseOrganizations();
+			
+			this.getView().setModel(sap.ui.getCore().getModel("userapi"), "userapi");
 		},
 
 		handleRoutePatternMatched: function (oEvent) {

@@ -207,7 +207,31 @@ sap.ui.define([
 				}
 			});
 
-		}
+		},
+
+		getUserInfo: function () {
+			var url = "/backend/Utils/UtilsManagement/GetUserInfo";
+			this.ajaxGet(url, function (oData) {
+				if (oData) {
+					var oModel = new JSONModel(oData);
+					sap.ui.getCore().setModel(oModel, "userapi");
+
+					var visibilityRoles = {
+						isBuyer: oData.isBuyer,
+						isSupplier: oData.isSupplier
+					};
+
+					oModel = new JSONModel();
+					oModel.setData(visibilityRoles);
+					sap.ui.getCore().setModel(oModel, "VisibilityJSONModel");
+
+				} else {
+					return null;
+				}
+			});
+
+		}		
+
 
 	});
 });
