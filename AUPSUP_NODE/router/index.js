@@ -9,4 +9,7 @@ module.exports = function (app, server) {
 
   // SERVIZI PLANNING
   app.use('/PlanningManagement', require('../it/alteaup/supplier/portal/Planning/PlanningManagement')())
+
+  // SERVIZI INBOUND DELIVERY
+  app.use('/InboundDeliveryManagement', require('../it/alteaup/supplier/portal/InboundDelivery/InboundDeliveryManagement')())
 }
