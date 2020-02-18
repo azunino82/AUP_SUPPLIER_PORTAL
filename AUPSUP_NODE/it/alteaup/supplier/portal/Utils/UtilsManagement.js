@@ -157,6 +157,116 @@ module.exports = function () {
     })
   })
 
+  // GET LIST OF PURCHASE DOC from BACKEND SAP
+
+  app.post('/GetPurchaseDoc', function (req, res) {
+    const body = req.body
+
+    console.log('INPUT BODY ==========> ' + JSON.stringify(body))
+
+    if (body !== undefined && body !== '' && body !== null) {
+      var ekgrp = []
+      var eknam = []
+      var filter = []
+      var userId = req.user.id
+
+      if (body.ekgrp !== null && body.ekgrp !== undefined && body.ekgrp.length > 0) {
+        var oEkgrp = []
+        for (var i = 0; i < body.ekgrp.length; i++) {
+          oEkgrp.push({ CODE: body.ekgrp[i] })
+        }
+        ekgrp = oEkgrp
+      }
+
+      if (body.eknam !== null && body.eknam !== undefined && body.eknam.length > 0) {
+        var oEknam = []
+        // eslint-disable-next-line no-redeclare
+        for (var i = 0; i < body.eknam.length; i++) {
+          oEknam.push({ DESCR: body.eknam[i] })
+        }
+        eknam = oEknam
+      }
+
+      hdbext.createConnection(req.tenantContainer, (err, client) => {
+        if (err) {
+          return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
+        } else {
+          hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Utils::GetSearchHelp', function (_err, sp) {
+            sp(userId, ekgrp, eknam, filter, 'EKGRP', (err, parameters, results) => {
+              if (err) {
+                console.error('ERROR: ' + err)
+                return res.status(500).send(stringifyObj(err))
+              } else {
+                var outArr = []
+                results.forEach(element => {
+                  outArr.push(element)
+                })
+                return res.status(200).send({
+                  results: outArr
+                })
+              }
+            })
+          })
+        }
+      })
+    }
+  })
+
+  // SEARCH MATERIAL MATCHCODE SERVICE
+
+  app.post('/SearchMaterial', function (req, res) {
+    const body = req.body
+
+    console.log('INPUT BODY ==========> ' + JSON.stringify(body))
+
+    if (body !== undefined && body !== '' && body !== null) {
+      var matnr = []
+      var maktx = []
+      var filter = []
+      var userId = req.user.id
+
+      if (body.matnr !== null && body.matnr !== undefined && body.matnr.length > 0) {
+        var oMatnr = []
+        for (var i = 0; i < body.matnr.length; i++) {
+          oMatnr.push({ CODE: body.matnr[i] })
+        }
+        matnr = oMatnr
+      }
+
+      if (body.maktx !== null && body.maktx !== undefined && body.maktx.length > 0) {
+        var oMaktx = []
+        // eslint-disable-next-line no-redeclare
+        for (var i = 0; i < body.maktx.length; i++) {
+          oMaktx.push({ DESCR: body.maktx[i] })
+        }
+        maktx = oMaktx
+      }
+
+      hdbext.createConnection(req.tenantContainer, (err, client) => {
+        if (err) {
+          return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
+        } else {
+          hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Utils::GetSearchHelp', function (_err, sp) {
+            sp(userId, matnr, maktx, filter, 'MATNR', (err, parameters, results) => {
+              if (err) {
+                console.error('ERROR: ' + err)
+                return res.status(500).send(stringifyObj(err))
+              } else {
+                var outArr = []
+                results.forEach(element => {
+                  outArr.push(element)
+                })
+                return res.status(200).send({
+                  results: outArr
+                })
+              }
+            })
+          })
+        }
+      })
+    }
+  })
+
   // Parse URL-encoded bodies (as sent by HTML forms)
   // app.use(express.urlencoded());
 

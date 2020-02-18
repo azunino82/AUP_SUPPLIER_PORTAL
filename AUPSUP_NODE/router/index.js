@@ -6,4 +6,7 @@ module.exports = function (app, server) {
 
   // SERVIZI METASUPPLIER
   app.use('/MetasupplierManagement', require('../it/alteaup/supplier/portal/Supplier/MetasupplierManagement')())
+
+  // SERVIZI PLANNING
+  app.use('/PlanningManagement', require('../it/alteaup/supplier/portal/Planning/PlanningManagement')())
 }
