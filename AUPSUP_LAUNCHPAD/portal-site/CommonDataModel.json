@@ -34,6 +34,10 @@
 					"id": "AUPSUP_HTML5_METASUPPLIER",
 					"appId": "it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER",
 					"vizId": "AppSemantic-Display"
+				}, {
+					"id": "AUPSUP_HTML5_SEARCH_HU",
+					"appId": "it.alteaup.supplier.portal.searchHU.AUPSUP_HTML5_SEARCH_HU",
+					"vizId": "SearchHU-Display"
 				}]
 			}
 		}],
