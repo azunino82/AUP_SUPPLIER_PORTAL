@@ -1,0 +1,53 @@
+<Dialog xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:u="sap.ui.unified" xmlns:core="sap.ui.core" xmlns:fb="sap.ui.comp.filterbar"
+	contentWidth="100%" contentHeight="100%">
+		<Page id="p1" title="{i18n>titleMatnr}">
+			<content>
+				<fb:FilterBar clear="onClearMaterialSearchFilters" search="onSearchMatnr" showRestoreButton="false" showClearButton="true" showClearOnFB="true">
+					<fb:filterItems>
+						<fb:FilterItem name="Matnr" label="{i18n>MATNR}">
+							<fb:control>
+								<Input type="Text" value="{MatnrSearchJSONModel>/matnr}"/>
+							</fb:control>
+						</fb:FilterItem>
+						<fb:FilterItem name="MatnrDesc" label="{i18n>materialDescr}">
+							<fb:control>
+								<Input type="Text" value="{MatnrSearchJSONModel>/maktx}"/>
+							</fb:control>
+						</fb:FilterItem>
+					</fb:filterItems>
+				</fb:FilterBar>
+				<Table id="idMatnrTable" inset="false" items="{ path: 'MatnrJSONModel>/results', sorter: { path: 'RagioneSociale' } }" mode="MultiSelect">
+					<headerToolbar>
+						<Toolbar>
+							<Title text="" level="H2"/>
+							<ToolbarSpacer/>
+						</Toolbar>
+					</headerToolbar>
+					<columns>
+						<Column width="auto">
+							<Text text="{i18n>materialCode}"/>
+						</Column>
+						<Column width="auto">
+							<Text text="{i18n>materialDescr}"/>
+						</Column>
+					</columns>
+					<items>
+						<ColumnListItem>
+							<cells>
+								<Text text="{MatnrJSONModel>CODE}"/>
+								<Text text="{MatnrJSONModel>DESCR}"/>
+							</cells>
+						</ColumnListItem>
+					</items>
+				</Table>
+			</content>
+			<footer>
+				<Bar>
+					<contentRight>
+						<Button text="{i18n>close}" press="onCloseSearchMatnr" type="Reject"/>
+						<Button text="{i18n>Confirm}" type="Accept" press="onConfirmMatnr"/>
+					</contentRight>
+				</Bar>
+			</footer>
+		</Page>
+</Dialog>

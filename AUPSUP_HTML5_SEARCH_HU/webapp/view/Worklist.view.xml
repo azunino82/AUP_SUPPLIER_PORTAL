@@ -1,0 +1,177 @@
+<mvc:View controllerName="it.alteaup.supplier.portal.searchHU.AUPSUP_HTML5_SEARCH_HU.controller.Worklist" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.uxap"
+	xmlns:layout="sap.ui.layout" xmlns:m="sap.m" xmlns:table="sap.ui.table" xmlns:core="sap.ui.core" xmlns:fb="sap.ui.comp.filterbar"
+	xmlns:personal="sap.uxap.sample.SharedBlocks.personal" xmlns:form="sap.ui.layout.form" xmlns:smartTable="sap.ui.comp.smarttable"
+	xmlns:smartFilterBar="sap.ui.comp.smartfilterbar" xmlns:v="sap.ui.comp.variants">
+	<m:Shell id="shell" appWidthLimited="false">
+		<m:App id="app">
+			<m:pages>
+				<m:Page id="worklist">
+					<m:customHeader>
+						<m:Bar>
+							<m:contentLeft>
+								<m:Text text="{userapi>/firstname} {userapi>/lastname}"></m:Text>
+							</m:contentLeft>
+							<m:contentMiddle>
+								<m:Text text="{i18n>title}" class="sapMTitle sapMTitleStyleAuto sapMTitleMaxWidth"></m:Text>
+							</m:contentMiddle>
+						</m:Bar>
+					</m:customHeader>
+					<m:content>
+						<ObjectPageLayout id="ObjectPageLayout" headerContentPinnable="true" showFooter="true">
+							<headerContent>
+								<fb:FilterBar clear="onClearFilters" search="onSearchHU" showRestoreButton="false" showClearButton="true" showClearOnFB="true">
+									<fb:filterItems>
+										<fb:FilterItem name="Documento" label="{i18n>VBELN}">
+											<fb:control>
+												<m:Input value="{filterHUJSONModel>/vbeln}"/>
+											</fb:control>
+										</fb:FilterItem>
+										<fb:FilterItem name="Metasupplier" label="{i18n>METASUP}" visible="{VisibilityJSONModel>/isBuyer}">
+											<fb:control>
+												<m:MultiComboBox selectedKeys="{MetasupplierJSONModel>/METAID}" selectionChange="onChangeMetasupplier"
+													items="{ path: 'MetasupplierJSONModel>/results', sorter: { path: 'METAID' } }">
+													<core:Item key="{MetasupplierJSONModel>METAID}" text="{MetasupplierJSONModel>DESC}"/>
+												</m:MultiComboBox>
+											</fb:control>
+										</fb:FilterItem>
+										<fb:FilterItem name="Lifnr" label="{i18n>supplier}" visible="{VisibilityJSONModel>/isBuyer}">
+											<fb:control>
+												<m:MultiComboBox selectionChange="onChangeMetalifnr" showSecondaryValues="true"
+													items="{ path: 'lifnrJSONModel>/', sorter: { path: 'LIFNR' } }">
+													<core:ListItem key="{lifnrJSONModel>LIFNR}" text="{lifnrJSONModel>DESCR}" additionalText="{lifnrJSONModel>LIFNR}"/>
+												</m:MultiComboBox>
+											</fb:control>
+										</fb:FilterItem>
+										<fb:FilterItem name="Incoterm" label="{i18n>VERUR}">
+											<fb:control>
+												<m:Input value="{filterHUJSONModel>/verur}"/>
+											</fb:control>
+										</fb:FilterItem>
+										<fb:FilterItem name="Matnr" label="{i18n>MATNR}" visible="{VisibilityJSONModel>/isBuyer}">
+											<fb:control>
+												<m:Input type="Text" value="{filterHUJSONModel>/MatnrDesc}" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="handleMatnr"
+													class="sapUiSmallMarginBottom"/>
+											</fb:control>
+										</fb:FilterItem>
+										<fb:FilterItem name="vgbel" label="{i18n>VGBEL}">
+											<fb:control>
+												<m:Input value="{filterHUJSONModel>/vgbel}"/>
+											</fb:control>
+										</fb:FilterItem>
+										<fb:FilterItem name="exdiv" label="{i18n>EXDIV}">
+											<fb:control>
+												<m:Input value="{filterHUJSONModel>/exdiv}"/>
+											</fb:control>
+										</fb:FilterItem>
+										<fb:FilterItem name="RangeDatelf" label="{i18n>RangeDateLF}">
+											<fb:control>
+												<m:DateRangeSelection dateValue="{path:'filterHUJSONModel>/lfDateFrom'}" valueFormat="YYYYMMdd" displayFormat="dd MMM yyyy"
+													secondDateValue="{path:'filterHUJSONModel>/lfDateTo'}"/>
+											</fb:control>
+										</fb:FilterItem>
+										<fb:FilterItem name="RangeDatewa" label="{i18n>RangeDateWA}">
+											<fb:control>
+												<m:DateRangeSelection dateValue="{path:'filterHUJSONModel>/waDateFrom'}" valueFormat="YYYYMMdd" displayFormat="dd MMM yyyy"
+													secondDateValue="{path:'filterHUJSONModel>/waDateTo'}"/>
+											</fb:control>
+										</fb:FilterItem>
+									</fb:filterItems>
+								</fb:FilterBar>
+							</headerContent>
+							<sections>
+								<ObjectPageSection showTitle="false">
+									<subSections>
+										<ObjectPageSubSection >
+											<!--	<smartTable:SmartTable id="smartTreeTable" smartFilterId="smartFilterBar" entitySet="Buyers" tableType="ResponsiveTable" useExportToExcel="false"
+												useVariantManagement="true" useTablePersonalisation="true" header="Hierarchy" showRowCount="true" enableAutoBinding="true"
+												beforeRebindTable="onBeforeRebindTable" initiallyVisibleFields="BU" persistencyKey="SmartTablePKey">
+											
+									
+											</smartTable:SmartTable>-->
+											<!--	<smartTable:SmartTable id="smartTable_ResponsiveTable" smartFilterId="smartFilterBar" tableType="ResponsiveTable" editable="false"
+												entitySet="Buyers" useVariantManagement="true" useTablePersonalisation="true" header="Products" showRowCount="true" useExportToExcel="false"
+												enableAutoBinding="true" persistencyKey="SmartTablePKey">-->
+											<m:Table id="HUHeadersTable" items="{HUJSONModel>/results}" sticky="ColumnHeaders,HeaderToolbar">
+												<m:headerToolbar>
+													<m:OverflowToolbar>
+														<m:content>
+															<m:Title text="{i18n>title}" level="H2"/>
+															<m:Title text="{= ${HUJSONModel>/results}.length}" level="H2"/><m:ToolbarSpacer/>
+															<v:VariantManagement visible="false" id="vm" select="onSelect" save="onSaveVariant" enabled="true" manage="onManageVariant" showExecuteOnSelection="true"
+																showShare="false" variantItems="{variantsJSONModel>/VariantSet}">
+																<v:variantItems>
+																	<v:VariantItem text="{variantsJSONModel>VARIANT_NAME}" key="{variantsJSONModel>VARIANT_NAME}"></v:VariantItem>
+																</v:variantItems>
+															</v:VariantManagement>
+															
+															<m:Button icon="sap-icon://excel-attachment" press="onExport" tooltip="{i18n>Export_Excel}"/>
+															<m:Button icon="sap-icon://vertical-grip" visible="false" press="onColumnSelection" tooltip="{i18n>personalization}"/>
+														</m:content>
+													</m:OverflowToolbar>
+												</m:headerToolbar>
+												<m:columns>
+													<m:Column id="SYSID" minScreenWidth="Desktop" demandPopin="true" visible="{columnVisibilityModel>/SYSID}">
+														<m:Label text="{i18n>SYSID}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column id="VENUM" minScreenWidth="Desktop" demandPopin="true" visible="{columnVisibilityModel>/VENUM}">
+														<m:Label text="{i18n>VENUM}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column id="VEPOS" minScreenWidth="Desktop" demandPopin="true" visible="{columnVisibilityModel>/VEPOS}">
+														<m:Label text="{i18n>VEPOS}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column id="VBELN" minScreenWidth="Desktop" demandPopin="true" visible="{columnVisibilityModel>/VBELN}">
+														<m:Label text="{i18n>VBELN}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column id="POSNR" minScreenWidth="Desktop" demandPopin="true" visible="{columnVisibilityModel>/POSNR}">
+														<m:Label text="{i18n>POSNR}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column id="EXIDV" minScreenWidth="Desktop" demandPopin="true" visible="{columnVisibilityModel>/EXIDV}">
+														<m:Label text="{i18n>EXIDV}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column id="MATNR" minScreenWidth="Desktop" demandPopin="true" visible="{columnVisibilityModel>/MATNR}">
+														<m:Label text="{i18n>MATNR}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column id="WERKS" minScreenWidth="Desktop" demandPopin="true" visible="{columnVisibilityModel>/WERKS}">
+														<m:Label text="{i18n>WERKS}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column id="TMENG" minScreenWidth="Desktop" demandPopin="true" visible="{columnVisibilityModel>/TMENG}">
+														<m:Label text="{i18n>TMENG}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column minScreenWidth="Desktop" demandPopin="true" hAlign="End" width="5em"></m:Column>
+												</m:columns>
+												<m:items>
+													<m:ColumnListItem>
+														<m:cells>
+															<m:Text text="{HUJSONModel>SYSID}"/>
+															<m:Text text="{HUJSONModel>VENUM}"/>
+															<m:Text text="{HUJSONModel>VEPOS}"/>
+															<m:Text text="{HUJSONModel>VBELN}"/>
+															<m:Text text="{HUJSONModel>POSNR}"/>
+															<m:Text text="{HUJSONModel>EXIDV}"/>
+															<m:Text text="{HUJSONModel>MATNR}"/>
+															<m:Text text="{HUJSONModel>WERKS}"/>
+															<m:Text text="{HUJSONModel>TMENG}"/>
+															<m:Button icon="sap-icon://print" press="onItemPrintHU"/>
+														</m:cells>
+													</m:ColumnListItem>
+												</m:items>
+												<m:dependents>
+													<m:PDFViewer id="myPDFViewer" sourceValidationFailed="onSourceValidationFailed" showDownloadButton="false">
+														<m:layoutData>
+															<m:FlexItemData growFactor="1"/>
+														</m:layoutData>
+													</m:PDFViewer>
+												</m:dependents>
+											</m:Table>
+											<!--	</smartTable:SmartTable>-->
+										</ObjectPageSubSection>
+									</subSections>
+								</ObjectPageSection>
+							</sections>
+						</ObjectPageLayout>
+					</m:content>
+				</m:Page>
+			</m:pages>
+		</m:App>
+	</m:Shell>
+</mvc:View>

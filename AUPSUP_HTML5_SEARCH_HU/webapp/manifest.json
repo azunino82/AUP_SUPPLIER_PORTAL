@@ -28,8 +28,8 @@
 			}
 		}
 	},
-
 	"sap.ui": {
+		"fullWidth": true,
 		"technology": "UI5",
 		"icons": {
 			"icon": "",
@@ -45,8 +45,10 @@
 			"phone": true
 		}
 	},
-
 	"sap.ui5": {
+		"config": {
+			"fullWidth": true
+		},
 		"flexEnabled": false,
 		"rootView": {
 			"viewName": "it.alteaup.supplier.portal.searchHU.AUPSUP_HTML5_SEARCH_HU.view.App",
@@ -75,9 +77,11 @@
 			}
 		},
 		"resources": {
-			"css": [{
-				"uri": "css/style.css"
-			}]
+			"css": [
+				{
+					"uri": "css/style.css"
+				}
+			]
 		},
 		"routing": {
 			"config": {
@@ -86,21 +90,27 @@
 				"async": true,
 				"viewPath": "it.alteaup.supplier.portal.searchHU.AUPSUP_HTML5_SEARCH_HU.view",
 				"controlAggregation": "pages",
-				"controlId": "app",
+				"controlId": "idAppControl",
 				"clearControlAggregation": false
 			},
-			"routes": [{
-				"name": "RouteApp",
-				"pattern": "RouteApp",
-				"target": ["TargetApp"]
-			}],
+			"routes": [
+				{
+					"pattern": "",
+					"name": "worklist",
+					"greedy": false,
+					"target": [
+						"worklist"
+					]
+				}
+			],
 			"targets": {
-				"TargetApp": {
+				"worklist": {
+					"viewLevel": 1,
+					"viewName": "Worklist"
+				},
+				"Worklist": {
 					"viewType": "XML",
-					"transition": "slide",
-					"clearControlAggregation": false,
-					"viewId": "App",
-					"viewName": "App"
+					"viewName": "Worklist"
 				}
 			}
 		}
