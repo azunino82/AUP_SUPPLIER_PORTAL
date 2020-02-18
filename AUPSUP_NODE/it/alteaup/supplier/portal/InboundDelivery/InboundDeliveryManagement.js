@@ -60,6 +60,7 @@ module.exports = function () {
         }      
         if (body.verur !== null && body.verur !== undefined && body.verur.length > 0) {
             var oVerur = []
+            // eslint-disable-next-line no-redeclare
             for (var i = 0; i < body.verur.length; i++) {
                 oVerur.push({ LIFNR: body.verur[i] })
             }
@@ -67,6 +68,7 @@ module.exports = function () {
         }        
         if (body.vgbel !== null && body.vgbel !== undefined && body.vgbel.length > 0) {
             var oVgbel = []
+            // eslint-disable-next-line no-redeclare
             for (var i = 0; i < body.vgbel.length; i++) {
                 oVgbel.push({ LIFNR: body.vgbel[i] })
             }
@@ -74,6 +76,7 @@ module.exports = function () {
         }
         if (body.exdiv !== null && body.exdiv !== undefined && body.exdiv.length > 0) {
             var oExdiv = []
+            // eslint-disable-next-line no-redeclare
             for (var i = 0; i < body.exdiv.length; i++) {
                 oExdiv.push({ LIFNR: body.exdiv[i] })
             }
@@ -81,6 +84,7 @@ module.exports = function () {
         }        
         if (body.lifnr != null && body.lifnr !== undefined && body.lifnr !== '') {
             var oLifnr = []
+            // eslint-disable-next-line no-redeclare
             for (var i = 0; i < body.lifnr.length; i++) {
                 oLifnr.push({ LIFNR: body.lifnr[i] })
             }
