@@ -82,13 +82,8 @@ sap.ui.define([
 		},
 
 		getPurchaseGroup: function () {
-			var url = "/SupplierPortal_Utils/xsOdata/GetPurchaseDoc.xsjs";
-			var body = {
-				"userid": that.getCurrentUserId()
-			};
-			this.showBusyDialog();
-			that.ajaxPost(url, body, "/SupplierPortal_Utils", function (oData) { // funzione generica su BaseController
-				that.hideBusyDialog();
+			var url = "/backend/Utils/UtilsManagement/GetPurchaseDoc";
+			that.ajaxGet(url, function (oData) {
 				if (oData) {
 					var oModel = new JSONModel();
 					oModel.setData(oData);
@@ -96,6 +91,7 @@ sap.ui.define([
 				}
 			});
 		},
+
 		onClick: function (oID) {
 			$('#' + oID).click(function (oEvent) { //Attach Table Header Element Event
 				var oTarget = oEvent.currentTarget; //Get hold of Header Element
@@ -254,7 +250,7 @@ sap.ui.define([
 
 		handleMatnr: function () {
 			if (!that.oSearchMatnrDialog) {
-				that.oSearchMatnrDialog = sap.ui.xmlfragment("it.alteaup.supplier.portal.Planning.fragments.SearchMatnr", that);
+				that.oSearchMatnrDialog = sap.ui.xmlfragment("it.alteaup.supplier.portal.planning.AUPSUP_HTML5_PLANNING.fragments.SearchMatnr", that);
 				that.getView().addDependent(that.oSearchMatnrDialog);
 			}
 			that.oSearchMatnrDialog.open();
@@ -262,7 +258,6 @@ sap.ui.define([
 			var oItems = oTable.getItems();
 
 			var body = {
-				"userid": that.getCurrentUserId(),
 				"matnr": "",
 				"maktx": ""
 			};
@@ -280,17 +275,17 @@ sap.ui.define([
 		},
 
 		onSearchMatnr: function () {
-			var url = "/SupplierPortal_Utils/xsOdata/SearchMaterial.xsjs";
+			var url = "/backend/Utils/UtilsManagement/SearchMaterial";
 			var body = this.getView().getModel("MatnrSearchJSONModel").getData();
 			this.showBusyDialog();
-			that.ajaxPost(url, body, "/SupplierPortal_Utils", function (oData) { // funzione generica su BaseController
+			that.ajaxPost(url, body, function (oData) { 
 				that.hideBusyDialog();
 				if (oData) {
 					var oModel = new JSONModel();
 					oModel.setData(oData);
 					that.getView().setModel(oModel, "MatnrJSONModel");
 				}
-			});
+			})
 		},
 
 		onConfirmMatnr: function () {
@@ -321,39 +316,11 @@ sap.ui.define([
 		},
 
 		onSearchOrders: function () {
-			var url = "/SupplierPortal_Planning/xsOdata/GetPlanning.xsjs";
-			var prec = "";
-			// var EBELN = that.getModel("filterPlanningJSONModel").getData().ebeln;
-			// var MATNR = that.getModel("filterPlanningJSONModel").getData().matnr;
-			// var EKGRP = that.getModel("filterPlanningJSONModel").getData().ekgrp;
-
-			// if (((EBELN !== undefined) && (EBELN !== "")) ||
-			// 	((MATNR !== undefined) && (MATNR.length > 0)) ||
-			// 	((EKGRP !== undefined) && (EKGRP.length > 0))) {
-			// 	url = url + "?$filter=(";
-			// 	if ((EBELN !== undefined) && (EBELN !== "")) {
-			// 		url = url + "EBELN = '" + EBELN + "'";
-			// 		prec = "X";
-			// 	}
-			// 	if (((MATNR !== undefined) && (MATNR !== "")) && (prec === "X"))
-			// 		url = url + " AND MATNR ='" + MATNR + "'";
-			// 	else if (((MATNR !== undefined) && (MATNR !== "")) && (prec === "")) {
-			// 		url = url + "MATNR ='" + MATNR + "'";
-			// 		prec = "X";
-			// 	}
-			// 	if (((EKGRP !== undefined) && (EKGRP !== "")) && (prec === "X"))
-			// 		url = url + " AND EKGRP ='" + EKGRP + "'";
-			// 	else if (((EKGRP !== undefined) && (EKGRP !== "")) && (prec === "")) {
-			// 		url = url + "EKGRP ='" + EKGRP + "'";
-			// 		prec = "X";
-			// 	}
-			// 	url = url + ")";
-			// }
-
+			var url = "/backend/PlanningManagement/GetPlanning";
 			var body = that.getModel("filterPlanningJSONModel").getData();
 
 			this.showBusyDialog();
-			that.ajaxPost(url, body, "/SupplierPortal_Planning", function (oData) { // funzione generica su BaseController
+			that.ajaxPost(url, body, function (oData) { 
 				that.hideBusyDialog();
 				if (oData) {
 					var oModel = new JSONModel();
@@ -362,7 +329,8 @@ sap.ui.define([
 					that.getView().byId("OrderHeadersTable").setModel(oModel);
 				}
 				var oTable = that.getModel("PlanningJSONModel").getData().results;
-			});
+			})
+
 		},
 		onClearFilters: function () {
 			if (that.getModel("filterPlanningJSONModel") !== undefined && that.getModel("filterPlanningJSONModel").getData() !== undefined) {
@@ -386,18 +354,6 @@ sap.ui.define([
 			if (that.getModel("MetasupplierJSONModel") !== undefined)
 				that.getModel("MetasupplierJSONModel").refresh();
 		},
-
-		// getDateRangeOfWeek: function (weekNo, y) {
-		// 	var d1, numOfdaysPastSinceLastMonday, rangeIsFrom, rangeIsTo;
-		// 	d1 = new Date('' + y + '');
-		// 	numOfdaysPastSinceLastMonday = d1.getDay() - 1;
-		// 	d1.setDate(d1.getDate() - numOfdaysPastSinceLastMonday);
-		// 	d1.setDate(d1.getDate() + (7 * (weekNo - d1.getWeek())));
-		// 	rangeIsFrom = (d1.getMonth() + 1) + "-" + d1.getDate() + "-" + d1.getFullYear();
-		// 	d1.setDate(d1.getDate() + 6);
-		// 	rangeIsTo = (d1.getMonth() + 1) + "-" + d1.getDate() + "-" + d1.getFullYear();
-		// 	return rangeIsFrom + " to " + rangeIsTo;
-		// },
 
 		getFormattedDate: function (fullDate) {
 			var dd = String(fullDate.getDate()).padStart(2, '0');
