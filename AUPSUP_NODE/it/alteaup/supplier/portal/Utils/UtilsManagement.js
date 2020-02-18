@@ -60,6 +60,35 @@ module.exports = function () {
       }
     })
   })
+  
+  // GET USER PLANTS
+
+  app.get('/GetUserPlants', function (req, res) {
+    hdbext.createConnection(req.tenantContainer, (err, client) => {
+      if (err) {
+        return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
+      } else {
+        hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Utils::GetUserPlants', function (_err, sp) {
+          sp(req.user.id, (err, parameters, results) => {
+            if (err) {
+              return res.status(500).send(stringifyObj(err))
+            } else {
+              // reqStr = stringifyObj(results);
+              // var outJson = {"results":reqStr};
+              var outArr = []
+              results.forEach(element => {
+                outArr.push(element)
+              })
+
+              return res.status(200).send({
+                results: outArr
+              })
+            }
+          })
+        })
+      }
+    })
+  })  
 
   // GET USER BU
 
@@ -87,6 +116,49 @@ module.exports = function () {
       }
     })
   })
+  
+  // GET AVVISI QUALITA LIST
+
+  app.get('/GetAvvisiQualita', function (req, res) {
+    const sql = 'SELECT * FROM \"AUPSUP_DATABASE.data.tables::T_AVVISI_QUALITA\"'
+
+    hdbext.createConnection(req.tenantContainer, function (error, client) {
+      if (error) {
+        console.error(error)
+      }
+      if (client) {
+        async.waterfall([
+
+          function prepare (callback) {
+            client.prepare(sql,
+              function (err, statement) {
+                callback(null, err, statement)
+              })
+          },
+
+          function execute (_err, statement, callback) {
+            statement.exec([], function (execErr, results) {
+              callback(null, execErr, results)
+            })
+          },
+
+          function response (err, results, callback) {
+            if (err) {
+              res.type('application/json').status(500).send({ ERROR: err })
+              return
+            } else {
+              res.type('application/json').status(200).send({ results: results })
+            }
+            callback()
+          }
+        ], function done (err, parameters, rows) {
+          if (err) {
+            return console.error('Done error', err)
+          }
+        })
+      }
+    })
+  })  
 
   // GET CORRECT SYSID
 
