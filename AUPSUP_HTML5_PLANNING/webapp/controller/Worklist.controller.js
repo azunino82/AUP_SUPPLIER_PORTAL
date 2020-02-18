@@ -59,6 +59,9 @@ sap.ui.define([
 					}
 				}
 			}, oTable);
+			
+			this.getView().setModel(sap.ui.getCore().getModel("userapi"), "userapi");
+			
 		},
 
 		getPurchaseOrganizations: function () {

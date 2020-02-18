@@ -41,6 +41,10 @@ modules:
           artifacts:
             - './*'
           target-path: resources/AUPSUP_HTML5_SEARCH_HU
+        - name: AUPSUP_HTML5_NONCONFORMITA
+          artifacts:
+            - './*'
+          target-path: resources/AUPSUP_HTML5_NONCONFORMITA
   - name: AUPSUP_LAUNCHPAD
     type: com.sap.portal.content
     path: AUPSUP_LAUNCHPAD
@@ -99,6 +103,13 @@ modules:
   - name: AUPSUP_HTML5_SEARCH_HU
     type: html5
     path: AUPSUP_HTML5_SEARCH_HU
+    build-parameters:
+      builder: grunt
+      supported-platforms: []
+      build-result: dist
+  - name: AUPSUP_HTML5_NONCONFORMITA
+    type: html5
+    path: AUPSUP_HTML5_NONCONFORMITA
     build-parameters:
       builder: grunt
       supported-platforms: []

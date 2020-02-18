@@ -1,0 +1,192 @@
+<mvc:View controllerName="it.alteaup.supplier.portal.nonConformita.AUPSUP_HTML5_NONCONFORMITA.controller.Worklist" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.uxap"
+	xmlns:layout="sap.ui.layout" xmlns:m="sap.m" xmlns:table="sap.ui.table" xmlns:core="sap.ui.core" xmlns:fb="sap.ui.comp.filterbar"
+	xmlns:personal="sap.uxap.sample.SharedBlocks.personal" xmlns:form="sap.ui.layout.form" xmlns:u="sap.ui.unified">
+	<m:Shell id="shell" appWidthLimited="false">
+		<m:App id="app">
+			<m:pages>
+				<m:Page id="worklist">
+					<m:customHeader>
+						<m:Bar>
+							<m:contentLeft>
+								<m:Text text="{userapi>/firstname} {userapi>/lastname}"></m:Text>
+							</m:contentLeft>
+							<m:contentMiddle>
+								<m:Text text="{i18n>title}" class="sapMTitle sapMTitleStyleAuto sapMTitleMaxWidth"></m:Text>
+							</m:contentMiddle>
+						</m:Bar>
+					</m:customHeader>
+					<m:content>
+						<ObjectPageLayout id="ObjectPageLayout" headerContentPinnable="true">
+							<headerContent>
+								<fb:FilterBar clear="onClearFilters" search="onSearchNC" showRestoreButton="false" showClearButton="true" showClearOnFB="true">
+									<fb:filterItems>
+										<fb:FilterItem name="Metasupplier" label="{i18n>METASUP}" visible="{VisibilityJSONModel>/isBuyer}">
+											<fb:control>
+												<m:MultiComboBox selectedKeys="{filterNCJSONModel>/metaids}" selectionChange="onChangeMetasupplier"
+													items="{ path: 'MetasupplierJSONModel>/results', sorter: { path: 'METAID' } }">
+													<core:Item key="{MetasupplierJSONModel>METAID}" text="{MetasupplierJSONModel>DESC}"/>
+												</m:MultiComboBox>
+											</fb:control>
+										</fb:FilterItem>
+										<fb:FilterItem name="Lifnr" label="{i18n>supplier}" visible="{VisibilityJSONModel>/isBuyer}">
+											<fb:control>
+												<m:MultiComboBox selectionChange="onChangeMetalifnr" items="{ path: 'lifnrJSONModel>/', sorter: { path: 'LIFNR' } }">
+													<core:Item key="{lifnrJSONModel>LIFNR}" text="{lifnrJSONModel>DESCR}"/>
+												</m:MultiComboBox>
+											</fb:control>
+										</fb:FilterItem>
+										<fb:FilterItem name="Plant" label="{i18n>WERKS}">
+											<fb:control>
+												<m:MultiComboBox selectedKeys="{filterNCJSONModel>/mawerk}" items="{ path: 'PlantsJSONModel>/results', sorter: { path: 'EWERK' } }"
+													showSecondaryValues="true">
+													<core:ListItem key="{PlantsJSONModel>EWERK}" text="{PlantsJSONModel>DESCR}" additionalText="{PlantsJSONModel>EWERK}"/>
+												</m:MultiComboBox>
+											</fb:control>
+										</fb:FilterItem>
+										<!--<fb:FilterItem name="BU" label="{i18n>BU}">-->
+										<!--	<fb:control>-->
+										<!--		<m:ComboBox id="BU" selectedKey="{filterNCJSONModel>/bu}" width="100%" items="{ path: 'BUJSONModel>/results', sorter: { path: 'DESCR' } }"-->
+										<!--			selectionChange="onChangeBU">-->
+										<!--			<core:Item key="{BUJSONModel>CODE}" text="{BUJSONModel>DESCR}"/>-->
+										<!--		</m:ComboBox>-->
+										<!--	</fb:control>-->
+										<!--</fb:FilterItem>-->
+										<fb:FilterItem name="TipoAvviso" label="{i18n>tipoAvviso}">
+											<fb:control>
+												<m:ComboBox selectedKey="{filterNCJSONModel>/qmart}" id="tipoAvviso" width="100%"
+													items="{ path: 'avvisiQualitaJSONModel>/results', sorter: { path: 'TIPO_AVVISO' } }" selectionChange="onChangeTipoAvviso">
+													<core:Item key="{avvisiQualitaJSONModel>TIPO_AVVISO}" text="{avvisiQualitaJSONModel>TIPO_AVVISO}"/>
+												</m:ComboBox>
+											</fb:control>
+										</fb:FilterItem>
+										<fb:FilterItem name="Status" label="{i18n>status}" visible="false">
+											<fb:control>
+												<m:ComboBox selectedKey="{filterNCJSONModel>/status}" id="status" width="100%"
+													items="{ path: 'statusJSONModel>/', sorter: { path: 'Descr' } }">
+													<core:Item key="{statusJSONModel>Code}" text="{statusJSONModel>Descr}"/>
+												</m:ComboBox>
+											</fb:control>
+										</fb:FilterItem>
+										<fb:FilterItem name="Matnr" label="{i18n>MATNR}">
+											<fb:control>
+												<m:Input type="Text" value="{filterNCJSONModel>/MatnrDesc}" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="handleMatnr"
+													class="sapUiSmallMarginBottom"/>
+											</fb:control>
+										</fb:FilterItem>
+										<fb:FilterItem name="Idnlf" label="{i18n>IDNLF}">
+											<fb:control>
+												<m:Input value="{filterNCJSONModel>/idnlf}" class="sapUiSmallMarginBottom"/>
+											</fb:control>
+										</fb:FilterItem>
+										<fb:FilterItem name="Ernam" label="{i18n>ERNAM_TEXT}">
+											<fb:control>
+												<m:Input value="{filterNCJSONModel>/ernam}" class="sapUiSmallMarginBottom"/>
+											</fb:control>
+										</fb:FilterItem>
+									</fb:filterItems>
+								</fb:FilterBar>
+							</headerContent>
+							<sections>
+								<ObjectPageSection showTitle="false">
+									<subSections>
+										<ObjectPageSubSection >
+											<m:Table id="NCTable" items="{NCJSONModel>/results}" itemPress="onRowSelectionChange">
+												<m:headerToolbar>
+													<m:OverflowToolbar>
+														<m:content>
+															<m:Title text="{i18n>title}" level="H2"/>
+															<m:Title text="{= ${NCJSONModel>/results}.length}" level="H2"/>
+															<m:ToolbarSpacer/>
+															<m:Button visible="false" id="headerFilterButton" tooltip="{i18n>clearFilter}" icon="sap-icon://clear-filter" press="onClearFilter"
+																type="Transparent"/>
+															<m:Button icon="sap-icon://excel-attachment" press="onExport" tooltip="{i18n>Export_Excel}"/>
+														</m:content>
+													</m:OverflowToolbar>
+												</m:headerToolbar>
+												<m:columns>
+													<m:Column id="QMNUM" minScreenWidth="Desktop" demandPopin="true" width="8rem">
+														<m:Label text="{i18n>QMNUM}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column id="QMTXT" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>QMTXT}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column id="NAME1_WRK" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>NAME1_WRK}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column id="ERNAM_TEXT" minScreenWidth="Desktop" demandPopin="true" visible="{VisibilityJSONModel>/isBuyer}">
+														<m:Label text="{i18n>ERNAM_TEXT}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column id="EBELN" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>EBELN}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column id="EBELP" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>EBELP}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column id="RKMNG" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>RKMNG}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>													
+													<m:Column id="MATNR" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>MATNR}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column id="materialDescr" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>materialDescr}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column id="LIFNUM" minScreenWidth="Desktop" demandPopin="true" visible="{VisibilityJSONModel>/isBuyer}">
+														<m:Label text="{i18n>LIFNUM}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>													
+													<m:Column id="IDNLF" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>IDNLF}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column id="SERIALNR" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>SERIALNR}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column id="XBLNR" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>XBLNR}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+
+
+													<m:Column minScreenWidth="Desktop" demandPopin="true" hAlign="End" width="3em"/>
+													<m:Column minScreenWidth="Desktop" demandPopin="true" hAlign="End" width="3em"/>
+													<m:Column minScreenWidth="Desktop" demandPopin="true" hAlign="End" width="3em" visible="{= ${DocumentManagementJSONModel>/DOC_IN} === 'X' }"></m:Column>
+													<m:Column minScreenWidth="Desktop" demandPopin="true" hAlign="End" width="3em"
+														visible="{= ${DocumentManagementJSONModel>/DOC_OUT} === 'X' }"></m:Column>
+												</m:columns>
+												<m:items>
+													<m:ColumnListItem>
+														<m:cells>
+															<m:Text text="{NCJSONModel>QMNUM}" width="7em"/>
+															<m:Text text="{NCJSONModel>QMTXT}"/>
+															<m:Text text="{NCJSONModel>NAME1_WRK}"/>
+															<m:Text text="{NCJSONModel>ERNAM} - {NCJSONModel>ERNAM_TEXT}"/>
+															<m:Text text="{NCJSONModel>EBELN}"/>
+															<m:Text text="{NCJSONModel>EBELP}"/>
+															<m:Text text="{NCJSONModel>RKMNG} - {NCJSONModel>MGEIN}"/>															
+															<m:Text text="{NCJSONModel>MATNR}"/>
+															<m:Text text="{NCJSONModel>MAKTX}"/>
+															<m:Text text="{NCJSONModel>LIFNUM} - {NCJSONModel>NAME1_LIF}"/>															
+															<m:Text text="{NCJSONModel>IDNLF}"/>
+															<m:Text text="{NCJSONModel>SERIALNR}"/>
+															<m:Text text="{NCJSONModel>XBLNR}"/>
+
+
+															<m:Button icon="sap-icon://display" press="onDetails"/>
+															<m:Button icon="sap-icon://print" press="onPrint" tooltip="Print"/>
+															<u:FileUploader class="pickingUploader" sameFilenameAllowed="true" change="onItemUpload" fileType="xlsx,docx,pdf,txt,doc,xls"
+																iconFirst="true" buttonOnly="true" typeMissmatch="onTypeMissmatch" maximumFileSize="5" fileSizeExceed="onFileSizeExceed" iconOnly="true"
+																icon="sap-icon://upload" tooltip="upload" style="Transparent"/>
+															<m:Button icon="sap-icon://download" press="onItemDownload" type="{path:'NCJSONModel>color', formatter: 'COLOR.formatter.getColor'}"/>
+														</m:cells>
+													</m:ColumnListItem>
+												</m:items>
+											</m:Table>
+										</ObjectPageSubSection>
+									</subSections>
+								</ObjectPageSection>
+							</sections>
+						</ObjectPageLayout>
+					</m:content>
+				</m:Page>
+			</m:pages>
+		</m:App>
+	</m:Shell>
+</mvc:View>

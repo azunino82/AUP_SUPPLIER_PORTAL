@@ -18,6 +18,7 @@ sap.ui.define([
 		onInit: function () {
 			that = this;
 		//	that.onGetOdataColumns();
+			that.getUserInfo();
 			that.getMetasupplier();
 		//	that.onGetMyVariants();
 
@@ -37,6 +38,8 @@ sap.ui.define([
 			var oModelHu = new JSONModel();
 			oModelHu.setData(filterHu);
 			this.getView().setModel(oModelHu, "filterHUJSONModel");
+			
+			this.getView().setModel(sap.ui.getCore().getModel("userapi"), "userapi");			
 
 		},
 		/*Valorizzo MatchCode Metasupplier*/
