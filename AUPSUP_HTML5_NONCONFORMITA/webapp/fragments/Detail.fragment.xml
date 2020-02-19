@@ -1,0 +1,271 @@
+<Dialog xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" xmlns:u="sap.ui.unified" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+	xmlns:table="sap.ui.table" xmlns:smartFilterBar="sap.ui.comp.smartfilterbar" contentWidth="100%" contentHeight="100%"
+	title="{i18n>Detail} {DetailJSONModel>/QMNUM}">
+	<App>
+		<Page id="p1" showHeader="false">
+			<content>
+				<VBox height="20px"></VBox>
+				<FlexBox alignItems="Start" justifyContent="Center">
+					<items>
+						<Title text="{i18n>Header}" titleStyle="H2"/>
+					</items>
+				</FlexBox>
+				<f:SimpleForm editable="true" layout="ResponsiveGridLayout" labelSpanXL="12" labelSpanL="12" labelSpanM="12" labelSpanS="12"
+					adjustLabelSpan="false" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="4" columnsL="2" columnsM="1">
+					<f:content>
+						<core:Title text=""/>
+						<Label text="{i18n>LIFNR}"/>
+						<Text text="{DetailJSONModel>/LIFNUM}"/>
+						<Label text="{i18n>MATNR}"/>
+						<Text text="{DetailJSONModel>/MATNR}"/>
+						<Label text="{i18n>materialDescr}"/>
+						<Text text="{DetailJSONModel>/MAKTX}"/>
+						<core:Title text=""/>
+						<Label text="{i18n>IDNLF}"/>
+						<Text text="{DetailJSONModel>/IDNLF}"/>
+						<Label text="{i18n>ZNOME}"/>
+						<Text text="{DetailJSONModel>/ZNOME}"/>
+						<Label text="{i18n>RKMNG}"/>
+						<Text text="{DetailJSONModel>/RKMNG} - {DetailJSONModel>/MGEIN}"/>
+						<core:Title text=""/>
+						<core:Title text=""/>
+					</f:content>
+				</f:SimpleForm>
+				<FlexBox alignItems="Start" justifyContent="Center">
+					<items>
+						<Title text="{i18n>Difetti}" titleStyle="H2"/>
+						<Title text=""/>
+					</items>
+				</FlexBox>
+				<List id="positionsList" items="{DetailJSONModel>/P_DEFECTS/results}" includeItemInSelection="true">
+					<CustomListItem>
+						<VBox>
+							<VBox height="30px"></VBox>
+							<FlexBox alignItems="Start" justifyContent="Center">
+								<items>
+									<Title text="Defect: {DetailJSONModel>FETXT}" titleStyle="H2"/>
+								</items>
+							</FlexBox>
+							<VBox height="10px"></VBox>
+							<FlexBox alignItems="Center" justifyContent="Start" height="50px" class="sapMTableTH" width="100%">
+								<items>
+									<Label text=" " width="1rem"/>
+									<Label text="{i18n>Difetti}" width="21rem">
+										<layoutData>
+											<FlexItemData growFactor="1"/>
+										</layoutData>
+									</Label>
+									<Label text="{i18n>LONGTXT}" width="31rem">
+										<layoutData>
+											<FlexItemData growFactor="1"/>
+										</layoutData>
+									</Label>
+									<Label text="{i18n>INPUTXT}" visible="{DetailJSONModel>enabled}" width="30.5rem">
+										<layoutData>
+											<FlexItemData growFactor="2"/>
+										</layoutData>
+									</Label>
+								</items>
+							</FlexBox>
+							<VBox height="5px"></VBox>
+							<FlexBox alignItems="Start" justifyContent="Start" width="100%">
+								<items>
+									<Label text=" " width="1rem"/>
+									<Label text="{DetailJSONModel>FETXT}" width="21rem">
+										<layoutData>
+											<FlexItemData growFactor="1"/>
+										</layoutData>
+									</Label>
+									<Text text="{DetailJSONModel>FETXT_LONG}" visible="true" width="31rem">
+										<layoutData>
+											<FlexItemData growFactor="1"/>
+										</layoutData>
+									</Text>
+									<TextArea growing="true" value="{DetailJSONModel>FETXT_LONG_NEW}" visible="{DetailJSONModel>enabled}" rows="3" width="30.5rem">
+										<layoutData>
+											<FlexItemData growFactor="2"/>
+										</layoutData>
+									</TextArea>
+								</items>
+							</FlexBox>
+							<f:SimpleForm visible="false" layout="ResponsiveGridLayout" labelSpanXL="4" labelSpanL="4" labelSpanM="4" adjustLabelSpan="false"
+								emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="4" columnsL="2" columnsM="1" singleContainerFullSize="false">
+								<f:content>
+									<!--<Label text="{i18n>TXT}"/>-->
+									<core:Title text=""/>
+									<Label text="{i18n>LONGTXT}"/>
+									<Text text="{DetailJSONModel>FETXT_LONG}" visible="true"/>
+									<core:Title text=""/>
+									<Label text="{i18n>INPUTXT}" visible="{DetailJSONModel>enabled}"/>
+									<TextArea growing="true" value="{DetailJSONModel>FETXT_LONG_NEW}" visible="{DetailJSONModel>enabled}" rows="3" width="30rem"/>
+								</f:content>
+							</f:SimpleForm>
+							<VBox height="30px"></VBox>
+							<Table width="auto" items="{ path: 'DetailJSONModel>CMI/results' }" visible="{= ${DetailJSONModel>CMI/results}.length > 0 }">
+								<headerToolbar>
+									<OverflowToolbar>
+										<Title text="{i18n>Title2}"/>
+									</OverflowToolbar>
+								</headerToolbar>
+								<columns>
+									<Column width="10rem">
+										<Text text="{i18n>Tipologia}"/>
+									</Column>
+									<Column width="10rem">
+										<Text text="{i18n>TXT}" wrapping="true"/>
+									</Column>
+									<Column width="29rem">
+										<Text text="{i18n>LONGTXT}" wrapping="true"/>
+									</Column>
+									<Column width="30rem">
+										<Text text="{i18n>INPUTXT}"/>
+									</Column>
+								</columns>
+								<items textAlign="Center">
+									<ColumnListItem>
+										<cells>
+											<Text
+												text="{= ${DetailJSONModel>TYPE} === 'VIQMSM' ? ${i18n>Misure} : ${DetailJSONModel>TYPE} === 'VIQMMA' ? ${i18n>Interventi} : ${DetailJSONModel>TYPE} === 'VIQMUR' ? ${i18n>Cause} : '' }"/>
+											<Text text="{DetailJSONModel>TEXT}" visible="true"/>
+											<Text text="{DetailJSONModel>LONG_TEXT}" visible="true"/>
+											<TextArea growing="true" value="{DetailJSONModel>TEXT_LONG_NEW}" visible="{DetailJSONModel>enabled}" rows="3" width="30rem"/>
+										</cells>
+									</ColumnListItem>
+								</items>
+							</Table>
+						</VBox>
+						<VBox height="30px"></VBox>
+					</CustomListItem>
+				</List>
+			</content>
+			<content>
+				<!--TESTATA LISTA-->
+				<VBox height="30px"></VBox>
+				<FlexBox alignItems="Start" justifyContent="Center">
+					<items>
+						<Text text=""/>
+						<Title text="{i18n>DettaglioTestata}" titleStyle="H2"/>
+					</items>
+				</FlexBox>
+				<Table width="auto" items="{ path: 'DetailJSONModel>/T_VIQMFE/results' }" visible="{= ${DetailJSONModel>/T_VIQMFE/results}.length > 0 }">
+					<headerToolbar>
+						<OverflowToolbar>
+							<Title text="{i18n>Difetti}"/>
+						</OverflowToolbar>
+					</headerToolbar>
+					<columns>
+						<Column width="20rem">
+							<Text text="{i18n>TXT}" wrapping="true"/>
+						</Column>
+						<Column width="30rem">
+							<Text text="{i18n>LONGTXT}" wrapping="true"/>
+						</Column>
+						<Column width="30rem">
+							<Text text="{i18n>INPUTXT}"/>
+						</Column>
+					</columns>
+					<items textAlign="Center">
+						<ColumnListItem>
+							<cells>
+								<Text text="{DetailJSONModel>FETXT}"/>
+								<Text text="{DetailJSONModel>FETXT_LONG}" visible="true"/>
+								<TextArea growing="true" value="{DetailJSONModel>FETXT_LONG_NEW}" visible="{DetailJSONModel>enabled}" rows="3" width="30rem"/>
+							</cells>
+						</ColumnListItem>
+					</items>
+				</Table>
+				<VBox height="30px"></VBox>
+				<Table width="auto" items="{ path: 'DetailJSONModel>/T_VIQMSM/results' }" visible="{= ${DetailJSONModel>/T_VIQMSM/results}.length > 0 }">
+					<headerToolbar>
+						<OverflowToolbar>
+							<Title text="{i18n>Misure}"/>
+						</OverflowToolbar>
+					</headerToolbar>
+					<columns>
+						<Column width="20rem">
+							<Text text="{i18n>TXT}" wrapping="true"/>
+						</Column>
+						<Column width="30rem">
+							<Text text="{i18n>LONGTXT}" wrapping="true"/>
+						</Column>
+						<Column width="30rem">
+							<Text text="{i18n>INPUTXT}"/>
+						</Column>
+					</columns>
+					<items textAlign="Center">
+						<ColumnListItem>
+							<cells>
+								<Text text="{DetailJSONModel>MATXT}"/>
+								<Text text="{DetailJSONModel>MATXT_LONG}" visible="true"/>
+								<TextArea growing="true" value="{DetailJSONModel>MATXT_LONG_NEW}" visible="{DetailJSONModel>enabled}" rows="3" width="30rem"/>
+							</cells>
+						</ColumnListItem>
+					</items>
+				</Table>
+				<VBox height="30px"></VBox>
+				<Table width="auto" items="{ path: 'DetailJSONModel>/T_VIQMMA/results' }" visible="{= ${DetailJSONModel>/T_VIQMMA/results}.length > 0 }">
+					<headerToolbar>
+						<OverflowToolbar>
+							<Title text="{i18n>Interventi}"/>
+						</OverflowToolbar>
+					</headerToolbar>
+					<columns>
+						<Column width="20rem">
+							<Text text="{i18n>TXT}" wrapping="true"/>
+						</Column>
+						<Column width="30rem">
+							<Text text="{i18n>LONGTXT}" wrapping="true"/>
+						</Column>
+						<Column width="30rem">
+							<Text text="{i18n>INPUTXT}"/>
+						</Column>
+					</columns>
+					<items textAlign="Center">
+						<ColumnListItem>
+							<cells>
+								<Text text="{DetailJSONModel>MATXT}" visible="true"/>
+								<Text text="{DetailJSONModel>MATXT_LONG}" visible="true"/>
+								<TextArea growing="true" value="{DetailJSONModel>MATXT_LONG_NEW}" visible="{DetailJSONModel>enabled}" rows="3" width="30rem"/>
+							</cells>
+						</ColumnListItem>
+					</items>
+				</Table>
+				<VBox height="30px"></VBox>
+				<Table width="auto" items="{ path: 'DetailJSONModel>/T_VIQMUR/results' }" visible="{= ${DetailJSONModel>/T_VIQMUR/results}.length > 0 }">
+					<headerToolbar>
+						<OverflowToolbar>
+							<Title text="{i18n>Cause}"/>
+						</OverflowToolbar>
+					</headerToolbar>
+					<columns>
+						<Column width="20rem">
+							<Text text="{i18n>TXT}" wrapping="true"/>
+						</Column>
+						<Column width="30rem">
+							<Text text="{i18n>LONGTXT}" wrapping="true"/>
+						</Column>
+						<Column width="30rem">
+							<Text text="{i18n>INPUTXT}"/>
+						</Column>
+					</columns>
+					<items textAlign="Center">
+						<ColumnListItem>
+							<cells>
+								<Text text="{DetailJSONModel>URTXT}" visible="true"/>
+								<Text text="{DetailJSONModel>URTXT_LONG}" visible="true"/>
+								<TextArea growing="true" value="{DetailJSONModel>URTXT_LONG_NEW}" visible="{DetailJSONModel>enabled}" rows="3" width="30rem"/>
+							</cells>
+						</ColumnListItem>
+					</items>
+				</Table>
+			</content>
+			<footer>
+				<Toolbar>
+					<ToolbarSpacer/>
+					<Button text="{i18n>close}" press="onCloseDetail" type="Reject"/>
+					<Button text="{i18n>Confirm}" press="onConfirmDetail" type="Accept"/>
+				</Toolbar>
+			</footer>
+		</Page>
+	</App>
+</Dialog>

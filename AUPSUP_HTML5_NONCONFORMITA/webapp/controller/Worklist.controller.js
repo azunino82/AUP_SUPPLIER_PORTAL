@@ -41,9 +41,9 @@ sap.ui.define([
 						.charAt(0) : "I" // TODO da prendere dall'utente
 				};
 
-				var url = "/SupplierPortal_Notifications/xsOdata/GetNotificationList.xsjs";
+				var url = "/backend/QualityManagement/GetNotificationList";
 				this.showBusyDialog();
-				that.ajaxPost(url, body, "/SupplierPortal_Notifications", function (oData) { // funzione generica su BaseController
+				that.ajaxPost(url, body, function (oData) {
 					that.hideBusyDialog();
 					if (oData) {
 						var oModel = new JSONModel();
@@ -59,8 +59,7 @@ sap.ui.define([
 						that.getView().setModel(oModel, "NCJSONModel");
 						that.getView().byId("NCTable").setModel(oModel);
 					}
-
-				});
+				})
 			}
 
 			that.getMetasupplier();
@@ -87,8 +86,8 @@ sap.ui.define([
 			var oModel = new JSONModel();
 			oModel.setData(filterModel);
 			this.getView().setModel(oModel, "filterNCJSONModel");
-			
-			this.getView().setModel(sap.ui.getCore().getModel("userapi"), "userapi");			
+
+			this.getView().setModel(sap.ui.getCore().getModel("userapi"), "userapi");
 		},
 
 		getMetasupplier: function () {
@@ -129,7 +128,7 @@ sap.ui.define([
 					var oModel = new JSONModel(oData.results[0]);
 					that.getView().setModel(oModel, "DocumentManagementJSONModel");
 				}
-			});			
+			});
 
 		},
 		onChangeMetasupplier: function (oEvent) {
@@ -186,7 +185,7 @@ sap.ui.define([
 			}
 			that.getModel("filterNCJSONModel").getData().lifnum = lifnr;
 		},
-		
+
 		getTipoAvviso: function () {
 			var url = "/backend/Utils/UtilsManagement/GetAvvisiQualita";
 			that.ajaxGet(url, function (oData) {
@@ -195,9 +194,9 @@ sap.ui.define([
 					oModel.setData(oData);
 					that.getView().setModel(oModel, "avvisiQualitaJSONModel");
 				}
-			});			
+			});
 		},
-		
+
 		onChangeBU: function (oEvent) {
 			that.getView().setModel(null, "avvisiQualitaJSONModel");
 			var selectedBU = oEvent.oSource.getSelectedKey();
@@ -214,7 +213,7 @@ sap.ui.define([
 
 					}
 				},
-				error: function (err) {}
+				error: function (err) { }
 			});
 
 		},
@@ -257,7 +256,7 @@ sap.ui.define([
 
 						}
 					},
-					error: function (err) {}
+					error: function (err) { }
 				});
 			}
 		},
@@ -265,7 +264,7 @@ sap.ui.define([
 		handleMatnr: function () {
 
 			if (!that.oSearchMatnrDialog) {
-				that.oSearchMatnrDialog = sap.ui.xmlfragment("it.alteaup.supplier.portal.nonConformita.fragments.SearchMatnr", that);
+				that.oSearchMatnrDialog = sap.ui.xmlfragment("it.alteaup.supplier.portal.nonConformita.AUPSUP_HTML5_NONCONFORMITA.fragments.SearchMatnr", that);
 				that.getView().addDependent(that.oSearchMatnrDialog);
 			}
 			that.oSearchMatnrDialog.open();
@@ -293,7 +292,7 @@ sap.ui.define([
 			var url = "/backend/Utils/UtilsManagement/SearchMaterial";
 			var body = this.getView().getModel("MatnrSearchJSONModel").getData();
 			this.showBusyDialog();
-			that.ajaxPost(url, body, function (oData) { 
+			that.ajaxPost(url, body, function (oData) {
 				that.hideBusyDialog();
 				if (oData) {
 					var oModel = new JSONModel();
@@ -338,10 +337,10 @@ sap.ui.define([
 		},
 
 		onSearchNC: function () {
-			var url = "/SupplierPortal_Notifications/xsOdata/GetNotificationList.xsjs";
+			var url = "/backend/QualityManagement/GetNotificationList";
 			var body = that.getModel("filterNCJSONModel").getData();
 			this.showBusyDialog();
-			that.ajaxPost(url, body, "/SupplierPortal_Notifications", function (oData) { // funzione generica su BaseController
+			that.ajaxPost(url, body, function (oData) {
 				that.hideBusyDialog();
 				if (oData) {
 					var oModel = new JSONModel();
@@ -357,8 +356,7 @@ sap.ui.define([
 					that.getView().setModel(oModel, "NCJSONModel");
 					that.getView().byId("NCTable").setModel(oModel);
 				}
-
-			});
+			})
 		},
 
 		onTypeMissmatch: function (oControlEvent) {
@@ -374,7 +372,7 @@ sap.ui.define([
 			var itemPosition = oEvent.getSource().getParent().getParent().indexOfItem(oEvent.getSource().getParent());
 			var selctedRowdata = getTabledata[itemPosition];
 
-			var url = "/SupplierPortal_Documents/xsOdata/DocPrint.xsjs?I_QMART=" + selctedRowdata.QMART + "&I_NOTIF_NO=" + selctedRowdata.QMNUM;
+			var url = "/backend/DocumentManagement/DocPrint?I_QMART=" + selctedRowdata.QMART + "&I_NOTIF_NO=" + selctedRowdata.QMNUM;
 
 			that._pdfViewer = new PDFViewer();
 			that._pdfViewer.setShowDownloadButton(false);
@@ -415,7 +413,7 @@ sap.ui.define([
 						oModelD.setData(oDataD);
 						that.getView().setModel(oModelD, "DetailJSONModel");
 						if (!that.oDetailsFragment) {
-							that.oDetailsFragment = sap.ui.xmlfragment("it.alteaup.supplier.portal.nonConformita.fragments.Detail", that)
+							that.oDetailsFragment = sap.ui.xmlfragment("it.alteaup.supplier.portal.nonConformita.AUPSUP_HTML5_NONCONFORMITA.fragments.Detail", that)
 							that.getView().addDependent(that.oDetailsFragment);
 						}
 
@@ -423,68 +421,6 @@ sap.ui.define([
 					}
 				}
 			});
-
-			// that.ajaxGet(url, function (oDataD) { // funzione generica su BaseController
-			// 	this.hideBusyDialog();
-			// 	if (oDataD) {
-			// 		var oModelD = new JSONModel();
-			// 		oModelD.setData(oDataD);
-			// 		that.getView().setModel(oModelD, "DetailJSONModel");
-			// 		if (!that.oDetailsFragment) {
-			// 			that.oDetailsFragment = sap.ui.xmlfragment("it.alteaup.supplier.portal.nonConformita.fragments.Detail", that)
-			// 			that.getView().addDependent(that.oDetailsFragment);
-			// 		}
-
-			// 		that.oDetailsFragment.open();
-			// 	}
-			// });
-
-			// if (selctedRowdata.t_VIQMFE) {
-			// 	for (var i = 0; i < selctedRowdata.t_VIQMFE.results.length; i++) {
-			// 		if (selctedRowdata.t_VIQMFE.results[i].AKTYP === "D" || selctedRowdata.t_VIQMFE.results[i].AKTYP === "H" || selctedRowdata.t_VIQMFE
-			// 			.results[i].AKTYP === "")
-			// 			selctedRowdata.t_VIQMFE.results[i].edit = false;
-			// 		else {
-			// 			if (selctedRowdata.t_VIQMFE.results[i].AKTYP === "E")
-			// 				selctedRowdata.t_VIQMFE.results[i].edit = true;
-			// 		}
-			// 	}
-			// }
-			// if (selctedRowdata.t_VIQMUR) {
-			// 	for (var i = 0; i < selctedRowdata.t_VIQMUR.results.length; i++) {
-			// 		if (selctedRowdata.t_VIQMUR.results[i].AKTYP === "D" || selctedRowdata.t_VIQMUR.results[i].AKTYP === "H" || selctedRowdata.t_VIQMUR
-			// 			.results[i].AKTYP === "")
-			// 			selctedRowdata.t_VIQMUR.results[i].edit = false;
-			// 		else {
-			// 			if (selctedRowdata.t_VIQMUR.results[i].AKTYP === "E")
-			// 				selctedRowdata.t_VIQMUR.results[i].edit = true;
-			// 		}
-			// 	}
-			// }
-			// if (selctedRowdata.t_VIQMSM) {
-			// 	for (var i = 0; i < selctedRowdata.t_VIQMSM.results.length; i++) {
-			// 		if (selctedRowdata.t_VIQMSM.results[i].AKTYP === "D" || selctedRowdata.t_VIQMSM.results[i].AKTYP === "H" || selctedRowdata.t_VIQMSM
-			// 			.results[i].AKTYP === "")
-			// 			selctedRowdata.t_VIQMSM.results[i].edit = false;
-			// 		else {
-			// 			if (selctedRowdata.t_VIQMSM.results[i].AKTYP === "E")
-			// 				selctedRowdata.t_VIQMSM.results[i].edit = true;
-			// 		}
-			// 	}
-			// }
-			// if (selctedRowdata.t_VIQMMA) {
-			// 	for (var i = 0; i < selctedRowdata.t_VIQMMA.results.length; i++) {
-			// 		if (selctedRowdata.t_VIQMMA.results[i].AKTYP === "D" || selctedRowdata.t_VIQMMA.results[i].AKTYP === "H" || selctedRowdata.t_VIQMMA
-			// 			.results[i].AKTYP === "")
-			// 			selctedRowdata.t_VIQMMA.results[i].edit = false;
-			// 		else {
-			// 			if (selctedRowdata.t_VIQMMA.results[i].AKTYP === "E")
-			// 				selctedRowdata.t_VIQMMA.results[i].edit = true;
-			// 		}
-			// 	}
-			// }
-
-			/*Fine gestione Edit*/
 
 		},
 		convertBinaryToHex: function (buffer) {
@@ -659,9 +595,9 @@ sap.ui.define([
 						}
 
 						//chiamo Bapi per invio modifiche
-						var url = "/SupplierPortal_Notifications/xsOdata/NotifChange.xsjs";
-						that.showBusyDialog();
-						that.ajaxPost(url, body, "/SupplierPortal_Notifications", function (oData) { // funzione generica su BaseController
+						var url = "/backend/QualityManagement/NotifChange";
+						this.showBusyDialog();
+						that.ajaxPost(url, body, function (oData) {
 							that.hideBusyDialog();
 							if (oData !== undefined && oData.results.length > 0) {
 								for (var i = 0; i < oData.results.length; i++) {
@@ -669,15 +605,13 @@ sap.ui.define([
 									MessageBox.error(errLog);
 								}
 							} else {
-								MessageToast.show(that.getResourceBundle().getText("Elaborato Correttamente"));
+								MessageToast.show(that.getResourceBundle().getText("OK_MSG"));
 								// ricarico la pagina
 								that.onSearchNC();
 								// Chiudo
 								that.onCloseDetail();
 							}
-
-						});
-
+						})
 					}
 				}
 			});
@@ -723,93 +657,42 @@ sap.ui.define([
 				//var vContent = e.currentTarget.result.replace("data:" + file.type + ";base64,", "");
 				var vContent = e.currentTarget.result.split(',');
 				vContent = vContent[1];
-				var url = "/SupplierPortal_Documents/xsOdata/DocUpload.xsjs?I_USERID=" + that.getCurrentUserId() +
-					"&I_CLASSIFICATION=REP_8D&I_APPLICATION=NC&I_FILE_NAME=" + file.name + "&I_OBJECT_CODE=" + selctedRowdata.QMNUM + "&I_WERKS=" +
+				var url = "/backend/DocumentManagement/DocUpload?I_CLASSIFICATION=REP_8D&I_APPLICATION=NC&I_FILE_NAME=" + file.name + "&I_OBJECT_CODE=" + selctedRowdata.QMNUM + "&I_WERKS=" +
 					selctedRowdata.MAWERK + "&I_LIFNR=" + selctedRowdata.LIFNUM;
 
 				that.showBusyDialog();
-				that.getToken("/SupplierPortal_Documents", function (token) {
-
-					jQuery.ajax({
-						url: url,
-						headers: {
-							'x-csrf-token': token
-						},
-						data: vContent, //e.currentTarget.result,
-						method: 'POST',
-						cache: false,
-						contentType: false,
-						processData: false,
-						success: function (data) {
-							that.hideBusyDialog();
-							data = jQuery.parseJSON(data);
-							if (data && data.docId) {
-								MessageBox.success(that.getResourceBundle().getText("OK_Upload"));
-							} else {
-								if (data && data.message) {
-									MessageBox.error(data.message);
-								}
+				jQuery.ajax({
+					url: url,
+					data: vContent, //e.currentTarget.result,
+					method: 'POST',
+					cache: false,
+					contentType: false,
+					processData: false,
+					success: function (data) {
+						that.hideBusyDialog();
+						data = jQuery.parseJSON(data);
+						if (data && data.docId) {
+							MessageBox.success(that.getResourceBundle().getText("OK_Upload"));
+						} else {
+							if (data && data.message) {
+								MessageBox.error(data.message);
 							}
-						},
-						error: function (e) {
-							that.hideBusyDialog();
-							if (e.responseText !== '' && e.responseText != undefined)
-								MessageBox.error(e.responseText);
-							else {
-								if (e.responseJSON !== undefined && e.responseJSON != '' && e.responseJSON.errLog != undefined)
-									MessageBox.error(e.responseJSON.errLog);
-							}
-
 						}
-					});
+					},
+					error: function (e) {
+						that.hideBusyDialog();
+						if (e.responseText !== '' && e.responseText != undefined)
+							MessageBox.error(e.responseText);
+						else {
+							if (e.responseJSON !== undefined && e.responseJSON != '' && e.responseJSON.errLog != undefined)
+								MessageBox.error(e.responseJSON.errLog);
+						}
 
+					}
 				});
 			};
 			reader.readAsDataURL(file);
-			var dublicateValue = [];
 
-			// if (file) {
-			// 	var url = "/SupplierPortal_Documents/xsOdata/DocUpload.xsjs?I_USERID=" + that.getCurrentUserId() +
-			// 		"&I_CLASSIFICATION=REP_8D&I_FILE_NAME=" + file.name + "&I_OBJECT_CODE=" + selctedRowdata.QMNUM;
-
-			// 	that.showBusyDialog();
-			// 	that.getToken("/SupplierPortal_Documents", function (token) {
-			// 		var formData = new FormData();
-			// 		formData.append('document', file);
-			// 		jQuery.ajax({
-			// 			url: url,
-			// 			headers: {
-			// 				'x-csrf-token': token
-			// 			},
-			// 			data: reader,
-			// 			method: 'POST',
-			// 			cache: false,
-			// 			contentType: false,
-			// 			processData: false,
-			// 			success: function (data) {
-			// 				that.hideBusyDialog();
-			// 				if (data && data.docId) {
-			// 					MessageBox.success(that.getResourceBundle().getText("OK_Upload"));
-			// 				} else {
-			// 					if (data && data.message) {
-			// 						MessageBox.error(data.message);
-			// 					}
-			// 				}
-			// 			},
-			// 			error: function (e) {
-			// 				that.hideBusyDialog();
-			// 				if (e.responseText !== '' && e.responseText != undefined)
-			// 					MessageBox.error(e.responseText);
-			// 				else {
-			// 					if (e.responseJSON !== undefined && e.responseJSON != '' && e.responseJSON.errLog != undefined)
-			// 						MessageBox.error(e.responseJSON.errLog);
-			// 				}
-
-			// 			}
-			// 		});
-
-			// 	});
-			// }
 		},
 
 		onItemDownload: function (oEvent) {
@@ -817,8 +700,7 @@ sap.ui.define([
 			var itemPosition = oEvent.getSource().getParent().getParent().indexOfItem(oEvent.getSource().getParent());
 			var selctedRowdata = getTabledata[itemPosition];
 
-			var url = "/SupplierPortal_Documents/xsOdata/DocList.xsjs?I_USERID=" + that.getCurrentUserId() +
-				"&I_CLASSIFICATION=REP_8D&I_APPLICATION=NC&I_OBJECT_CODE=" + selctedRowdata.QMNUM;
+			var url = "/backend/DocumentManagement/DocList?I_CLASSIFICATION=REP_8D&I_APPLICATION=NC&I_OBJECT_CODE=" + selctedRowdata.QMNUM;
 			this.showBusyDialog();
 			jQuery.ajax({
 				url: url,
@@ -829,8 +711,7 @@ sap.ui.define([
 					if (data && data.results && data.results.length > 0) {
 						var totDoc = data.results.length;
 						data.results.forEach(function (elem) {
-							url = "/sap/fiori/nonconformita/SupplierPortal_Documents/xsOdata/DocDownload.xsjs?I_USERID=" + that.getCurrentUserId() +
-								"&I_DOKAR=" + elem.DOKAR + "&I_DOKNR=" + elem.DOKNR + "&I_DOKTL=" + elem.DOKTL + "&I_DOKVR=" + elem.DOKVR +
+							url = "/backend/DocumentManagement/DocDownload.xsjs?I_DOKAR=" + elem.DOKAR + "&I_DOKNR=" + elem.DOKNR + "&I_DOKTL=" + elem.DOKTL + "&I_DOKVR=" + elem.DOKVR +
 								"&I_LO_INDEX=" + elem.LO_INDEX + "&I_LO_OBJID=" + elem.LO_OBJID + "&I_OBJKY=" + elem.OBJKY + "&I_DOKOB=" + elem.DOKOB;
 							// NB: questa chiamata fetch funziona SOLO su portale non con webide preview
 							fetch(url)
@@ -863,37 +744,6 @@ sap.ui.define([
 					MessageBox.error(that.getResourceBundle().getText("ERR_file_not_found"));
 				}
 			});
-
-			//		window.open(url);
-			// this.showBusyDialog();
-			// that.ajaxGet(url, function (oData) { // funzione generica su BaseController
-			// 	that.hideBusyDialog();
-			// 	if (oData) {
-			// 		var filename = "text.xls";
-			// 		if (typeof window.chrome !== 'undefined') {
-			// 			// Chrome version
-			// 			var link = document.createElement('a');
-			// 			link.href = window.URL.createObjectURL(oData);
-			// 			link.download = filename;
-			// 			link.click();
-			// 		} else if (typeof window.navigator.msSaveBlob !== 'undefined') {
-			// 			// IE version
-			// 			var blob = new Blob([req.response], {
-			// 				type: 'application/pdf'
-			// 			});
-			// 			window.navigator.msSaveBlob(blob, filename);
-			// 		} else {
-			// 			// Firefox version
-			// 			var file = new File([req.response], filename, {
-			// 				type: 'application/force-download'
-			// 			});
-			// 			window.open(URL.createObjectURL(file));
-			// 		}
-			// 	} else {
-			// 		MessageBox.error(that.getResourceBundle().getText("ERR_file_not_found"));
-			// 	}
-			// });
-
 		},
 
 		onExport: function (oEvent) {
