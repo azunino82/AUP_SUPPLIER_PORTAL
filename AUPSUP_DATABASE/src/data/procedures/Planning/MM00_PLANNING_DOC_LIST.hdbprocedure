@@ -116,7 +116,7 @@ IT_LIFNR_VENDOR = SELECT * FROM #IT_LIFNR_VENDOR;
 
 IF IT_EBELN = '' THEN
     BEGIN
-       -- IT_DOC_EBELN = SELECT * FROM "PORTAL"."T_MM00_PURDOC_LIST_IT_EBELN";
+        IT_DOC_EBELN = SELECT * FROM #IT_DOC_EBELN;
         
         /*Controllo se le organizzazioni commerciali sono state passate dal servizio*/
         SELECT COUNT(*) into counterRow FROM :IT_EKORG WHERE EKORG <> '';
