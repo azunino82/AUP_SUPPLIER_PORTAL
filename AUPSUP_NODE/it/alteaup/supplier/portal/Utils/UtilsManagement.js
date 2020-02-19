@@ -60,7 +60,6 @@ module.exports = function () {
       }
     })
   })
-  
   // GET USER PLANTS
 
   app.get('/GetUserPlants', function (req, res) {
@@ -88,7 +87,7 @@ module.exports = function () {
         })
       }
     })
-  })  
+  })
 
   // GET USER BU
 
@@ -116,7 +115,7 @@ module.exports = function () {
       }
     })
   })
-  
+
   // GET AVVISI QUALITA LIST
 
   app.get('/GetAvvisiQualita', function (req, res) {
@@ -158,7 +157,7 @@ module.exports = function () {
         })
       }
     })
-  })  
+  })
 
   // GET CORRECT SYSID
 

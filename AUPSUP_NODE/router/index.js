@@ -12,4 +12,7 @@ module.exports = function (app, server) {
 
   // SERVIZI INBOUND DELIVERY
   app.use('/InboundDeliveryManagement', require('../it/alteaup/supplier/portal/InboundDelivery/InboundDeliveryManagement')())
+
+  // SERVIZI DOCUMENTALE
+  app.use('/DocumentManagement', require('../it/alteaup/supplier/portal/Document/DocumentManagement')())
 }
