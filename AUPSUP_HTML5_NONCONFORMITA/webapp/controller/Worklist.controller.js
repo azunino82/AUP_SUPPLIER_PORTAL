@@ -1,4 +1,4 @@
-jQuery.sap.require("it.alteaup.supplier.portal.nonConformita.js.formatter");
+jQuery.sap.require("it.alteaup.supplier.portal.nonConformita.AUPSUP_HTML5_NONCONFORMITA.js.formatter");
 sap.ui.define([
 	"it/alteaup/supplier/portal/nonConformita/AUPSUP_HTML5_NONCONFORMITA/controller/BaseController",
 	"sap/ui/model/json/JSONModel",
@@ -69,7 +69,6 @@ sap.ui.define([
 			that.getDocumentCustomizingData();
 
 			var filterModel = {
-				"userid": that.getCurrentUserId(),
 				"matnr": [],
 				"mawerk": [],
 				"lifnum": [],
@@ -123,22 +122,14 @@ sap.ui.define([
 
 		},
 		getDocumentCustomizingData: function () {
-			var oModelData = this.getOwnerComponent().getModel("DocumentCustomizingModel");
 
-			oModelData.read("/DocumentManagement", {
-				urlParameters: {
-					"$filter": "CLASSIFICATION eq 'REP_8D'"
-				},
-				success: function (oData, oResponse) {
-					if (oData && oData.results && oData.results[0]) {
-						var oModel = new JSONModel(oData.results[0]);
-						that.getView().setModel(oModel, "DocumentManagementJSONModel");
-					}
-				},
-				error: function (err) {
-
+			var url = "/backend/DocumentManagement/GetDocumentData?I_CLASSIFICATION=REP_8D";
+			that.ajaxGet(url, function (oData) {
+				if (oData && oData.results && oData.results[0]) {
+					var oModel = new JSONModel(oData.results[0]);
+					that.getView().setModel(oModel, "DocumentManagementJSONModel");
 				}
-			});
+			});			
 
 		},
 		onChangeMetasupplier: function (oEvent) {
@@ -195,19 +186,7 @@ sap.ui.define([
 			}
 			that.getModel("filterNCJSONModel").getData().lifnum = lifnr;
 		},
-
-		// getBu: function () {
-
-		// 	var url = "/SupplierPortal_Utils/xsOdata/GetUserBU.xsjs?I_USERID=" + that.getCurrentUserId();
-		// 	that.ajaxGet(url, function (oData) {
-		// 		if (oData) {
-		// 			var jsonModel = new sap.ui.model.json.JSONModel();
-		// 			jsonModel.setData(oData);
-		// 			that.getView().setModel(jsonModel, "BUJSONModel");
-		// 		}
-		// 	});
-		// },
-
+		
 		getTipoAvviso: function () {
 			var url = "/backend/Utils/UtilsManagement/GetAvvisiQualita";
 			that.ajaxGet(url, function (oData) {
