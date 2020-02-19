@@ -15,4 +15,7 @@ module.exports = function (app, server) {
 
   // SERVIZI DOCUMENTALE
   app.use('/DocumentManagement', require('../it/alteaup/supplier/portal/Document/DocumentManagement')())
+
+  // SERVIZI QUALITY
+  app.use('/QualityManagement', require('../it/alteaup/supplier/portal/Quality/QualityManagement')())
 }
