@@ -1,0 +1,35 @@
+PROCEDURE "AUPSUP_DATABASE.data.procedures.Utils::GetProfiliConferma" (
+IN userid NVARCHAR(20),
+IN BSTAE NVARCHAR(4),/*Profilo conferma sap*/
+OUT out_table "AUPSUP_DATABASE.data.structures.Utils::PROFILI_CONFERMAStructure" ) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	READS SQL DATA AS
+BEGIN
+
+	DECLARE metaid VARCHAR(50);
+	DECLARE exist_metaid INTEGER;
+	DECLARE owner NVARCHAR(1);
+	
+ 	SELECT COUNT(*) into exist_metaid FROM "AUPSUP_DATABASE.data.tables::T_USERID_METAID" WHERE USERID = :userid;
+ 	IF  exist_metaid > 0 THEN	 	
+ 		owner := 'F';
+ 	ELSE 
+ 		owner := 'B';
+	END IF;  
+	IF (:BSTAE <> '') THEN
+	
+		IF (owner = 'B') THEN
+			out_table = SELECT * FROM "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" WHERE PROFILO_CONTROLLO = :BSTAE;
+		ELSE
+			out_table = SELECT * FROM "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" WHERE PROFILO_CONTROLLO = :BSTAE AND OWNER = :owner;
+		END IF;
+		
+	ELSE
+		IF (owner = 'B') THEN
+			out_table = SELECT * FROM "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA";
+		ELSE
+			out_table = SELECT * FROM "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" WHERE OWNER = :owner;
+		END IF;
+	END IF;
+END;
