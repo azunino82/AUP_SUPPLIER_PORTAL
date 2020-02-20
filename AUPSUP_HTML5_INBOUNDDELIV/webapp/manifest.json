@@ -1,7 +1,7 @@
 {
 	"_version": "1.12.0",
 	"sap.app": {
-		"id": "it.alteaup.supplier.portal.searchHU.AUPSUP_HTML5_SEARCH_HU",
+		"id": "it.alteaup.supplier.portal.inboundDelivery.AUPSUP_HTML5_INBOUNDDELIV",
 		"type": "application",
 		"i18n": "i18n/i18n.properties",
 		"applicationVersion": {
@@ -20,14 +20,15 @@
 						"parameters": {},
 						"additionalParameters": "allowed"
 					},
-					"semanticObject": "SearchHU",
+					"semanticObject": "InboundDelivery",
 					"action": "Display",
 					"title": "{{appTitle}}",
-					"icon": "sap-icon://bbyd-active-sales"
+					"icon": "sap-icon://BusinessSuiteInAppSymbols/icon-outbound-delivery"
 				}
 			}
 		}
 	},
+
 	"sap.ui": {
 		"fullWidth": true,
 		"technology": "UI5",
@@ -45,13 +46,14 @@
 			"phone": true
 		}
 	},
+
 	"sap.ui5": {
 		"config": {
 			"fullWidth": true
-		},
+		},		
 		"flexEnabled": false,
 		"rootView": {
-			"viewName": "it.alteaup.supplier.portal.searchHU.AUPSUP_HTML5_SEARCH_HU.view.App",
+			"viewName": "it.alteaup.supplier.portal.inboundDelivery.AUPSUP_HTML5_INBOUNDDELIV.view.App",
 			"type": "XML",
 			"async": true,
 			"id": "App"
@@ -72,75 +74,37 @@
 			"i18n": {
 				"type": "sap.ui.model.resource.ResourceModel",
 				"settings": {
-					"bundleName": "it.alteaup.supplier.portal.searchHU.AUPSUP_HTML5_SEARCH_HU.i18n.i18n"
+					"bundleName": "it.alteaup.supplier.portal.inboundDelivery.AUPSUP_HTML5_INBOUNDDELIV.i18n.i18n"
 				}
 			}
 		},
 		"resources": {
-			"css": [
-				{
-					"uri": "css/style.css"
-				}
-			]
+			"css": [{
+				"uri": "css/style.css"
+			}]
 		},
 		"routing": {
 			"config": {
 				"routerClass": "sap.m.routing.Router",
 				"viewType": "XML",
 				"async": true,
-				"viewPath": "it.alteaup.supplier.portal.searchHU.AUPSUP_HTML5_SEARCH_HU.view",
+				"viewPath": "it.alteaup.supplier.portal.inboundDelivery.AUPSUP_HTML5_INBOUNDDELIV.view",
 				"controlAggregation": "pages",
-				"controlId": "idAppControl",
+				"controlId": "app",
 				"clearControlAggregation": false
 			},
-			"routes": [
-				{
-					"pattern": "",
-					"name": "worklist",
-					"greedy": false,
-					"target": [
-						"worklist"
-					]
-				},
-				{
-					"name": "object",
-					"pattern": "object/{orderID}",
-					"titleTarget": "",
-					"greedy": false,
-					"target": [
-						"object"
-					]
-				},
-				{
-					"name": "detail",
-					"pattern": "detail/{datas}",
-					"titleTarget": "",
-					"greedy": false,
-					"target": [
-						"detail"
-					]
-				}
-			],
+			"routes": [{
+				"name": "RouteApp",
+				"pattern": "RouteApp",
+				"target": ["TargetApp"]
+			}],
 			"targets": {
-				"worklist": {
-					"viewLevel": 1,
-					"viewName": "Worklist"
-				},
-				"object": {
-					"viewName": "OrderPositions",
-					"viewLevel": 2
-				},
-				"detail": {
-					"viewLevel": 3,
-					"viewName": "OrderPositionDetail"
-				},
-				"OrderPositions": {
+				"TargetApp": {
 					"viewType": "XML",
-					"viewName": "OrderPositions"
-				},
-				"OrderPositionDetail": {
-					"viewType": "XML",
-					"viewName": "OrderPositionDetail"
+					"transition": "slide",
+					"clearControlAggregation": false,
+					"viewId": "App",
+					"viewName": "App"
 				}
 			}
 		}
