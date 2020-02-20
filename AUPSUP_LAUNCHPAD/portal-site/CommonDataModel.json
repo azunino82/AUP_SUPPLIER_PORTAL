@@ -42,6 +42,10 @@
 					"id": "AUPSUP_HTML5_NONCONFORMITA",
 					"appId": "it.alteaup.supplier.portal.nonConformita.AUPSUP_HTML5_NONCONFORMITA",
 					"vizId": "NonConformita-Display"
+				}, {
+					"id": "AUPSUP_HTML5_INBOUNDDELIV",
+					"appId": "it.alteaup.supplier.portal.inboundDelivery.AUPSUP_HTML5_INBOUNDDELIV",
+					"vizId": "InboundDelivery-Display"
 				}]
 			}
 		}],
