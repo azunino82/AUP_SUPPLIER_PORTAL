@@ -398,8 +398,7 @@ sap.ui.define([
 			var SPRAS = sap.ui.getCore().getConfiguration().getLanguage() !== undefined ? sap.ui.getCore().getConfiguration().getLanguage().toUpperCase()
 				.charAt(0) : "I";
 
-			var url = "/SupplierPortal_Notifications/xsOdata/GetNotificationDetail.xsjs?I_USERID=" + this.getCurrentUserId() + "&I_QMNUM=" +
-				selctedRowdata.QMNUM + "&I_SPRAS=" + SPRAS;
+			var url = "/backend/QualityManagement/GetNotificationDetail?I_QMNUM=" +	selctedRowdata.QMNUM + "&I_SPRAS=" + SPRAS;
 			this.showBusyDialog();
 			jQuery.ajax({
 				url: url,
@@ -711,7 +710,7 @@ sap.ui.define([
 					if (data && data.results && data.results.length > 0) {
 						var totDoc = data.results.length;
 						data.results.forEach(function (elem) {
-							url = "/backend/DocumentManagement/DocDownload.xsjs?I_DOKAR=" + elem.DOKAR + "&I_DOKNR=" + elem.DOKNR + "&I_DOKTL=" + elem.DOKTL + "&I_DOKVR=" + elem.DOKVR +
+							url = "/backend/DocumentManagement/DocDownload?I_DOKAR=" + elem.DOKAR + "&I_DOKNR=" + elem.DOKNR + "&I_DOKTL=" + elem.DOKTL + "&I_DOKVR=" + elem.DOKVR +
 								"&I_LO_INDEX=" + elem.LO_INDEX + "&I_LO_OBJID=" + elem.LO_OBJID + "&I_OBJKY=" + elem.OBJKY + "&I_DOKOB=" + elem.DOKOB;
 							// NB: questa chiamata fetch funziona SOLO su portale non con webide preview
 							fetch(url)
