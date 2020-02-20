@@ -23,7 +23,7 @@ sap.ui.define([
 
 			that.getPurchaseOrganizations();
 			that.getUserInfo();
-			// TODO SERVIZIO that.getPurchaseGroup();
+			that.getPurchaseGroup();
 			that.getMetasupplier();
 
 			var filterOrd = {
