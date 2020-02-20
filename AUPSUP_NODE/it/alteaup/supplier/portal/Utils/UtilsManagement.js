@@ -210,16 +210,47 @@ module.exports = function () {
         return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
       } else {
         hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Utils::GetMetasupplierList', function (_err, sp) {
-          sp(req.user.id, (err, parameters, results) => {
+          sp(req.user.id, (err, parameters, OUT_ANAGRAFICA, OUT_LIFNR) => {
             if (err) {
               return res.status(500).send(stringifyObj(err))
             } else {
-              var outArr = []
-              results.forEach(element => {
-                outArr.push(element)
-              })
+              var outList = []
+
+              var listaLifnr = []
+              var listaLifnrOut = []
+              var elem = ''
+
+              if (OUT_LIFNR !== undefined && OUT_LIFNR !== null) {
+                listaLifnr = OUT_LIFNR
+              }
+
+              if (OUT_ANAGRAFICA !== undefined && OUT_ANAGRAFICA !== null) {
+                var listaAnagrafica = OUT_ANAGRAFICA
+                if (listaAnagrafica != null && listaAnagrafica.length > 0) {
+                  for (var i = 0; i < listaAnagrafica.length; i++) {
+                    listaLifnrOut = []
+                    for (var j = 0; j < listaLifnr.length; j++) {
+                      if (listaAnagrafica[i].METAID === listaLifnr[j].METAID) {
+                        elem = {
+                          LIFNR: listaLifnr[j].LIFNR,
+                          DESCR: listaLifnr[j].DESCR
+                        }
+                        listaLifnrOut.push(elem)
+                      }
+                    }
+                    elem = {
+                      METAID: listaAnagrafica[i].METAID,
+                      DESCR: listaAnagrafica[i].DESCR,
+                      LIFNR: listaLifnrOut
+                    }
+
+                    outList.push(elem)
+                  }
+                }
+              }
+
               return res.status(200).send({
-                results: outArr
+                results: outList
               })
             }
           })

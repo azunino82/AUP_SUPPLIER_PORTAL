@@ -162,15 +162,16 @@ module.exports = function () {
                     return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
                 } else {
                     hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Documents::MM00_DOC_UPLOAD', function (_err, sp) {
-                        sp(userid, data, fileName, objectCode, classification, application, metaId, werks, lifnr, (err, parameters, results) => {
+                        sp(userid, data, fileName, objectCode, classification, application, metaId, werks, lifnr, (err, parameters, O_DOC_NUMBER, O_MESSAGE) => {
                         if (err) {
                             console.error('ERROR: ' + err)
                             return res.status(500).send(stringifyObj(err))
                         } else {
                             var out = ''
+                            var results = ''
 
-                            if (results !== null && results !== undefined && results.O_MESSAGE !== null && results.O_MESSAGE !== undefined && results.O_MESSAGE !== '') {
-                                var message = results.O_MESSAGE
+                            if (O_MESSAGE !== null && O_MESSAGE !== undefined && O_MESSAGE !== '') {
+                                var message = O_MESSAGE
                                 if (message != null && message !== '') {
                                     out = message
                                     results = {
@@ -178,8 +179,8 @@ module.exports = function () {
                                     }
                                 }
                             } else {
-                                if (results != null && results !== undefined && results.O_DOC_NUMBER !== undefined && results.O_DOC_NUMBER !== null) {
-                                    var docID = results.O_DOC_NUMBER
+                                if (O_DOC_NUMBER !== undefined && O_DOC_NUMBER !== null) {
+                                    var docID = O_DOC_NUMBER
                                     if (docID != null && docID !== '') {
                                         out = docID
                                         results = {
@@ -239,18 +240,15 @@ module.exports = function () {
                     return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
                 } else {
                 hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Documents::MM00_DOCUMENT_LIST', function (_err, sp) {
-                    sp(userId, objKey, classification, application, (err, parameters, results) => {
+                    sp(userId, objKey, classification, application, (err, parameters, ET_DOCUMENT, O_MESSAGE) => {
                         if (err) {
                             console.error('ERROR: ' + err)
                             return res.status(500).send(stringifyObj(err))
                         } else {
                             var outArrayDoc = []
-                            if (results !== null && results !== undefined && results.ET_DOCUMENT !== undefined && results.ET_DOCUMENT !== null) {
-                                var list = results.ET_DOCUMENT
-                                if (list !== null && list.length > 0) {
-                                    for (var i = 0; i < list.length; i++) {
-                                        outArrayDoc.push(results.ET_DOCUMENT[list[i]])
-                                    }
+                            if (ET_DOCUMENT !== undefined && ET_DOCUMENT !== null && ET_DOCUMENT.length > 0) {
+                                for (var i = 0; i < ET_DOCUMENT.length; i++) {
+                                    outArrayDoc.push(ET_DOCUMENT[i])
                                 }
                             }
                             return res.status(200).send({
@@ -348,7 +346,7 @@ module.exports = function () {
                             return res.status(500).send(stringifyObj(err))
                         } else {
                             return res.status(200).send({
-                                results: results.E_DATA
+                                results: results
                             })
                         }
                     })

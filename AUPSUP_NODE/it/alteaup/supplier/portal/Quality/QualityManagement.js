@@ -7,6 +7,7 @@
 var express = require('express')
 var stringifyObj = require('stringify-object')
 var hdbext = require('@sap/hdbext')
+var async = require('async')
 
 module.exports = function () {
     var app = express.Router()
@@ -79,7 +80,7 @@ module.exports = function () {
             return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
             } else {
             hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Quality::MM00_NOTIFICATION_LIST', function (_err, sp) {
-                sp(userid, qmnum, qmart, mawerk, lifnum, matnr, idnlf, spras, ernam, (err, parameters, results) => {
+                sp(userid, qmnum, qmart, mawerk, lifnum, matnr, idnlf, spras, ernam, (err, parameters, ET_NOTIF_VIQMEL, ET_NOTIF_VIQMFE, ET_NOTIF_VIQMUR, ET_NOTIF_VIQMSM, ET_NOTIF_VIQMMA) => {
                 if (err) {
                     console.error('ERROR: ' + err)
                     return res.status(500).send(stringifyObj(err))
@@ -90,58 +91,43 @@ module.exports = function () {
                     var t_VIQMSM = []
                     var t_VIQMMA = []
                 
-                    if (results !== null && results !== undefined && results.ET_NOTIF_VIQMEL !== null && results.ET_NOTIF_VIQMEL !== undefined) {
-                        var listHeaders = results.ET_NOTIF_VIQMEL
-                        if (listHeaders !== null && listHeaders.length > 0) {
-                            for (var i = 0; i < listHeaders.length; i++) {
-                                var objectCopy = JSON.parse(JSON.stringify(results.ET_NOTIF_VIQMEL[listHeaders[i]]))
-                                objectCopy.t_VIQMFE = { results: [] }
-                                objectCopy.t_VIQMUR = { results: [] }
-                                objectCopy.t_VIQMSM = { results: [] }
-                                objectCopy.t_VIQMMA = { results: [] }
-                        
-                                t_VIQMEL.push(objectCopy)
-                            }
+                    if (ET_NOTIF_VIQMEL !== null && ET_NOTIF_VIQMEL !== undefined && ET_NOTIF_VIQMEL.length > 0) {
+                        for (var i = 0; i < ET_NOTIF_VIQMEL.length; i++) {
+                            var objectCopy = ET_NOTIF_VIQMEL[i]
+                            objectCopy.t_VIQMFE = { results: [] }
+                            objectCopy.t_VIQMUR = { results: [] }
+                            objectCopy.t_VIQMSM = { results: [] }
+                            objectCopy.t_VIQMMA = { results: [] }
+                    
+                            t_VIQMEL.push(objectCopy)
                         }
                     }
     
-                    if (results !== null && results !== undefined && results.ET_NOTIF_VIQMFE !== null && results.ET_NOTIF_VIQMFE !== undefined) {
-                        var listVIQMFE = results.ET_NOTIF_VIQMFE
-                        if (listVIQMFE !== null && listVIQMFE.length > 0) {
-                            // eslint-disable-next-line no-redeclare
-                            for (var i = 0; i < listVIQMFE.length; i++) {
-                                t_VIQMFE.push(results.ET_NOTIF_VIQMFE[listVIQMFE[i]])
-                            }
+                    if (ET_NOTIF_VIQMFE !== null && ET_NOTIF_VIQMFE !== undefined && ET_NOTIF_VIQMFE.length > 0) {
+                        // eslint-disable-next-line no-redeclare
+                        for (var i = 0; i < ET_NOTIF_VIQMFE.length; i++) {
+                            t_VIQMFE.push(ET_NOTIF_VIQMFE[i])
                         }
                     }
-                    
-                    if (results != null && results !== undefined && results.ET_NOTIF_VIQMSM !== null && results.ET_NOTIF_VIQMSM !== undefined) {
-                        var listVIQMSM = results.ET_NOTIF_VIQMSM
-                        if (listVIQMSM !== null && listVIQMSM.length > 0) {
-                            // eslint-disable-next-line no-redeclare
-                            for (var i = 0; i < listVIQMSM.length; i++) {
-                                t_VIQMSM.push(results.ET_NOTIF_VIQMSM[listVIQMSM[i]])
-                            }
+    
+                    if (ET_NOTIF_VIQMSM !== null && ET_NOTIF_VIQMSM !== undefined && ET_NOTIF_VIQMSM.length > 0) {
+                        // eslint-disable-next-line no-redeclare
+                        for (var i = 0; i < ET_NOTIF_VIQMSM.length; i++) {
+                            t_VIQMSM.push(ET_NOTIF_VIQMSM[i])
                         }
                     }
-                    
-                    if (results !== null && results !== undefined && results.ET_NOTIF_VIQMMA !== null && results.ET_NOTIF_VIQMMA !== undefined) {
-                        var listVIQMMA = results.ET_NOTIF_VIQMMA
-                        if (listVIQMMA !== null && listVIQMMA.length > 0) {
-                            // eslint-disable-next-line no-redeclare
-                            for (var i = 0; i < listVIQMMA.length; i++) {
-                                t_VIQMMA.push(results.ET_NOTIF_VIQMMA[listVIQMMA[i]])
-                            }
+    
+                    if (ET_NOTIF_VIQMMA !== null && ET_NOTIF_VIQMMA !== undefined && ET_NOTIF_VIQMMA.length > 0) {
+                        // eslint-disable-next-line no-redeclare
+                        for (var i = 0; i < ET_NOTIF_VIQMMA.length; i++) {
+                            t_VIQMMA.push(ET_NOTIF_VIQMMA[i])
                         }
                     }
-
-                    if (results !== null && results !== undefined && results.ET_NOTIF_VIQMUR !== null && results.ET_NOTIF_VIQMUR !== undefined) {
-                        var listVIQMUR = results.ET_NOTIF_VIQMUR
-                        if (listVIQMUR !== null && listVIQMUR.length > 0) {
-                            // eslint-disable-next-line no-redeclare
-                            for (var i = 0; i < listVIQMUR.length; i++) {
-                                t_VIQMUR.push(results.ET_NOTIF_VIQMUR[listVIQMUR[i]])
-                            }
+    
+                    if (ET_NOTIF_VIQMUR !== null && ET_NOTIF_VIQMUR !== undefined && ET_NOTIF_VIQMUR.length > 0) {
+                        // eslint-disable-next-line no-redeclare
+                        for (var i = 0; i < ET_NOTIF_VIQMUR.length; i++) {
+                            t_VIQMUR.push(ET_NOTIF_VIQMUR[i])
                         }
                     }
 
@@ -175,10 +161,8 @@ module.exports = function () {
                         t_VIQMEL[i].t_VIQMUR.results = tVIQMUR
                     }
 
-                    results = { results: t_VIQMEL }
-                    
                     return res.status(200).send({
-                        results: results
+                        results: t_VIQMEL
                     })
                 }
                 })
@@ -242,6 +226,356 @@ module.exports = function () {
         })
         }
     })
+
+    // NOTIFICATION DETAIL
+    app.get('/GetNotificationDetail', function (req, res) {
+        const sql = 'SELECT * FROM \"AUPSUP_DATABASE.data.tables::T_AVVISI_QUALITA\"'
+        var qmart = []
+        var mawerk = []
+        var lifnum = []
+        var matnr = []
+        var idnlf = []
+        var ernam = []
+        var spras = 'I'
+        var qmnum = []
+        var userid = req.user.id
+
+        if (req.query.I_QMNUM !== null && req.query.I_QMNUM !== '') {
+            qmnum.push({
+                QMNUM: req.query.I_QMNUM
+            })
+        }
+
+        if (req.query.I_SPRAS !== null && req.query.I_SPRAS !== undefined && req.query.I_SPRAS !== '') {
+            spras = req.query.I_SPRAS
+        }
+
+        if (req.query.I_QMNUM === null || req.query.I_QMNUM === undefined || req.query.I_QMNUM === '') {
+            return res.status(500).send(JSON.stringify("{'Error':'QMNUM field is mandatory'}"))
+        }        
+
+        hdbext.createConnection(req.tenantContainer, function (error, client) {
+            if (error) {
+                console.error(error)
+            }
+            if (client) {
+                async.waterfall([
+
+                    function prepare (callback) {
+                        client.prepare(sql,
+                            function (err, statement) {
+                                callback(null, err, statement)
+                            })
+                    },
+
+                    function execute (_err, statement, callback) {
+                        statement.exec([], function (execErr, results) {
+                            callback(null, execErr, results)
+                        })
+                    },
+
+                    function response (err, results, callback) {
+                        if (err) {
+                            res.type('application/json').status(500).send({ ERROR: err })
+                            return
+                        } else {
+                            // HO TROVATO RECORD IN T_AVVISI_QUALITA
+                            var resultAvvisi = results !== undefined && results.length > 0 ? results[0] : null
+                            hdbext.createConnection(req.tenantContainer, (err, client) => {
+                                if (err) {
+                                    return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
+                                } else {
+                                hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Quality::MM00_NOTIFICATION_LIST', function (_err, sp) {
+                                    sp(userid, qmnum, qmart, mawerk, lifnum, matnr, idnlf, spras, ernam, (err, parameters, ET_NOTIF_VIQMEL, ET_NOTIF_VIQMFE, ET_NOTIF_VIQMUR, ET_NOTIF_VIQMSM, ET_NOTIF_VIQMMA) => {
+                                        if (err) {
+                                            console.error('ERROR: ' + err)
+                                            return res.status(500).send(stringifyObj(err))
+                                        } else {
+                                            var t_VIQMEL = {}
+                                            var t_VIQMFE = []
+                                            var t_VIQMUR = []
+                                            var t_VIQMSM = []
+                                            var t_VIQMMA = []
+                                            var singleObj = {}
+                                    
+                                            if (ET_NOTIF_VIQMFE !== undefined && ET_NOTIF_VIQMFE !== null && ET_NOTIF_VIQMFE.length > 0) {
+                                                for (var i = 0; i < ET_NOTIF_VIQMFE.length; i++) {
+                                                    t_VIQMFE.push(ET_NOTIF_VIQMFE[i])
+                                                }
+                                            }
+                                    
+                                            if (ET_NOTIF_VIQMSM !== undefined && ET_NOTIF_VIQMSM !== null) {
+                                                // eslint-disable-next-line no-redeclare
+                                                for (var i = 0; i < ET_NOTIF_VIQMSM.length; i++) {
+                                                    t_VIQMSM.push(ET_NOTIF_VIQMSM[i])
+                                                }
+                                            }
+                                    
+                                            if (ET_NOTIF_VIQMMA !== undefined && ET_NOTIF_VIQMMA !== null && ET_NOTIF_VIQMMA.length > 0) {
+                                                // eslint-disable-next-line no-redeclare
+                                                for (var i = 0; i < ET_NOTIF_VIQMMA.length; i++) {
+                                                    t_VIQMMA.push(ET_NOTIF_VIQMMA[i])
+                                                }
+                                            }
+
+                                            if (ET_NOTIF_VIQMUR !== null && ET_NOTIF_VIQMUR !== undefined && ET_NOTIF_VIQMUR.length > 0) {
+                                                // eslint-disable-next-line no-redeclare
+                                                for (var i = 0; i < ET_NOTIF_VIQMUR.length; i++) {
+                                                    t_VIQMUR.push(ET_NOTIF_VIQMUR[i])
+                                                }
+                                            }
+                                    
+                                            var POSITIONS = []
+                                            for (var j = 0; j < t_VIQMFE.length; j++) {
+                                                if (t_VIQMFE[j].FENUM !== '0000' && t_VIQMFE[j].FENUM !== '') {
+                                                    var singlePos = t_VIQMFE[j]
+                                                    singlePos.AKTYP = resultAvvisi.P_DIFETTI // sovrascrivo quello che torna la bapi in base al customizing
+                                                    if (resultAvvisi.P_DIFETTI !== null && resultAvvisi.P_DIFETTI !== undefined && resultAvvisi.P_DIFETTI === 'D') {
+                                                        singlePos.visible = true
+                                                        singlePos.enabled = false
+                                                    } else {
+                                                        if (resultAvvisi.P_DIFETTI !== null && resultAvvisi.P_DIFETTI !== undefined && resultAvvisi.P_DIFETTI === 'E') {
+                                                            singlePos.visible = true
+                                                            singlePos.enabled = true
+                                                        } else {
+                                                            singlePos.visible = false
+                                                            singlePos.enabled = false
+                                                        }
+                                                    }
+                                    
+                                                    singlePos.CMI = {
+                                                        results: []
+                                                    }
+                                    
+                                                    for (var b = 0; b < t_VIQMUR.length; b++) {
+                                                        if (t_VIQMUR[b].QMNUM === singlePos.QMNUM && t_VIQMUR[b].FENUM !== '0000' && t_VIQMUR[b].FENUM !== '' && t_VIQMUR[b].FENUM === singlePos.FENUM) {
+                                                            var singleVIQMUR = t_VIQMUR[b]
+                                                            singleVIQMUR.AKTYP = resultAvvisi.P_CAUSE // sovrascrivo quello che torna la bapi in base al customizing
+                                                            singleObj = {}
+                                                            singleObj.FENUM = singleVIQMUR.FENUM
+                                                            singleObj.QMNUM = singleVIQMUR.QMNUM
+                                                            singleObj.PROGRESSIVO = singleVIQMUR.URNUM
+                                                            singleObj.TEXT = singleVIQMUR.URTXT
+                                                            singleObj.LONG_TEXT = singleVIQMUR.URTXT_LONG
+                                                            singleObj.AKTYP = singleVIQMUR.AKTYP
+                                                            singleObj.TYPE = 'VIQMUR'
+                                                            if (resultAvvisi.P_CAUSE !== null && resultAvvisi.P_CAUSE !== undefined && resultAvvisi.P_CAUSE === 'D') {
+                                                                singleObj.visible = true
+                                                                singleObj.enabled = false
+                                                            } else {
+                                                                if (resultAvvisi.P_CAUSE !== null && resultAvvisi.P_CAUSE !== undefined && resultAvvisi.P_CAUSE === 'E') {
+                                                                    singleObj.visible = true
+                                                                    singleObj.enabled = true
+                                                                } else {
+                                                                    singleObj.visible = false
+                                                                    singleObj.enabled = false
+                                                                }
+                                                            }
+                                    
+                                                            if (resultAvvisi.P_CAUSE !== null && resultAvvisi.P_CAUSE !== undefined && resultAvvisi.P_CAUSE !== 'H') {
+                                                                singlePos.CMI.results.push(singleObj)
+                                                            }
+                                                        }
+                                                    }
+                                    
+                                                    for (var c = 0; c < t_VIQMSM.length; c++) {
+                                                        if (t_VIQMSM[c].QMNUM === singlePos.QMNUM && t_VIQMSM[c].FENUM !== '0000' && t_VIQMSM[c].FENUM !== '' && t_VIQMSM[c].FENUM === singlePos.FENUM) {
+                                                            var singleVIQMSM = t_VIQMSM[c]
+                                                            singleVIQMSM.AKTYP = resultAvvisi.P_MISURE // sovrascrivo quello che torna la bapi in base al customizing
+                                                            singleObj = {}
+                                                            singleObj.FENUM = singleVIQMSM.FENUM
+                                                            singleObj.QMNUM = singleVIQMSM.QMNUM
+                                                            singleObj.PROGRESSIVO = singleVIQMSM.MANUM 
+                                                            singleObj.TEXT = singleVIQMSM.MATXT
+                                                            singleObj.LONG_TEXT = singleVIQMSM.MATXT_LONG
+                                                            singleObj.AKTYP = singleVIQMSM.AKTYP
+                                                            singleObj.TYPE = 'VIQMSM'
+                                                            if (resultAvvisi.P_MISURE !== null && resultAvvisi.P_MISURE !== undefined && resultAvvisi.P_MISURE === 'D') {
+                                                                singleObj.visible = true
+                                                                singleObj.enabled = false
+                                                            } else {
+                                                                if (resultAvvisi.P_MISURE !== null && resultAvvisi.P_MISURE !== undefined && resultAvvisi.P_MISURE === 'E') {
+                                                                    singleObj.visible = true
+                                                                    singleObj.enabled = true
+                                                                } else {
+                                                                    singleObj.visible = false
+                                                                    singleObj.enabled = false
+                                                                }
+                                                            }
+                                    
+                                                            if (resultAvvisi.P_MISURE !== null && resultAvvisi.P_MISURE !== undefined && resultAvvisi.P_MISURE !== 'H') {
+                                                                singlePos.CMI.results.push(singleObj)
+                                                            }
+                                                        }
+                                                    }
+                                    
+                                                    // eslint-disable-next-line no-redeclare
+                                                    for (var c = 0; c < t_VIQMMA.length; c++) {
+                                                        if (t_VIQMMA[c].QMNUM === singlePos.QMNUM && t_VIQMMA[c].FENUM !== '0000' && t_VIQMMA[c].FENUM !== '' && t_VIQMMA[c].FENUM === singlePos.FENUM) {
+                                                            var singleVIQMMA = t_VIQMMA[c]
+                                                            singleVIQMMA.AKTYP = resultAvvisi.P_INTERVENTI // sovrascrivo quello che torna la bapi in base al customizing
+                                                            singleObj = {}
+                                                            singleObj.FENUM = singleVIQMMA.FENUM
+                                                            singleObj.QMNUM = singleVIQMMA.QMNUM
+                                                            singleObj.PROGRESSIVO = singleVIQMMA.MANUM
+                                                            singleObj.TEXT = singleVIQMMA.MATXT
+                                                            singleObj.LONG_TEXT = singleVIQMMA.MATXT_LONG
+                                                            singleObj.AKTYP = singleVIQMMA.AKTYP
+                                                            singleObj.TYPE = 'VIQMMA'
+                                                            if (resultAvvisi.P_INTERVENTI !== null && resultAvvisi.P_INTERVENTI !== undefined && resultAvvisi.P_INTERVENTI === 'D') {
+                                                                singleObj.visible = true
+                                                                singleObj.enabled = false
+                                                            } else {
+                                                                if (resultAvvisi.P_INTERVENTI !== null && resultAvvisi.P_INTERVENTI !== undefined && resultAvvisi.P_INTERVENTI === 'E') {
+                                                                    singleObj.visible = true
+                                                                    singleObj.enabled = true
+                                                                } else {
+                                                                    singleObj.visible = false
+                                                                    singleObj.enabled = false
+                                                                }
+                                                            }
+                                    
+                                                            if (resultAvvisi.P_INTERVENTI !== null && resultAvvisi.P_INTERVENTI !== undefined && resultAvvisi.P_INTERVENTI !== 'H') {
+                                                                singlePos.CMI.results.push(singleObj)
+                                                            }
+                                                        }
+                                                    }
+                                    
+                                                    POSITIONS.push(singlePos)
+                                                }
+                                            }
+                                    
+                                            // GESTIONE TESTATA
+                                            if (ET_NOTIF_VIQMEL !== null && ET_NOTIF_VIQMEL !== undefined && ET_NOTIF_VIQMEL.length > 0) {
+                                                    // eslint-disable-next-line no-redeclare
+                                                    for (var i = 0; i < ET_NOTIF_VIQMEL.length; i++) {
+                                                        var objectCopy = ET_NOTIF_VIQMEL[i]
+                                                        objectCopy.P_DEFECTS = {
+                                                            results: POSITIONS
+                                                        }
+                                    
+                                                        objectCopy.T_VIQMFE = {}
+                                                        objectCopy.T_VIQMSM = {}
+                                                        objectCopy.T_VIQMMA = {}
+                                                        objectCopy.T_VIQMUR = {}
+                                    
+                                                        var tVIQMFE = []
+                                                        // eslint-disable-next-line no-redeclare
+                                                        for (var j = 0; j < t_VIQMFE.length; j++) {
+                                                            if (objectCopy.QMNUM === t_VIQMFE[j].QMNUM && (t_VIQMFE[j].FENUM === '0000' || t_VIQMFE[j].FENUM === '')) {
+                                                                singleObj = t_VIQMFE[j]
+                                                                singleObj.AKTYP = resultAvvisi.T_DIFETTI // sovrascrivo quello che torna la bapi in base al customizing
+                                                                if (resultAvvisi.T_DIFETTI !== null && resultAvvisi.T_DIFETTI !== undefined && resultAvvisi.T_DIFETTI === 'D') {
+                                                                    singleObj.visible = true
+                                                                    singleObj.enabled = false
+                                                                } else {
+                                                                    if (resultAvvisi.T_DIFETTI !== null && resultAvvisi.T_DIFETTI !== undefined && resultAvvisi.T_DIFETTI === 'E') {
+                                                                        singleObj.visible = true
+                                                                        singleObj.enabled = true
+                                                                    } else {
+                                                                        singleObj.visible = false
+                                                                        singleObj.enabled = false
+                                                                    }
+                                                                }
+                                    
+                                                                tVIQMFE.push(singleObj)
+                                                            }
+                                                        }
+                                                        objectCopy.T_VIQMFE[results] = tVIQMFE
+                                    
+                                                        var tVIQMSM = []
+                                                        // eslint-disable-next-line no-redeclare
+                                                        for (var j = 0; j < t_VIQMSM.length; j++) {
+                                                            if (objectCopy.QMNUM === t_VIQMSM[j].QMNUM && (t_VIQMSM[j].FENUM === '0000' || t_VIQMSM[j].FENUM === '')) {
+                                                                singleObj = t_VIQMSM[j]
+                                                                singleObj.AKTYP = resultAvvisi.T_MISURE // sovrascrivo quello che torna la bapi in base al customizing
+                                                                if (resultAvvisi.T_MISURE !== null && resultAvvisi.T_MISURE !== undefined && resultAvvisi.T_MISURE === 'D') {
+                                                                    singleObj.visible = true
+                                                                    singleObj.enabled = false
+                                                                } else {
+                                                                    if (resultAvvisi.T_MISURE !== null && resultAvvisi.T_MISURE !== undefined && resultAvvisi.T_MISURE === 'E') {
+                                                                        singleObj.visible = true
+                                                                        singleObj.enabled = true
+                                                                    } else {
+                                                                        singleObj.visible = false
+                                                                        singleObj.enabled = false
+                                                                    }
+                                                                }
+                                    
+                                                                tVIQMSM.push(singleObj)
+                                                            }
+                                                        }
+                                                        objectCopy.T_VIQMSM[results] = tVIQMSM
+                                    
+                                                        var tVIQMMA = []
+                                                        // eslint-disable-next-line no-redeclare
+                                                        for (var j = 0; j < t_VIQMMA.length; j++) {
+                                                            if (objectCopy.QMNUM === t_VIQMMA[j].QMNUM && (t_VIQMMA[j].FENUM === '0000' || t_VIQMMA[j].FENUM === '')) {
+                                                                singleObj = t_VIQMMA[j]
+                                                                singleObj.AKTYP = resultAvvisi.T_INTERVENTI // sovrascrivo quello che torna la bapi in base al customizing
+                                                                if (resultAvvisi.T_INTERVENTI !== null && resultAvvisi.T_INTERVENTI !== undefined && resultAvvisi.T_INTERVENTI === 'D') {
+                                                                    singleObj.visible = true
+                                                                    singleObj.enabled = false
+                                                                } else {
+                                                                    if (resultAvvisi.T_INTERVENTI !== null && resultAvvisi.T_INTERVENTI !== undefined && resultAvvisi.T_INTERVENTI === 'E') {
+                                                                        singleObj.visible = true
+                                                                        singleObj.enabled = true
+                                                                    } else {
+                                                                        singleObj.visible = false
+                                                                        singleObj.enabled = false
+                                                                    }
+                                                                }
+                                    
+                                                                tVIQMMA.push(singleObj)
+                                                            }
+                                                        }
+                                                        objectCopy.T_VIQMMA[results] = tVIQMMA
+                                    
+                                                        var tVIQMUR = []
+                                                        // eslint-disable-next-line no-redeclare
+                                                        for (var j = 0; j < t_VIQMUR.length; j++) {
+                                                            if (objectCopy.QMNUM === t_VIQMUR[j].QMNUM && (t_VIQMUR[j].FENUM === '0000' || t_VIQMUR[j].FENUM === '')) {
+                                                                singleObj = t_VIQMUR[j]
+                                                                singleObj.AKTYP = resultAvvisi.T_CAUSE // sovrascrivo quello che torna la bapi in base al customizing
+                                                                if (resultAvvisi.T_CAUSE !== null && resultAvvisi.T_CAUSE !== undefined && resultAvvisi.T_CAUSE === 'D') {
+                                                                    singleObj.visible = true
+                                                                    singleObj.enabled = false
+                                                                } else {
+                                                                    if (resultAvvisi.T_CAUSE !== null && resultAvvisi.T_CAUSE !== undefined && resultAvvisi.T_CAUSE === 'E') {
+                                                                        singleObj.visible = true
+                                                                        singleObj.enabled = true
+                                                                    } else {
+                                                                        singleObj.visible = false
+                                                                        singleObj.enabled = false
+                                                                    }
+                                                                }
+                                    
+                                                                tVIQMUR.push(singleObj)
+                                                            }
+                                                        }
+                                                        objectCopy.T_VIQMUR[results] = tVIQMUR
+                                    
+                                                        t_VIQMEL = objectCopy
+                                                    }
+                                            }
+                                    
+                                            return res.status(200).send(t_VIQMEL)
+                                        }
+                                    })
+                                })
+                                }
+                            })
+                        }
+                        callback()
+                    }
+                ], function done (err, parameters, rows) {
+                    if (err) {
+                        return console.error('Done error', err)
+                    }
+                })
+            }
+        })
+    })        
 
     // Parse URL-encoded bodies (as sent by HTML forms)
     // app.use(express.urlencoded());
