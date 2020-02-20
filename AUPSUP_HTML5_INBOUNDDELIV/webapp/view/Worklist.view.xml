@@ -1,0 +1,209 @@
+<mvc:View controllerName="it.alteaup.supplier.portal.inboundDelivery.AUPSUP_HTML5_INBOUNDDELIV.controller.Worklist" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.uxap"
+	xmlns:layout="sap.ui.layout" xmlns:m="sap.m" xmlns:table="sap.ui.table" xmlns:core="sap.ui.core" xmlns:fb="sap.ui.comp.filterbar"
+	xmlns:personal="sap.uxap.sample.SharedBlocks.personal" xmlns:form="sap.ui.layout.form">
+	<m:Shell id="shell" appWidthLimited="false">
+		<m:App id="app">
+			<m:pages>
+				<m:Page id="worklist">
+					<m:customHeader>
+						<m:Bar>
+							<m:contentLeft>
+								<m:Text text="{userapi>/firstname} {userapi>/lastname}"></m:Text>
+							</m:contentLeft>
+							<m:contentMiddle>
+								<m:Text text="{i18n>title}" class="sapMTitle sapMTitleStyleAuto sapMTitleMaxWidth"></m:Text>
+							</m:contentMiddle>
+						</m:Bar>
+					</m:customHeader>
+					<m:content>
+						<ObjectPageLayout id="ObjectPageLayout" headerContentPinnable="true" showFooter="true">
+							<headerContent>
+								<fb:FilterBar clear="onClearFilters" search="onSearch" showRestoreButton="false" showClearButton="true" showClearOnFB="true">
+									<fb:filterItems>
+										<fb:FilterItem name="Documento" label="{i18n>EBELN}">
+											<fb:control>
+												<m:Input value="{filterInboundDelivJSONModel>/ebeln}"/>
+											</fb:control>
+										</fb:FilterItem>
+										<fb:FilterItem name="Metasupplier" label="{i18n>METASUP}" visible="{VisibilityJSONModel>/isBuyer}">
+											<fb:control>
+												<m:MultiComboBox selectedKeys="{MetasupplierJSONModel>/METAID}" selectionChange="onChangeMetasupplier"
+													items="{ path: 'MetasupplierJSONModel>/results', sorter: { path: 'METAID' } }">
+													<core:Item key="{MetasupplierJSONModel>METAID}" text="{MetasupplierJSONModel>DESC}"/>
+												</m:MultiComboBox>
+											</fb:control>
+										</fb:FilterItem>
+										<fb:FilterItem name="Cond.Pag" label="{i18n>ZTERM}" visible="false">
+											<fb:control>
+												<m:Input value="{filterInboundDelivJSONModel>/ZTERM}"/>
+											</fb:control>
+										</fb:FilterItem>
+										<fb:FilterItem name="Incoterm" label="{i18n>INCO1}" visible="false">
+											<fb:control>
+												<m:Input value="{filterInboundDelivJSONModel>/INCO1}"/>
+											</fb:control>
+										</fb:FilterItem>
+										<fb:FilterItem name="Lifnr" label="{i18n>supplier}" visible="{VisibilityJSONModel>/isBuyer}">
+											<fb:control>
+												<m:MultiComboBox selectionChange="onChangeMetalifnr" items="{ path: 'lifnrJSONModel>/', sorter: { path: 'LIFNR' } }">
+													<core:Item key="{lifnrJSONModel>LIFNR}" text="{lifnrJSONModel>DESCR}"/>
+												</m:MultiComboBox>
+											</fb:control>
+										</fb:FilterItem>
+										<fb:FilterItem name="Matnr" label="{i18n>MATNR}" visible="{VisibilityJSONModel>/isBuyer}">
+											<fb:control>
+												<m:Input type="Text" value="{filterInboundDelivJSONModel>/MatnrDesc}" showValueHelp="true" valueHelpOnly="true"
+													valueHelpRequest="handleMatnr" class="sapUiSmallMarginBottom"/>
+											</fb:control>
+										</fb:FilterItem>
+										<fb:FilterItem name="Ekorg" label="{i18n>purchaseOrganization}" visible="false">
+											<fb:control>
+												<m:MultiComboBox selectedKeys="{filterInboundDelivJSONModel>/ekorg}"
+													items="{ path: 'PurchaseOrganizationJSONModel>/results', sorter: { path: 'PURCH_ORG' } }">
+													<core:Item key="{PurchaseOrganizationJSONModel>PURCH_ORG}" text="{PurchaseOrganizationJSONModel>DESCR}"/>
+												</m:MultiComboBox>
+											</fb:control>
+										</fb:FilterItem>
+										<fb:FilterItem name="GrAcq" label="{i18n>EKGRP}" visible="false">
+											<fb:control>
+												<m:MultiComboBox selectedKeys="{filterInboundDelivJSONModel>/ekgrp}"
+													items="{ path: 'PurchaseGroupJSONModel>/results', sorter: { path: 'CODE' } }" showSecondaryValues="true">
+													<core:ListItem key="{PurchaseGroupJSONModel>CODE}" text="{PurchaseGroupJSONModel>DESCR}" additionalText="{PurchaseGroupJSONModel>CODE}"/>
+												</m:MultiComboBox>
+											</fb:control>
+										</fb:FilterItem>
+										<fb:FilterItem name="Plant" label="{i18n>WERKS}">
+											<fb:control>
+												<m:MultiComboBox selectedKeys="{filterInboundDelivJSONModel>/werks}" visible="true"
+													items="{ path: 'PlantsJSONModel>/results', sorter: { path: 'EWERK' } }" showSecondaryValues="true">
+													<core:ListItem key="{PlantsJSONModel>EWERK}" text="{PlantsJSONModel>DESCR}" additionalText="{PlantsJSONModel>EWERK}"/>
+												</m:MultiComboBox>
+											</fb:control>
+										</fb:FilterItem>
+										<fb:FilterItem name="RangeDate" label="{i18n>RangeDate}">
+											<fb:control>
+												<m:DateRangeSelection dateValue="{path:'filterInboundDelivJSONModel>/dateFrom'}" valueFormat="YYYYMMdd" displayFormat="dd MMM yyyy"
+													secondDateValue="{path:'filterInboundDelivJSONModel>/dateTo'}"/>
+											</fb:control>
+										</fb:FilterItem>
+									</fb:filterItems>
+									<fb:filterGroupItems>
+										<fb:FilterGroupItem groupName="GSupplier" groupTitle="Supplier" name="S1" label="TBD" visible="{VisibilityJSONModel>/isSupplier}">
+											<fb:control>
+												<m:Input type="Text"/>
+											</fb:control>
+										</fb:FilterGroupItem>
+										<fb:FilterGroupItem groupName="GSupplier" groupTitle="Supplier" name="S2" label="TBD" visible="{VisibilityJSONModel>/isSupplier}">
+											<fb:control>
+												<m:Input type="Text"/>
+											</fb:control>
+										</fb:FilterGroupItem>
+										<fb:FilterGroupItem groupName="GBuyer" groupTitle="Buyer" name="B1" label="Suppliers" visible="{VisibilityJSONModel>/isBuyer}">
+											<fb:control>
+												<m:MultiComboBox >
+													<m:items>
+														<core:Item key="001" text="Bizerba"/>
+														<core:Item key="002" text="Caterpillar"/>
+														<core:Item key="003" text="Bho"/>
+													</m:items>
+												</m:MultiComboBox>
+											</fb:control>
+										</fb:FilterGroupItem>
+										<fb:FilterGroupItem groupName="GBuyer" groupTitle="Buyer" name="B2" label="Sales Organizations" visible="{VisibilityJSONModel>/isBuyer}">
+											<fb:control>
+												<m:Input type="Text"/>
+											</fb:control>
+										</fb:FilterGroupItem>
+									</fb:filterGroupItems>
+								</fb:FilterBar>
+							</headerContent>
+							<sections>
+								<ObjectPageSection showTitle="false">
+									<subSections>
+										<ObjectPageSubSection >
+											<m:Table id="InboundDelivHeadersTable" items="{InboundDelJSONModel>/results}" itemPress="onRowSelectionChange" mode="MultiSelect">
+												<m:headerToolbar>
+													<m:OverflowToolbar>
+														<m:content>
+															<m:Title text="{i18n>title}" level="H2"/>
+															<m:Title text="{= ${InboundDelJSONModel>/results}.length}" level="H2"/>
+															<m:ToolbarSpacer/>
+															<m:Button visible="false" id="headerFilterButton" tooltip="{i18n>clearFilter}" icon="sap-icon://clear-filter" press="onClearFilter"
+																type="Transparent"/>
+															<!--			<m:HBox alignItems="Center">
+																<m:Label text="{i18n>CAT_CONS}" class="labelSpace"/>
+																<m:ComboBox selectedKey="{AllProfiliConfermaJSONModel>/CAT_CONFERMA}" width="auto" change="onChangeProfiloConsegna"
+																	items="{ path: 'AllProfiliConfermaJSONModel>/results', sorter: { path: 'CAT_CONFERMA' } }">
+																	<core:Item key="{AllProfiliConfermaJSONModel>CAT_CONFERMA}"
+																		text="{AllProfiliConfermaJSONModel>CAT_CONFERMA} - {AllProfiliConfermaJSONModel>DESCRIZIONE}"/>
+																</m:ComboBox>
+															</m:HBox>-->
+															<m:Button icon="sap-icon://excel-attachment" press="onExport" tooltip="{i18n>Export_Excel}"/>
+														</m:content>
+													</m:OverflowToolbar>
+												</m:headerToolbar>
+												<m:columns>
+													<m:Column id="EBELN" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>orderNumber}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column id="EBELP" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>EBELP}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column id="MATNR" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>MATNR}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column id="TXZ01" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>TXZ01}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column id="WERKS" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>WERKS}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>													
+													<m:Column id="IDNLF" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>IDNLF}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column id="MENGE" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>MENGE}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column id="EINDT" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>EINDT}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+												</m:columns>
+												<m:items>
+													<m:ColumnListItem type="Navigation" highlight="{path:'InboundDelJSONModel>Status', formatter:'.formatRowHighlight'}">
+														<m:cells>
+															<m:Text text="{InboundDelJSONModel>EBELN}"/>
+															<m:Text text="{InboundDelJSONModel>EBELP}"/>
+															<m:Text text="{InboundDelJSONModel>MATNR}"/>
+															<m:Text text="{InboundDelJSONModel>TXZ01}"/>
+															<m:Text text="{InboundDelJSONModel>DESCR_WERKS}"/>															
+															<m:Text text="{InboundDelJSONModel>IDNLF}"/>
+															<m:Text text="{InboundDelJSONModel>QUANT_SCHED} {InboundDelJSONModel>MEINS}"/>
+															<m:Text text="{ path: 'InboundDelJSONModel>EINDT', type: 'it.alteaup.supplier.portal.inboundDelivery.type.Date' }"/>
+														</m:cells>
+													</m:ColumnListItem>
+												</m:items>
+												<m:dependents>
+													<m:PDFViewer id="myPDFViewer" sourceValidationFailed="onSourceValidationFailed" showDownloadButton="false">
+														<m:layoutData>
+															<m:FlexItemData growFactor="1"/>
+														</m:layoutData>
+													</m:PDFViewer>
+												</m:dependents>
+											</m:Table>
+										</ObjectPageSubSection>
+									</subSections>
+								</ObjectPageSection>
+							</sections>
+							<footer>
+								<m:Toolbar>
+									<m:ToolbarSpacer/>
+									<m:Button type="Accept" text="{i18n>CreateDelivery}" press="onCreateDelivery"/>
+								</m:Toolbar>
+							</footer>
+						</ObjectPageLayout>
+					</m:content>
+				</m:Page>
+			</m:pages>
+		</m:App>
+	</m:Shell>
+</mvc:View>
