@@ -1,0 +1,20 @@
+<core:FragmentDefinition height="100%" width="100%" xmlns:f="sap.f" xmlns:core="sap.ui.core" 
+xmlns:layout="sap.ui.layout" xmlns:m="sap.m"
+	async="true">
+	<layout:HorizontalLayout>
+		<m:FlexBox wrap="Wrap" fitContainer="true" alignItems="Center">
+			<m:FlexBox wrap="NoWrap" fitContainer="true" alignItems="Center" class="sapUiTinyMarginEnd">
+				<f:Avatar
+					src="https://banner2.kisspng.com/20180417/siq/kisspng-caterpillar-inc-cat-s60-loader-industry-logo-caterpillar-5ad6a4dd398c28.0302263315240163492357.jpg"
+					displaySize="L" class="sapUiTinyMarginEnd"/>
+			</m:FlexBox>
+		</m:FlexBox>
+		<m:VBox class="sapUiSmallMargin">
+			<m:ObjectAttribute title="" text="{UserDataJSONModel>suppllierName}"/>
+			<m:ObjectAttribute title="{i18n>address}" text="BLR.01, B2.023"/>
+			<m:ObjectAttribute title="{i18n>officePhone}" text="+91-90100-98100"/>
+			<m:ObjectAttribute title="{i18n>homePhone}" text="+91-90100-98100"/>
+			<m:ObjectAttribute title="{i18n>email}" text="rowan@pic.com"/>
+		</m:VBox >
+	</layout:HorizontalLayout>
+</core:FragmentDefinition>

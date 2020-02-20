@@ -81,7 +81,6 @@ sap.ui.define([
 
 				// Inizio modifiche LS
 				var filterInboundDeliv = {
-					"userid": that.getCurrentUserId(),
 					"ekorg": [],
 					"ebeln": "",
 					"lifnr": [],
@@ -102,7 +101,7 @@ sap.ui.define([
 						"element": ""
 					});
 
-					this._oResponsivePopover = sap.ui.xmlfragment("it.alteaup.supplier.portal.inboundDelivery.fragments.FilterSorter", this);
+					this._oResponsivePopover = sap.ui.xmlfragment("it.alteaup.supplier.portal.inboundDelivery.AUPSUP_HTML5_INBOUNDDELIV.fragments.FilterSorter", this);
 					this._oResponsivePopover.setModel(oModelFilters, "filterInboundDelivJSONModel");
 				}
 				var oTable = this.getView().byId("InboundDelivHeadersTable");
@@ -376,7 +375,7 @@ sap.ui.define([
 		handleSupplier: function () {
 
 			if (!that.oSearchSupplierDialog) {
-				that.oSearchSupplierDialog = sap.ui.xmlfragment("it.alteaup.supplier.portal.inboundDelivery.fragments.SearchSupplier", that);
+				that.oSearchSupplierDialog = sap.ui.xmlfragment("it.alteaup.supplier.portal.inboundDelivery.AUPSUP_HTML5_INBOUNDDELIV.fragments.SearchSupplier", that);
 				that.getView().addDependent(that.oSearchSupplierDialog);
 			}
 			that.oSearchSupplierDialog.open();
@@ -480,14 +479,14 @@ sap.ui.define([
 
 		getPurchaseGroup: function () {
 
-            var url = "/backend/Utils/UtilsManagement/GetPurchaseDoc";
-			that.ajaxGet(url, function (oData) {
+			var url = "/backend/Utils/UtilsManagement/GetPurchaseDoc";
+			that.ajaxPost(url, {}, function (oData) { 
 				if (oData) {
 					var oModel = new JSONModel();
 					oModel.setData(oData);
 					that.getView().setModel(oModel, "PurchaseGroupJSONModel");
 				}
-			});
+			})
 
 		},
 		getPlants: function () {
@@ -506,7 +505,7 @@ sap.ui.define([
 		handleMatnr: function () {
 
 			if (!that.oSearchMatnrDialog) {
-				that.oSearchMatnrDialog = sap.ui.xmlfragment("it.alteaup.supplier.portal.inboundDelivery.fragments.SearchMatnr", that);
+				that.oSearchMatnrDialog = sap.ui.xmlfragment("it.alteaup.supplier.portal.inboundDelivery.AUPSUP_HTML5_INBOUNDDELIV.SearchMatnr", that);
 				that.getView().addDependent(that.oSearchMatnrDialog);
 			}
 			that.oSearchMatnrDialog.open();
@@ -645,7 +644,7 @@ sap.ui.define([
 				"SelectedPositionsJSONModel");
 
 			if (!that.oConfirmPositionsFragment) {
-				that.oConfirmPositionsFragment = sap.ui.xmlfragment("it.alteaup.supplier.portal.inboundDelivery.fragments.ConfirmPositions", this);
+				that.oConfirmPositionsFragment = sap.ui.xmlfragment("it.alteaup.supplier.portal.inboundDelivery.AUPSUP_HTML5_INBOUNDDELIV.fragments.ConfirmPositions", this);
 				that.getView().addDependent(that.oConfirmPositionsFragment);
 			}
 
@@ -775,20 +774,16 @@ sap.ui.define([
 		},
 
 		getGestioneEtichette: function () {
-			var oModelData = this.getOwnerComponent().getModel("GestioneEtichetteModel");
+            
+            var url = "/backend/Utils/UtilsManagement/GetGestioneEtichette";
+			that.ajaxGet(url, function (oData) {
+                if (oData) {
+                    var oModel = new JSONModel();
+                    oModel.setData(oData.results);
+                    that.getView().setModel(oModel, "gestioneEtichetteJSONModel");
+                }
+            });
 
-			oModelData.read("/GetGestioneEtichette", {
-				success: function (oData, oResponse) {
-					if (oData) {
-						var oModel = new JSONModel();
-						oModel.setData(oData.results);
-						that.getView().setModel(oModel, "gestioneEtichetteJSONModel");
-					}
-				},
-				error: function (err) {
-					fCompletion();
-				}
-			});
 		},
 
 		onConfirmAndClose: function () {
@@ -998,7 +993,7 @@ sap.ui.define([
 															oModel.setData(oData);
 															that.getView().setModel(oModel, "HUToPrintJSONModel");
 															if (!that.oPrintHUDialog) {
-																that.oPrintHUDialog = sap.ui.xmlfragment("it.alteaup.supplier.portal.inboundDelivery.fragments.PrintHU",
+																that.oPrintHUDialog = sap.ui.xmlfragment("it.alteaup.supplier.portal.inboundDelivery.AUPSUP_HTML5_INBOUNDDELIV.fragments.PrintHU",
 																	that);
 																that.getView().addDependent(that.oPrintHUDialog);
 															}

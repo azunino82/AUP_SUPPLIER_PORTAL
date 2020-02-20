@@ -1,0 +1,124 @@
+<Dialog xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" xmlns:u="sap.ui.unified" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+	xmlns:table="sap.ui.table" xmlns:smartFilterBar="sap.ui.comp.smartfilterbar" xmlns:smartTable="sap.ui.comp.smarttable" contentWidth="100%"
+	contentHeight="100%" title="{i18n>positionConfirmation}">
+	<NavContainer id="navCon">
+		<Page id="p1">
+			<content>
+				<List id="positionsList" items="{SelectedPositionsJSONModel>/}" includeItemInSelection="true">
+					<headerToolbar>
+						<OverflowToolbar>
+							<content>
+								<Title text="{i18n>Deliveries}" level="H2"/>
+							</content>
+						</OverflowToolbar>
+					</headerToolbar>
+					<CustomListItem >
+						<VBox>
+							<f:SimpleForm editable="true" layout="ResponsiveGridLayout" labelSpanXL="12" labelSpanL="12" labelSpanM="12" labelSpanS="12"
+								adjustLabelSpan="false" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="4" columnsL="4" columnsM="4" columnsS="4">
+								<f:content>
+									<core:Title text="{SelectedPositionsJSONModel>EBELN} - {SelectedPositionsJSONModel>EBELP}"/>
+									<Label text="{i18n>IDNLF}"/>
+									<Text text="{SelectedPositionsJSONModel>IDNLF}"/>
+									<Label text="{i18n>NrColli}"/>
+									<Input value="{SelectedPositionsJSONModel>NrColli}" type="Number"/>
+									<core:Title text=""/>
+									<Label text="{i18n>materialCode}"/>
+									<Text text="{SelectedPositionsJSONModel>MATNR}"/>
+									<Label text="{i18n>QuantitaCollo}"/>
+									<Input value="{SelectedPositionsJSONModel>QuantitaCollo}" type="Number"/>
+									<core:Title text=""/>
+									<Label text="{i18n>materialDescr}"/>
+									<Text text="{SelectedPositionsJSONModel>TXZ01}"/>
+									<Label text=" " class="hideLabel"/>
+									<Button text="{i18n>ADD}" press="onAddDeliveries"/>
+									<core:Title text=""/>
+									<Label text="{i18n>MENGE}"/>
+									<Text text="{SelectedPositionsJSONModel>MENGE} - {SelectedPositionsJSONModel>MEINS}"/>
+								</f:content>
+							</f:SimpleForm>
+							<Table width="auto" items="{ path: 'SelectedPositionsJSONModel>Deliveries/results' }">
+								<headerToolbar>
+									<OverflowToolbar>
+										<Title text="{i18n>Deliveries}" level="H2"/>
+										<ToolbarSpacer/>
+										<!--è possibile aggiungere la schedulazione solo se Confirmation type è pieno-->
+										<OverflowToolbarButton type="Transparent" icon="sap-icon://add" press="addSchedulations" visible="false"/>
+									</OverflowToolbar>
+								</headerToolbar>
+								<columns>
+									<Column>
+										<Text text="{i18n>MENGE}"/>
+									</Column>
+									<Column>
+										<Text text="{i18n>lotto}"/>
+									</Column>
+									<Column>
+										<Text text="{i18n>scadenza}"/>
+									</Column>
+									<!--è possibile cancellare la schedulazione solo se Confirmation type è pieno-->
+									<Column hAlign="End">
+										<Text text=""/>
+									</Column>
+								</columns>
+								<items textAlign="Center">
+									<ColumnListItem>
+										<cells>
+											<Input value="{SelectedPositionsJSONModel>QUANT}" enabled="{SelectedPositionsJSONModel>editQuant}" type="Number"/>
+											<Input value="{SelectedPositionsJSONModel>LOTTO}" enabled="{SelectedPositionsJSONModel>editLotto}"/>
+											<DatePicker displayFormat="dd MMM yyyy" valueFormat="YYYYMMdd" value="{SelectedPositionsJSONModel>SCADENZA}"
+												enabled="{SelectedPositionsJSONModel>editDataScadenza}"/>
+											<Button icon="sap-icon://delete" press="onDeleteSchedulation"/>
+										</cells>
+									</ColumnListItem>
+								</items>
+							</Table>
+						</VBox>
+					</CustomListItem>
+				</List>
+			</content>
+			<footer>
+				<Toolbar>
+					<ToolbarSpacer/>
+					<Button text="{i18n>close}" press="onCloseOrderPositions" type="Reject"/>
+					<Button visible="false" text="{i18n>PrintHU}" press="onPrintHU" type="Accept"/>
+					<Button text="{i18n>CloseDelivery}" press="onDeliveryNexStep" type="Accept"/>
+				</Toolbar>
+			</footer>
+		</Page>
+		<Page id="p2" showNavButton="true" navButtonPress="onNavBackToConfirm">
+			<content>
+				<FlexBox alignItems="Center" justifyContent="Center" width="100%" height="100%">
+					<items>
+						<f:SimpleForm editable="true" layout="ResponsiveGridLayout" labelSpanXL="12" labelSpanL="12" labelSpanM="12" labelSpanS="12"
+							adjustLabelSpan="false" emptySpanXL="1" emptySpanL="1" emptySpanM="1" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1">
+							<f:content>
+								<core:Title text=""/>
+								<Label class="labelSpace" required="true" text="{i18n>peso} Kg"/>
+								<Input id="BTGEW" value="" type="Number"/>
+								<Label class="labelSpace" required="true" text="{i18n>volume} M3"/>
+								<Input id="VOLUM" value="" type="Number"/>
+								<Label class="labelSpace" required="true" text="{i18n>testo}"/>
+								<TextArea id="NOTES" rows="8"/>
+								<Label class="labelSpace" required="true" text="{i18n>referenceDocumentNumber}"/>
+								<Input id="XBLNR" value=""/>
+								<Label class="labelSpace" required="true" text="{i18n>PlannedArrivalDate}"/>
+								<DatePicker displayFormat="dd MMM yyyy" valueFormat="YYYYMMdd" id="LFDAT"/>
+								<!--<core:Title text=""/>-->
+								<!--<Label class="labelSpace" text="{i18n>BYGEW}"/>-->
+								<!--<Input id="BYGEW" type="Number"/>							-->
+							</f:content>
+						</f:SimpleForm>
+					</items>
+				</FlexBox>
+			</content>
+			<footer>
+				<Toolbar>
+					<ToolbarSpacer/>
+					<Button text="{i18n>close}" press="onCloseOrderPositions" type="Reject"/>
+					<Button text="{i18n>confirmAndClose}" press="onConfirmAndClose" type="Accept"/>
+				</Toolbar>
+			</footer>
+		</Page>
+	</NavContainer>
+</Dialog>

@@ -1,0 +1,10 @@
+<core:FragmentDefinition height="100%" width="100%" xmlns:f="sap.f" xmlns:core="sap.ui.core" xmlns:layout="sap.ui.layout" xmlns:m="sap.m"
+	async="true">
+	<layout:HorizontalLayout>
+		<m:VBox class="sapUiSmallMargin"> 
+			<m:ObjectAttribute title="{i18n>LIFNR}" text="{ path: 'DataJSONModel>/LIFNR' } - { path: 'DataJSONModel>/NAME1' }"/> <!--Fornitore-->
+			<m:ObjectAttribute title="{i18n>purchaseOrganization}" id='headerPuchaseOrder'/> <!--Org. Acquisti-->
+			<m:ObjectAttribute title="{i18n>EKGRP}" text="{ path: 'DataJSONModel>/EKGRP' } - { path: 'DataJSONModel>/EKNAM' }"/> <!--Gruppo Acquisti-->
+		</m:VBox >
+	</layout:HorizontalLayout>
+</core:FragmentDefinition> 

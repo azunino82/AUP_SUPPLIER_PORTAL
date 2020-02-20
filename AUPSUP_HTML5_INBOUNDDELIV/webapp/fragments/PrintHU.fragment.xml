@@ -1,0 +1,38 @@
+<Dialog xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:u="sap.ui.unified" xmlns:core="sap.ui.core" xmlns:fb="sap.ui.comp.filterbar"
+	contentWidth="100%" contentHeight="100%">
+	<Page title="{i18n>printHU}">
+		<content>
+			<Table id="idHUTable" inset="false" items="{ path: 'HUToPrintJSONModel>/results' }">
+				<columns>
+					<Column width="auto">
+						<Text text="{i18n>VENUM}"/>
+					</Column>
+					<Column width="auto">
+						<Text text="{i18n>EXIDV}"/>
+					</Column>
+					<Column width="auto">
+						<Text text="{i18n>MATNR}"/>
+					</Column>
+					<Column hAlign="End" width="5em"></Column>
+				</columns>
+				<items>
+					<ColumnListItem>
+						<cells>
+							<Text text="{HUToPrintJSONModel>VENUM}"/>
+							<Text text="{HUToPrintJSONModel>EXIDV}"/>
+							<Text text="{HUToPrintJSONModel>MATNR}"/>
+							<Button icon="sap-icon://print" press="onItemPrintHU"/>
+						</cells>
+					</ColumnListItem>
+				</items>
+			</Table>
+		</content>
+		<footer>
+			<Bar>
+				<contentRight>
+					<Button text="{i18n>close}" press="onClosePrintHU" type="Reject"/>
+				</contentRight>
+			</Bar>
+		</footer>
+	</Page>
+</Dialog>
