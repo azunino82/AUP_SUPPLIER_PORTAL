@@ -86,13 +86,13 @@ sap.ui.define([
 
 		getPurchaseGroup: function () {
 			var url = "/backend/Utils/UtilsManagement/GetPurchaseDoc";
-			that.ajaxGet(url, function (oData) {
+			that.ajaxPost(url, {}, function (oData) { 
 				if (oData) {
 					var oModel = new JSONModel();
 					oModel.setData(oData);
 					that.getView().setModel(oModel, "PurchaseGroupJSONModel");
 				}
-			});
+			})
 		},
 
 		onClick: function (oID) {
