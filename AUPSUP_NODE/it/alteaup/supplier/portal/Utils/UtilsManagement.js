@@ -259,6 +259,36 @@ module.exports = function () {
     })
   })
 
+  // GET LIST PROFILI CONFERMA
+
+  app.get('/GetProfiliConferma', function (req, res) {
+
+    var bstae = req.query.I_BSTAE !== undefined && req.query.I_BSTAE !== null && req.query.I_BSTAE !== '' ? req.query.I_BSTAE : ''
+
+    hdbext.createConnection(req.tenantContainer, (err, client) => {
+      if (err) {
+        return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
+      } else {
+        hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Utils::GetProfiliConferma', function (_err, sp) {
+          sp(req.user.id, bstae, (err, parameters, results) => {
+            if (err) {
+              return res.status(500).send(stringifyObj(err))
+            } else {
+              var outArr = []
+              results.forEach(element => {
+                outArr.push(element)
+              })
+
+              return res.status(200).send({
+                results: outArr
+              })
+            }
+          })
+        })
+      }
+    })
+  })
+
   // GET LIST OF PURCHASE DOC from BACKEND SAP
 
   app.post('/GetPurchaseDoc', function (req, res) {
