@@ -124,6 +124,95 @@ module.exports = function () {
         }
     })
 
+    // GET SCHEDULATIONS
+
+    app.post('/GetSchedulations', function (req, res) {
+        const body = req.body
+
+        console.log('INPUT BODY ==========> ' + JSON.stringify(body))
+
+        if (body !== undefined && body !== '' && body !== null) {
+        var lifnr = []
+        var ebeln = []
+        var ekorg = []
+        var matnr = []
+        var werks = []
+        var dateFrom = ''
+        var dateTo = ''
+        var userid = req.user.id
+        
+        if (body.dateFrom !== null && body.dateFrom !== undefined && body.dateFrom !== '') {
+            dateFrom = body.dateFrom
+        }
+        
+        if (body.dateTo != null && body.dateTo !== undefined && body.dateTo !== '') {
+            dateTo = body.dateTo
+        }
+    
+        if (body.lifnr != null && body.lifnr !== undefined && body.lifnr !== '') {
+            var oLifnr = []
+            for (var i = 0; i < body.lifnr.length; i++) {
+                oLifnr.push({ ELIFN: body.lifnr[i] })
+            }
+            lifnr = oLifnr
+        }
+        if (body.ebeln !== null && body.ebeln !== '' && body.ebeln !== undefined) {
+            ebeln.push({ ebeln: body.ebeln })
+        }
+        if (body.ekorg !== null && body.ekorg !== undefined && body.ekorg.length > 0) {
+            var oEkorg = []
+            // eslint-disable-next-line no-redeclare
+            for (var i = 0; i < body.ekorg.length; i++) {
+                oEkorg.push({ EKORG: body.ekorg[i] })
+            }
+            ekorg = oEkorg
+        }
+        if (body.matnr != null && body.matnr.length > 0) {
+            var oMatnr = []
+            // eslint-disable-next-line no-redeclare
+            for (var i = 0; i < body.matnr.length; i++) {
+                oMatnr.push({ MATNR: body.matnr[i] })
+            }
+            matnr = oMatnr
+        }
+        if (body.werks != null && body.werks.length > 0) {
+            var oWerks = []
+            // eslint-disable-next-line no-redeclare
+            for (var i = 0; i < body.werks.length; i++) {
+                oWerks.push({ EWERK: body.werks[i], DESCR: '' })
+            }
+            werks = oWerks
+        }
+
+        hdbext.createConnection(req.tenantContainer, (err, client) => {
+            if (err) {
+            return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
+            } else {
+            hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.InboundDelivery::MM00_INB_DLV_LIST', function (_err, sp) {
+                sp(userid, lifnr, ebeln, ekorg, matnr, werks, dateFrom, dateTo, (err, parameters, results) => {
+                if (err) {
+                    console.error('ERROR: ' + err)
+                    return res.status(500).send(stringifyObj(err))
+                } else {
+                    var outResults = []
+                    if (results !== null && results !== undefined && results.length > 0) {
+                        for (var i = 0; i < results.length; i++) {
+                            if (results[i].QUANT_SCHED !== 0) {
+                                outResults.push(results[i])
+                            }
+                        }
+                    }
+                    return res.status(200).send({
+                        results: outResults
+                    })
+                }
+                })
+            })
+            }
+        })
+        }
+    })    
+
     // Parse URL-encoded bodies (as sent by HTML forms)
     // app.use(express.urlencoded());
 
