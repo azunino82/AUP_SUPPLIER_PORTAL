@@ -234,7 +234,7 @@ sap.ui.define([
 			// SupplierPortal_OrdersManagement è una destination che ho creato su SCP la trovi sotto DESTINATION
 			// inoltre ho aggiunto un pezzo al neo-app.json
 
-			var url = "/SupplierPortal_InboundDelivery/xsOdata/GetSchedulations.xsjs";
+			var url = "/backend/InboundDeliveryManagement/GetSchedulations";
 			var body = that.getModel("filterInboundDelivJSONModel").getData();
 			if (body !== undefined && body.dateFrom !== undefined && body.dateFrom !== null) {
 				var year = body.dateFrom.getFullYear();
@@ -252,8 +252,8 @@ sap.ui.define([
 				day = day.length > 1 ? day : '0' + day;
 				body.dateTo = year + month + day;
 			}
-			this.showBusyDialog();
-			that.ajaxPost(url, body, "/SupplierPortal_InboundDelivery", function (oData) { // funzione generica su BaseController
+			this.showBusyDialog();			
+			that.ajaxPost(url, {}, function (oData) { 
 				that.hideBusyDialog();
 				if (oData) {
 					var oModel = new JSONModel();
@@ -261,7 +261,7 @@ sap.ui.define([
 					that.getView().setModel(oModel, "InboundDelJSONModel");
 					that.getView().byId("InboundDelivHeadersTable").setModel(oModel);
 				}
-			});
+			})
 		},
 
 		getPurchaseOrganizations: function () {
