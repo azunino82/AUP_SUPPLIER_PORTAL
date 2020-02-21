@@ -46,6 +46,10 @@
 					"id": "AUPSUP_HTML5_INBOUNDDELIV",
 					"appId": "it.alteaup.supplier.portal.inboundDelivery.AUPSUP_HTML5_INBOUNDDELIV",
 					"vizId": "InboundDelivery-Display"
+				}, {
+					"id": "AUPSUP_HTML5_SCHEDAGREE",
+					"appId": "it.alteaup.supplier.portal.schedulingagreement.AUPSUP_HTML5_SCHEDAGREE",
+					"vizId": "SchedulingAgreement-Display"
 				}]
 			}
 		}],
