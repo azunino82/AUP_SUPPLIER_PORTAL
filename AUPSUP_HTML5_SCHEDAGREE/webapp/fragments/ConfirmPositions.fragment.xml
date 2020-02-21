@@ -1,0 +1,157 @@
+<Dialog xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" xmlns:u="sap.ui.unified" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+	xmlns:table="sap.ui.table" xmlns:smartFilterBar="sap.ui.comp.smartfilterbar" xmlns:smartTable="sap.ui.comp.smarttable" contentWidth="100%"
+	contentHeight="100%" title="{i18n>positionConfirmation}">
+	<NavContainer id="navCon">
+		<Page id="p1">
+			<content>
+				<List id="positionsList" items="{SelectedPositionsJSONModel>/}" includeItemInSelection="true">
+					<headerToolbar>
+						<OverflowToolbar>
+							<content>
+								<Title text="{i18n>positions}" level="H2"/>
+							</content>
+						</OverflowToolbar>
+					</headerToolbar>
+					<CustomListItem visible="{SelectedPositionsJSONModel>canShowPosition}">
+						<VBox>
+							<f:SimpleForm editable="true" layout="ResponsiveGridLayout" labelSpanXL="12" labelSpanL="12" labelSpanM="12" labelSpanS="12"
+								adjustLabelSpan="false" columnsXL="4" columnsL="4" columnsM="4">
+								<f:content>
+									<core:Title text="{SelectedPositionsJSONModel>EBELN} - {SelectedPositionsJSONModel>EBELP}"/>
+									<Label text="{i18n>materialCode}"/>
+									<Text text="{SelectedPositionsJSONModel>MATNR}"/>
+									<Label text="{i18n>materialDescr}"/>
+									<Text text="{SelectedPositionsJSONModel>TXZ01}" wrapping="false"/>
+									<Label text="{i18n>ZENTRATA}"/>
+									<Text text="{SelectedPositionsJSONModel>ZENTRATA}"/>
+									<core:Title text=""/>
+									<Label text="{i18n>BPRME}"/>
+									<Text text="{SelectedPositionsJSONModel>BPRME}"/>
+									<Label text="{i18n>MENGE}"/>
+									<Text text="{SelectedPositionsJSONModel>MENGE}"/>
+									<!--<Input required="{SelectedPositionsJSONModel>editMode}" value="{SelectedPositionsJSONModel>MENGE}" enabled="{SelectedPositionsJSONModel>editMode}" type="Number"/> -->
+									<core:Title text=""/>
+									<Label text="{i18n>NETPR}"/>
+									<Input required="{SelectedPositionsJSONModel>editPrice}" value="{SelectedPositionsJSONModel>NETPR}"
+										enabled="{SelectedPositionsJSONModel>editPrice}" type="Number"/>
+									<Label text="{i18n>PEINH}"/>
+									<Input required="{SelectedPositionsJSONModel>editPrice}" value="{SelectedPositionsJSONModel>PEINH}"
+										enabled="{SelectedPositionsJSONModel>editPrice}" type="Number"/>
+									<core:Title text=""/>
+									<Label text="{i18n>KDATB}"
+										visible="{=${SelectedPositionsJSONModel>TimeDependent} === true &amp;&amp; ${SelectedPositionsJSONModel>editPrice} === true}"/>
+									<DatePicker displayFormat="dd MMM yyyy" valueFormat="YYYYMMdd" required="{SelectedPositionsJSONModel>TimeDependent}"
+										visible="{=${SelectedPositionsJSONModel>TimeDependent} === true &amp;&amp; ${SelectedPositionsJSONModel>editPrice} === true}"
+										value="{path:'SelectedPositionsJSONModel>KDATB',type:'sap.ui.model.odata.type.Date'}"/>
+									<Label text="{i18n>KDATE}"
+										visible="{=${SelectedPositionsJSONModel>TimeDependent} === true &amp;&amp; ${SelectedPositionsJSONModel>editPrice} === true}"/>
+									<DatePicker displayFormat="dd MMM yyyy" valueFormat="YYYYMMdd" required="{SelectedPositionsJSONModel>TimeDependent}"
+										visible="{=${SelectedPositionsJSONModel>TimeDependent} === true &amp;&amp; ${SelectedPositionsJSONModel>editPrice} === true}"
+										value="{path:'SelectedPositionsJSONModel>KDATE',type:'sap.ui.model.odata.type.Date'}"/>
+									<Label class="hideLabel" text="."/>
+									<Button text="{i18n>checPosition}" press="onCheckPosition" type="Accept"/>
+								</f:content>
+							</f:SimpleForm>
+							<Table width="auto" items="{ path: 'SelectedPositionsJSONModel>SchedulationsStatus' }" growing="true" growingThreshold="4"
+								growingScrollToLoad="false">
+								<headerToolbar>
+									<OverflowToolbar>
+										<Title text="{i18n>schedules}" level="H2"/>
+										<ToolbarSpacer/>
+										<Button icon="sap-icon://legend" press="onLegend" tooltip="{i18n>Legend}"/>
+									</OverflowToolbar>
+								</headerToolbar>
+								<columns>
+									<Column>
+										<Text text="{i18n>date}"/>
+									</Column>
+									<Column>
+										<Text text="{i18n>quantity}"/>
+									</Column>
+									<Column>
+										<Text text="{i18n>PROG_RICHIESTO}"/>
+									</Column>
+									<Column>
+										<Text text="{i18n>PROG_CONFERMA}"/>
+									</Column>
+								</columns>
+								<items textAlign="Center">
+									<ColumnListItem highlight="{path:'SelectedPositionsJSONModel>STATUS', formatter:'.onSetSchedulationStatus'}">
+										<cells>
+											<Text text="{ path: 'SelectedPositionsJSONModel>EINDT', type: 'it.alteaup.supplier.portal.schedulingagreement.type.Date' }"/>
+											<Text text="{SelectedPositionsJSONModel>MENGE}"/>
+											<Text text="{SelectedPositionsJSONModel>PROG_RICHIESTO}"/>
+											<Text text="{SelectedPositionsJSONModel>PROG_CONFERMA}"/>
+										</cells>
+									</ColumnListItem>
+								</items>
+							</Table>
+							<HBox><Text text="."></Text></HBox>
+							<Table selectionMode="None" width="auto" items="{ path: 'SelectedPositionsJSONModel>POItemSchedulers/results' }">
+								<headerToolbar>
+									<OverflowToolbar>
+										<Title text="{i18n>confirmations}" level="H2"/>
+										<ToolbarSpacer/>
+										<!--è possibile aggiungere la schedulazione solo se Confirmation type è pieno-->
+										<OverflowToolbarButton type="Transparent" icon="sap-icon://add" press="addSchedulations"
+											visible="{= ${SelectedPositionsJSONModel>profiliConferma}.length > 0}"/>
+									</OverflowToolbar>
+								</headerToolbar>
+								<columns>
+									<Column>
+										<Text text="{i18n>date}"/>
+									</Column>
+									<Column>
+										<Text text="{i18n>quantity}"/>
+									</Column>
+									<Column>
+										<Text text="{i18n>confirmationType}"/>
+									</Column>
+									<!--è possibile cancellare la schedulazione solo se Confirmation type è pieno-->
+									<Column hAlign="End" visible="{= ${SelectedPositionsJSONModel>profiliConferma}.length > 0">
+										<Text text=""/>
+									</Column>
+								</columns>
+								<items textAlign="Center">
+									<ColumnListItem visible="{= ${SelectedPositionsJSONModel>SYSID} === undefined}">
+										<cells >
+											<DatePicker enabled="{= ${SelectedPositionsJSONModel>SYSID} === undefined}" displayFormat="dd MMM yyyy" valueFormat="YYYYMMdd"
+												value="{path:'SelectedPositionsJSONModel>EINDT'}" change="onChange"/>
+											<Input enabled="{= ${SelectedPositionsJSONModel>SYSID} === undefined}" value="{SelectedPositionsJSONModel>MENGE}" type="Number"
+												change="onChange"/>
+											<Text text="{SelectedPositionsJSONModel>EBTYP}"/>
+											<Button icon="sap-icon://delete" press="onDeleteSchedulation" visible="{= ${SelectedPositionsJSONModel>SYSID} === undefined}"/>
+										</cells>
+									</ColumnListItem>
+								</items>
+							</Table>
+						</VBox>
+					</CustomListItem>
+				</List>
+			</content>
+			<footer>
+				<Toolbar>
+					<ToolbarSpacer/>
+					<Button text="{i18n>close}" press="onCloseOrderPositions" type="Reject"/>
+					<Button text="{i18n>Confirm}" press="onConfirmPositionsDialog" type="Accept"/>
+				</Toolbar>
+			</footer>
+		</Page>
+		<Page id="p2" showNavButton="true" navButtonPress="onNavBackToConfirm">
+			<content>
+				<FlexBox alignItems="Center" justifyContent="Center" width="100%" height="100%">
+					<items>
+						<Label class="labelSpace" required="true" text="{i18n>referenceDocumentNumber}"/>
+						<Input id="XBLNR" value=""/>
+					</items>
+				</FlexBox>
+			</content>
+			<footer>
+				<Toolbar>
+					<ToolbarSpacer/>
+					<Button text="{i18n>confirmAndClose}" press="onConfirmAndClose" type="Accept"/>
+				</Toolbar>
+			</footer>
+		</Page>
+	</NavContainer>
+</Dialog>

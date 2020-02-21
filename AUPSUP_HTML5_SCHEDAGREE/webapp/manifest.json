@@ -99,7 +99,7 @@
 					"name": "worklist",
 					"greedy": false,
 					"target": [
-						"worklist_pos"
+						"worklist"
 					]
 				},
 				{
@@ -113,7 +113,7 @@
 				}
 			],
 			"targets": {
-				"worklist_pos": {
+				"worklist": {
 					"viewLevel": 1,
 					"viewName": "Worklist"
 				},

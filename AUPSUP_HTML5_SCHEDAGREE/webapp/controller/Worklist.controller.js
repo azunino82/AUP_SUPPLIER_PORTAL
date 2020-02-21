@@ -242,11 +242,11 @@ sap.ui.define([
 			// inoltre ho aggiunto un pezzo al neo-app.json
 
 			//var url = "/SupplierPortal_OrdersManagement/xsOdata/GetOrders_pos.xsjs";
-			var url = "/Scheduling_Agreement/xsOdata/GetPianiConsegna.xsjs";
+
+
+			var url = "/backend/SchedulingAgreementManagement/GetPianiConsegna";
 			var body = that.getModel("filterOrdersJSONModel").getData();
-			this.showBusyDialog();
-			that.ajaxPost(url, body, "/Scheduling_Agreement", function (oData) { // funzione generica su BaseController
-				that.hideBusyDialog();
+			that.ajaxPost(url, body, function (oData) {
 				if (oData) {
 					var oModel = new JSONModel();
 					oModel.setData(oData);
@@ -260,7 +260,8 @@ sap.ui.define([
 
 					that.getView().byId("OrderHeadersTable").getBinding("items").sort(oSorter);
 				}
-			});
+			})
+
 		},
 
 		getPurchaseOrganizations: function () {
@@ -374,7 +375,7 @@ sap.ui.define([
 		handleSupplier: function () {
 
 			if (!that.oSearchSupplierDialog) {
-				that.oSearchSupplierDialog = sap.ui.xmlfragment("it.alteaup.supplier.portal.schedulingagreement.fragments.SearchSupplier", that);
+				that.oSearchSupplierDialog = sap.ui.xmlfragment("it.alteaup.supplier.portal.schedulingagreement.AUPSUP_HTML5_SCHEDAGREE.fragments.SearchSupplier", that);
 				that.getView().addDependent(that.oSearchSupplierDialog);
 			}
 			that.oSearchSupplierDialog.open();
@@ -502,7 +503,7 @@ sap.ui.define([
 		handleMatnr: function () {
 
 			if (!that.oSearchMatnrDialog) {
-				that.oSearchMatnrDialog = sap.ui.xmlfragment("it.alteaup.supplier.portal.schedulingagreement.fragments.SearchMatnr", that);
+				that.oSearchMatnrDialog = sap.ui.xmlfragment("it.alteaup.supplier.portal.schedulingagreement.AUPSUP_HTML5_SCHEDAGREE.fragments.SearchMatnr", that);
 				that.getView().addDependent(that.oSearchMatnrDialog);
 			}
 			that.oSearchMatnrDialog.open();
@@ -510,7 +511,6 @@ sap.ui.define([
 			var oItems = oTable.getItems();
 
 			var body = {
-				"userid": that.getCurrentUserId(),
 				"matnr": "",
 				"maktx": ""
 			};
@@ -539,18 +539,17 @@ sap.ui.define([
 		},
 		onSearchMatnr: function () {
 			// ricerca materiali da popup
-
-			var url = "/SupplierPortal_Utils/xsOdata/SearchMaterial.xsjs";
+			var url = "/backend/Utils/UtilsManagement/SearchMaterial";
 			var body = this.getView().getModel("MatnrSearchJSONModel").getData();
 			this.showBusyDialog();
-			that.ajaxPost(url, body, "/SupplierPortal_Utils", function (oData) { // funzione generica su BaseController
+			that.ajaxPost(url, body, function (oData) {
 				that.hideBusyDialog();
 				if (oData) {
 					var oModel = new JSONModel();
 					oModel.setData(oData);
 					that.getView().setModel(oModel, "MatnrJSONModel");
 				}
-			});
+			})
 		},
 		onConfirmMatnr: function () {
 			var oTable = sap.ui.getCore().byId("idMatnrTable");
@@ -788,77 +787,25 @@ sap.ui.define([
 				var oPositionModel = JSON.parse(JSON.stringify(aData));
 
 				if (oPositionModel.isSelected) {
-					// oPositionModel.RMOData;
-					// oPositionModel.editMode = false;
-					// oPositionModel.editPrice = false;
-					// oPositionModel.editQuantity = true;
-					// oPositionModel.canShowPosition = true;
-					// 					if (oPositionModel.BSTAE === undefined || oPositionModel.BSTAE === "") {
-					// 						if (oPositionModel.LABNR === "" && (oPositionModel.KZABS !== undefined && oPositionModel.KZABS !== "")) {
-					// 							oPositionModel.canShowPosition = true;
-					// 						} else {
-					// 							oPositionModel.canShowPosition = false;
-					// 							oNotEditPositions = oPositionModel.EBELP + " " + oNotEditPositions;
-					// 							countNotEditPositions++;
-					// 						}
-					// 					} else {
-					// 						oPositionModel.canShowPosition = true;
-					// 					}
-					// 					// creare struttura Body con EBELN EBELP BSTAE e currentUserId
-
-					// 					oPositionModel.profiliConferma = [];
-					// 					var url = "/SupplierPortal_Utils/xsOdata/GetProfiliConferma.xsjs?I_USERID=" + that.getCurrentUserId() + "&I_BSTAE=" +
-					// 						oPositionModel.BSTAE;
-					// 					that.ajaxGet(url, function (oData) { // funzione generica su BaseController
-					// 						if (oData && oData.results) {
-					// 							var arrOut = [];
-					// 							oData.results.forEach(function (elem) {
-					// 								if (elem.TIPO_CONFERMA !== "2")
-					// 									arrOut.push(elem);
-					// 							});
-					// 							oPositionModel.profiliConferma = arrOut;
-					// 						}
-					// 					});
-
-					// 					var url = "/SupplierPortal_RMO/xsOdata/GetRMO.xsjs";
-
-					// 					if (oPositionModel.EBELN !== undefined && oPositionModel.EBELN !== "" && oPositionModel.EBELP !==
-					// 						undefined && oPositionModel.EBELP !== "") {
-					// 						url = url + "?$filter=(EBELN='" + oPositionModel.EBELN + "' AND EBELP='" + oPositionModel.EBELP + "')";
-					// 					}
-
-					// 					var body = {
-					// 						"userid": that.getCurrentUserId()
-					// 					};
-
-					// 					that.showBusyDialog();
-					// 					that.ajaxPost(url, body, "/SupplierPortal_RMO", function (oData) {
-					// 						that.hideBusyDialog();
-					// 						if (oData.results && oData.results && oData.results.EkkoEkpo.length > 0) {
-					// 							var data = oData.results;
-					// 							oPositionModel.RMOData = data;
 					positionsArray.push(oPositionModel);
 				}
 			});
-			//var url = "/SupplierPortal_OrdersManagement/xsOdata/GetConfirm.xsjs";
-			var url = "/Scheduling_Agreement/xsOdata/GetSelectedConferme.xsjs";
 
+			var url = "/backend/SchedulingAgreementManagement/GetSelectedConferme";
 			var body = {
-				"userid": that.getCurrentUserId(),
 				"ordPos": positionsArray
 			};
-
-			that.showBusyDialog();
-			that.ajaxPost(url, body, "/Scheduling_Agreement", function (oData) {
+			this.showBusyDialog();
+			that.ajaxPost(url, body, function (oData) {
 				that.hideBusyDialog();
-
-				var oModelSelectedPos = new JSONModel();
-				oModelSelectedPos.setData(oData);
-				that.getView().setModel(
-					oModelSelectedPos,
-					"SelectedPositionsJSONModel");
-
-			});
+				if (oData) {
+					var oModelSelectedPos = new JSONModel();
+					oModelSelectedPos.setData(oData);
+					that.getView().setModel(
+						oModelSelectedPos,
+						"SelectedPositionsJSONModel");
+				}
+			})
 			// fine modifiche LS
 			// TODO DA GESTIRE 2020 LS
 			// if (countNotEditPositions === positionRows.length) {
@@ -877,7 +824,7 @@ sap.ui.define([
 
 			if (!that.oConfirmPositionsFragment) {
 				that.oConfirmPositionsFragment = sap.ui.xmlfragment(
-					"it.alteaup.supplier.portal.schedulingagreement.fragments.ConfirmPositions",
+					"it.alteaup.supplier.portal.schedulingagreement.AUPSUP_HTML5_SCHEDAGREE.fragments.ConfirmPositions",
 					this);
 				that.getView().addDependent(that.oConfirmPositionsFragment);
 			}
@@ -1310,8 +1257,7 @@ sap.ui.define([
 							"ekes": [],
 							"eket": [],
 							"ekko": [],
-							"ekpo": [],
-							"userid": that.getCurrentUserId()
+							"ekpo": []
 						};
 						var ekpoRow = that.getModel("SelectedPositionsJSONModel").getData();
 						if (ekpoRow !== undefined) {
@@ -2133,7 +2079,6 @@ sap.ui.define([
 
 			if (new_ekes.length > 0) {
 				var body = {
-					"userid": that.getCurrentUserId(),
 					"newEkes": new_ekes
 				};
 
@@ -2155,7 +2100,7 @@ sap.ui.define([
 			// create popover
 			if (!this._oPopover) {
 				new sap.ui.core.Fragment.load({
-					name: "it.alteaup.supplier.portal.schedulingagreement.fragments.ColorStatus",
+					name: "it.alteaup.supplier.portal.schedulingagreement.AUPSUP_HTML5_SCHEDAGREE.fragments.ColorStatus",
 					controller: that
 				}).then(function (pPopover) {
 					that._oPopover = pPopover;

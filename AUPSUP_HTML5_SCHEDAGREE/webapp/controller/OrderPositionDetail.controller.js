@@ -1,5 +1,5 @@
 sap.ui.define([
-	"it/alteaup/supplier/portal/schedulingagreement/controller/BaseController",
+	"it/alteaup/supplier/portal/schedulingagreement/AUPSUP_HTML5_SCHEDAGREE/controller/BaseController",
 	"sap/ui/model/json/JSONModel",
 	"sap/m/MessageBox",
 	"sap/ui/model/Filter",
