@@ -18,4 +18,7 @@ module.exports = function (app, server) {
 
   // SERVIZI QUALITY
   app.use('/QualityManagement', require('../it/alteaup/supplier/portal/Quality/QualityManagement')())
+
+  // SERVIZI PIANI DI CONSEGNA
+  app.use('/SchedulingAgreementManagement', require('../it/alteaup/supplier/portal/SchedulingAgreement/SchedulingAgreementManagement')())
 }
