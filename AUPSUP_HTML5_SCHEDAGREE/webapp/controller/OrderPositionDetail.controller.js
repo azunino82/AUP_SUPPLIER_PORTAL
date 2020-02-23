@@ -127,31 +127,17 @@ sap.ui.define([
 		},
 
 		loadObject: function (sObjectId, fCompletion) {
-
-			// 	var currentSYSID = sap.ui.getCore().getModel("sysIdJSONModel") !== undefined && sap.ui.getCore().getModel("sysIdJSONModel").getData() !==
-			// 		undefined ? sap.ui.getCore().getModel("sysIdJSONModel").getData().SYSID : "";
-			// //	currentSYSID = 'ASP';
-			// 	var url = "POSchedulers(SYSID='" + currentSYSID + "',EBELN='" + sObjectId.orderId + "',EBELP='" + sObjectId.posNumber + "')";
-			// 	var parameters = {
-			// 		"$expand": "POItemConfirmations,POItemSchedulers"
-			// 	};
-
-			// that.readObject("OrderManagementService", url, parameters, function (oData) {
-
-			var url = "/Scheduling_Agreement/xsOdata/GetPianoConfermaDetail.xsjs?I_USERID=" + this.getCurrentUserId() + "&I_EBELN=" +
-				sObjectId.orderId + "&I_EBELP=" + sObjectId.posNumber;
+			var url = "/backend/Utils/UtilsManagement/GetPianoConfermaDetail?I_EBELN=" +
+			sObjectId.orderId + "&I_EBELP=" + sObjectId.posNumber;;
 			that.ajaxGet(url, function (oData) {
 				if (oData === null || oData === undefined) {
-					//	MessageBox.error(that.getResourceBundle().getText("noOrderFound"));
 					if (fCompletion !== undefined) {
 						fCompletion();
 					}
 				} else {
 					fCompletion(oData);
 				}
-
 			});
-
 		},
 	});
 
