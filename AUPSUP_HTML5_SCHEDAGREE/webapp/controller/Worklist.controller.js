@@ -145,7 +145,7 @@ sap.ui.define([
 			});
 		},
 
-		onChange: function (oEvent) {
+		/* onChange: function (oEvent) {
 			var oValue = oEvent.getParameter("value");
 			var oMultipleValues = oValue.split(",");
 			var oTable = this.getView().byId("OrderHeadersTable");
@@ -164,7 +164,7 @@ sap.ui.define([
 			this.getView().byId("headerFilterButton").setVisible(true);
 
 			this._oResponsivePopover.close();
-		},
+		}, */
 
 		onAscending: function () {
 			var oTable = this.getView().byId("OrderHeadersTable");
@@ -246,7 +246,9 @@ sap.ui.define([
 
 			var url = "/backend/SchedulingAgreementManagement/GetPianiConsegna";
 			var body = that.getModel("filterOrdersJSONModel").getData();
+			that.showBusyDialog();
 			that.ajaxPost(url, body, function (oData) {
+				that.hideBusyDialog();
 				if (oData) {
 					var oModel = new JSONModel();
 					oModel.setData(oData);
@@ -267,9 +269,7 @@ sap.ui.define([
 		getPurchaseOrganizations: function () {
 
 			var url = "/backend/Utils/UtilsManagement/GetPurchaseOrganizations";
-			this.showBusyDialog();
 			that.ajaxGet(url, function (oData) {
-				that.hideBusyDialog();
 				if (oData) {
 					var oModel = new JSONModel();
 					oModel.setData(oData);
@@ -1204,17 +1204,6 @@ sap.ui.define([
 								title: "Error",
 							});
 							return;
-						} else {
-							if (model[i].TimeDependent === true) {
-								var errD = that.onControllDateOK(model[i]);
-								if (errD !== "" && errD !== undefined) {
-									MessageBox.error(errD, {
-										icon: MessageBox.Icon.ERROR,
-										title: "Error",
-									});
-									return;
-								}
-							}
 						}
 					}
 
@@ -1255,7 +1244,6 @@ sap.ui.define([
 					if (oAction === MessageBox.Action.OK) {
 						var body = {
 							"ekes": [],
-							"eket": [],
 							"ekko": [],
 							"ekpo": []
 						};
@@ -1272,14 +1260,8 @@ sap.ui.define([
 											continue;
 										}
 										var singleEkesModel = {};
-										var singleEketModel = {};
-
-										singleEkesModel.ETENS = "" + j;
-										singleEketModel.ETENR = "" + j;
 										singleEkesModel.EBELN = row.EBELN;
-										singleEketModel.EBELN = row.EBELN;
 										singleEkesModel.EBELP = row.EBELP;
-										singleEketModel.EBELP = row.EBELP;
 
 										if (row.POItemSchedulers.results[j].EBTYP !== undefined) {
 											singleEkesModel.EBTYP = row.POItemSchedulers.results[j].EBTYP;
@@ -1293,18 +1275,14 @@ sap.ui.define([
 										}
 
 										singleEkesModel.EINDT = row.POItemSchedulers.results[j].EINDT;
-										singleEketModel.EINDT = row.POItemSchedulers.results[j].EINDT;
+
 										if (row.POItemSchedulers.results[j].LPEIN === undefined || row.POItemSchedulers.results[j].LPEIN === "") {
 											singleEkesModel.LPEIN = "D";
-											singleEketModel.LPEIN = "D";
 										} else {
 											singleEkesModel.LPEIN = row.POItemSchedulers.results[j].LPEIN;
-											singleEketModel.LPEIN = row.POItemSchedulers.results[j].LPEIN;
 										}
 										singleEkesModel.MENGE = row.POItemSchedulers.results[j].MENGE;
-										singleEketModel.MENGE = row.POItemSchedulers.results[j].MENGE;
-										singleEketModel.WEMNG = "0";
-										singleEketModel.MNG02 = "0";
+
 										if (row.POItemSchedulers.results[j].UZEIT === undefined) {
 											singleEkesModel.UZEIT = "000000";
 										} else {
@@ -1316,13 +1294,11 @@ sap.ui.define([
 											singleEkesModel.XBLNR = row.POItemSchedulers.results[j].XBLNR;
 										}
 										body.ekes.push(singleEkesModel);
-										body.eket.push(singleEketModel);
 									}
 								}
 								var singleEkpoModel = {};
 								singleEkpoModel.EBELN = row.EBELN;
 								singleEkpoModel.EBELP = row.EBELP;
-								singleEkpoModel.PART1 = "";
 								singleEkpoModel.MENGE = row.MENGE;
 								singleEkpoModel.MEINS = row.MEINS;
 								singleEkpoModel.NETPR = row.NETPR;
@@ -1341,22 +1317,21 @@ sap.ui.define([
 									singleEkpoModel.UPDKZ = "L";
 								else
 									singleEkpoModel.UPDKZ = row.UPDKZ;
-								singleEkpoModel.PART1 = row.PART1 !== undefined ? row.PART1 : "";
-								singleEkpoModel.ZCUSTOM01 = row.ZCUSTOM01;
-								singleEkpoModel.ZCUSTOM02 = row.ZCUSTOM02;
-								singleEkpoModel.ZCUSTOM03 = row.ZCUSTOM03;
-								singleEkpoModel.ZCUSTOM04 = row.ZCUSTOM04;
-								singleEkpoModel.ZCUSTOM05 = row.ZCUSTOM05;
-								singleEkpoModel.ZCUSTOM06 = row.ZCUSTOM06;
-								singleEkpoModel.ZCUSTOM07 = row.ZCUSTOM07;
-								singleEkpoModel.ZCUSTOM08 = row.ZCUSTOM08;
-								singleEkpoModel.ZCUSTOM09 = row.ZCUSTOM09;
-								singleEkpoModel.ZCUSTOM10 = row.ZCUSTOM10;
+
+								// TODO FARE logiche save
+								singleEkpoModel.ZINVALIDITA = row.ZINVALIDITA;
+								singleEkpoModel.ZFINVALIDATA = row.ZFINVALIDATA;
+								singleEkpoModel.ZMODPREZZO = row.editPrice !== undefined && row.editPrice === true ? 'X':'';
+								singleEkpoModel.ZMODSCHED = row.editQuantity === true ? 'X':''
+								singleEkpoModel.ZINSCONF = 'X';
+								singleEkpoModel.ZCONFPARZ = 'X'; // per ordini di tipo F prendere il flag da customizing campo: CONFERMA_PARZIALE altrimenti fisso X
+
 								body.ekpo.push(singleEkpoModel);
 
 								var singleEkkoModel = {};
 								singleEkkoModel.EBELN = row.EBELN;
 								singleEkkoModel.LIFNR = row.LIFNR;
+								singleEkkoModel.BSTYP = 'L'; // fisso perchè stiamo confermando i piani di consegna
 								singleEkkoModel.ZCUSTOM01 = row.ZCUSTOM01;
 								singleEkkoModel.ZCUSTOM02 = row.ZCUSTOM02;
 								singleEkkoModel.ZCUSTOM03 = row.ZCUSTOM03;
@@ -1371,9 +1346,9 @@ sap.ui.define([
 							}
 						}
 
-						var url = "/SupplierPortal_OrdersManagement/xsOdata/ConfirmOrders.xsjs";
+						var url = "/backend/OrdersManagement/ConfirmOrders";
 						that.showBusyDialog();
-						that.ajaxPost(url, body, "/SupplierPortal_OrdersManagement", function (oData) { // funzione generica su BaseController
+						that.ajaxPost(url, body, function (oData) { // funzione generica su BaseController
 							that.hideBusyDialog();
 							if (oData) {
 								if (oData.errLog) {
@@ -1450,7 +1425,7 @@ sap.ui.define([
 			// }
 		},
 
-		onChangeProfiloConsegna: function (oEvent) {
+		/*onChangeProfiloConsegna: function (oEvent) {
 			var sObjectId = that.getModel("OrderJSONModel").getData().EBELN;
 			var selectedKey = oEvent.getSource().getSelectedItem().getKey();
 
@@ -1471,7 +1446,7 @@ sap.ui.define([
 					});
 				}
 			});
-		},
+		},*/
 		onPrintPDFOrder: function () {
 			var ebeln = that.getView().getModel("OrderJSONModel").getData().EBELN;
 			var url = "/SupplierPortal_OrdersManagement/xsOdata/GetOrderPDF.xsjs?I_USERID=" + this.getCurrentUserId() + "&I_EBELN=" + ebeln +
@@ -1624,6 +1599,7 @@ sap.ui.define([
 			return err;
 
 		},
+
 		onControllPosition: function (mod) {
 			var err = "";
 
@@ -2081,7 +2057,7 @@ sap.ui.define([
 				var body = {
 					"newEkes": new_ekes
 				};
-
+				// TODO SERVIZIO COLORERIA 
 				var url = "/Scheduling_Agreement/xsOdata/GetCalculatedSchedulations.xsjs?I_USERID=" + that.getCurrentUserId() + "&I_EBELN=" +
 					mod.EBELN +
 					"&I_EBELP=" + mod.EBELP + "&I_BSTYP=" + mod.BSTYP + "&I_BSART=" + mod.BSART + "&I_EBTYP=" + ebtyp;
