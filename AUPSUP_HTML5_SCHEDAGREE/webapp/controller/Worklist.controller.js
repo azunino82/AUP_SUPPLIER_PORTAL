@@ -252,6 +252,19 @@ sap.ui.define([
 				if (oData) {
 					var oModel = new JSONModel();
 					oModel.setData(oData);
+					// Valorizzare OriginalPrice LS
+					for (var i = 0; i < oModel.oData.results.length; i++) {
+						var PEINH = oModel.oData.results[i].PEINH;
+						var NETPR = oModel.oData.results[i].NETPR;
+						if (NETPR != undefined && NETPR != "" && PEINH != undefined && PEINH != "") {
+							PEINH = parseFloat(PEINH);
+							NETPR = parseFloat(NETPR);
+							var prezzoOriginale = NETPR / PEINH;
+							oModel.oData.results[i].OriginalPrice = prezzoOriginale;
+						}
+
+					}
+
 					that.getView().setModel(oModel, "OrderJSONModel");
 					that.getView().byId("OrderHeadersTable").setModel(oModel);
 
@@ -1134,10 +1147,11 @@ sap.ui.define([
 					if (err != "") {
 						contatoreRighe = contatoreRighe + 1;
 					}
-				} else {
-					var ordine = model[i].EBELN + "-" + model[i].EBELP;
-					err = that.getResourceBundle().getText("ERR_Schedulations_empty", ordine);
-					contatoreRighe = contatoreRighe + 1;
+				// } else { tolto obbligo inserimento Schedulazioni
+					//var ordine = model[i].EBELN + "-" + model[i].EBELP;
+					//err = that.getResourceBundle().getText("ERR_Schedulations_empty", ordine);
+					//contatoreRighe = contatoreRighe + 1;
+
 					// var nuovoPrezzoPosizione = model[i].NETPR / model[i].PEINH;
 					// var differenzaPrezzo = nuovoPrezzoPosizione - mod.OriginalPrice;
 					// var ordine = model[i].EBELN + "-" + model[i].EBELP;
@@ -1151,7 +1165,7 @@ sap.ui.define([
 					return;
 				}
 
-				if (model[i].UPDKZ === '1') {
+				// if (model[i].UPDKZ === '1') {  Inserita nella checkPositions
 					// var url = "/SupplierPortal_RMO/xsOdata/GetRMO.xsjs";
 
 					// var body = {
@@ -1219,21 +1233,20 @@ sap.ui.define([
 						MessageBox.error(err);
 						err = "";
 					} else {
-						var navCon = sap.ui.getCore().byId("navCon");
-						navCon.to(sap.ui.getCore().byId("p2"), "slide");
+						that.onConfirmAndClose();
 					}
 					//	}
-				}
+				//}
 			}
 
 		},
 
 		onConfirmAndClose: function () {
 
-			if (sap.ui.getCore().byId("XBLNR").getValue() === undefined || sap.ui.getCore().byId("XBLNR").getValue() === "") {
-				MessageBox.error(that.getResourceBundle().getText("ERR_Confirm_Position_Text"));
-				return;
-			}
+			//if (sap.ui.getCore().byId("XBLNR").getValue() === undefined || sap.ui.getCore().byId("XBLNR").getValue() === "") {
+			//	MessageBox.error(that.getResourceBundle().getText("ERR_Confirm_Position_Text"));
+			//	return;
+			//}
 
 			MessageBox.warning(that.getResourceBundle().getText("MSG_Confirm_Position_Text"), {
 				icon: MessageBox.Icon.WARNING,
@@ -1321,8 +1334,8 @@ sap.ui.define([
 								// TODO FARE logiche save
 								singleEkpoModel.ZINVALIDITA = row.ZINVALIDITA;
 								singleEkpoModel.ZFINVALIDATA = row.ZFINVALIDATA;
-								singleEkpoModel.ZMODPREZZO = row.editPrice !== undefined && row.editPrice === true ? 'X':'';
-								singleEkpoModel.ZMODSCHED = row.editQuantity === true ? 'X':''
+								singleEkpoModel.ZMODPREZZO = row.editPrice !== undefined && row.editPrice === true ? 'X' : '';
+								singleEkpoModel.ZMODSCHED = row.editQuantity === true ? 'X' : ''
 								singleEkpoModel.ZINSCONF = 'X';
 								singleEkpoModel.ZCONFPARZ = 'X'; // per ordini di tipo F prendere il flag da customizing campo: CONFERMA_PARZIALE altrimenti fisso X
 
@@ -1375,8 +1388,8 @@ sap.ui.define([
 											MessageBox.success(that.getResourceBundle().getText("correctConfirmPositions"), {
 												title: "Success", // default
 												onClose: function () {
-														that.onCloseOrderPositions();
-													} // default
+													that.onCloseOrderPositions();
+												} // default
 
 											});
 										}
@@ -1386,8 +1399,8 @@ sap.ui.define([
 									MessageBox.success(that.getResourceBundle().getText("correctConfirmPositions"), {
 										title: "Success", // default
 										onClose: function () {
-												that.onCloseOrderPositions();
-											} // default
+											that.onCloseOrderPositions();
+										} // default
 
 									});
 
@@ -1526,17 +1539,6 @@ sap.ui.define([
 						title: "Error",
 					});
 					return;
-				} else {
-					if (mod.TimeDependent === true) {
-						var errD = that.onControllDateOK(mod);
-						if (errD !== "" && errD !== undefined) {
-							MessageBox.error(errD, {
-								icon: MessageBox.Icon.ERROR,
-								title: "Error",
-							});
-							return;
-						}
-					}
 				}
 			}
 
@@ -1552,12 +1554,13 @@ sap.ui.define([
 				});
 
 		},
+
 		onControllDateOK: function (mod) {
 			var err = "";
 			var ordine = mod.EBELN + "-" + mod.EBELP;
-			if (mod.KDATB === undefined || mod.KDATB === "" || mod.KDATB === null)
+			if (mod.ZINVALIDITA === undefined || mod.ZINVALIDITA === "" || mod.ZINVALIDITA === null)
 				err = err + "\n" + that.getResourceBundle().getText("ERR_Price_DateB", ordine);
-			if (mod.KDATE === undefined || mod.KDATE === "" || mod.KDATE === null)
+			if (mod.ZFINVALIDATA === undefined || mod.ZFINVALIDATA === "" || mod.ZFINVALIDATA === null)
 				err = err + "\n" + that.getResourceBundle().getText("ERR_Price_DateE", ordine);
 
 			return err;
@@ -1582,6 +1585,10 @@ sap.ui.define([
 							if (percScostamentoUP > mod.PricePercUP) {
 								var ordine = mod.EBELN + "-" + mod.EBELP;
 								err = err + "\n" + that.getResourceBundle().getText("ERR_Price_Perc_Up", ordine);
+							} else {
+								var dateErr = that.onControllDateOK(mod);
+								if (dateErr !== '')
+									err = err + "\n" + dateErr;
 							}
 						}
 						if (differenzaPrezzo < 0) {
@@ -1590,6 +1597,10 @@ sap.ui.define([
 							var ordine = mod.EBELN + "-" + mod.EBELP;
 							if (percScostamentoDown > mod.PricePercDOWN) {
 								err = err + "\n" + that.getResourceBundle().getText("ERR_Price_Perc_Down", ordine);
+							} else {
+								var dateErr = that.onControllDateOK(mod);
+								if (dateErr !== '')
+									err = err + "\n" + dateErr;
 							}
 						}
 					}
@@ -1639,15 +1650,15 @@ sap.ui.define([
 
 					err = err + "\n" + that.getResourceBundle().getText("ERR_no_schedulations");
 				}
-
-			} else {
+				// Eliminato messaggio di errore NO SCHEDULAZIONI
+				// } else {
 				// var nuovoPrezzoPosizione = mod.NETPR / mod.PEINH;
 				// var differenzaPrezzo = nuovoPrezzoPosizione - mod.OriginalPrice;
 				// var ordine = mod.EBELN + "-" + mod.EBELP;
 				// if (differenzaPrezzo === 0)
 				// 	err = err + "\n" + that.getResourceBundle().getText("ERR_empty", ordine);
 
-				err = err + "\n" + that.getResourceBundle().getText("ERR_no_schedulations");
+				//err = err + "\n" + that.getResourceBundle().getText("ERR_no_schedulations");
 			}
 
 			var profiliConsegna = that.getModel("AllProfiliConfermaJSONModel").getData().results;

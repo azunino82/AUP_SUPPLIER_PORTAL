@@ -29,6 +29,8 @@
 									<Text text="{SelectedPositionsJSONModel>BPRME}"/>
 									<Label text="{i18n>MENGE}"/>
 									<Text text="{SelectedPositionsJSONModel>MENGE}"/>
+									<Label text="{i18n>KTMNG}"/>
+									<Text text="{SelectedPositionsJSONModel>KTMNG}"/>
 									<!--<Input required="{SelectedPositionsJSONModel>editMode}" value="{SelectedPositionsJSONModel>MENGE}" enabled="{SelectedPositionsJSONModel>editMode}" type="Number"/> -->
 									<core:Title text=""/>
 									<Label text="{i18n>NETPR}"/>
@@ -69,7 +71,7 @@
 										<Text text="{i18n>quantity}"/>
 									</Column>
 									<Column>
-										<Text text="{i18n>PROG_RICHIESTO}"/>
+										<Text text="{i18n>ETENR}"/>
 									</Column>
 									<Column>
 										<Text text="{i18n>PROG_CONFERMA}"/>
@@ -80,7 +82,7 @@
 										<cells>
 											<Text text="{ path: 'SelectedPositionsJSONModel>EINDT', type: 'it.alteaup.supplier.portal.schedulingagreement.AUPSUP_HTML5_SCHEDAGREE.type.Date' }"/>
 											<Text text="{SelectedPositionsJSONModel>MENGE}"/>
-											<Text text="{SelectedPositionsJSONModel>PROG_RICHIESTO}"/>
+											<Text text="{SelectedPositionsJSONModel>ETENR}"/>
 											<Text text="{SelectedPositionsJSONModel>PROG_CONFERMA}"/>
 										</cells>
 									</ColumnListItem>
@@ -119,6 +121,7 @@
 												value="{path:'SelectedPositionsJSONModel>EINDT'}" change="onChange"/>
 											<Input enabled="{= ${SelectedPositionsJSONModel>SYSID} === undefined}" value="{SelectedPositionsJSONModel>MENGE}" type="Number"
 												change="onChange"/>
+											<Text text="{SelectedPositionsJSONModel>ETENR}"/>
 											<Text text="{SelectedPositionsJSONModel>EBTYP}"/>
 											<Button icon="sap-icon://delete" press="onDeleteSchedulation" visible="{= ${SelectedPositionsJSONModel>SYSID} === undefined}"/>
 										</cells>
