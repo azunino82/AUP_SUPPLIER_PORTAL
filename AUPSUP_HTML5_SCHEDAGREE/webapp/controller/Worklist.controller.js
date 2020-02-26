@@ -947,7 +947,7 @@ sap.ui.define([
 			// create a Model with this data
 			var model = new sap.ui.model.json.JSONModel();
 			model.setData(mod);
-			//TODO Servizio Nuovo
+			
 			var fnDoSearch = function (oEvent, bProductSearch) {
 				var aFilters = [],
 					sSearchValue = oEvent.getParameter("value"),
@@ -981,6 +981,7 @@ sap.ui.define([
 				var selectedItem = oEvent.getParameter("selectedItem");
 				if (selectedItem) {
 					var pos_model = that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs];
+					// Prendo i dati della T_PROFILI_CONFERMA e sovrascrivo i valori precedentemente presi da T_PROFILI_CONFERMA_HEADER	
 					var selectedProfiloConfermaModel = pos_model !== undefined ? pos_model.profiliConferma.find(x => x.CAT_CONFERMA ===
 						selectedItem.getDescription()) : undefined;
 
@@ -1001,23 +1002,15 @@ sap.ui.define([
 						that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].UPDKZ = selectedProfiloConfermaModel.TIPO_CONFERMA;
 					else
 						that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].UPDKZ = "";
-					// var selezionato = selectedItem.getDescription();
-					var schedulation = {
-						"EINDT": "",
-						"MENGE": "",
-						"EBTYP": selectedItem.getDescription(),
-					};
-					if (mod !== undefined && mod.POItemSchedulers.results !== undefined) {
-						mod.POItemSchedulers.results.push(schedulation);
-					} else {
-						var oSchedulationsArray = [];
-						oSchedulationsArray.push(schedulation);
-						mod.POItemSchedulers.results = oSchedulationsArray;
-					}
-					that.getModel("SelectedPositionsJSONModel").refresh();
+					// FINE DELLA SOVRASCRITTURA
+
+					// AGGIUNGO LA RIGA NELLE SCHEDULAZIONI
+					
+					// CALCOLO SCHEDULAZIONI COLORATE
+					that.getSchedulationsStatus(mod, selectedProfiloConfermaModel.CAT_CONFERMA);
+
 				}
-				// CALCOLO SCHEDULAZIONI COLORATE
-				that.getSchedulationsStatus(mod, selectedProfiloConfermaModel.CAT_CONFERMA);
+				
 			});
 
 			// attach cancel listener
@@ -2049,7 +2042,7 @@ sap.ui.define([
 		},
 
 		getSchedulationsStatus: function (mod, ebtyp) {
-			var new_ekes = [];
+			/*var new_ekes = [];
 			mod.POItemSchedulers.results.forEach(function (aData) {
 				// 				// distruggo il binding con il modello altrimenti non funziona la cler dei dati
 				var oPositionModel = {};
@@ -2067,20 +2060,41 @@ sap.ui.define([
 			if (new_ekes.length > 0) {
 				var body = {
 					"newEkes": new_ekes
-				};
-				// TODO SERVIZIO COLORERIA 
-				var url = "/Scheduling_Agreement/xsOdata/GetCalculatedSchedulations.xsjs?I_USERID=" + that.getCurrentUserId() + "&I_EBELN=" +
+				}; */
+				var url = "/backend/SchedulingAgreementManagement/GetCalculatedSchedulations?I_EBELN=" +
 					mod.EBELN +
 					"&I_EBELP=" + mod.EBELP + "&I_BSTYP=" + mod.BSTYP + "&I_BSART=" + mod.BSART + "&I_EBTYP=" + ebtyp;
 				that.showBusyDialog();
-				that.ajaxPost(url, body, "/Scheduling_Agreement", function (oData) { // funzione generica su BaseController
+				that.ajaxPost(url, {}, function (oData) { // funzione generica su BaseController
 					that.hideBusyDialog();
 					if (oData) {
 						mod.SchedulationsStatus = oData.results;
-						that.getView().getModel("SelectedPositionsJSONModel").refresh();
+
+							mod.SchedulationsStatus.forEach(element => {
+								var deltaMenge = (parseFloat(element.MENGE) - parseFloat(element.QTA_CONFERMATA));
+								if( deltaMenge < 0 || deltaMenge > 0){
+									var schedulation = {
+										"EINDT": element.EINDT,
+										"MENGE": deltaMenge,
+										"ETENR": element.ETENR,
+										"EBTYP": ebtyp,
+									};
+									if (mod !== undefined && mod.POItemSchedulers.results !== undefined) {
+										mod.POItemSchedulers.results.push(schedulation);
+									} else {
+										var oSchedulationsArray = [];
+										oSchedulationsArray.push(schedulation);
+										mod.POItemSchedulers.results = oSchedulationsArray;
+									}
+								}
+							});
+						
+						that.getModel("SelectedPositionsJSONModel").refresh();
+
+
 					}
 				});
-			}
+		//	} 
 		},
 		onLegend: function (oEvent) {
 			var oButton = oEvent.getSource();

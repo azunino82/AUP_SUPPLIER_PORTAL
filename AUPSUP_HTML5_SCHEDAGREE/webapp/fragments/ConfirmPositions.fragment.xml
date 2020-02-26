@@ -83,7 +83,7 @@
 											<Text text="{ path: 'SelectedPositionsJSONModel>EINDT', type: 'it.alteaup.supplier.portal.schedulingagreement.AUPSUP_HTML5_SCHEDAGREE.type.Date' }"/>
 											<Text text="{SelectedPositionsJSONModel>MENGE}"/>
 											<Text text="{SelectedPositionsJSONModel>ETENR}"/>
-											<Text text="{SelectedPositionsJSONModel>PROG_CONFERMA}"/>
+											<Text text="{SelectedPositionsJSONModel>QTA_CONFERMATA}"/>
 										</cells>
 									</ColumnListItem>
 								</items>
