@@ -29,7 +29,6 @@ module.exports = function () {
         console.log('INPUT BODY ==========> ' + JSON.stringify(body))
 
         if (body !== undefined && body !== '' && body !== null) {
-            var results
             var lifnr = []
             var ebeln = []
             var ebelp = []
@@ -107,7 +106,12 @@ module.exports = function () {
                     return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
                 } else {
                     hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.SchedulingAgreement::MM00_SAG_DOC_LIST', function (_err, sp) {
+                        if (_err) {
+                          console.log('---->>> CLIENT END ERR MM00_SAG_DOC_LIST <<<<<-----')
+                        }
                         sp(userid, lifnr, ebeln, ebelp, ekorg, matnr, ekgrp, werks, (err, parameters, ET_SAG_EKEH, ET_SAG_EKEK, ET_SAG_EKES, ET_SAG_EKET, ET_SAG_EKKO, ET_SAG_EKPO, OUT_POS_PIANI_CONS) => {
+                            console.log('---->>> CLIENT END MM00_SAG_DOC_LIST <<<<<-----')
+                          client.close()
                             if (err) {
                                 console.error('ERROR: ' + err)
                                 return res.status(500).send(stringifyObj(err))
@@ -194,7 +198,7 @@ module.exports = function () {
                                                 tEkes.push(t_ekes[j])
                                             }
                                         }
-                                        t_ekpo[i].POItemSchedulers[results] = tEkes
+                                        t_ekpo[i].POItemSchedulers.results = tEkes
 
                                         var tEket = []
                                         // eslint-disable-next-line no-redeclare
@@ -203,7 +207,7 @@ module.exports = function () {
                                                 tEket.push(t_eket[j])
                                             }
                                         }
-                                        t_ekpo[i].POItemConfirmations[results] = tEket
+                                        t_ekpo[i].POItemConfirmations.results = tEket
 
                                         var tEkeh = []
                                         // eslint-disable-next-line no-redeclare
@@ -212,7 +216,7 @@ module.exports = function () {
                                                 tEkeh.push(t_ekeh[j])
                                             }
                                         }
-                                        t_ekpo[i].POItemEkeh[results] = tEkeh
+                                        t_ekpo[i].POItemEkeh.results = tEkeh
 
                                         var tEkek = []
                                         // eslint-disable-next-line no-redeclare
@@ -221,7 +225,7 @@ module.exports = function () {
                                                 tEkek.push(t_ekek[j])
                                             }
                                         }
-                                        t_ekpo[i].POItemEkek[results] = tEkek
+                                        t_ekpo[i].POItemEkek.results = tEkek
                                     }
                                 }
 
@@ -260,13 +264,20 @@ module.exports = function () {
                         return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
                     } else {
                         hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.SchedulingAgreement::SchedulationsCalculator', function (_err, sp) {
+                            console.error('ERROR CONNECTION :' + stringifyObj(_err))
+                            if (_err) {
+                              console.log('---->>> CLIENT END ERR <<<<<-----')
+                              client.close()
+                            }                            
                             sp(userid, objectCopy.EBELN, objectCopy.EBELP, objectCopy.BSTYP, objectCopy.BSART, objectCopy.EBTYP !== undefined && objectCopy.EBTYP !== null ? objectCopy.EBTYP : '', [], (err, parameters, results) => {
+                                console.log('---->>> CLIENT END SchedulationsCalculator <<<<<-----')
+                                client.close()
                                 if (err) {
-                                    console.error('ERROR: ' + err)
+                                    console.error('ERROR SchedulationsCalculator: ' + stringifyObj(err))
                                     return res.status(500).send(stringifyObj(err))
                                 } else {
                                     var objToJsonList = []
-
+                                    console.log('OK SchedulationsCalculator: ' + (stringifyObj(results)))
                                     if (results !== null && results !== undefined && results.length > 0) {
                                         for (var i = 0; i < results.length; i++) {
                                             var elem = results[i]
@@ -292,11 +303,19 @@ module.exports = function () {
                                             return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
                                         } else {
                                             hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.SchedulingAgreement::GetConfirms', function (_err, sp) {
+                                                console.error('ERROR CONNECTION :' + stringifyObj(_err))
+                                                if (_err) {
+                                                  console.log('---->>> CLIENT END ERR <<<<<-----')
+                                                  client.close()
+                                                }                                                    
                                                 sp(userid, objectCopy.EBELN, objectCopy.EBELP, lifnr, ekorg, matnr, ekgrp, werks, (err, parameters, ET_RETURN_EKKO_EKPO, ET_RETURN_EKES_EKET, ET_RETURN_EKEH_EKEK) => {
+                                                    console.log('---->>> CLIENT END GetConfirms<<<<<-----')
+                                                    client.close()
                                                     if (err) {
-                                                        console.error('ERROR: ' + err)
+                                                        console.error('ERROR GetConfirms: ' + stringifyObj(err))
                                                         return res.status(500).send(stringifyObj(err))
                                                     } else {
+                                                        console.log('OK GetConfirms: ' + (stringifyObj(ET_RETURN_EKKO_EKPO) + ' ==== ' + (stringifyObj(ET_RETURN_EKKO_EKPO))))
                                                         var outEkkoEkpo = []
 
                                                         if (ET_RETURN_EKKO_EKPO !== null && ET_RETURN_EKKO_EKPO !== undefined && ET_RETURN_EKKO_EKPO.length > 0) {
@@ -343,11 +362,18 @@ module.exports = function () {
                                                                 return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
                                                             } else {
                                                                 hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Utils::GetProfiliConferma', function (_err, sp) {
+                                                                    console.error('ERROR CONNECTION :' + stringifyObj(_err))
+                                                                    if (_err) {
+                                                                      console.log('---->>> CLIENT END ERR <<<<<-----')
+                                                                    }
                                                                     sp(userid, objectCopy.BSTAE, (err, parameters, results) => {
+                                                                        console.log('---->>> CLIENT END GetProfiliConferma <<<<<-----')
+                                                                        client.close()
                                                                         if (err) {
-                                                                            console.error('ERROR: ' + err)
+                                                                            console.error('ERROR GetProfiliConferma: ' + stringifyObj(err))
                                                                             return res.status(500).send(stringifyObj(err))
                                                                         } else {
+                                                                            console.log('OK GetProfiliConferma: ' + (stringifyObj(results)))
                                                                             var outProfiles = []
                                                                             if (results != null && results !== undefined && results.length > 0) {
                                                                                 for (var i = 0; i < results.length; i++) {
@@ -365,7 +391,7 @@ module.exports = function () {
 
                                                                             hdbext.createConnection(req.tenantContainer, function (error, client) {
                                                                               if (error) {
-                                                                                console.error(error)
+                                                                                console.error('---->>> CLIENT END T_PROFILI_CONFERMA_HEADER ERRORE <<<<<-----')
                                                                               }
                                                                               if (client) {
                                                                                 async.waterfall([
@@ -388,6 +414,7 @@ module.exports = function () {
                                                                                       res.type('application/json').status(500).send({ ERROR: err })
                                                                                       return
                                                                                     } else {
+                                                                                        console.log('OK T_PROFILI_CONFERMA_HEADER: ' + (stringifyObj(results)))
                                                                                         if (results !== null && results.length > 0) {
                                                                                             var guid = results[0]
                                                                                             if (guid !== null && guid.MODIFICA_PREZZO !== null && guid.MODIFICA_PREZZO === 'X') {
@@ -399,6 +426,7 @@ module.exports = function () {
                                                                                                 objectCopy.editPrice = false
                                                                                             }
                                                                                         }
+                                                                                        callback()
                                                                                     }
 
                                                                                     objectCopy.TimeDependent = false
@@ -408,7 +436,7 @@ module.exports = function () {
         
                                                                                     hdbext.createConnection(req.tenantContainer, function (error, client) {
                                                                                       if (error) {
-                                                                                        console.error(error)
+                                                                                        console.error('---->>> ERROR T_ORDERS_TYPES <<<<<-----')
                                                                                       }
                                                                                       if (client) {
                                                                                         async.waterfall([
@@ -431,6 +459,7 @@ module.exports = function () {
                                                                                               res.type('application/json').status(500).send({ ERROR: err })
                                                                                               return
                                                                                             } else {
+                                                                                                console.log('OK T_ORDERS_TYPES: ' + (stringifyObj(results)))
                                                                                                 if (results !== null && results.length > 0) {
                                                                                                     var guid = results[0]
                                                                                                     if (guid !== null) {
@@ -443,17 +472,22 @@ module.exports = function () {
                                                                                             }
                                                                                             megaResults.push(objectCopy)
                                                                                             callback()
+                                                                                            console.log('---->>> OUT FINALE post CALLBACK <<<<<-----')
+                                                                                            return res.status(200).send(megaResults)
                                                                                           }
                                                                                         ], function done (err, parameters, rows) {
+                                                                                            console.log('---->>> CLIENT END T_ORDERS_TYPES <<<<<-----')
+                                                                                            client.close()
                                                                                           if (err) {
                                                                                             return console.error('Done error', err)
                                                                                           }
                                                                                         })
                                                                                       }
                                                                                     })
-                                                                                    callback()
                                                                                   }
                                                                                 ], function done (err, parameters, rows) {
+                                                                                  console.log('---->>> CLIENT END PROFILO_CONTROLLO <<<<<-----')
+                                                                                  client.close()
                                                                                   if (err) {
                                                                                     return console.error('Done error', err)
                                                                                   }
@@ -489,7 +523,14 @@ module.exports = function () {
             return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
           } else {
             hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.SchedulingAgreement::GetPianiConsegnaDetail', function (_err, sp) {
+                console.error('ERROR CONNECTION :' + stringifyObj(_err))
+                if (_err) {
+                    console.log('---->>> CLIENT END ERR <<<<<-----')
+                    client.close()
+                }                       
               sp(req.user.id, ebeln, ebelp, (err, parameters, ET_HEADER, ET_SAG_EKEH, ET_SAG_EKES, ET_SAG_EKET) => {
+                console.log('---->>> CLIENT END <<<<<-----')
+                client.close()
                 if (err) {
                   return res.status(500).send(stringifyObj(err))
                 } else {
@@ -539,7 +580,6 @@ module.exports = function () {
                         MENGE: header.MENGE,
                         PEINH: header.PEINH
                     }
-            
                   return res.status(200).send({
                     results: results
                   })

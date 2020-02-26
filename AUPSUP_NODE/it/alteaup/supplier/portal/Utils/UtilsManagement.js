@@ -37,10 +37,12 @@ module.exports = function () {
   app.get('/GetPurchaseOrganizations', function (req, res) {
     hdbext.createConnection(req.tenantContainer, (err, client) => {
       if (err) {
-        return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
+        return res.status(500).send('GetPurchaseOrganizations CONNECTION ERROR: ' + stringifyObj(err))
       } else {
         hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Utils::GetPurchaseOrganizations', function (_err, sp) {
           sp(req.user.id, (err, parameters, results) => {
+            console.log('---->>> CLIENT END GetPurchaseOrganizations <<<<<-----')
+            client.close()
             if (err) {
               return res.status(500).send(stringifyObj(err))
             } else {
@@ -65,10 +67,12 @@ module.exports = function () {
   app.get('/GetUserPlants', function (req, res) {
     hdbext.createConnection(req.tenantContainer, (err, client) => {
       if (err) {
-        return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
+        return res.status(500).send('GetUserPlants CONNECTION ERROR: ' + stringifyObj(err))
       } else {
         hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Utils::GetUserPlants', function (_err, sp) {
           sp(req.user.id, (err, parameters, results) => {
+            console.log('---->>> CLIENT END GetUserPlants <<<<<-----')
+            client.close()
             if (err) {
               return res.status(500).send(stringifyObj(err))
             } else {
@@ -94,10 +98,12 @@ module.exports = function () {
   app.get('/GetUserBU', function (req, res) {
     hdbext.createConnection(req.tenantContainer, (err, client) => {
       if (err) {
-        return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
+        return res.status(500).send('GetUserBU CONNECTION ERROR: ' + stringifyObj(err))
       } else {
         hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Utils::GetUserBU', function (_err, sp) {
           sp(req.user.id, (err, parameters, results) => {
+            console.log('---->>> CLIENT END GetUserBU <<<<<-----')
+            client.close()
             if (err) {
               return res.status(500).send(stringifyObj(err))
             } else {
@@ -123,7 +129,8 @@ module.exports = function () {
 
     hdbext.createConnection(req.tenantContainer, function (error, client) {
       if (error) {
-        console.error(error)
+        console.error('ERROR T_AVVISI_QUALITA :' + stringifyObj(error))
+        return res.status(500).send('GetUserBU CONNECTION ERROR: ' + stringifyObj(error))
       }
       if (client) {
         async.waterfall([
@@ -151,6 +158,8 @@ module.exports = function () {
             callback()
           }
         ], function done (err, parameters, rows) {
+          console.log('---->>> CLIENT END T_AVVISI_QUALITA <<<<<-----')
+          client.close()
           if (err) {
             return console.error('Done error', err)
           }
@@ -166,7 +175,8 @@ module.exports = function () {
 
     hdbext.createConnection(req.tenantContainer, function (error, client) {
       if (error) {
-        console.error(error)
+        console.error('ERROR T_BCKND_SYSTEMS :' + stringifyObj(error))
+        return res.status(500).send('GetUserBU CONNECTION ERROR: ' + stringifyObj(error))
       }
       if (client) {
         async.waterfall([
@@ -194,6 +204,8 @@ module.exports = function () {
             callback()
           }
         ], function done (err, parameters, rows) {
+          console.log('---->>> CLIENT END T_BCKND_SYSTEMS <<<<<-----')
+          client.close()
           if (err) {
             return console.error('Done error', err)
           }
@@ -210,50 +222,61 @@ module.exports = function () {
         return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
       } else {
         hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Utils::GetMetasupplierList', function (_err, sp) {
-          sp(req.user.id, (err, parameters, OUT_ANAGRAFICA, OUT_LIFNR) => {
-            if (err) {
-              return res.status(500).send(stringifyObj(err))
-            } else {
-              var outList = []
+          if (_err) {
+            console.error('ERROR CONNECTION GetMetasupplierList :' + stringifyObj(_err))
+            return res.status(500).send('GetMetasupplierList CONNECTION ERROR: ' + stringifyObj(_err))
+          }
+          try {
+            sp(req.user.id, (err, parameters, OUT_ANAGRAFICA, OUT_LIFNR) => {
+              console.log('---->>> CLIENT END <<<<<-----')
+              client.close()
 
-              var listaLifnr = []
-              var listaLifnrOut = []
-              var elem = ''
+              if (err) {
+                return res.status(500).send(stringifyObj(err))
+              } else {
+                var outList = []
 
-              if (OUT_LIFNR !== undefined && OUT_LIFNR !== null) {
-                listaLifnr = OUT_LIFNR
-              }
+                var listaLifnr = []
+                var listaLifnrOut = []
+                var elem = ''
 
-              if (OUT_ANAGRAFICA !== undefined && OUT_ANAGRAFICA !== null) {
-                var listaAnagrafica = OUT_ANAGRAFICA
-                if (listaAnagrafica != null && listaAnagrafica.length > 0) {
-                  for (var i = 0; i < listaAnagrafica.length; i++) {
-                    listaLifnrOut = []
-                    for (var j = 0; j < listaLifnr.length; j++) {
-                      if (listaAnagrafica[i].METAID === listaLifnr[j].METAID) {
-                        elem = {
-                          LIFNR: listaLifnr[j].LIFNR,
-                          DESCR: listaLifnr[j].DESCR
+                if (OUT_LIFNR !== undefined && OUT_LIFNR !== null) {
+                  listaLifnr = OUT_LIFNR
+                }
+
+                if (OUT_ANAGRAFICA !== undefined && OUT_ANAGRAFICA !== null) {
+                  var listaAnagrafica = OUT_ANAGRAFICA
+                  if (listaAnagrafica != null && listaAnagrafica.length > 0) {
+                    for (var i = 0; i < listaAnagrafica.length; i++) {
+                      listaLifnrOut = []
+                      for (var j = 0; j < listaLifnr.length; j++) {
+                        if (listaAnagrafica[i].METAID === listaLifnr[j].METAID) {
+                          elem = {
+                            LIFNR: listaLifnr[j].LIFNR,
+                            DESCR: listaLifnr[j].DESCR
+                          }
+                          listaLifnrOut.push(elem)
                         }
-                        listaLifnrOut.push(elem)
                       }
-                    }
-                    elem = {
-                      METAID: listaAnagrafica[i].METAID,
-                      DESCR: listaAnagrafica[i].DESCR,
-                      LIFNR: listaLifnrOut
-                    }
+                      elem = {
+                        METAID: listaAnagrafica[i].METAID,
+                        DESCR: listaAnagrafica[i].DESCR,
+                        LIFNR: listaLifnrOut
+                      }
 
-                    outList.push(elem)
+                      outList.push(elem)
+                    }
                   }
                 }
-              }
 
-              return res.status(200).send({
-                results: outList
-              })
-            }
-          })
+                return res.status(200).send({
+                  results: outList
+                })
+              }
+            })
+          } catch (err) {
+            console.error('CATCH ERR: ' + stringifyObj(err))
+          }
         })
       }
     })
@@ -266,10 +289,16 @@ module.exports = function () {
 
     hdbext.createConnection(req.tenantContainer, (err, client) => {
       if (err) {
-        return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
+        return res.status(500).send('GetProfiliConferma CONNECTION ERROR: ' + stringifyObj(err))
       } else {
         hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Utils::GetProfiliConferma', function (_err, sp) {
+          if (_err) {
+            console.error('---->>> ERROR GetProfiliConferma <<<<<-----')
+            return res.status(500).send('GetProfiliConferma CONNECTION ERROR SP: ' + stringifyObj(_err))
+          }
           sp(req.user.id, bstae, (err, parameters, results) => {
+            console.log('---->>> CLIENT END GetProfiliConferma <<<<<-----')
+            client.close()
             if (err) {
               return res.status(500).send(stringifyObj(err))
             } else {
@@ -295,7 +324,7 @@ module.exports = function () {
 
     hdbext.createConnection(req.tenantContainer, function (error, client) {
       if (error) {
-        console.error(error)
+        return res.status(500).send('T_GESTIONE_ETICHETTE CONNECTION ERROR: ' + stringifyObj(error))
       }
       if (client) {
         async.waterfall([
@@ -323,6 +352,8 @@ module.exports = function () {
             callback()
           }
         ], function done (err, parameters, rows) {
+          console.log('---->>> CLIENT END T_GESTIONE_ETICHETTE <<<<<-----')
+          client.close()
           if (err) {
             return console.error('Done error', err)
           }
@@ -365,7 +396,13 @@ module.exports = function () {
         return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
       } else {
         hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Utils::GetSearchHelp', function (_err, sp) {
+          if (_err) {
+            console.error('ERROR CONNECTION GetSearchHelp: ' + stringifyObj(_err))
+            return res.status(500).send('T_GESTIONE_ETICHETTE CONNECTION ERROR: ' + stringifyObj(_err))
+          }
           sp(userId, ekgrp, eknam, filter, 'EKGRP', (err, parameters, results) => {
+            console.log('---->>> CLIENT END <<<<<-----')
+            client.close()
             if (err) {
               console.error('ERROR: ' + err)
               return res.status(500).send(stringifyObj(err))
@@ -419,6 +456,8 @@ module.exports = function () {
           return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
         } else {
           hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Utils::GetSearchHelp', function (_err, sp) {
+            console.log('---->>> CLIENT END SearchMaterial <<<<<-----')
+            client.close()
             sp(userId, matnr, maktx, filter, 'MATNR', (err, parameters, results) => {
               if (err) {
                 console.error('ERROR: ' + err)

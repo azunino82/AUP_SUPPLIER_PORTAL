@@ -21,4 +21,7 @@ module.exports = function (app, server) {
 
   // SERVIZI PIANI DI CONSEGNA
   app.use('/SchedulingAgreementManagement', require('../it/alteaup/supplier/portal/SchedulingAgreement/SchedulingAgreementManagement')())
+
+  // SERVIZI ORDINI e PIANI CONSEGNA (per creazione)
+  app.use('/OrdersManagement', require('../it/alteaup/supplier/portal/Orders/OrdersManagement')())
 }
