@@ -25,6 +25,7 @@ module.exports = function () {
     app.post('/ConfirmOrders', function (req, res) {
         const body = req.body
         req.setTimeout(60000)
+        res.setTimeout(60000)
         console.log('INPUT BODY ==========> ' + JSON.stringify(body))
 
         if (body !== undefined && body !== '' && body !== null) {
