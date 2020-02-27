@@ -50,6 +50,10 @@
 					"id": "AUPSUP_HTML5_SCHEDAGREE",
 					"appId": "it.alteaup.supplier.portal.schedulingagreement.AUPSUP_HTML5_SCHEDAGREE",
 					"vizId": "SchedulingAgreement-Display"
+				}, {
+					"id": "AUPSUP_HTML5_APR_SCDAGR",
+					"appId": "it.alteaup.supplier.portal.aprvschdagr.AUPSUP_HTML5_APR_SCDAGR",
+					"vizId": "ApproveSchedAgree-Display"
 				}]
 			}
 		}],
