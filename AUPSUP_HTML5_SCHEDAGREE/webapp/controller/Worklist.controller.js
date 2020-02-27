@@ -866,7 +866,7 @@ sap.ui.define([
 				oIndexs = oIndexs[oIndexs.length - 1];
 				if (mod.MODIFICA_PREZZO !== undefined && mod.MODIFICA_PREZZO !== "") {
 					if ((that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].KONNR === undefined || (that.getView().getModel(
-							"SelectedPositionsJSONModel").getData()[oIndexs].KONNR === "")) || (that.getView().getModel("SelectedPositionsJSONModel").getData()[
+						"SelectedPositionsJSONModel").getData()[oIndexs].KONNR === "")) || (that.getView().getModel("SelectedPositionsJSONModel").getData()[
 							oIndexs].KTPNR === undefined || (that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].KTPNR === "00000")))
 						that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].editPrice = true;
 				}
@@ -947,7 +947,7 @@ sap.ui.define([
 			// create a Model with this data
 			var model = new sap.ui.model.json.JSONModel();
 			model.setData(mod);
-			
+
 			var fnDoSearch = function (oEvent, bProductSearch) {
 				var aFilters = [],
 					sSearchValue = oEvent.getParameter("value"),
@@ -1005,12 +1005,12 @@ sap.ui.define([
 					// FINE DELLA SOVRASCRITTURA
 
 					// AGGIUNGO LA RIGA NELLE SCHEDULAZIONI
-					
+
 					// CALCOLO SCHEDULAZIONI COLORATE
 					that.getSchedulationsStatus(mod, selectedProfiloConfermaModel.CAT_CONFERMA);
 
 				}
-				
+
 			});
 
 			// attach cancel listener
@@ -1018,7 +1018,7 @@ sap.ui.define([
 			// 	oSelectDialog1.close();
 			// };);
 			// Controllo per far apparire la PopUp solo per il primo inserimento
-			if (mod.POItemSchedulers.results.length !== 0) {
+			if (mod.POItemSchedulers.results.length > 0) {
 				for (var i = 0; i < mod.POItemSchedulers.results.length; i++) {
 					var ciclo = false;
 					if (mod.POItemSchedulers.results[i].SYSID === null || mod.POItemSchedulers.results[i].SYSID === undefined) {
@@ -1045,6 +1045,8 @@ sap.ui.define([
 						oSelectDialog1.open();
 					else {
 						var schedulation = {
+							"ETENR": '',
+							"ETENRenabled": true,
 							"EINDT": "",
 							"MENGE": "",
 							"EBTYP": mod.profiliConferma[0].CAT_CONFERMA,
@@ -1105,7 +1107,7 @@ sap.ui.define([
 			if (mod !== undefined && mod.POItemSchedulers.results !== null) {
 				mod.POItemSchedulers.results.splice(rowNumber, 1);
 			}
-			that.getSchedulationsStatus(mod, EBTYP);
+		//	that.getSchedulationsStatus(mod, EBTYP);
 			this.getModel("SelectedPositionsJSONModel").refresh(true);
 		},
 
@@ -1130,8 +1132,8 @@ sap.ui.define([
 
 						sommaQuantitaSchedulazioni = sommaQuantitaSchedulazioni + parseInt(model[i].POItemSchedulers.results[j].MENGE);
 						if ((model[i].POItemSchedulers.results[j]) && ((model[i].POItemSchedulers.results[j].EINDT == "") || (model[i].POItemSchedulers
-								.results[
-									j].MENGE == ""))) {
+							.results[
+							j].MENGE == ""))) {
 							err = that.getResourceBundle().getText("ERR_Schedulations_Mandatory");
 							contatoreRighe = contatoreRighe + 1;
 
@@ -1140,7 +1142,7 @@ sap.ui.define([
 					if (err != "") {
 						contatoreRighe = contatoreRighe + 1;
 					}
-				// } else { tolto obbligo inserimento Schedulazioni
+					// } else { tolto obbligo inserimento Schedulazioni
 					//var ordine = model[i].EBELN + "-" + model[i].EBELP;
 					//err = that.getResourceBundle().getText("ERR_Schedulations_empty", ordine);
 					//contatoreRighe = contatoreRighe + 1;
@@ -1159,76 +1161,76 @@ sap.ui.define([
 				}
 
 				// if (model[i].UPDKZ === '1') {  Inserita nella checkPositions
-					// var url = "/SupplierPortal_RMO/xsOdata/GetRMO.xsjs";
+				// var url = "/SupplierPortal_RMO/xsOdata/GetRMO.xsjs";
 
-					// var body = {
-					// 	"userid": that.getCurrentUserId(),
-					// 	"ebeln": model[i].EBELN
-					// };
+				// var body = {
+				// 	"userid": that.getCurrentUserId(),
+				// 	"ebeln": model[i].EBELN
+				// };
 
-					//that.showBusyDialog();
+				//that.showBusyDialog();
 
-					//Sostituita la chiamata RMO con il ciclo FOR//
+				//Sostituita la chiamata RMO con il ciclo FOR//
 
-					// // ESTRAGGO le conferme in corso di approvazione con categoria uguale
-					// that.ajaxPost(url, body, "/SupplierPortal_RMO", function (oData) {
-					// 	that.hideBusyDialog();
-					// 	if (oData && oData.results && oData.results.EkkoEkpo && oData.results.EkkoEkpo.length > 0) {
-					// 		var selectEkkoEkpo = oData.results.EkkoEkpo.find(function (element) {
-					// 			if (element.EBELN === model[contatoreRighe].EBELN && element.EBELP === model[contatoreRighe].EBELP && element.STATUS ===
-					// 				'RC' && element.UPDKZ ===
-					// 				model[contatoreRighe].UPDKZ) {
-					// 				return element;
-					// 			}
-					// 		});
-					// 		if (selectEkkoEkpo === undefined) {
-					// 			oData = undefined;
-					// 		}
-					// 	}
-					// 	var errore = that.onControllPosition(model[contatoreRighe], oData);
-					// 	if (errore !== undefined && errore !== "") {
-					// 		err = err + errore + " in pos: " + model[contatoreRighe].EBELP;
-					// 	}
+				// // ESTRAGGO le conferme in corso di approvazione con categoria uguale
+				// that.ajaxPost(url, body, "/SupplierPortal_RMO", function (oData) {
+				// 	that.hideBusyDialog();
+				// 	if (oData && oData.results && oData.results.EkkoEkpo && oData.results.EkkoEkpo.length > 0) {
+				// 		var selectEkkoEkpo = oData.results.EkkoEkpo.find(function (element) {
+				// 			if (element.EBELN === model[contatoreRighe].EBELN && element.EBELP === model[contatoreRighe].EBELP && element.STATUS ===
+				// 				'RC' && element.UPDKZ ===
+				// 				model[contatoreRighe].UPDKZ) {
+				// 				return element;
+				// 			}
+				// 		});
+				// 		if (selectEkkoEkpo === undefined) {
+				// 			oData = undefined;
+				// 		}
+				// 	}
+				// 	var errore = that.onControllPosition(model[contatoreRighe], oData);
+				// 	if (errore !== undefined && errore !== "") {
+				// 		err = err + errore + " in pos: " + model[contatoreRighe].EBELP;
+				// 	}
 
-					// 	contatoreRighe = contatoreRighe + 1;
+				// 	contatoreRighe = contatoreRighe + 1;
 
-					// 	if (contatoreRighe >= model.length) {
-					// 		if (err !== "") {
-					// 			MessageBox.error(err);
-					// 			err = "";
-					// 		} else {
-					// 			var navCon = sap.ui.getCore().byId("navCon");
-					// 			navCon.to(sap.ui.getCore().byId("p2"), "slide");
-					// 		}
-					// 	}
+				// 	if (contatoreRighe >= model.length) {
+				// 		if (err !== "") {
+				// 			MessageBox.error(err);
+				// 			err = "";
+				// 		} else {
+				// 			var navCon = sap.ui.getCore().byId("navCon");
+				// 			navCon.to(sap.ui.getCore().byId("p2"), "slide");
+				// 		}
+				// 	}
 
-					// });
-					if (model[i].editPrice === true) {
-						var errP = that.onControllPriceOK(model[i]);
-						if (errP !== "" && errP !== undefined) {
-							MessageBox.error(errP, {
-								icon: MessageBox.Icon.ERROR,
-								title: "Error",
-							});
-							return;
-						}
+				// });
+				if (model[i].editPrice === true) {
+					var errP = that.onControllPriceOK(model[i]);
+					if (errP !== "" && errP !== undefined) {
+						MessageBox.error(errP, {
+							icon: MessageBox.Icon.ERROR,
+							title: "Error",
+						});
+						return;
 					}
+				}
 
-					var errore = that.onControllPosition(model[i]);
-					if (errore !== undefined && errore !== "") {
-						err = err + errore + " ordine: " + model[i].EBELN + " in pos: " + model[i].EBELP;
-					}
-					//err = err + that.onControllPosition(model[i], null) + " in pos: " + model[i].EBELP;
-					contatoreRighe = contatoreRighe + 1;
+				var errore = that.onControllPosition(model[i]);
+				if (errore !== undefined && errore !== "") {
+					err = err + errore + " ordine: " + model[i].EBELN + " in pos: " + model[i].EBELP;
+				}
+				//err = err + that.onControllPosition(model[i], null) + " in pos: " + model[i].EBELP;
+				contatoreRighe = contatoreRighe + 1;
 
-					//if (contatoreRighe >= model.length) {
-					if (err !== "") {
-						MessageBox.error(err);
-						err = "";
-					} else {
-						that.onConfirmAndClose();
-					}
-					//	}
+				//if (contatoreRighe >= model.length) {
+				if (err !== "") {
+					MessageBox.error(err);
+					err = "";
+				} else {
+					that.onConfirmAndClose();
+				}
+				//	}
 				//}
 			}
 
@@ -1621,8 +1623,8 @@ sap.ui.define([
 					mod.POItemSchedulers.results[j].EINDT = mod.POItemSchedulers.results[j].EINDT.split('-').join('');
 					sommaQuantitaSchedulazioni = sommaQuantitaSchedulazioni + parseFloat(mod.POItemSchedulers.results[j].MENGE);
 					if ((mod.POItemSchedulers.results[j]) && ((mod.POItemSchedulers.results[j].EINDT === "") || (mod.POItemSchedulers
-							.results[
-								j].MENGE === ""))) {
+						.results[
+						j].MENGE === ""))) {
 						err = err + "\n" + that.getResourceBundle().getText("ERR_Schedulations_Mandatory");
 						break;
 					}
@@ -1759,7 +1761,7 @@ sap.ui.define([
 					if (mod.RMOData !== undefined && mod.RMOData.EkkoEkpo !== undefined && mod.RMOData.EkkoEkpo.length > 0) {
 						var EkkoEkpo = mod.RMOData.EkkoEkpo.find(x => x.STATUS === 'RC' && x.UPDKZ === '4' && x.EBELN === mod.EBELN && x.EBELP ===
 							mod
-							.EBELP);
+								.EBELP);
 						if (EkkoEkpo !== undefined)
 							trovato = true;
 					}
@@ -1807,7 +1809,7 @@ sap.ui.define([
 					if (mod.RMOData !== undefined && mod.RMOData.EkkoEkpo !== undefined && mod.RMOData.EkkoEkpo.length > 0) {
 						var EkkoEkpo = mod.RMOData.EkkoEkpo.find(x => x.STATUS === 'RC' && x.UPDKZ === '4' && x.EBELN === mod.EBELN && x.EBELP ===
 							mod
-							.EBELP);
+								.EBELP);
 						if (EkkoEkpo !== undefined)
 							trovato = true;
 					}
@@ -2061,40 +2063,51 @@ sap.ui.define([
 				var body = {
 					"newEkes": new_ekes
 				}; */
-				var url = "/backend/SchedulingAgreementManagement/GetCalculatedSchedulations?I_EBELN=" +
-					mod.EBELN +
-					"&I_EBELP=" + mod.EBELP + "&I_BSTYP=" + mod.BSTYP + "&I_BSART=" + mod.BSART + "&I_EBTYP=" + ebtyp;
-				that.showBusyDialog();
-				that.ajaxPost(url, {}, function (oData) { // funzione generica su BaseController
-					that.hideBusyDialog();
-					if (oData) {
-						mod.SchedulationsStatus = oData.results;
+			var url = "/backend/SchedulingAgreementManagement/GetCalculatedSchedulations?I_EBELN=" +
+				mod.EBELN +
+				"&I_EBELP=" + mod.EBELP + "&I_BSTYP=" + mod.BSTYP + "&I_BSART=" + mod.BSART + "&I_EBTYP=" + ebtyp;
+			that.showBusyDialog();
+			that.ajaxPost(url, {}, function (oData) { // funzione generica su BaseController
+				that.hideBusyDialog();
+				if (oData) {
+					mod.SchedulationsStatus = oData.results;
+					var arrETENR = [];
+					mod.SchedulationsStatus.forEach(element => {
+						var deltaMenge = (parseFloat(element.MENGE) - parseFloat(element.QTA_CONFERMATA));
 
-							mod.SchedulationsStatus.forEach(element => {
-								var deltaMenge = (parseFloat(element.MENGE) - parseFloat(element.QTA_CONFERMATA));
-								if( deltaMenge < 0 || deltaMenge > 0){
-									var schedulation = {
-										"EINDT": element.EINDT,
-										"MENGE": deltaMenge,
-										"ETENR": element.ETENR,
-										"EBTYP": ebtyp,
-									};
-									if (mod !== undefined && mod.POItemSchedulers.results !== undefined) {
-										mod.POItemSchedulers.results.push(schedulation);
-									} else {
-										var oSchedulationsArray = [];
-										oSchedulationsArray.push(schedulation);
-										mod.POItemSchedulers.results = oSchedulationsArray;
-									}
-								}
-							});
-						
-						that.getModel("SelectedPositionsJSONModel").refresh();
+						if (deltaMenge > 0) {
+
+							// modello per scelta ETENR di solo le conferme che hanno delta quantità > 0
+							arrETENR.push({ "ETENR": element.ETENR })
+
+							var schedulation = {
+								"EINDT": element.EINDT,
+								"MENGE": deltaMenge,
+								"ETENR": element.ETENR,
+								"EBTYP": ebtyp,
+								"ETENRenabled": false
+							};
+							if (mod !== undefined && mod.POItemSchedulers.results !== undefined) {
+								mod.POItemSchedulers.results.push(schedulation);
+							} else {
+								var oSchedulationsArray = [];
+								oSchedulationsArray.push(schedulation);
+								mod.POItemSchedulers.results = oSchedulationsArray;
+							}
+						}
+					});
+
+					var oModel = new JSONModel();
+					oModel.setData({ "results": arrETENR });
+					var oComponent = that.getOwnerComponent();
+					oComponent.setModel(oModel, "ETENRJSONModel");
+
+					that.getModel("SelectedPositionsJSONModel").refresh();
 
 
-					}
-				});
-		//	} 
+				}
+			});
+			//	} 
 		},
 		onLegend: function (oEvent) {
 			var oButton = oEvent.getSource();
