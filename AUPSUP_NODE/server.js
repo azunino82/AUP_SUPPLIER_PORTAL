@@ -227,6 +227,8 @@ app.get('/callback/v1.0/dependencies', function (req, res) {
 var server = require('http').createServer()
 var port = process.env.PORT || 3000
 
+server.setTimeout(60000)
+
 server.on('request', app)
 
 server.listen(port, function () {

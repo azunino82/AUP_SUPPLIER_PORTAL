@@ -24,7 +24,7 @@ module.exports = function () {
     // CREATE CONFIRM ORD
     app.post('/ConfirmOrders', function (req, res) {
         const body = req.body
-
+        req.setTimeout(60000)
         console.log('INPUT BODY ==========> ' + JSON.stringify(body))
 
         if (body !== undefined && body !== '' && body !== null) {
@@ -32,6 +32,7 @@ module.exports = function () {
             var ekpo = []
             var ekes = []
             var notaReject = ''
+            var confirmType = ''
             var userid = req.user.id
 
             if (body.ekko !== null && body.ekko !== undefined && body.ekko.length > 0) {
@@ -46,6 +47,9 @@ module.exports = function () {
             if (body.notaReject !== null && body.notaReject !== undefined && body.notaReject !== '') {
                 notaReject = body.notaReject
             }
+            if (body.confirmType !== null && body.confirmType !== undefined) {
+                confirmType = body.confirmType
+            }
 
             hdbext.createConnection(req.tenantContainer, (err, client) => {
                 if (err) {
@@ -58,7 +62,7 @@ module.exports = function () {
                             client.close()
                             return res.status(500).send(stringifyObj(_err))
                         }
-                        sp(userid, ekko, ekpo, ekes, notaReject, (err, parameters, results) => {
+                        sp(userid, confirmType, ekko, ekpo, ekes, notaReject, (err, parameters, results) => {
                             console.log('---->>> CLIENT END ConfirmOrders <<<<<-----')
                             client.close()
                             if (err) {
