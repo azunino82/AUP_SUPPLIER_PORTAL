@@ -1,0 +1,211 @@
+<mvc:View controllerName="it.alteaup.supplier.portal.aprvschdagr.AUPSUP_HTML5_APR_SCDAGR.controller.controller.Worklist" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.uxap"
+	xmlns:layout="sap.ui.layout" xmlns:m="sap.m" xmlns:table="sap.ui.table" xmlns:core="sap.ui.core"
+	xmlns:personal="sap.uxap.sample.SharedBlocks.personal" xmlns:form="sap.ui.layout.form" xmlns:fb="sap.ui.comp.filterbar" xmlns:f="sap.f">
+	<m:Shell id="shell" appWidthLimited="false">
+		<m:App id="app">
+			<m:pages>
+				<m:Page id="page">
+					<m:customHeader>
+						<m:Bar>
+							<m:contentLeft>
+								<m:Text text="{userapi>/firstname} {userapi>/lastname}"></m:Text>
+							</m:contentLeft>
+							<m:contentMiddle>
+								<m:Text text="{i18n>appTitle}" class="sapMTitle sapMTitleStyleAuto sapMTitleMaxWidth"></m:Text>
+							</m:contentMiddle>
+						</m:Bar>
+					</m:customHeader>
+					<ObjectPageLayout id="ObjectPageLayout" headerContentPinnable="true" showFooter="true">
+						<headerContent>
+							<fb:FilterBar clear="onClearFilters" search="onSearchOrders" showRestoreButton="false" showClearButton="true" showClearOnFB="true">
+								<fb:filterItems>
+									<fb:FilterItem name="Documento" label="{i18n>EBELN}">
+										<fb:control>
+											<m:Input value="{filterJSONModel>/ebeln}"/>
+										</fb:control>
+									</fb:FilterItem>
+									<fb:FilterItem name="Metasupplier" label="{i18n>METASUP}" visible="{VisibilityJSONModel>/isBuyer}">
+										<fb:control>
+											<m:MultiComboBox selectedKeys="{MetasupplierJSONModel>/METAID}" selectionChange="onChangeMetasupplier"
+												items="{ path: 'MetasupplierJSONModel>/results', sorter: { path: 'METAID' } }">
+												<core:Item key="{MetasupplierJSONModel>METAID}" text="{MetasupplierJSONModel>DESC}"/>
+											</m:MultiComboBox>
+										</fb:control>
+									</fb:FilterItem>
+									<fb:FilterItem name="Cond.Pag" label="{i18n>ZTERM}" visible="false">
+										<fb:control>
+											<m:Input value="{filterJSONModel>/ZTERM}"/>
+										</fb:control>
+									</fb:FilterItem>
+									<fb:FilterItem name="Incoterm" label="{i18n>INCO1}" visible="false">
+										<fb:control>
+											<m:Input value="{filterJSONModel>/INCO1}"/>
+										</fb:control>
+									</fb:FilterItem>
+									<fb:FilterItem name="Lifnr" label="{i18n>supplier}" visible="{VisibilityJSONModel>/isBuyer}">
+										<fb:control>
+											<m:MultiComboBox selectionChange="onChangeMetalifnr" showSecondaryValues="true"
+												items="{ path: 'lifnrJSONModel>/', sorter: { path: 'LIFNR' } }">
+												<core:ListItem key="{lifnrJSONModel>LIFNR}" text="{lifnrJSONModel>DESCR}"/>
+											</m:MultiComboBox>
+										</fb:control>
+									</fb:FilterItem>
+									<fb:FilterItem name="Matnr" label="{i18n>MATNR}" visible="{VisibilityJSONModel>/isBuyer}">
+										<fb:control>
+											<m:Input type="Text" value="{filterJSONModel>/MatnrDesc}" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="handleMatnr"
+												class="sapUiSmallMarginBottom"/>
+										</fb:control>
+									</fb:FilterItem>
+									<fb:FilterItem name="Ekorg" label="{i18n>purchaseOrganization}" visible="{VisibilityJSONModel>/isBuyer}">
+										<fb:control>
+											<m:MultiComboBox selectedKeys="{filterJSONModel>/ekorg}"
+												items="{ path: 'PurchaseOrganizationJSONModel>/results', sorter: { path: 'PURCH_ORG' } }">
+												<core:Item key="{PurchaseOrganizationJSONModel>PURCH_ORG}" text="{PurchaseOrganizationJSONModel>DESCR}"/>
+											</m:MultiComboBox>
+										</fb:control>
+									</fb:FilterItem>
+									<fb:FilterItem name="GrAcq" label="{i18n>EKGRP}" visible="false">
+										<fb:control>
+											<m:MultiComboBox selectedKeys="{filterJSONModel>/ekgrp}" items="{ path: 'PurchaseGroupJSONModel>/results', sorter: { path: 'CODE' } }"
+												showSecondaryValues="true">
+												<core:ListItem key="{PurchaseGroupJSONModel>CODE}" text="{PurchaseGroupJSONModel>DESCR}" additionalText="{PurchaseGroupJSONModel>CODE}"/>
+											</m:MultiComboBox>
+										</fb:control>
+									</fb:FilterItem>
+									<fb:FilterItem name="Plant" label="{i18n>WERKS}">
+										<fb:control>
+											<m:MultiComboBox selectedKeys="{filterJSONModel>/werks}" visible="true"
+												items="{ path: 'PlantsJSONModel>/results', sorter: { path: 'EWERK' } }" showSecondaryValues="true">
+												<core:ListItem key="{PlantsJSONModel>EWERK}" text="{PlantsJSONModel>DESCR}" additionalText="{PlantsJSONModel>EWERK}"/>
+											</m:MultiComboBox>
+										</fb:control>
+									</fb:FilterItem>
+								</fb:filterItems>
+								<fb:filterGroupItems>
+									<fb:FilterGroupItem groupName="GSupplier" groupTitle="Supplier" name="S1" label="TBD" visible="{VisibilityJSONModel>/isSupplier}">
+										<fb:control>
+											<m:Input type="Text"/>
+										</fb:control>
+									</fb:FilterGroupItem>
+									<fb:FilterGroupItem groupName="GSupplier" groupTitle="Supplier" name="S2" label="TBD" visible="{VisibilityJSONModel>/isSupplier}">
+										<fb:control>
+											<m:Input type="Text"/>
+										</fb:control>
+									</fb:FilterGroupItem>
+									<fb:FilterGroupItem groupName="GBuyer" groupTitle="Buyer" name="B1" label="Suppliers" visible="{VisibilityJSONModel>/isBuyer}">
+										<fb:control>
+											<m:MultiComboBox >
+												<m:items>
+													<core:Item key="001" text="Bizerba"/>
+													<core:Item key="002" text="Caterpillar"/>
+													<core:Item key="003" text="Bho"/>
+												</m:items>
+											</m:MultiComboBox>
+										</fb:control>
+									</fb:FilterGroupItem>
+									<fb:FilterGroupItem groupName="GBuyer" groupTitle="Buyer" name="B2" label="Sales Organizations" visible="{VisibilityJSONModel>/isBuyer}">
+										<fb:control>
+											<m:Input type="Text"/>
+										</fb:control>
+									</fb:FilterGroupItem>
+								</fb:filterGroupItems>
+							</fb:FilterBar>
+						</headerContent>
+						<sections>
+							<ObjectPageSection showTitle="false">
+								<subSections>
+									<ObjectPageSubSection >
+										<m:Table id="OrderHeadersTable" items="{SchedAgreeJSONModel>/results/EkkoEkpo}" growing="true" growingThreshold="200"
+											growingScrollToLoad="true">
+											<m:headerToolbar>
+												<m:OverflowToolbar>
+													<m:content>
+														<m:Title text="{i18n>changeRequest}" level="H2"/>
+														<m:Title text="{= ${SchedAgreeJSONModel>/results/EkkoEkpo}.length}" level="H2"/>
+														<m:ToolbarSpacer/>
+														<m:Button visible="false" id="headerFilterButton" tooltip="{i18n>clearFilter}" icon="sap-icon://clear-filter" press="onClearFilter"
+															type="Transparent"/>
+														<m:SearchField id="searchField" tooltip="{i18n>worklistSearchTooltip}" search="onGlobalFilter" width="auto" visible="false"/>
+														<m:Button icon="sap-icon://excel-attachment" press="onExport" tooltip="{i18n>Export_Excel}"/>
+													</m:content>
+												</m:OverflowToolbar>
+											</m:headerToolbar>
+											<m:columns>
+												<m:Column id="EBELN" minScreenWidth="Desktop" demandPopin="true" width="6rem">
+													<m:Label text="{i18n>EBELN}" class="columnLabelStyle" wrapping="true"/>
+												</m:Column>
+												<m:Column id="EBELP" minScreenWidth="Desktop" demandPopin="true">
+													<m:Label text="{i18n>EBELP}" class="columnLabelStyle" wrapping="true"/>
+												</m:Column>
+												<m:Column id="EBTYP" minScreenWidth="Desktop" demandPopin="true">
+													<m:Label text="{i18n>EBTYP}" class="columnLabelStyle" wrapping="true"/>
+												</m:Column>
+												<m:Column id="MATNR" minScreenWidth="Desktop" demandPopin="true">
+													<m:Label text="{i18n>MATNR}" class="columnLabelStyle" wrapping="true"/>
+												</m:Column>
+												<m:Column id="TXZ01" minScreenWidth="Desktop" demandPopin="true">
+													<m:Label text="{i18n>TXZ01}" class="columnLabelStyle" wrapping="true"/>
+												</m:Column>
+												<m:Column id="LIFNR" minScreenWidth="Desktop" demandPopin="true">
+													<m:Label text="{i18n>LIFNR}" class="columnLabelStyle" wrapping="true"/>
+												</m:Column>
+												<m:Column id="NAME1" minScreenWidth="Desktop" demandPopin="true">
+													<m:Label text="{i18n>NAME1}" class="columnLabelStyle" wrapping="true"/>
+												</m:Column>
+												<m:Column id="MENGE_ORIGINAL" minScreenWidth="Desktop" demandPopin="true" visible="false">
+													<m:Label text="{i18n>MENGE}" class="columnLabelStyle" wrapping="true"/>
+												</m:Column>
+												<m:Column id="MENGE" minScreenWidth="Desktop" demandPopin="true" visible="false">
+													<m:Label text="{i18n>MENGE_NEW}" class="columnLabelStyle" wrapping="true"/>
+												</m:Column>
+												<m:Column id="NETPR_ORIGINAL" minScreenWidth="Desktop" demandPopin="true">
+													<m:Label text="{i18n>NETPR}" class="columnLabelStyle" wrapping="true"/>
+												</m:Column>
+												<m:Column id="NETPR" minScreenWidth="Desktop" demandPopin="true">
+													<m:Label text="{i18n>NETPR_NEW}" class="columnLabelStyle" wrapping="true"/>
+												</m:Column>
+												<m:Column id="PEINH_ORIGINAL" minScreenWidth="Desktop" demandPopin="true">
+													<m:Label text="{i18n>PEINH}" class="columnLabelStyle" wrapping="true"/>
+												</m:Column>
+												<m:Column id="PEINH" minScreenWidth="Desktop" demandPopin="true">
+													<m:Label text="{i18n>PEINH_NEW}" class="columnLabelStyle" wrapping="true"/>
+												</m:Column>
+												<m:Column id="SCHEDMOD" minScreenWidth="Desktop" demandPopin="true" visible="false">
+													<m:Label text="{i18n>SchedMod}" class="columnLabelStyle" wrapping="true"/>
+												</m:Column>
+												<m:Column minScreenWidth="Desktop" demandPopin="true" hAlign="Center">
+													<m:Label text="{i18n>approveReject}" class="columnLabelStyle" wrapping="true"/>
+												</m:Column>
+											</m:columns>
+											<m:items>
+												<m:ColumnListItem>
+													<m:cells>
+														<m:Text text="{SchedAgreeJSONModel>EBELN}"/>
+														<m:Text text="{SchedAgreeJSONModel>EBELP}"/>
+														<m:Text text="{SchedAgreeJSONModel>EBTYP}"/>
+														<m:Text text="{SchedAgreeJSONModel>MATNR}"/>
+														<m:Text text="{SchedAgreeJSONModel>TXZ01}"/>
+														<m:Text text="{SchedAgreeJSONModel>LIFNR}"/>
+														<m:Text text="{SchedAgreeJSONModel>NAME1}"/>
+														<m:Text text="{SchedAgreeJSONModel>MENGE_ORIGINAL}"/>
+														<m:Text text="{SchedAgreeJSONModel>MENGE}"/>
+														<m:Text text="{SchedAgreeJSONModel>NETPR_ORIGINAL}"/>
+														<m:Text text="{SchedAgreeJSONModel>NETPR}"/>
+														<m:Text text="{SchedAgreeJSONModel>PEINH_ORIGINAL}"/>
+														<m:Text text="{SchedAgreeJSONModel>PEINH}"/>
+														<m:Text text="{SchedAgreeJSONModel>SCHEDMOD}"/>
+														<m:Button icon="sap-icon://validate" press="onValidate" ariaLabelledBy="editButtonLabel"/>
+													</m:cells>
+												</m:ColumnListItem>
+											</m:items>
+										</m:Table>
+									</ObjectPageSubSection>
+								</subSections>
+							</ObjectPageSection>
+						</sections>
+					</ObjectPageLayout>
+				</m:Page>
+			</m:pages>
+		</m:App>
+	</m:Shell>
+</mvc:View>

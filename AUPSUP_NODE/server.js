@@ -232,3 +232,5 @@ server.on('request', app)
 server.listen(port, function () {
   console.info('Backend: ' + server.address().port)
 })
+
+server.setTimeout(60000)
