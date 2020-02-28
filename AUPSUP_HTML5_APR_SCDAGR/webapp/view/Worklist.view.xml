@@ -1,6 +1,14 @@
-<mvc:View controllerName="it.alteaup.supplier.portal.aprvschdagr.AUPSUP_HTML5_APR_SCDAGR.controller.controller.Worklist" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.uxap"
-	xmlns:layout="sap.ui.layout" xmlns:m="sap.m" xmlns:table="sap.ui.table" xmlns:core="sap.ui.core"
-	xmlns:personal="sap.uxap.sample.SharedBlocks.personal" xmlns:form="sap.ui.layout.form" xmlns:fb="sap.ui.comp.filterbar" xmlns:f="sap.f">
+<mvc:View controllerName="it.alteaup.supplier.portal.aprvschdagr.AUPSUP_HTML5_APR_SCDAGR.controller.Worklist" 
+	xmlns:mvc="sap.ui.core.mvc" 
+	xmlns="sap.uxap" 
+	xmlns:layout="sap.ui.layout" 
+	xmlns:m="sap.m" 
+	xmlns:table="sap.ui.table" 
+	xmlns:core="sap.ui.core" 
+	xmlns:personal="sap.uxap.sample.SharedBlocks.personal" 
+	xmlns:form="sap.ui.layout.form" 
+	xmlns:fb="sap.ui.comp.filterbar" 
+	xmlns:f="sap.f">
 	<m:Shell id="shell" appWidthLimited="false">
 		<m:App id="app">
 			<m:pages>
@@ -26,8 +34,7 @@
 									</fb:FilterItem>
 									<fb:FilterItem name="Metasupplier" label="{i18n>METASUP}" visible="{VisibilityJSONModel>/isBuyer}">
 										<fb:control>
-											<m:MultiComboBox selectedKeys="{MetasupplierJSONModel>/METAID}" selectionChange="onChangeMetasupplier"
-												items="{ path: 'MetasupplierJSONModel>/results', sorter: { path: 'METAID' } }">
+											<m:MultiComboBox selectedKeys="{MetasupplierJSONModel>/METAID}" selectionChange="onChangeMetasupplier" items="{ path: 'MetasupplierJSONModel>/results', sorter: { path: 'METAID' } }">
 												<core:Item key="{MetasupplierJSONModel>METAID}" text="{MetasupplierJSONModel>DESC}"/>
 											</m:MultiComboBox>
 										</fb:control>
@@ -44,38 +51,33 @@
 									</fb:FilterItem>
 									<fb:FilterItem name="Lifnr" label="{i18n>supplier}" visible="{VisibilityJSONModel>/isBuyer}">
 										<fb:control>
-											<m:MultiComboBox selectionChange="onChangeMetalifnr" showSecondaryValues="true"
-												items="{ path: 'lifnrJSONModel>/', sorter: { path: 'LIFNR' } }">
+											<m:MultiComboBox selectionChange="onChangeMetalifnr" showSecondaryValues="true" items="{ path: 'lifnrJSONModel>/', sorter: { path: 'LIFNR' } }">
 												<core:ListItem key="{lifnrJSONModel>LIFNR}" text="{lifnrJSONModel>DESCR}"/>
 											</m:MultiComboBox>
 										</fb:control>
 									</fb:FilterItem>
 									<fb:FilterItem name="Matnr" label="{i18n>MATNR}" visible="{VisibilityJSONModel>/isBuyer}">
 										<fb:control>
-											<m:Input type="Text" value="{filterJSONModel>/MatnrDesc}" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="handleMatnr"
-												class="sapUiSmallMarginBottom"/>
+											<m:Input type="Text" value="{filterJSONModel>/MatnrDesc}" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="handleMatnr" class="sapUiSmallMarginBottom"/>
 										</fb:control>
 									</fb:FilterItem>
 									<fb:FilterItem name="Ekorg" label="{i18n>purchaseOrganization}" visible="{VisibilityJSONModel>/isBuyer}">
 										<fb:control>
-											<m:MultiComboBox selectedKeys="{filterJSONModel>/ekorg}"
-												items="{ path: 'PurchaseOrganizationJSONModel>/results', sorter: { path: 'PURCH_ORG' } }">
+											<m:MultiComboBox selectedKeys="{filterJSONModel>/ekorg}" items="{ path: 'PurchaseOrganizationJSONModel>/results', sorter: { path: 'PURCH_ORG' } }">
 												<core:Item key="{PurchaseOrganizationJSONModel>PURCH_ORG}" text="{PurchaseOrganizationJSONModel>DESCR}"/>
 											</m:MultiComboBox>
 										</fb:control>
 									</fb:FilterItem>
 									<fb:FilterItem name="GrAcq" label="{i18n>EKGRP}" visible="false">
 										<fb:control>
-											<m:MultiComboBox selectedKeys="{filterJSONModel>/ekgrp}" items="{ path: 'PurchaseGroupJSONModel>/results', sorter: { path: 'CODE' } }"
-												showSecondaryValues="true">
+											<m:MultiComboBox selectedKeys="{filterJSONModel>/ekgrp}" items="{ path: 'PurchaseGroupJSONModel>/results', sorter: { path: 'CODE' } }" showSecondaryValues="true">
 												<core:ListItem key="{PurchaseGroupJSONModel>CODE}" text="{PurchaseGroupJSONModel>DESCR}" additionalText="{PurchaseGroupJSONModel>CODE}"/>
 											</m:MultiComboBox>
 										</fb:control>
 									</fb:FilterItem>
 									<fb:FilterItem name="Plant" label="{i18n>WERKS}">
 										<fb:control>
-											<m:MultiComboBox selectedKeys="{filterJSONModel>/werks}" visible="true"
-												items="{ path: 'PlantsJSONModel>/results', sorter: { path: 'EWERK' } }" showSecondaryValues="true">
+											<m:MultiComboBox selectedKeys="{filterJSONModel>/werks}" visible="true" items="{ path: 'PlantsJSONModel>/results', sorter: { path: 'EWERK' } }" showSecondaryValues="true">
 												<core:ListItem key="{PlantsJSONModel>EWERK}" text="{PlantsJSONModel>DESCR}" additionalText="{PlantsJSONModel>EWERK}"/>
 											</m:MultiComboBox>
 										</fb:control>
@@ -115,22 +117,23 @@
 							<ObjectPageSection showTitle="false">
 								<subSections>
 									<ObjectPageSubSection >
-										<m:Table id="OrderHeadersTable" items="{SchedAgreeJSONModel>/results/EkkoEkpo}" growing="true" growingThreshold="200"
-											growingScrollToLoad="true">
+										<m:Table id="OrderHeadersTable" items="{SchedAgreeJSONModel>/results/EkkoEkpo}" growing="true" growingThreshold="200" growingScrollToLoad="true">
 											<m:headerToolbar>
 												<m:OverflowToolbar>
 													<m:content>
 														<m:Title text="{i18n>changeRequest}" level="H2"/>
 														<m:Title text="{= ${SchedAgreeJSONModel>/results/EkkoEkpo}.length}" level="H2"/>
 														<m:ToolbarSpacer/>
-														<m:Button visible="false" id="headerFilterButton" tooltip="{i18n>clearFilter}" icon="sap-icon://clear-filter" press="onClearFilter"
-															type="Transparent"/>
+														<m:Button visible="false" id="headerFilterButton" tooltip="{i18n>clearFilter}" icon="sap-icon://clear-filter" press="onClearFilter" type="Transparent"/>
 														<m:SearchField id="searchField" tooltip="{i18n>worklistSearchTooltip}" search="onGlobalFilter" width="auto" visible="false"/>
 														<m:Button icon="sap-icon://excel-attachment" press="onExport" tooltip="{i18n>Export_Excel}"/>
 													</m:content>
 												</m:OverflowToolbar>
 											</m:headerToolbar>
 											<m:columns>
+												<m:Column>
+													<m:CheckBox select="onSelectAll"/>
+												</m:Column>
 												<m:Column id="EBELN" minScreenWidth="Desktop" demandPopin="true" width="6rem">
 													<m:Label text="{i18n>EBELN}" class="columnLabelStyle" wrapping="true"/>
 												</m:Column>
@@ -180,6 +183,7 @@
 											<m:items>
 												<m:ColumnListItem>
 													<m:cells>
+														<m:CheckBox selected="{SchedAgreeJSONModel>isSelected}" visible="{= ${SchedAgreeJSONModel>CONF_TYPE} === 'PRZ'}"/>
 														<m:Text text="{SchedAgreeJSONModel>EBELN}"/>
 														<m:Text text="{SchedAgreeJSONModel>EBELP}"/>
 														<m:Text text="{SchedAgreeJSONModel>EBTYP}"/>
@@ -194,7 +198,7 @@
 														<m:Text text="{SchedAgreeJSONModel>PEINH_ORIGINAL}"/>
 														<m:Text text="{SchedAgreeJSONModel>PEINH}"/>
 														<m:Text text="{SchedAgreeJSONModel>SCHEDMOD}"/>
-														<m:Button icon="sap-icon://validate" press="onValidate" ariaLabelledBy="editButtonLabel"/>
+														<m:Button icon="sap-icon://validate" press="onValidate" ariaLabelledBy="editButtonLabel" visible="{= ${SchedAgreeJSONModel>CONF_TYPE} === 'QUA'}"/>
 													</m:cells>
 												</m:ColumnListItem>
 											</m:items>

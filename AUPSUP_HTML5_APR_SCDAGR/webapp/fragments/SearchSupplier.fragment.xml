@@ -1,0 +1,97 @@
+<Dialog xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:u="sap.ui.unified" xmlns:core="sap.ui.core" xmlns:fb="sap.ui.comp.filterbar"
+	contentWidth="100%" contentHeight="100%">
+	<NavContainer id="navCon">
+		<Page id="p1" title="{{i18n>titleSuppliers}}">
+			<content>
+				<fb:FilterBar reset="onReset" search="onSearchSupplier" showRestoreButton="true" showClearButton="true">
+					<fb:filterItems>
+						<fb:FilterItem name="ragioneSociale" id="ragioneSocialeFiltro" label="{i18n>supplierName}" mandatory="false">
+							<fb:control>
+								<Input id="NAME1" type="Text" class="sapUiSmallMarginBottom"/>
+							</fb:control>
+						</fb:FilterItem>
+						<fb:FilterItem name="pivaFornitore" id="pivaFornitoreFiltro" label="{i18n>iva}" mandatory="false">
+							<fb:control>
+								<Input id="STCEG" type="Text" class="sapUiSmallMarginBottom"/>
+							</fb:control>
+						</fb:FilterItem>
+						<fb:FilterItem name="organizzazioneAcquisti" id="organizzazioneAcquistiFiltro" label="{i18n>purchaseOrganization}" mandatory="false">
+							<fb:control>
+								<MultiComboBox id="EKORG" items="{ path: 'PurchaseOrganizationJSONModel>/results', sorter: { path: 'PURCH_ORG' } }">
+									<core:Item key="{PurchaseOrganizationJSONModel>PURCH_ORG}" text="{PurchaseOrganizationJSONModel>DESCR}"/>
+								</MultiComboBox>
+								<!--<<<<<<< HEAD-->
+								<!--                                    items="{ path: 'PurchaseOrganizationJSONModel>/results', sorter: { path: 'PURCH_ORG' } }">-->
+								<!--                                    <core:Item key="{PurchaseOrganizationJSONModel>PURCH_ORG}" text="{PurchaseOrganizationJSONModel>DESCR}"/>-->
+								<!--                                </MultiComboBox>-->
+								<!--=======-->
+								<!--									items="{ path: 'PurchaseOrganizationJSONModel>/results', sorter: { path: 'DESCR' } }">-->
+								<!--									<core:Item key="{PurchaseOrganizationJSONModel>PURCH_ORG}" text="{PurchaseOrganizationJSONModel>DESCR}"/>-->
+								<!--								</MultiComboBox>-->
+								<!-->>>>>>> refs/heads/master-->
+							</fb:control>
+						</fb:FilterItem>
+					</fb:filterItems>
+				</fb:FilterBar>
+				<Table id="idSuppliersTable" inset="false" items="{ path: 'suppliersJSONModel>/results', sorter: { path: 'RagioneSociale' } }"
+					mode="MultiSelect">
+					<headerToolbar>
+						<Toolbar>
+							<Title text="" level="H2"/>
+							<ToolbarSpacer/>
+							<!--<Button icon="sap-icon://add" press="handleCreateSupplierPressed" text="{i18n>createMetasupplier}"/>-->
+							<!--<Button tooltip="View Sort Settings" icon="sap-icon://sort" press="handleSortButtonPressed" text="{i18n>sort}"/>-->
+						</Toolbar>
+					</headerToolbar>
+					<columns>
+						<!--<Column width="10%" hAlign="Center">
+									<Text text="{i18n>codiceMetafornitore}"/>
+								</Column>-->
+						<Column width="auto" visible="false">
+							<Text text="{i18n>lifnr}"/>
+						</Column>		
+						<Column width="12em">
+							<Text text="{i18n>supplierName}"/>
+						</Column>
+						<Column width="auto">
+							<Text text="{i18n>purchaseOrganization}"/>
+						</Column>
+						<Column minScreenWidth="Desktop" demandPopin="true" hAlign="End">
+							<Text text="{i18n>nCivico}"/>
+						</Column>
+						<Column minScreenWidth="Desktop" demandPopin="true" hAlign="End">
+							<Text text="{i18n>paeseFornitore}"/>
+						</Column>
+						<Column minScreenWidth="Desktop" demandPopin="true" hAlign="End">
+							<Text text="{i18n>lingua}"/>
+						</Column>
+						<Column minScreenWidth="Desktop" demandPopin="true" hAlign="End">
+							<Text text="{i18n>iva}"/>
+						</Column>
+					</columns>
+					<items>
+						<ColumnListItem>
+							<cells>
+								<Text text="{suppliersJSONModel>LIFNR}"/>
+								<Text text="{suppliersJSONModel>NAME1}"/>
+								<Text text="{suppliersJSONModel>EKORG}"/>
+								<Text text="{suppliersJSONModel>NumeroCivico}"/>
+								<Text text="{suppliersJSONModel>ORT01}"/>
+								<Text text="{suppliersJSONModel>Lingua}"/>
+								<Text text="{suppliersJSONModel>STCEG}"/>
+							</cells>
+						</ColumnListItem>
+					</items>
+				</Table>
+			</content>
+			<footer>
+				<Bar>
+					<contentRight>
+						<Button text="{i18n>close}" press="onCloseSearchSuppliers" type="Reject"/>
+						<Button text="{i18n>Confirm}" type="Accept" press="onConfirmSuppliers"/>
+					</contentRight>
+				</Bar>
+			</footer>
+		</Page>
+	</NavContainer>
+</Dialog>

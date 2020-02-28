@@ -1,0 +1,76 @@
+<Dialog xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" xmlns:u="sap.ui.unified" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+	xmlns:table="sap.ui.table" xmlns:smartFilterBar="sap.ui.comp.smartfilterbar" xmlns:smartTable="sap.ui.comp.smarttable" contentWidth="100%"
+	contentHeight="100%" title="{i18n>positionConfirmation}">
+	<NavContainer id="navCon">
+		<Page id="p1">
+			<content>
+				<Table width="auto" items="{ path: 'SchedAgrToApproveRejectJSONModel>/results' }">
+					<headerToolbar>
+						<OverflowToolbar>
+							<Title text="{i18n>confirmations}" level="H2"/>
+							<ToolbarSpacer/>
+							<Button icon="sap-icon://legend" press="onLegend" tooltip="{i18n>Legend}"/>
+						</OverflowToolbar>
+					</headerToolbar>
+					<columns>
+						<Column>
+							<Text text="{i18n>date}"/>
+						</Column>
+						<Column>
+							<Text text="{i18n>qtaRichiesta}"/>
+						</Column>
+						<Column><Text text="{i18n>qtaConfermata}"/></Column>
+						<Column><Text text="{i18n>progRichiesto}"/></Column>
+						<Column><Text text="{i18n>progConfermato}"/></Column>
+						<Column><Text text="{i18n>deltaProgr}"/></Column>
+						<Column><Text text="{i18n>deltaQuant}"/></Column>
+						<Column><Text text="{i18n>percDiffProgr}"/></Column>
+						<Column><Text text="{i18n>approva}"/></Column>
+						<Column><Text text="{i18n>rifiuta}"/></Column>
+					</columns>
+					<items textAlign="Center">
+						<ColumnListItem highlight="{path:'SchedAgrToApproveRejectJSONModel>STATUS', formatter:'.onSetSchedulationStatus'}">
+							<cells>
+								<Text text="{ path: 'SchedAgrToApproveRejectJSONModel>EINDT', type: 'it.alteaup.supplier.portal.schedAgrQuantConf.type.Date' }"/>
+								<Text text="{SchedAgrToApproveRejectJSONModel>QTA_RICHIESTA}"/>
+								<Text text="{SchedAgrToApproveRejectJSONModel>QTA_CONFERMATA}"/>
+								<Text text="{SchedAgrToApproveRejectJSONModel>PROG_RICHIESTO}"/>
+								<Text text="{SchedAgrToApproveRejectJSONModel>PROG_CONFERMA}"/>
+								<Text text="{SchedAgrToApproveRejectJSONModel>DELTA_PROGR}"/>
+								<Text text="{SchedAgrToApproveRejectJSONModel>DELTA_QUANT}"/>
+								<Text text="{SchedAgrToApproveRejectJSONModel>PERC_DIFF_PROGR}"/>
+								<RadioButton groupName="{SchedAgrToApproveRejectJSONModel>RADIO_GRP_NAME}" selected="{SchedAgrToApproveRejectJSONModel>APPROVE}"
+									visible="{SchedAgrToApproveRejectJSONModel>ISTOCONFIRM}"></RadioButton>
+								<RadioButton groupName="{SchedAgrToApproveRejectJSONModel>RADIO_GRP_NAME}" selected="{SchedAgrToApproveRejectJSONModel>REJECT}"
+									visible="{SchedAgrToApproveRejectJSONModel>ISTOCONFIRM}"></RadioButton>
+							</cells>
+						</ColumnListItem>
+					</items>
+				</Table>
+			</content>
+			<footer>
+				<Toolbar>
+					<ToolbarSpacer/>
+					<Button text="{i18n>close}" press="onCloseApproveRejectFragment" type="Reject"/>
+					<Button text="{i18n>Esegui}" press="onConfirmApproveReject" type="Accept"/>
+				</Toolbar>
+			</footer>
+		</Page>
+		<Page id="p2" showNavButton="true" navButtonPress="onNavBackToConfirm">
+			<content>
+				<FlexBox alignItems="Center" justifyContent="Center" width="100%" height="100%">
+					<items>
+						<Label required="true" text="{i18n>referenceDocumentNumber}"/>
+						<Input id="XBLNR" value=""/>
+					</items>
+				</FlexBox>
+			</content>
+			<footer>
+				<Toolbar>
+					<ToolbarSpacer/>
+					<Button text="{i18n>confirmAndClose}" press="onConfirmAndClose" type="Accept"/>
+				</Toolbar>
+			</footer>
+		</Page>
+	</NavContainer>
+</Dialog>

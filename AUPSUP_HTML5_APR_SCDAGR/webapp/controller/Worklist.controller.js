@@ -8,8 +8,8 @@ sap.ui.define([
 	"sap/ui/model/FilterOperator",
 	"sap/ui/core/util/Export",
 	"sap/ui/core/util/ExportTypeCSV",
-	"it/alteaup/supplier/portal/schedAgrQuantConf/js/Date",
-	"it/alteaup/supplier/portal/schedAgrQuantConf/js/formatter"
+	"it/alteaup/supplier/portal/aprvschdagr/AUPSUP_HTML5_APR_SCDAGR/js/Date",
+	"it/alteaup/supplier/portal/aprvschdagr/AUPSUP_HTML5_APR_SCDAGR/js/formatter"
 ], function (BaseController, JSONModel, MessageBox, MessageToast, Sorter, Filter, FilterOperator, Export, ExportTypeCSV, Date, Formatter) {
 	"use strict";
 	var that = undefined;
@@ -30,7 +30,6 @@ sap.ui.define([
 
 				that.getView().setModel(oModelFI, "filterJSONModel");
 				var body = {
-					"userid": that.getCurrentUserId(),
 					"ebeln": startupParams.objectId[0],
 					"lifnr": [],
 					"matnr": [],
@@ -63,7 +62,6 @@ sap.ui.define([
 			that.getProfiliConferma();
 
 			var filter = {
-				"userid": that.getCurrentUserId(),
 				"ebeln": "",
 				"lifnr": [],
 				"matnr": [],
@@ -82,7 +80,7 @@ sap.ui.define([
 				oModelFilters.setData({
 					"element": ""
 				});
-				this._oResponsivePopover = sap.ui.xmlfragment("it.alteaup.supplier.portal.schedAgrQuantConf.fragments.FilterSorter", this);
+				this._oResponsivePopover = sap.ui.xmlfragment("it.alteaup.supplier.portal.aprvschdagr.AUPSUP_HTML5_APR_SCDAGR.fragments.FilterSorter", this);
 				this._oResponsivePopover.setModel(oModelFilters, "filterJSONModel");
 			}
 
@@ -96,28 +94,26 @@ sap.ui.define([
 					}
 				}
 			}, oTable);
-			
-            this.getView().setModel(sap.ui.getCore().getModel("userapi"), "userapi");			
+
+			this.getView().setModel(sap.ui.getCore().getModel("userapi"), "userapi");
 
 		},
 
 		getPurchaseOrganizations: function () {
-			var filtri = "";
-			var url = "PurchaseOrganizationsParameters(I_USERID='" + that.getCurrentUserId() + "')/Results";
-			that.readObject("OrderManagementService", url, filtri, function (oData) {
+			var url = "/backend/Utils/UtilsManagement/GetPurchaseOrganizations";
+			this.showBusyDialog();
+			that.ajaxGet(url, function (oData) {
 				that.hideBusyDialog();
 				if (oData) {
 					var oModel = new JSONModel();
 					oModel.setData(oData);
-					// that.getView().setModel(oModel, "PurchaseOrganizationJSONModel");
 					var oComponent = that.getOwnerComponent();
 					oComponent.setModel(oModel, "PurchaseOrganizationJSONModel");
 				}
-
 			});
 		},
 
-		onClick: function (oID) {
+		/*onClick: function (oID) {
 			$('#' + oID).click(function (oEvent) { //Attach Table Header Element Event
 				var oTarget = oEvent.currentTarget; //Get hold of Header Element
 				var oView = that.getView();
@@ -130,7 +126,7 @@ sap.ui.define([
 				oView.getModel("SchedAgreeJSONModel").setProperty("/bindingValue", res); //Save the key value to property
 				that._oResponsivePopover.openBy(oTarget);
 			});
-		},
+		},*/
 
 		onChange: function (oEvent) {
 			var oValue = oEvent.getParameter("value");
@@ -226,30 +222,12 @@ sap.ui.define([
 			var url = window.location.href.split('#')[0] + hash;
 			//Navigate to second app
 			sap.m.URLHelper.redirect(url, true);
-
-			// read SupplierID from OData path Product/SupplierID
-			// var oCrossAppNavigator = sap.ushell.Container.getService("CrossApplicationNavigation"); // get a handle on the global XAppNav service
-			// var hash = (oCrossAppNavigator && oCrossAppNavigator.hrefForExternal({
-			// 	target: {
-			// 		semanticObject: "PurchaseOrders",
-			// 		action: "display"
-			// 	},
-			// 	params: {
-			// 		"object": supplierID
-			// 	}
-			// })) || "";
-
-			// oCrossAppNavigator.toExternal({
-			// 	target: {
-			// 		shellHash: hash
-			// 	}
-			// });
 		},
 
 		handleSupplier: function () {
 
 			if (!that.oSearchSupplierDialog) {
-				that.oSearchSupplierDialog = sap.ui.xmlfragment("it.alteaup.supplier.portal.schedAgrQuantConf.fragments.SearchSupplier", that);
+				that.oSearchSupplierDialog = sap.ui.xmlfragment("it.alteaup.supplier.portal.aprvschdagr.AUPSUP_HTML5_APR_SCDAGR.fragments.SearchSupplier", that);
 				that.getView().addDependent(that.oSearchSupplierDialog);
 			}
 			that.oSearchSupplierDialog.open();
@@ -353,23 +331,45 @@ sap.ui.define([
 
 		onSearchOrders: function () {
 
-			var url = "/Scheduling_Agreement/xsOdata/GetConfermeRifiuti.xsjs";
-
 			var body = that.getModel("filterJSONModel").getData();
-
+			var url = "/backend/SchedulingAgreementManagement/GetConfermeRifiuti";
 			this.showBusyDialog();
-			that.ajaxPost(url, body, "/Scheduling_Agreement", function (oData) { // funzione generica su BaseController
+			that.ajaxPost(url, body, function (oData) {
 				that.hideBusyDialog();
 				if (oData) {
+					if (oData.results.EkkoEkpo){
+						oData.results.EkkoEkpo.forEach(element => {
+							element.isSelected = false;
+						});
+					}
+
 					var oModel = new JSONModel();
 					oModel.setData(oData);
 					that.getView().setModel(oModel, "SchedAgreeJSONModel");
-					//	that.getView().byId("rowNumber").setText(oData.results.length);
 					that.getView().byId("OrderHeadersTable").setModel(oModel);
 				}
-				var oTable = that.getModel("SchedAgreeJSONModel").getData().results;
-			});
+			})
 		},
+
+		onSelectAll: function (oEvent) {
+
+			var oTable = that.getView().byId("OrderHeadersTable");
+			oTable.getItems().forEach(function (r) {
+				var oPath = r.oBindingContexts.SchedAgreeJSONModel.sPath;
+				that.getModel("SchedAgreeJSONModel").getProperty(oPath);
+
+				if (that.getModel("SchedAgreeJSONModel").getProperty(oPath).CONF_TYPE === 'PRZ') {
+					if (oEvent.getParameters().selected)
+						that.getModel("SchedAgreeJSONModel").getProperty(oPath).isSelected = true;
+					else
+						that.getModel("SchedAgreeJSONModel").getProperty(oPath).isSelected = false;
+				}
+			});
+
+			that.getModel("SchedAgreeJSONModel").refresh();
+		},
+
+
 		onConfirmPositions: function () {
 			var oTable = this.getView().byId("OrderHeadersTable");
 			var itemIndex = oTable.indexOfItem(oTable.getSelectedItem());
@@ -410,18 +410,13 @@ sap.ui.define([
 		},
 
 		getProfiliConferma: function (fCompletion) {
-			var oModelData = this.getOwnerComponent().getModel("CustomizingModel");
 
-			oModelData.read("/ProfiliConferma", {
-				success: function (oData, oResponse) {
-					if (oData && oData.results) {
-						var oModel = new JSONModel();
-						oModel.setData(oData.results);
-						that.getView().setModel(oModel, "profiliConfermaJSONModel");
-					}
-				},
-				error: function (err) {
-
+			var url = "/backend/Utils/UtilsManagement/GetProfiliConferma";
+			that.ajaxGet(url, function (oData) {
+				if (oData && oData.results) {
+					var oModel = new JSONModel();
+					oModel.setData(oData);
+					that.getOwnerComponent().setModel(oModel, "profiliConfermaJSONModel");
 				}
 			});
 
@@ -448,7 +443,6 @@ sap.ui.define([
 				"eket": [],
 				"ekko": [],
 				"ekpo": [],
-				"userid": that.getCurrentUserId(),
 				"confirmType": confirmationType
 			};
 			for (var i = 0; i < that.getView().byId("OrderHeadersTable")._aSelectedPaths.length; i++) {
@@ -559,9 +553,9 @@ sap.ui.define([
 						if (message !== "") {
 							MessageBox.show(message, {
 								onClose: function () {
-										// aggiorno la lista
-										that.onSearchOrders();
-									} // default
+									// aggiorno la lista
+									that.onSearchOrders();
+								} // default
 
 							});
 						}
@@ -570,9 +564,9 @@ sap.ui.define([
 						MessageBox.success(that.getResourceBundle().getText("correctConfirmData"), {
 							title: "Success", // default
 							onClose: function () {
-									// aggiorno la lista
-									that.onSearchOrders();
-								} // default
+								// aggiorno la lista
+								that.onSearchOrders();
+							} // default
 
 						});
 
@@ -611,23 +605,21 @@ sap.ui.define([
 				that.getModel("MatnrJSONModel").refresh();
 		},
 		getMetasupplier: function () {
-			var filtri = "";
-			var url = "/SupplierPortal_Utils/xsOdata/GetMetasupplierList.xsjs?I_USERID=" + this.getCurrentUserId();
-			this.showBusyDialog();
-			that.ajaxGet(url, function (oData) { // funzione generica su BaseController
-				that.hideBusyDialog();
+			var url = "/backend/Utils/UtilsManagement/GetMetasupplierList";
+			that.ajaxGet(url, function (oData) {
+
 				if (oData) {
 					var oModel = new JSONModel();
 					oModel.setData(oData);
 					that.getView().setModel(oModel, "MetasupplierJSONModel");
 					//Valorizzazione Campo Lifnr per Servizio
-					var oLifnr = that.getModel("filterJSONModel");
+					var oLifnr = that.getModel("filterInboundDelivJSONModel");
 					oLifnr = oData.results;
 					var oModelLF = new JSONModel();
 					oModelLF.setData(oLifnr);
-					that.getView().setModel(oModelLF, "filterJSONModel");
+					that.getView().setModel(oModelLF, "filterInboundDelivJSONModel");
 				}
-			});
+			})
 		},
 		onClearMaterialSearchFilters: function () {
 			this.getView().getModel("MatnrSearchJSONModel").getData().matnr = "";
@@ -691,14 +683,11 @@ sap.ui.define([
 		},
 		getPlants: function () {
 
-			var url = "/SupplierPortal_Utils/xsOdata/GetUserPlants.xsjs?I_USERID=" + this.getCurrentUserId();
-			this.showBusyDialog();
-			that.ajaxGet(url, function (oData) { // funzione generica su BaseController
-				that.hideBusyDialog();
+			var url = "/backend/Utils/UtilsManagement/GetUserPlants";
+			that.ajaxGet(url, function (oData) {
 				if (oData) {
 					var oModel = new JSONModel();
 					oModel.setData(oData);
-					//	that.getView().setModel(oModel, "PlantsJSONModel");
 					var oComponent = that.getOwnerComponent();
 					oComponent.setModel(oModel, "PlantsJSONModel");
 				}
@@ -707,7 +696,7 @@ sap.ui.define([
 		handleMatnr: function () {
 
 			if (!that.oSearchMatnrDialog) {
-				that.oSearchMatnrDialog = sap.ui.xmlfragment("it.alteaup.supplier.portal.schedAgrQuantConf.fragments.SearchMatnr", that);
+				that.oSearchMatnrDialog = sap.ui.xmlfragment("it.alteaup.supplier.portal.aprvschdagr.AUPSUP_HTML5_APR_SCDAGR.fragments.SearchMatnr", that);
 				that.getView().addDependent(that.oSearchMatnrDialog);
 			}
 			that.oSearchMatnrDialog.open();
@@ -715,53 +704,13 @@ sap.ui.define([
 			var oItems = oTable.getItems();
 
 			var body = {
-				"userid": that.getCurrentUserId(),
 				"matnr": "",
 				"maktx": ""
 			};
 			var oModelMT = new JSONModel();
 			oModelMT.setData(body);
 			this.getView().setModel(oModelMT, "MatnrSearchJSONModel");
-
-			// var selectedMatnr = that.getModel("filterOrdersJSONModel").getData().matnr;
-			// var matnr = that.getModel("MatnrJSONModel");
-			// if (matnr !== undefined && matnr.getData() && matnr.getData().results) {
-			// 	for (var i = 0; i < matnr.getData().results.length; i++) {
-			// 		for (var j = 0; j < selectedSupplier.length; j++) {
-			// 			if (selectedSupplier[j].ELIFN === matnr.getData().results[i].LIFNR) {
-			// 				oItems[i].setSelected(true);
-			// 			}
-			// 		}
-			// 	}
-			// }
 		},
-
-		// handlePurchOrg: function (oEvent) {
-		// /*Valorizzo EKORG per filtro*/
-		// 	var selectedKeyArray = oEvent.oSource.getSelectedKeys();
-		// 	var purcOrgList = that.getModel("PurchaseOrganizationJSONModel").getData();
-		// 	var selectedPurcOrg = "";
-		// 	var purcOrg = [];
-		// 	if (selectedKeyArray != undefined) {
-		// 		for (var i = 0; i < selectedKeyArray.length; i++) {
-		// 			if (purcOrgList != undefined) {
-		// 				selectedPurcOrg = purcOrgList.find(x => x.PURCH_ORG === selectedKeyArray[i]);
-		// 				if (selectedPurcOrg !== undefined) {
-		// 					if (selectedPurcOrg.PURCH_ORG != undefined) {
-		// 						purcOrg.push(selectedPurcOrg.PURCH_ORG);
-		// 					}
-		// 				}
-		// 			}
-		// 		}
-		// 	}
-		// 	if (selectedKeyArray.length === 0) {
-		// 		for (var j = 0; j < purcOrgList.length; j++) {
-		// 			purcOrg.push(purcOrgList[j].PURCH_ORG);
-		// 		}
-		// 	}
-		// 	that.getModel("filterJSONModel").getData().ekorg = purcOrg;
-
-		// },
 
 		onCloseSearchMatnr: function () {
 			if (this.oSearchMatnrDialog) {
@@ -770,21 +719,22 @@ sap.ui.define([
 				this.oSearchMatnrDialog = undefined;
 			}
 		},
+
 		onSearchMatnr: function () {
 			// ricerca materiali da popup
-
-			var url = "/SupplierPortal_Utils/xsOdata/SearchMaterial.xsjs";
+			var url = "/backend/Utils/UtilsManagement/SearchMaterial";
 			var body = this.getView().getModel("MatnrSearchJSONModel").getData();
 			this.showBusyDialog();
-			that.ajaxPost(url, body, "/SupplierPortal_Utils", function (oData) { // funzione generica su BaseController
+			that.ajaxPost(url, body, function (oData) {
 				that.hideBusyDialog();
 				if (oData) {
 					var oModel = new JSONModel();
 					oModel.setData(oData);
 					that.getView().setModel(oModel, "MatnrJSONModel");
 				}
-			});
+			})
 		},
+
 		onConfirmMatnr: function () {
 			var oTable = sap.ui.getCore().byId("idMatnrTable");
 			var aIndices = oTable.indexOfItem(oTable.getSelectedItem());
@@ -815,19 +765,14 @@ sap.ui.define([
 		},
 		getPurchaseGroup: function () {
 
-			var url = "/SupplierPortal_Utils/xsOdata/GetPurchaseDoc.xsjs";
-			var body = {
-				"userid": that.getCurrentUserId()
-			};
-			this.showBusyDialog();
-			that.ajaxPost(url, body, "/SupplierPortal_Utils", function (oData) { // funzione generica su BaseController
-				that.hideBusyDialog();
+			var url = "/backend/Utils/UtilsManagement/GetPurchaseDoc";
+			that.ajaxPost(url, {}, function (oData) {
 				if (oData) {
 					var oModel = new JSONModel();
 					oModel.setData(oData);
 					that.getView().setModel(oModel, "PurchaseGroupJSONModel");
 				}
-			});
+			})
 		},
 
 		onExport: function (oEvent) {
@@ -948,7 +893,8 @@ sap.ui.define([
 			var mod = that.getModel("SchedAgreeJSONModel").getProperty(oPath);
 
 			var filtri = "";
-			var url = "/Scheduling_Agreement/xsOdata/GetConfermeRifiutiByPos.xsjs?I_USERID=" + this.getCurrentUserId() + "&I_EBELN=" + mod.EBELN +
+			// TODO SERVIZIO 
+			var url = "/backend/SchedulingAgreementManagement/GetConfermeRifiutiForQuant?I_EBELN=" + mod.EBELN +
 				"&I_EBELP=" + mod.EBELP;
 			this.showBusyDialog();
 			that.ajaxGet(url, function (oData) { // funzione generica su BaseController
@@ -959,7 +905,7 @@ sap.ui.define([
 					that.getView().setModel(oModel, "SchedAgrToApproveRejectJSONModel");
 
 					if (!that.approveRejectFragment) {
-						that.approveRejectFragment = sap.ui.xmlfragment("it.alteaup.supplier.portal.schedAgrQuantConf.fragments.ApproveReject", that);
+						that.approveRejectFragment = sap.ui.xmlfragment("it.alteaup.supplier.portal.aprvschdagr.AUPSUP_HTML5_APR_SCDAGR.fragments.ApproveReject", that);
 						that.getView().addDependent(that.approveRejectFragment);
 					}
 
@@ -993,7 +939,7 @@ sap.ui.define([
 			// create popover
 			if (!this._oPopover) {
 				new sap.ui.core.Fragment.load({
-					name: "it.alteaup.supplier.portal.schedAgrQuantConf.fragments.ColorStatus",
+					name: "it.alteaup.supplier.portal.aprvschdagr.AUPSUP_HTML5_APR_SCDAGR.fragments.ColorStatus",
 					controller: that
 				}).then(function (pPopover) {
 					that._oPopover = pPopover;

@@ -1,0 +1,14 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<Popover title="{i18n>statusColorTitle}"
+		class="sapUiResponsivePadding--header sapUiResponsivePadding--content sapUiResponsivePadding--footer" placement="Bottom">
+		<FlexBox direction="Column" alignItems="Start">
+			<items>
+				<ObjectStatus class="sapUiSmallMarginBottom" text="Progr. Richiesto &gt; Progr. Conferma" inverted="true" state="Indication02"/>
+				<HBox></HBox>
+				<ObjectStatus class="sapUiSmallMarginBottom" text="Progr. Richiesto = Progr. Conferma" inverted="true" state="Success"/>
+				<HBox></HBox>
+				<ObjectStatus class="sapUiSmallMarginBottom" text="Progr. Richiesto &lt; Progr. Conferma" inverted="true" state="Indication02"/>
+			</items>
+		</FlexBox>
+	</Popover>
+</core:FragmentDefinition>
