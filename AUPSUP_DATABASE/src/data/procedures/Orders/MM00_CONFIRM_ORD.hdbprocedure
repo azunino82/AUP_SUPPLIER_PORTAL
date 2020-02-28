@@ -54,7 +54,7 @@ IF (counterRow>0) THEN
 	T_METAID := :V_METAID;
 ELSE
 	SELECT BU into V_BU
-	FROM  "AUPSUP_DATABASE.data.tables::T_BUYSERS"
+	FROM  "AUPSUP_DATABASE.data.tables::T_BUYERS"
 	WHERE USERID = :userid;
 	T_METAID := '';
 END IF;
@@ -142,7 +142,7 @@ T_CONFER = SELECT TIPO_CONFERMA as UPDKZ FROM "AUPSUP_DATABASE.data.tables::T_PR
     							FOR cursorRow AS cursorPLANT DO
     								CALL "PORTAL"."it.alteaup.supplier.portal.notifications.storedProcedures::InsertNotification" (:userid,'rmoapprove',cursorRow.EBELN,'ODA','ICO',cursorRow.WERKS,'','IT','','','');
     							END FOR;
-    							
+	
     						END IF; 
 							*/
     						
@@ -163,15 +163,18 @@ T_CONFER = SELECT TIPO_CONFERMA as UPDKZ FROM "AUPSUP_DATABASE.data.tables::T_PR
 
 
 		/*cerco le posizioni che devono essere modificate*/
-		IT_EKPO_CH = SELECT * FROM :IT_EKPO WHERE UPDKZ IN (SELECT UPDKZ FROM :T_CONFER) AND (ZINSCONF = '' or ZINSCONF = null) AND (ZMODPREZZO <> '' or ZMODPREZZO <> null); 
+		IT_EKPO_CH = SELECT * FROM :IT_EKPO WHERE UPDKZ IN (SELECT UPDKZ FROM :T_CONFER) AND (ZMODPREZZO <> '' or ZMODPREZZO <> null); 
 		
 		IT_EKES_CH = SELECT * FROM :IT_EKES AS table1 WHERE (table1.EBELN, table1.EBELP) in (SELECT EBELN,EBELP FROM :IT_EKPO as table2
-		              WHERE table1.EBELN = table2.EBELN AND table1.EBELP = table2.EBELP AND table2.UPDKZ IN (SELECT UPDKZ FROM :T_CONFER) AND (table2.ZINSCONF = '' or table2.ZINSCONF = null) AND (table2.ZMODPREZZO <> '' or table2.ZMODPREZZO <> null));  
+		              WHERE table1.EBELN = table2.EBELN AND table1.EBELP = table2.EBELP AND table2.UPDKZ IN (SELECT UPDKZ FROM :T_CONFER) AND (table2.ZMODPREZZO <> '' or table2.ZMODPREZZO <> null));  
 		
-		IT_EKKO_CH = SELECT DISTINCT * FROM :IT_EKKO WHERE EBELN IN (SELECT EBELN FROM :IT_EKPO WHERE UPDKZ IN (SELECT UPDKZ FROM :T_CONFER) AND (ZINSCONF = '' or ZINSCONF = null) AND (ZMODPREZZO <> '' or ZMODPREZZO <> null));
+		IT_EKKO_CH = SELECT DISTINCT * FROM :IT_EKKO WHERE EBELN IN (SELECT EBELN FROM :IT_EKPO WHERE UPDKZ IN (SELECT UPDKZ FROM :T_CONFER) AND (ZMODPREZZO <> '' or ZMODPREZZO <> null));
 
 		SELECT COUNT(*) into counterRow FROM :IT_EKKO_CH;
 		IF (counterRow>0) THEN
+
+		---------------------------------------- SALVO SU HANA ----------------------------------------------------------------
+
 		        DECLARE CURSOR cursorPLANT FOR SELECT * FROM :T_PLANTS;
 				UPSERT "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKKO_EKPO" SELECT :V_BU AS BU,CURRENT_SYSID AS SYSID,b.EBELN AS EBELN,a.EBELP AS EBELP,b.LIFNR AS LIFNR,b.NAME1 AS NAME1,V_METAID AS METAID,b.EKORG AS EKORG,d.WERKS AS WERKS,d.MATNR AS MATNR,d.TXZ01 AS TXZ01,null AS MENGE, d.MENGE AS MENGE_ORIGINAL,a.NETPR AS NETPR,a.PEINH AS PEINH,d.NETPR AS NETPR_ORIGINAL,d.PEINH AS PEINH_ORIGINAL,a.KSCHL AS KSCHL,/*c.EBTYP*/ '' as EBTYP,a.UPDKZ AS UPDKZ,:V_CURRENT_TIMESTAMP AS CREATION_DATE,null AS MODIFY_STATUS_DATE,'RC' AS STATUS, b.EKGRP as EKGRP, d.BSTAE AS BSTAE, 'PRZ' AS CONF_TYPE
 					FROM :IT_EKPO_CH AS a
@@ -200,14 +203,16 @@ T_CONFER = SELECT TIPO_CONFERMA as UPDKZ FROM "AUPSUP_DATABASE.data.tables::T_PR
 				END IF; */
 			
 			ELSE
+
+			---------------------------------------- INVIO A SAP  ----------------------------------------------------------------
 			
 				/*Inviamo a SAP le testate e posizioni che non hanno T_CONFER con flag INVIO AL BUYER per approvazione obbligatorio CONFERMA_MANDATORY = 'X'*/
-				IT_EKPO_CH = SELECT * FROM :IT_EKPO WHERE UPDKZ NOT IN (SELECT UPDKZ FROM :T_CONFER) AND (ZINSCONF = '' or ZINSCONF = null) AND (ZMODPREZZO <> '' or ZMODPREZZO <> null);
+				IT_EKPO_CH = SELECT * FROM :IT_EKPO WHERE UPDKZ NOT IN (SELECT UPDKZ FROM :T_CONFER) AND (ZMODPREZZO <> '' or ZMODPREZZO <> null);
 				
 				IT_EKES_CH = SELECT * FROM :IT_EKES AS table1 WHERE EXISTS (SELECT * FROM :IT_EKPO as table2
-				              WHERE table1.EBELN = table2.EBELN AND table1.EBELP = table2.EBELP AND table2.UPDKZ NOT IN (SELECT UPDKZ FROM :T_CONFER) AND (table2.ZINSCONF = '' or table2.ZINSCONF = null) AND (table2.ZMODPREZZO <> '' or table2.ZMODPREZZO <> null));
+				              WHERE table1.EBELN = table2.EBELN AND table1.EBELP = table2.EBELP AND table2.UPDKZ NOT IN (SELECT UPDKZ FROM :T_CONFER) AND (table2.ZMODPREZZO <> '' or table2.ZMODPREZZO <> null));
 				
-				IT_EKKO_CH = SELECT DISTINCT * FROM :IT_EKKO WHERE EBELN IN (SELECT EBELN FROM :IT_EKPO WHERE UPDKZ NOT IN (SELECT UPDKZ FROM :T_CONFER) AND (ZINSCONF = '' or ZINSCONF = null) AND (ZMODPREZZO <> '' or ZMODPREZZO <> null));
+				IT_EKKO_CH = SELECT DISTINCT * FROM :IT_EKKO WHERE EBELN IN (SELECT EBELN FROM :IT_EKPO WHERE UPDKZ NOT IN (SELECT UPDKZ FROM :T_CONFER) AND (ZMODPREZZO <> '' or ZMODPREZZO <> null));
 				
 				/*se non ho dati da inviare non li invio*/
 				SELECT COUNT(*) into counterRow FROM :IT_EKKO_CH;
