@@ -250,21 +250,19 @@ sap.ui.define([
 			that.ajaxPost(url, body, function (oData) {
 				that.hideBusyDialog();
 				if (oData) {
-					var oModel = new JSONModel();
-					oModel.setData(oData);
 					// Valorizzare OriginalPrice LS
-					for (var i = 0; i < oModel.oData.results.length; i++) {
-						var PEINH = oModel.oData.results[i].PEINH;
-						var NETPR = oModel.oData.results[i].NETPR;
+					for (var i = 0; i < oData.results.length; i++) {
+						var PEINH = oData.results[i].PEINH;
+						var NETPR = oData.results[i].NETPR;
 						if (NETPR != undefined && NETPR != "" && PEINH != undefined && PEINH != "") {
 							PEINH = parseFloat(PEINH);
 							NETPR = parseFloat(NETPR);
 							var prezzoOriginale = NETPR / PEINH;
-							oModel.oData.results[i].OriginalPrice = prezzoOriginale;
+							oData.results[i].OriginalPrice = prezzoOriginale;
 						}
-
 					}
-
+					var oModel = new JSONModel();
+					oModel.setData(oData);
 					that.getView().setModel(oModel, "OrderJSONModel");
 					that.getView().byId("OrderHeadersTable").setModel(oModel);
 
@@ -1251,9 +1249,11 @@ sap.ui.define([
 				onClose: function (oAction) {
 					if (oAction === MessageBox.Action.OK) {
 						var body = {
-							"ekes": [],
 							"ekko": [],
-							"ekpo": []
+							"ekpo": [],
+							"ekes": [],
+							"notaReject":"",
+							"confirmType": ""
 						};
 						var ekpoRow = that.getModel("SelectedPositionsJSONModel").getData();
 						if (ekpoRow !== undefined) {
@@ -1322,7 +1322,7 @@ sap.ui.define([
 								singleEkpoModel.UMREN = row.UMREN;
 								singleEkpoModel.LABNR = row.LABNR;
 								if (row.UPDKZ === undefined)
-									singleEkpoModel.UPDKZ = "L";
+									singleEkpoModel.UPDKZ = ""; // TODO Verificarne l'esattezza LS "-> Prima era "L"
 								else
 									singleEkpoModel.UPDKZ = row.UPDKZ;
 
