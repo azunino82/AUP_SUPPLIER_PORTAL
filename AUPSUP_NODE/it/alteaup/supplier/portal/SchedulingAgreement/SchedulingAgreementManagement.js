@@ -107,11 +107,11 @@ module.exports = function () {
                 } else {
                     hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.SchedulingAgreement::MM00_SAG_DOC_LIST', function (_err, sp) {
                         if (_err) {
-                          console.log('---->>> CLIENT END ERR MM00_SAG_DOC_LIST <<<<<-----')
+                            console.log('---->>> CLIENT END ERR MM00_SAG_DOC_LIST <<<<<-----')
                         }
                         sp(userid, lifnr, ebeln, ebelp, ekorg, matnr, ekgrp, werks, (err, parameters, ET_SAG_EKEH, ET_SAG_EKEK, ET_SAG_EKES, ET_SAG_EKET, ET_SAG_EKKO, ET_SAG_EKPO, OUT_POS_PIANI_CONS) => {
                             console.log('---->>> CLIENT END MM00_SAG_DOC_LIST <<<<<-----')
-                          client.close()
+                            client.close()
                             if (err) {
                                 console.error('ERROR: ' + err)
                                 return res.status(500).send(stringifyObj(err))
@@ -269,7 +269,7 @@ module.exports = function () {
                             if (_err) {
                                 console.log('---->>> CLIENT END ERR GetSchedulationForSAG <<<<<-----')
                                 return res.status(500).send('CLIENT END ERR GetSchedulationForSAG: ' + stringifyObj(_err))
-                            }                            
+                            }
                             sp(userid, objectCopy.EBELN, objectCopy.EBELP, objectCopy.BSTYP, objectCopy.BSART, '', [], (err, parameters, results) => {
                                 console.log('---->>> CLIENT END GetSchedulationForSAG <<<<<-----')
                                 client.close()
@@ -291,7 +291,7 @@ module.exports = function () {
                                                 if (_err) {
                                                     console.log('---->>> CLIENT END ERR <<<<<-----')
                                                     client.close()
-                                                }                                                    
+                                                }
                                                 sp(userid, objectCopy.EBELN, objectCopy.EBELP, lifnr, ekorg, matnr, ekgrp, werks, (err, parameters, ET_RETURN_EKKO_EKPO, ET_RETURN_EKES_EKET, ET_RETURN_EKEH_EKEK) => {
                                                     console.log('---->>> CLIENT END GetConfirms<<<<<-----')
                                                     client.close()
@@ -375,109 +375,109 @@ module.exports = function () {
 
                                                                             hdbext.createConnection(req.tenantContainer, function (error, client) {
                                                                                 if (error) {
-                                                                                console.error('---->>> CLIENT END T_PROFILI_CONFERMA_HEADER ERRORE <<<<<-----')
+                                                                                    console.error('---->>> CLIENT END T_PROFILI_CONFERMA_HEADER ERRORE <<<<<-----')
                                                                                 }
                                                                                 if (client) {
-                                                                                async.waterfall([
-                                                                        
-                                                                                    function prepare (callback) {
-                                                                                    client.prepare(sql,
-                                                                                        function (err, statement) {
-                                                                                        callback(null, err, statement)
-                                                                                        })
-                                                                                    },
-                                                                        
-                                                                                    function execute (_err, statement, callback) {
-                                                                                    statement.exec([], function (execErr, results) {
-                                                                                        callback(null, execErr, results)
-                                                                                    })
-                                                                                    },
-                                                                        
-                                                                                    function response (err, results, callback) {
-                                                                                    if (err) {
-                                                                                        res.type('application/json').status(500).send({ ERROR: err })
-                                                                                        return
-                                                                                    } else {
-                                                                                        console.log('OK T_PROFILI_CONFERMA_HEADER: ' + (stringifyObj(results)))
-                                                                                        if (results !== null && results.length > 0) {
-                                                                                            var guid = results[0]
-                                                                                            if (guid !== null && guid.MODIFICA_PREZZO !== null && guid.MODIFICA_PREZZO === 'X') {
-                                                                                                objectCopy.editPrice = true
-                                                                                                objectCopy.PricePercDOWN = guid.PERC_INFERIORE
-                                                                                                objectCopy.PricePercUP = guid.PERC_SUPERIORE
-                                                                                                objectCopy.KSCHL = guid.TIPO_COND_PREZZO
-                                                                                                objectCopy.CONFERMA_MANDATORY = !!(guid.CONFERMA_MANDATORY !== null && guid.CONFERMA_MANDATORY === 'X')
-                                                                                            } else {
-                                                                                                objectCopy.editPrice = false
-                                                                                            }
-                                                                                        }
-                                                                                        callback()
-                                                                                    }
+                                                                                    async.waterfall([
 
-                                                                                    objectCopy.TimeDependent = false
-                                                                                    objectCopy.GGEstrazione = 0
-                                                                                    
-                                                                                    sql = "SELECT * FROM \"AUPSUP_DATABASE.data.tables::T_ORDERS_TYPES\" WHERE BSTYP = \'" + objectCopy.BSTYP + "\' AND BSART = \'" + objectCopy.BSART + "\'"
-        
-                                                                                    hdbext.createConnection(req.tenantContainer, function (error, client) {
-                                                                                        if (error) {
-                                                                                        console.error('---->>> ERROR T_ORDERS_TYPES <<<<<-----')
-                                                                                        }
-                                                                                        if (client) {
-                                                                                        async.waterfall([
-                                                                                
-                                                                                            function prepare (callback) {
+                                                                                        function prepare(callback) {
                                                                                             client.prepare(sql,
                                                                                                 function (err, statement) {
-                                                                                                callback(null, err, statement)
+                                                                                                    callback(null, err, statement)
                                                                                                 })
-                                                                                            },
-                                                                                
-                                                                                            function execute (_err, statement, callback) {
+                                                                                        },
+
+                                                                                        function execute(_err, statement, callback) {
                                                                                             statement.exec([], function (execErr, results) {
                                                                                                 callback(null, execErr, results)
                                                                                             })
-                                                                                            },
-                                                                                
-                                                                                            function response (err, results, callback) {
+                                                                                        },
+
+                                                                                        function response(err, results, callback) {
                                                                                             if (err) {
                                                                                                 res.type('application/json').status(500).send({ ERROR: err })
                                                                                                 return
                                                                                             } else {
-                                                                                                console.log('OK T_ORDERS_TYPES: ' + (stringifyObj(results)))
+                                                                                                console.log('OK T_PROFILI_CONFERMA_HEADER: ' + (stringifyObj(results)))
                                                                                                 if (results !== null && results.length > 0) {
                                                                                                     var guid = results[0]
-                                                                                                    if (guid !== null) {
-                                                                                                        if (guid !== null && guid.TIME_DEPENDENT !== null && guid.TIME_DEPENDENT === 'X') {
-                                                                                                            objectCopy.TimeDependent = true
-                                                                                                        }
-                                                                                                        objectCopy.GGEstrazione = guid.GG_ESTRAZIONE
-                                                                                                        objectCopy.ISPROGRESSIVI = !!(guid.PROGRESSIVI !== null && guid.PROGRESSIVI === 'X')
+                                                                                                    if (guid !== null && guid.MODIFICA_PREZZO !== null && guid.MODIFICA_PREZZO === 'X') {
+                                                                                                        objectCopy.editPrice = true
+                                                                                                        objectCopy.PricePercDOWN = guid.PERC_INFERIORE
+                                                                                                        objectCopy.PricePercUP = guid.PERC_SUPERIORE
+                                                                                                        objectCopy.KSCHL = guid.TIPO_COND_PREZZO
+                                                                                                        objectCopy.CONFERMA_MANDATORY = !!(guid.CONFERMA_MANDATORY !== null && guid.CONFERMA_MANDATORY === 'X')
+                                                                                                    } else {
+                                                                                                        objectCopy.editPrice = false
                                                                                                     }
                                                                                                 }
+                                                                                                callback()
                                                                                             }
-                                                                                            megaResults.push(objectCopy)
-                                                                                            callback()
-                                                                                            console.log('---->>> OUT FINALE post CALLBACK <<<<<-----')
-                                                                                            return res.status(200).send(megaResults)
-                                                                                            }
-                                                                                        ], function done (err, parameters, rows) {
-                                                                                            console.log('---->>> CLIENT END T_ORDERS_TYPES <<<<<-----')
-                                                                                            client.close()
-                                                                                            if (err) {
+
+                                                                                            objectCopy.TimeDependent = false
+                                                                                            objectCopy.GGEstrazione = 0
+
+                                                                                            sql = "SELECT * FROM \"AUPSUP_DATABASE.data.tables::T_ORDERS_TYPES\" WHERE BSTYP = \'" + objectCopy.BSTYP + "\' AND BSART = \'" + objectCopy.BSART + "\'"
+
+                                                                                            hdbext.createConnection(req.tenantContainer, function (error, client) {
+                                                                                                if (error) {
+                                                                                                    console.error('---->>> ERROR T_ORDERS_TYPES <<<<<-----')
+                                                                                                }
+                                                                                                if (client) {
+                                                                                                    async.waterfall([
+
+                                                                                                        function prepare(callback) {
+                                                                                                            client.prepare(sql,
+                                                                                                                function (err, statement) {
+                                                                                                                    callback(null, err, statement)
+                                                                                                                })
+                                                                                                        },
+
+                                                                                                        function execute(_err, statement, callback) {
+                                                                                                            statement.exec([], function (execErr, results) {
+                                                                                                                callback(null, execErr, results)
+                                                                                                            })
+                                                                                                        },
+
+                                                                                                        function response(err, results, callback) {
+                                                                                                            if (err) {
+                                                                                                                res.type('application/json').status(500).send({ ERROR: err })
+                                                                                                                return
+                                                                                                            } else {
+                                                                                                                console.log('OK T_ORDERS_TYPES: ' + (stringifyObj(results)))
+                                                                                                                if (results !== null && results.length > 0) {
+                                                                                                                    var guid = results[0]
+                                                                                                                    if (guid !== null) {
+                                                                                                                        if (guid !== null && guid.TIME_DEPENDENT !== null && guid.TIME_DEPENDENT === 'X') {
+                                                                                                                            objectCopy.TimeDependent = true
+                                                                                                                        }
+                                                                                                                        objectCopy.GGEstrazione = guid.GG_ESTRAZIONE
+                                                                                                                        objectCopy.ISPROGRESSIVI = !!(guid.PROGRESSIVI !== null && guid.PROGRESSIVI === 'X')
+                                                                                                                    }
+                                                                                                                }
+                                                                                                            }
+                                                                                                            megaResults.push(objectCopy)
+                                                                                                            callback()
+                                                                                                            console.log('---->>> OUT FINALE post CALLBACK <<<<<-----')
+                                                                                                            return res.status(200).send(megaResults)
+                                                                                                        }
+                                                                                                    ], function done(err, parameters, rows) {
+                                                                                                        console.log('---->>> CLIENT END T_ORDERS_TYPES <<<<<-----')
+                                                                                                        client.close()
+                                                                                                        if (err) {
+                                                                                                            return console.error('Done error', err)
+                                                                                                        }
+                                                                                                    })
+                                                                                                }
+                                                                                            })
+                                                                                        }
+                                                                                    ], function done(err, parameters, rows) {
+                                                                                        console.log('---->>> CLIENT END PROFILO_CONTROLLO <<<<<-----')
+                                                                                        client.close()
+                                                                                        if (err) {
                                                                                             return console.error('Done error', err)
-                                                                                            }
-                                                                                        })
                                                                                         }
                                                                                     })
-                                                                                    }
-                                                                                ], function done (err, parameters, rows) {
-                                                                                    console.log('---->>> CLIENT END PROFILO_CONTROLLO <<<<<-----')
-                                                                                    client.close()
-                                                                                    if (err) {
-                                                                                    return console.error('Done error', err)
-                                                                                    }
-                                                                                })
                                                                                 }
                                                                             })
                                                                         }
@@ -525,9 +525,9 @@ module.exports = function () {
                         hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.SchedulingAgreement::SchedulationsCalculator', function (_err, sp) {
                             console.error('ERROR CONNECTION :' + stringifyObj(_err))
                             if (_err) {
-                              console.log('---->>> CLIENT END ERR <<<<<-----')
-                              client.close()
-                            }                            
+                                console.log('---->>> CLIENT END ERR <<<<<-----')
+                                client.close()
+                            }
                             sp(userid, objectCopy.EBELN, objectCopy.EBELP, objectCopy.BSTYP, objectCopy.BSART, objectCopy.EBTYP !== undefined && objectCopy.EBTYP !== null ? objectCopy.EBTYP : '', [], (err, parameters, results) => {
                                 console.log('---->>> CLIENT END SchedulationsCalculator <<<<<-----')
                                 client.close()
@@ -564,9 +564,9 @@ module.exports = function () {
                                             hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.SchedulingAgreement::GetConfirms', function (_err, sp) {
                                                 console.error('ERROR CONNECTION :' + stringifyObj(_err))
                                                 if (_err) {
-                                                  console.log('---->>> CLIENT END ERR <<<<<-----')
-                                                  client.close()
-                                                }                                                    
+                                                    console.log('---->>> CLIENT END ERR <<<<<-----')
+                                                    client.close()
+                                                }
                                                 sp(userid, objectCopy.EBELN, objectCopy.EBELP, lifnr, ekorg, matnr, ekgrp, werks, (err, parameters, ET_RETURN_EKKO_EKPO, ET_RETURN_EKES_EKET, ET_RETURN_EKEH_EKEK) => {
                                                     console.log('---->>> CLIENT END GetConfirms<<<<<-----')
                                                     client.close()
@@ -623,7 +623,7 @@ module.exports = function () {
                                                                 hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Utils::GetProfiliConferma', function (_err, sp) {
                                                                     console.error('ERROR CONNECTION :' + stringifyObj(_err))
                                                                     if (_err) {
-                                                                      console.log('---->>> CLIENT END ERR <<<<<-----')
+                                                                        console.log('---->>> CLIENT END ERR <<<<<-----')
                                                                     }
                                                                     sp(userid, objectCopy.BSTAE, (err, parameters, results) => {
                                                                         console.log('---->>> CLIENT END GetProfiliConferma <<<<<-----')
@@ -649,109 +649,109 @@ module.exports = function () {
                                                                             var sql = "SELECT * FROM \"AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA_HEADER\" WHERE PROFILO_CONTROLLO = \'" + objectCopy.BSTAE + "\'"
 
                                                                             hdbext.createConnection(req.tenantContainer, function (error, client) {
-                                                                              if (error) {
-                                                                                console.error('---->>> CLIENT END T_PROFILI_CONFERMA_HEADER ERRORE <<<<<-----')
-                                                                              }
-                                                                              if (client) {
-                                                                                async.waterfall([
-                                                                        
-                                                                                  function prepare (callback) {
-                                                                                    client.prepare(sql,
-                                                                                      function (err, statement) {
-                                                                                        callback(null, err, statement)
-                                                                                      })
-                                                                                  },
-                                                                        
-                                                                                  function execute (_err, statement, callback) {
-                                                                                    statement.exec([], function (execErr, results) {
-                                                                                      callback(null, execErr, results)
-                                                                                    })
-                                                                                  },
-                                                                        
-                                                                                  function response (err, results, callback) {
-                                                                                    if (err) {
-                                                                                      res.type('application/json').status(500).send({ ERROR: err })
-                                                                                      return
-                                                                                    } else {
-                                                                                        console.log('OK T_PROFILI_CONFERMA_HEADER: ' + (stringifyObj(results)))
-                                                                                        if (results !== null && results.length > 0) {
-                                                                                            var guid = results[0]
-                                                                                            if (guid !== null && guid.MODIFICA_PREZZO !== null && guid.MODIFICA_PREZZO === 'X') {
-                                                                                                objectCopy.editPrice = true
-                                                                                                objectCopy.PricePercDOWN = guid.PERC_INFERIORE
-                                                                                                objectCopy.PricePercUP = guid.PERC_SUPERIORE
-                                                                                                objectCopy.KSCHL = guid.TIPO_COND_PREZZO
-                                                                                            } else {
-                                                                                                objectCopy.editPrice = false
-                                                                                            }
-                                                                                        }
-                                                                                        callback()
-                                                                                    }
+                                                                                if (error) {
+                                                                                    console.error('---->>> CLIENT END T_PROFILI_CONFERMA_HEADER ERRORE <<<<<-----')
+                                                                                }
+                                                                                if (client) {
+                                                                                    async.waterfall([
 
-                                                                                    objectCopy.TimeDependent = false
-                                                                                    objectCopy.GGEstrazione = 0
-                                                                                    
-                                                                                    sql = "SELECT * FROM \"AUPSUP_DATABASE.data.tables::T_ORDERS_TYPES\" WHERE BSTYP = \'" + objectCopy.BSTYP + "\' AND BSART = \'" + objectCopy.BSART + "\'"
-        
-                                                                                    hdbext.createConnection(req.tenantContainer, function (error, client) {
-                                                                                      if (error) {
-                                                                                        console.error('---->>> ERROR T_ORDERS_TYPES <<<<<-----')
-                                                                                      }
-                                                                                      if (client) {
-                                                                                        async.waterfall([
-                                                                                
-                                                                                          function prepare (callback) {
+                                                                                        function prepare(callback) {
                                                                                             client.prepare(sql,
-                                                                                              function (err, statement) {
-                                                                                                callback(null, err, statement)
-                                                                                              })
-                                                                                          },
-                                                                                
-                                                                                          function execute (_err, statement, callback) {
+                                                                                                function (err, statement) {
+                                                                                                    callback(null, err, statement)
+                                                                                                })
+                                                                                        },
+
+                                                                                        function execute(_err, statement, callback) {
                                                                                             statement.exec([], function (execErr, results) {
-                                                                                              callback(null, execErr, results)
+                                                                                                callback(null, execErr, results)
                                                                                             })
-                                                                                          },
-                                                                                
-                                                                                          function response (err, results, callback) {
+                                                                                        },
+
+                                                                                        function response(err, results, callback) {
                                                                                             if (err) {
-                                                                                              res.type('application/json').status(500).send({ ERROR: err })
-                                                                                              return
+                                                                                                res.type('application/json').status(500).send({ ERROR: err })
+                                                                                                return
                                                                                             } else {
-                                                                                                console.log('OK T_ORDERS_TYPES: ' + (stringifyObj(results)))
+                                                                                                console.log('OK T_PROFILI_CONFERMA_HEADER: ' + (stringifyObj(results)))
                                                                                                 if (results !== null && results.length > 0) {
                                                                                                     var guid = results[0]
-                                                                                                    if (guid !== null) {
-                                                                                                        if (guid !== null && guid.TIME_DEPENDENT !== null && guid.TIME_DEPENDENT === 'X') {
-                                                                                                            objectCopy.TimeDependent = true
-                                                                                                        }
-                                                                                                        objectCopy.GGEstrazione = guid.GG_ESTRAZIONE
+                                                                                                    if (guid !== null && guid.MODIFICA_PREZZO !== null && guid.MODIFICA_PREZZO === 'X') {
+                                                                                                        objectCopy.editPrice = true
+                                                                                                        objectCopy.PricePercDOWN = guid.PERC_INFERIORE
+                                                                                                        objectCopy.PricePercUP = guid.PERC_SUPERIORE
+                                                                                                        objectCopy.KSCHL = guid.TIPO_COND_PREZZO
+                                                                                                    } else {
+                                                                                                        objectCopy.editPrice = false
                                                                                                     }
                                                                                                 }
+                                                                                                callback()
                                                                                             }
-                                                                                            megaResults.push(objectCopy)
-                                                                                            callback()
-                                                                                            console.log('---->>> OUT FINALE post CALLBACK <<<<<-----')
-                                                                                            return res.status(200).send(megaResults)
-                                                                                          }
-                                                                                        ], function done (err, parameters, rows) {
-                                                                                            console.log('---->>> CLIENT END T_ORDERS_TYPES <<<<<-----')
-                                                                                            client.close()
-                                                                                          if (err) {
+
+                                                                                            objectCopy.TimeDependent = false
+                                                                                            objectCopy.GGEstrazione = 0
+
+                                                                                            sql = "SELECT * FROM \"AUPSUP_DATABASE.data.tables::T_ORDERS_TYPES\" WHERE BSTYP = \'" + objectCopy.BSTYP + "\' AND BSART = \'" + objectCopy.BSART + "\'"
+
+                                                                                            hdbext.createConnection(req.tenantContainer, function (error, client) {
+                                                                                                if (error) {
+                                                                                                    console.error('---->>> ERROR T_ORDERS_TYPES <<<<<-----')
+                                                                                                }
+                                                                                                if (client) {
+                                                                                                    async.waterfall([
+
+                                                                                                        function prepare(callback) {
+                                                                                                            client.prepare(sql,
+                                                                                                                function (err, statement) {
+                                                                                                                    callback(null, err, statement)
+                                                                                                                })
+                                                                                                        },
+
+                                                                                                        function execute(_err, statement, callback) {
+                                                                                                            statement.exec([], function (execErr, results) {
+                                                                                                                callback(null, execErr, results)
+                                                                                                            })
+                                                                                                        },
+
+                                                                                                        function response(err, results, callback) {
+                                                                                                            if (err) {
+                                                                                                                res.type('application/json').status(500).send({ ERROR: err })
+                                                                                                                return
+                                                                                                            } else {
+                                                                                                                console.log('OK T_ORDERS_TYPES: ' + (stringifyObj(results)))
+                                                                                                                if (results !== null && results.length > 0) {
+                                                                                                                    var guid = results[0]
+                                                                                                                    if (guid !== null) {
+                                                                                                                        if (guid !== null && guid.TIME_DEPENDENT !== null && guid.TIME_DEPENDENT === 'X') {
+                                                                                                                            objectCopy.TimeDependent = true
+                                                                                                                        }
+                                                                                                                        objectCopy.GGEstrazione = guid.GG_ESTRAZIONE
+                                                                                                                    }
+                                                                                                                }
+                                                                                                            }
+                                                                                                            megaResults.push(objectCopy)
+                                                                                                            callback()
+                                                                                                            console.log('---->>> OUT FINALE post CALLBACK <<<<<-----')
+                                                                                                            return res.status(200).send(megaResults)
+                                                                                                        }
+                                                                                                    ], function done(err, parameters, rows) {
+                                                                                                        console.log('---->>> CLIENT END T_ORDERS_TYPES <<<<<-----')
+                                                                                                        client.close()
+                                                                                                        if (err) {
+                                                                                                            return console.error('Done error', err)
+                                                                                                        }
+                                                                                                    })
+                                                                                                }
+                                                                                            })
+                                                                                        }
+                                                                                    ], function done(err, parameters, rows) {
+                                                                                        console.log('---->>> CLIENT END PROFILO_CONTROLLO <<<<<-----')
+                                                                                        client.close()
+                                                                                        if (err) {
                                                                                             return console.error('Done error', err)
-                                                                                          }
-                                                                                        })
-                                                                                      }
+                                                                                        }
                                                                                     })
-                                                                                  }
-                                                                                ], function done (err, parameters, rows) {
-                                                                                  console.log('---->>> CLIENT END PROFILO_CONTROLLO <<<<<-----')
-                                                                                  client.close()
-                                                                                  if (err) {
-                                                                                    return console.error('Done error', err)
-                                                                                  }
-                                                                                })
-                                                                              }
+                                                                                }
                                                                             })
                                                                         }
                                                                     })
@@ -778,79 +778,79 @@ module.exports = function () {
         var ebelp = req.query.I_EBELP !== undefined && req.query.I_EBELP !== null && req.query.I_EBELP !== '' ? req.query.I_EBELP : ''
 
         hdbext.createConnection(req.tenantContainer, (err, client) => {
-          if (err) {
-            return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
-          } else {
-            hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.SchedulingAgreement::GetPianiConsegnaDetail', function (_err, sp) {
-                console.error('ERROR CONNECTION :' + stringifyObj(_err))
-                if (_err) {
-                    console.log('---->>> CLIENT END ERR <<<<<-----')
-                    client.close()
-                }                       
-              sp(req.user.id, ebeln, ebelp, (err, parameters, ET_HEADER, ET_SAG_EKEH, ET_SAG_EKES, ET_SAG_EKET) => {
-                console.log('---->>> CLIENT END <<<<<-----')
-                client.close()
-                if (err) {
-                  return res.status(500).send(stringifyObj(err))
-                } else {
-                    var outET_SAG_EKEH_EKET = []
+            if (err) {
+                return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
+            } else {
+                hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.SchedulingAgreement::GetPianiConsegnaDetail', function (_err, sp) {
+                    console.error('ERROR CONNECTION :' + stringifyObj(_err))
+                    if (_err) {
+                        console.log('---->>> CLIENT END ERR <<<<<-----')
+                        client.close()
+                    }
+                    sp(req.user.id, ebeln, ebelp, (err, parameters, ET_HEADER, ET_SAG_EKEH, ET_SAG_EKES, ET_SAG_EKET) => {
+                        console.log('---->>> CLIENT END <<<<<-----')
+                        client.close()
+                        if (err) {
+                            return res.status(500).send(stringifyObj(err))
+                        } else {
+                            var outET_SAG_EKEH_EKET = []
 
-                    if (ET_SAG_EKEH !== null && ET_SAG_EKEH !== undefined && ET_SAG_EKEH.length > 0) {
-                        for (var i = 0; i < ET_SAG_EKEH.length; i++) {
-                            outET_SAG_EKEH_EKET.push(ET_SAG_EKEH[i])
+                            if (ET_SAG_EKEH !== null && ET_SAG_EKEH !== undefined && ET_SAG_EKEH.length > 0) {
+                                for (var i = 0; i < ET_SAG_EKEH.length; i++) {
+                                    outET_SAG_EKEH_EKET.push(ET_SAG_EKEH[i])
+                                }
+                            }
+
+                            if (ET_SAG_EKET !== null && ET_SAG_EKET !== undefined && ET_SAG_EKET.length > 0) {
+                                // eslint-disable-next-line no-redeclare
+                                for (var i = 0; i < ET_SAG_EKET.length; i++) {
+                                    outET_SAG_EKEH_EKET.push(ET_SAG_EKET[i])
+                                }
+                            }
+
+                            var outET_SAG_EKES = []
+
+                            if (ET_SAG_EKES !== null && ET_SAG_EKES !== undefined && ET_SAG_EKES.length > 0) {
+                                // eslint-disable-next-line no-redeclare
+                                for (var i = 0; i < ET_SAG_EKES.length; i++) {
+                                    outET_SAG_EKES.push(ET_SAG_EKES[i])
+                                }
+                            }
+
+                            var header = {}
+
+                            if (ET_HEADER !== null && ET_HEADER !== undefined && ET_HEADER.length > 0) {
+                                // eslint-disable-next-line no-redeclare
+                                for (var i = 0; i < ET_HEADER.length; i++) {
+                                    header = ET_HEADER[i]
+                                }
+                            }
+
+                            var results = {
+                                results: {
+                                    Schedulations: outET_SAG_EKEH_EKET,
+                                    Confirms: outET_SAG_EKES
+                                },
+                                EBELN: header.EBELN,
+                                EBELP: header.EBELP,
+                                MATNR: header.MATNR,
+                                TXZ01: header.TXZ01,
+                                IDNLF: header.IDNLF,
+                                MENGE: header.MENGE,
+                                PEINH: header.PEINH
+                            }
+                            return res.status(200).send({
+                                results: results
+                            })
                         }
-                    }
-            
-                    if (ET_SAG_EKET !== null && ET_SAG_EKET !== undefined && ET_SAG_EKET.length > 0) {
-                        // eslint-disable-next-line no-redeclare
-                        for (var i = 0; i < ET_SAG_EKET.length; i++) {
-                            outET_SAG_EKEH_EKET.push(ET_SAG_EKET[i])
-                        }
-                    }
-            
-                    var outET_SAG_EKES = []
-            
-                    if (ET_SAG_EKES !== null && ET_SAG_EKES !== undefined && ET_SAG_EKES.length > 0) {
-                        // eslint-disable-next-line no-redeclare
-                        for (var i = 0; i < ET_SAG_EKES.length; i++) {
-                            outET_SAG_EKES.push(ET_SAG_EKES[i])
-                        }
-                    }
-            
-                    var header = {}
-            
-                    if (ET_HEADER !== null && ET_HEADER !== undefined && ET_HEADER.length > 0) {
-                        // eslint-disable-next-line no-redeclare
-                        for (var i = 0; i < ET_HEADER.length; i++) {
-                            header = ET_HEADER[i]
-                        }
-                    }
-            
-                    var results = {
-                        results: {
-                            Schedulations: outET_SAG_EKEH_EKET,
-                            Confirms: outET_SAG_EKES
-                        },
-                        EBELN: header.EBELN,
-                        EBELP: header.EBELP,
-                        MATNR: header.MATNR,
-                        TXZ01: header.TXZ01,
-                        IDNLF: header.IDNLF,
-                        MENGE: header.MENGE,
-                        PEINH: header.PEINH
-                    }
-                  return res.status(200).send({
-                    results: results
-                  })
-                }
-              })
-            })
-          }
+                    })
+                })
+            }
         })
     })
 
     // GET SELECTED CONFERME PIANI CONSEGNA LOCICA ON PROGRESSIVI
-    app.post('/GetCalculatedSchedulations', function (req, res) {                
+    app.post('/GetCalculatedSchedulations', function (req, res) {
         var ebeln = req.query.I_EBELN !== null && req.query.I_EBELN !== undefined ? req.query.I_EBELN : ''
         var ebelp = req.query.I_EBELP !== null && req.query.I_EBELP !== undefined ? req.query.I_EBELP : ''
         var bstyp = req.query.I_BSTYP !== null && req.query.I_BSTYP !== undefined ? req.query.I_BSTYP : ''
@@ -868,7 +868,7 @@ module.exports = function () {
                         if (_err) {
                             console.log('---->>> CLIENT END ERR GetCalculatedSchedulations <<<<<-----')
                             return res.status(500).send('CLIENT END ERR GetCalculatedSchedulations: ' + stringifyObj(_err))
-                        }                            
+                        }
                         sp(userid, ebeln, ebelp, bstyp, bsart, ebtyp, [], (err, parameters, results) => {
                             console.log('---->>> CLIENT END GetCalculatedSchedulations <<<<<-----')
                             client.close()
@@ -883,12 +883,144 @@ module.exports = function () {
                                 })
                             }
                         })
-                    })            
+                    })
                 }
             })
         } else {
             return res.status(500).send('I_EBELP,I_EBELN madatory')
         }
+    })
+
+    // GET SELECTED CONFERME PIANI CONSEGNA LOCICA ON PROGRESSIVI
+    app.post('/GetConfermeRifiuti', function (req, res) {
+        const body = req.body
+        var userid = req.user.id
+        var ekorg = []
+        var lifnr = []
+        var matnr = []
+        var werks = []
+        var ekgrp = []
+        var ebeln = ''
+        var ebelp = ''
+        var results = []
+
+        if (body.ebeln !== null && body.ebeln !== '') {
+            ebeln = body.ebeln
+        }
+
+        if (body.ekorg !== null && body.ekorg.length > 0) {
+            var oEkorg = []
+            for (var i = 0; i < body.ekorg.length; i++) {
+                oEkorg.push({ EKORG: body.ekorg[i] })
+            }
+            ekorg = oEkorg
+        }
+
+        if (body.lifnr != null && body.lifnr !== '') {
+            var oLifnr = []
+            // eslint-disable-next-line no-redeclare
+            for (var i = 0; i < body.lifnr.length; i++) {
+                oLifnr.push({ ELIFN: body.lifnr[i] })
+            }
+            lifnr = oLifnr
+        }
+
+        if (body.matnr != null && body.matnr !== '') {
+            var oMatnr = []
+            // eslint-disable-next-line no-redeclare
+            for (var i = 0; i < body.matnr.length; i++) {
+                oMatnr.push({ MATNR: body.matnr[i] })
+            }
+            matnr = oMatnr
+        }
+
+        if (body.werks != null && body.werks !== '') {
+            var oWerks = []
+            // eslint-disable-next-line no-redeclare
+            for (var i = 0; i < body.werks.length; i++) {
+                oWerks.push({ WERKS: body.werks[i] })
+            }
+            werks = oWerks
+        }
+
+        if (body.ekgrp != null && body.ekgrp !== '') {
+            var oEkgrp = []
+            // eslint-disable-next-line no-redeclare
+            for (var i = 0; i < body.ekgrp.length; i++) {
+                oEkgrp.push({ EKGRP: body.ekgrp[i] })
+            }
+            ekgrp = oEkgrp
+        }
+
+        hdbext.createConnection(req.tenantContainer, (err, client) => {
+            if (err) {
+                return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
+            } else {
+                hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.SchedulingAgreement::GetConfermeRifiuti', function (_err, sp) {
+                    console.error('ERROR CONNECTION :' + stringifyObj(_err))
+                    if (_err) {
+                        console.log('---->>> CLIENT END ERR GetConfermeRifiuti <<<<<-----')
+                        return res.status(500).send('CLIENT END ERR GetConfermeRifiuti: ' + stringifyObj(_err))
+                    }
+                    sp(userid, ebeln, ebelp, lifnr, ekorg, matnr, ekgrp, werks, [], (err, parameters, listEkkoEkpo, listEketEkes, listEkehEkek) => {
+                        console.log('---->>> CLIENT END GetConfermeRifiuti <<<<<-----')
+                        client.close()
+                        if (err) {
+                            console.error('ERROR GetConfermeRifiuti: ' + stringifyObj(err))
+                            return res.status(500).send('ERROR GetConfermeRifiuti: ' + stringifyObj(err))
+                        } else {
+                            console.log('OK GetConfermeRifiuti listEkkoEkpo: ' + (stringifyObj(listEkkoEkpo)))
+
+                            results = {
+                                EkkoEkpo: listEkkoEkpo,
+                                EketEkes: listEketEkes,
+                                EkehEkek: listEkehEkek
+                            }
+
+                            return res.status(200).send({
+                                results
+                            })
+                        }
+                    })
+                })
+            }
+        })
+
+    })
+
+    // GET CONFERME QUANTiTA DA APPROVARE
+    app.get('/GetConfermeRifiutiForQuant', function (req, res) {
+        var userid = req.user.id
+        var ebeln = req.query.I_EBELN !== null && req.query.I_EBELN !== undefined ? req.query.I_EBELN : ''
+        var ebelp = req.query.I_EBELP !== null && req.query.I_EBELP !== undefined ? req.query.I_EBELP : ''
+
+        hdbext.createConnection(req.tenantContainer, (err, client) => {
+            if (err) {
+                return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
+            } else {
+                hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.SchedulingAgreement::GetToApproveRject', function (_err, sp) {
+                    console.error('ERROR CONNECTION :' + stringifyObj(_err))
+                    if (_err) {
+                        console.log('---->>> CLIENT END ERR GetConfermeRifiutiForQuant <<<<<-----')
+                        return res.status(500).send('CLIENT END ERR GetConfermeRifiuti: ' + stringifyObj(_err))
+                    }
+                    sp(userid, ebeln, ebelp, [], (err, parameters, results) => {
+                        console.log('---->>> CLIENT END GetConfermeRifiutiForQuant <<<<<-----')
+                        client.close()
+                        if (err) {
+                            console.error('ERROR GetConfermeRifiuti: ' + stringifyObj(err))
+                            return res.status(500).send('ERROR GetConfermeRifiutiForQuant: ' + stringifyObj(err))
+                        } else {
+                            console.log('OK GetConfermeRifiuti results: ' + (stringifyObj(results)))
+
+                            return res.status(200).send(
+                                { results: results }
+                            )
+                        }
+                    })
+                })
+            }
+        })
     })    
 
     // Parse URL-encoded bodies (as sent by HTML forms)
