@@ -127,7 +127,7 @@ sap.ui.define([
 		},
 
 		loadObject: function (sObjectId, fCompletion) {
-			var url = "/backend/Utils/UtilsManagement/GetPianoConfermaDetail?I_EBELN=" +
+			var url = "/backend/SchedulingAgreementManagement/GetPianoConfermaDetail?I_EBELN=" +
 			sObjectId.orderId + "&I_EBELP=" + sObjectId.posNumber;;
 			that.ajaxGet(url, function (oData) {
 				if (oData === null || oData === undefined) {
