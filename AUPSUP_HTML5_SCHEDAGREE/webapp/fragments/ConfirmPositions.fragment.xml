@@ -118,8 +118,8 @@
 										<cells >
 											<DatePicker enabled="{= ${SelectedPositionsJSONModel>SYSID} === undefined}" displayFormat="dd MMM yyyy" valueFormat="YYYYMMdd" value="{path:'SelectedPositionsJSONModel>EINDT'}"/>
 											<Input enabled="{= ${SelectedPositionsJSONModel>SYSID} === undefined}" value="{SelectedPositionsJSONModel>MENGE}" type="Number"/>
-											<ComboBox enabled = "{SelectedPositionsJSONModel>ETENRenabled}" selectedKey="{SelectedPositionsJSONModel>ETENR}" items="{ path: 'ETENRJSONModel>/results', sorter: { path: 'ETENR' } }">
-												<core:Item key="{ETENRJSONModel>ETENR}" text="{ETENRJSONModel>ETENR}"/>
+											<ComboBox enabled = "{SelectedPositionsJSONModel>ETENRenabled}" selectedKey="{SelectedPositionsJSONModel>ETENR}" items="{SelectedPositionsJSONModel>ETENRS}">
+												<core:Item key="{SelectedPositionsJSONModel>ETENR}" text="{SelectedPositionsJSONModel>ETENR}"/>
 											</ComboBox>
 											<!-- <Text text="{SelectedPositionsJSONModel>ETENR}" /> -->
 											<Text text="{SelectedPositionsJSONModel>EBTYP}"/>

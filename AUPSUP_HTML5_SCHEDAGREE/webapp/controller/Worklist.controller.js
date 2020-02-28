@@ -1013,10 +1013,17 @@ sap.ui.define([
 
 			});
 
-			// attach cancel listener
-			// oSelectDialog1.attachCancel(function (oEvent) {
-			// 	oSelectDialog1.close();
-			// };);
+			var arrETENR = [];
+			if (mod.SchedulationsStatus !== undefined) {
+				for (var i = 0; i < mod.SchedulationsStatus.length; i++) {
+					var deltaMenge = (parseFloat(mod.SchedulationsStatus[i].MENGE) - parseFloat(mod.SchedulationsStatus[i].QTA_CONFERMATA));
+					if (deltaMenge > 0) {
+						arrETENR.push({ "ETENR": mod.SchedulationsStatus[i].ETENR })
+					}
+				}
+			}
+
+
 			// Controllo per far apparire la PopUp solo per il primo inserimento
 			if (mod.POItemSchedulers.results.length > 0) {
 				for (var i = 0; i < mod.POItemSchedulers.results.length; i++) {
@@ -1024,8 +1031,11 @@ sap.ui.define([
 					if (mod.POItemSchedulers.results[i].SYSID === null || mod.POItemSchedulers.results[i].SYSID === undefined) {
 						// var selezionato = selectedItem.getDescription();
 						var schedulation = {
+							"ETENR": '',
+							"ETENRenabled": true,
 							"EINDT": "",
 							"MENGE": "",
+							"ETENRS": arrETENR,
 							"EBTYP": mod.POItemSchedulers.results[i].EBTYP,
 						};
 						if (mod !== undefined && mod.POItemSchedulers.results !== undefined) {
@@ -1049,6 +1059,7 @@ sap.ui.define([
 							"ETENRenabled": true,
 							"EINDT": "",
 							"MENGE": "",
+							"ETENRS": arrETENR,
 							"EBTYP": mod.profiliConferma[0].CAT_CONFERMA,
 						};
 						if (mod !== undefined && mod.POItemSchedulers.results !== undefined) {
@@ -1067,8 +1078,11 @@ sap.ui.define([
 					oSelectDialog1.open();
 				else {
 					var schedulation = {
+						"ETENR": '',
+						"ETENRenabled": true,
 						"EINDT": "",
 						"MENGE": "",
+						"ETENRS": arrETENR,
 						"EBTYP": mod.profiliConferma[0].EBTYP,
 					};
 					if (mod !== undefined && mod.POItemSchedulers.results !== undefined) {
@@ -1080,20 +1094,6 @@ sap.ui.define([
 					}
 				}
 			}
-
-			// var schedulation = {
-			// 	"EINDT": "",
-			// 	"MENGE": "",
-			// 	"EBTYP": mod.EBTYP,
-			// };
-			// if (mod !== undefined && mod.POItemSchedulers.results !== undefined) {
-			// 	mod.POItemSchedulers.results.push(schedulation);
-			// } else {
-			// 	var oSchedulationsArray = [];
-			// 	oSchedulationsArray.push(schedulation);
-			// 	mod.POItemSchedulers.results = oSchedulationsArray;
-			// }
-			// this.getModel("SelectedPositionsJSONModel").refresh();
 		},
 
 		onDeleteSchedulation: function (oEvent) {
@@ -1107,7 +1107,7 @@ sap.ui.define([
 			if (mod !== undefined && mod.POItemSchedulers.results !== null) {
 				mod.POItemSchedulers.results.splice(rowNumber, 1);
 			}
-		//	that.getSchedulationsStatus(mod, EBTYP);
+			//	that.getSchedulationsStatus(mod, EBTYP);
 			this.getModel("SelectedPositionsJSONModel").refresh(true);
 		},
 
@@ -2097,10 +2097,14 @@ sap.ui.define([
 						}
 					});
 
-					var oModel = new JSONModel();
-					oModel.setData({ "results": arrETENR });
-					var oComponent = that.getOwnerComponent();
-					oComponent.setModel(oModel, "ETENRJSONModel");
+					mod.POItemSchedulers.results.forEach(element => {
+						element.ETENRS = arrETENR;
+					});
+
+					//var oModel = new JSONModel();
+					//oModel.setData({ "results": arrETENR });
+					//var oComponent = that.getOwnerComponent();
+					//oComponent.setModel(oModel, "ETENRJSONModel");
 
 					that.getModel("SelectedPositionsJSONModel").refresh();
 
