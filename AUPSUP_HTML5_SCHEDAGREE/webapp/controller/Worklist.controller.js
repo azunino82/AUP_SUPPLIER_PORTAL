@@ -2111,23 +2111,9 @@ sap.ui.define([
 						}
 					});
 
-<<<<<<< .merge_file_a18780
 					mod.POItemSchedulers.results.forEach(element => {
 						element.ETENRS = arrETENR;
 					});
-
-					//var oModel = new JSONModel();
-					//oModel.setData({ "results": arrETENR });
-					//var oComponent = that.getOwnerComponent();
-					//oComponent.setModel(oModel, "ETENRJSONModel");
-=======
-					var oModel = new JSONModel();
-					oModel.setData({
-						"results": arrETENR
-					});
-					var oComponent = that.getOwnerComponent();
-					oComponent.setModel(oModel, "ETENRJSONModel");
->>>>>>> .merge_file_a04272
 
 					that.getModel("SelectedPositionsJSONModel").refresh();
 
