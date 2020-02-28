@@ -866,7 +866,7 @@ sap.ui.define([
 				oIndexs = oIndexs[oIndexs.length - 1];
 				if (mod.MODIFICA_PREZZO !== undefined && mod.MODIFICA_PREZZO !== "") {
 					if ((that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].KONNR === undefined || (that.getView().getModel(
-						"SelectedPositionsJSONModel").getData()[oIndexs].KONNR === "")) || (that.getView().getModel("SelectedPositionsJSONModel").getData()[
+							"SelectedPositionsJSONModel").getData()[oIndexs].KONNR === "")) || (that.getView().getModel("SelectedPositionsJSONModel").getData()[
 							oIndexs].KTPNR === undefined || (that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].KTPNR === "00000")))
 						that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].editPrice = true;
 				}
@@ -1107,7 +1107,7 @@ sap.ui.define([
 			if (mod !== undefined && mod.POItemSchedulers.results !== null) {
 				mod.POItemSchedulers.results.splice(rowNumber, 1);
 			}
-		//	that.getSchedulationsStatus(mod, EBTYP);
+			//	that.getSchedulationsStatus(mod, EBTYP);
 			this.getModel("SelectedPositionsJSONModel").refresh(true);
 		},
 
@@ -1132,8 +1132,8 @@ sap.ui.define([
 
 						sommaQuantitaSchedulazioni = sommaQuantitaSchedulazioni + parseInt(model[i].POItemSchedulers.results[j].MENGE);
 						if ((model[i].POItemSchedulers.results[j]) && ((model[i].POItemSchedulers.results[j].EINDT == "") || (model[i].POItemSchedulers
-							.results[
-							j].MENGE == ""))) {
+								.results[
+									j].MENGE == ""))) {
 							err = that.getResourceBundle().getText("ERR_Schedulations_Mandatory");
 							contatoreRighe = contatoreRighe + 1;
 
@@ -1552,9 +1552,21 @@ sap.ui.define([
 
 		onControllDateOK: function (mod) {
 			var err = "";
+			var today = new Date();
+
 			var ordine = mod.EBELN + "-" + mod.EBELP;
-			if (mod.ZINVALIDITA === undefined || mod.ZINVALIDITA === "" || mod.ZINVALIDITA === null)
+			if (mod.ZINVALIDITA === undefined || mod.ZINVALIDITA === "" || mod.ZINVALIDITA === null) {
 				err = err + "\n" + that.getResourceBundle().getText("ERR_Price_DateB", ordine);
+			} else {
+				var dateString = mod.ZINVALIDITA;
+				var year = dateString.substring(0, 4);
+				var month = dateString.substring(4, 6);
+				var day = dateString.substring(6, 8);
+				var date = new Date(year, month - 1, day);
+				if (date < today)
+					err = err + "\n" + that.getResourceBundle().getText("ERR_Price_valB", ordine);
+			}
+
 			if (mod.ZFINVALIDATA === undefined || mod.ZFINVALIDATA === "" || mod.ZFINVALIDATA === null)
 				err = err + "\n" + that.getResourceBundle().getText("ERR_Price_DateE", ordine);
 
@@ -1623,8 +1635,8 @@ sap.ui.define([
 					mod.POItemSchedulers.results[j].EINDT = mod.POItemSchedulers.results[j].EINDT.split('-').join('');
 					sommaQuantitaSchedulazioni = sommaQuantitaSchedulazioni + parseFloat(mod.POItemSchedulers.results[j].MENGE);
 					if ((mod.POItemSchedulers.results[j]) && ((mod.POItemSchedulers.results[j].EINDT === "") || (mod.POItemSchedulers
-						.results[
-						j].MENGE === ""))) {
+							.results[
+								j].MENGE === ""))) {
 						err = err + "\n" + that.getResourceBundle().getText("ERR_Schedulations_Mandatory");
 						break;
 					}
@@ -1761,7 +1773,7 @@ sap.ui.define([
 					if (mod.RMOData !== undefined && mod.RMOData.EkkoEkpo !== undefined && mod.RMOData.EkkoEkpo.length > 0) {
 						var EkkoEkpo = mod.RMOData.EkkoEkpo.find(x => x.STATUS === 'RC' && x.UPDKZ === '4' && x.EBELN === mod.EBELN && x.EBELP ===
 							mod
-								.EBELP);
+							.EBELP);
 						if (EkkoEkpo !== undefined)
 							trovato = true;
 					}
@@ -1809,7 +1821,7 @@ sap.ui.define([
 					if (mod.RMOData !== undefined && mod.RMOData.EkkoEkpo !== undefined && mod.RMOData.EkkoEkpo.length > 0) {
 						var EkkoEkpo = mod.RMOData.EkkoEkpo.find(x => x.STATUS === 'RC' && x.UPDKZ === '4' && x.EBELN === mod.EBELN && x.EBELP ===
 							mod
-								.EBELP);
+							.EBELP);
 						if (EkkoEkpo !== undefined)
 							trovato = true;
 					}
@@ -2078,7 +2090,9 @@ sap.ui.define([
 						if (deltaMenge > 0) {
 
 							// modello per scelta ETENR di solo le conferme che hanno delta quantità > 0
-							arrETENR.push({ "ETENR": element.ETENR })
+							arrETENR.push({
+								"ETENR": element.ETENR
+							})
 
 							var schedulation = {
 								"EINDT": element.EINDT,
@@ -2098,7 +2112,9 @@ sap.ui.define([
 					});
 
 					var oModel = new JSONModel();
-					oModel.setData({ "results": arrETENR });
+					oModel.setData({
+						"results": arrETENR
+					});
 					var oComponent = that.getOwnerComponent();
 					oComponent.setModel(oModel, "ETENRJSONModel");
 
