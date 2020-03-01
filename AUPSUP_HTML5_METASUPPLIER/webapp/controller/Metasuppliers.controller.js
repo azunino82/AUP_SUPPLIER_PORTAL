@@ -18,7 +18,7 @@ sap.ui.define([
 			that.getCurrentSYSID();
 
 			// gestione delle permissions per il documentale
-			//TODO da fare servizio	that.getDocumentCustomizingData();
+			that.getDocumentCustomizingData();
 
 			var startupParams = undefined;
 			if (that.getOwnerComponent().getComponentData() != undefined) {

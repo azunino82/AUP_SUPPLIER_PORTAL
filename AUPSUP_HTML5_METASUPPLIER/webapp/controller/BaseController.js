@@ -230,7 +230,18 @@ sap.ui.define([
 				}
 			});
 
-		}		
+		},
+
+		getDocumentCustomizingData: function () {
+			var url = "/backend/DocumentManagement/GetDocumentData?I_APPLICATION=CONT_META";
+			that.ajaxGet(url, function (oData) {
+				if (oData && oData.results && oData.results[0]) {
+					var oModel = new JSONModel(oData.results[0]);
+					sap.ui.getCore().setModel(oModel, "DocumentManagementJSONModel");
+				}
+			});
+
+		},
 
 
 	});
