@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /* eslint-disable no-trailing-spaces */
 /* eslint-disable no-useless-escape */
 /* eslint-disable indent */
@@ -194,16 +195,8 @@ module.exports = function () {
                     console.error('ERROR: ' + err)
                     return res.status(500).send(stringifyObj(err))
                 } else {
-                    var outResults = []
-                    if (results !== null && results !== undefined && results.length > 0) {
-                        for (var i = 0; i < results.length; i++) {
-                            if (results[i].QUANT_SCHED !== 0) {
-                                outResults.push(results[i])
-                            }
-                        }
-                    }
                     return res.status(200).send({
-                        results: outResults
+                        results: results
                     })
                 }
                 })
@@ -211,7 +204,104 @@ module.exports = function () {
             }
         })
         }
-    })    
+    })   
+    
+    // CREATE SCHEDULATIONS
+
+    app.post('/CreateSchedulations', function (req, res) {
+        const body = req.body
+
+        console.log('INPUT BODY ==========> ' + JSON.stringify(body))
+
+        if (body !== undefined && body !== '' && body !== null) {
+            var it_hu_detail = []
+            var it_hu_header = []
+            var it_item = []
+            var it_serial_no = []
+            var lfart
+            var verur
+            var lfdat
+            var wadat
+            var btgew
+            var gewei
+            var volum
+            var voleh
+            var notes
+            var lifnr = '' /* per invio mails */
+            var userid = req.user.id
+
+            it_hu_detail = body.it_hu_detail
+            it_hu_header = body.it_hu_header
+            it_item = body.it_item
+            it_serial_no = body.it_serial_no
+            
+            lfart = body.lfart /* tipo consegna */
+            verur = body.verur /* suddivisione consegna */
+            lfdat = body.lfdat /* data consegna */
+            wadat = body.wadat /* data movimento pianificato */
+            btgew = body.btgew /* peso */
+            gewei = body.gewei /* unità di misura */
+            volum = body.volum /* volume */
+            voleh = body.voleh /* unità di misura */
+            notes = body.notes /* testo */
+            if (body.lifnr !== null) {
+                lifnr = body.lifnr /* fornitore */
+            }
+                    
+            hdbext.createConnection(req.tenantContainer, (err, client) => {
+                if (err) {
+                return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
+                } else {
+                hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.InboundDelivery::MM00_INB_DLV_CREATE', function (_err, sp) {
+                    sp(userid, lifnr, lfart, verur, lfdat, wadat, btgew, gewei, volum, voleh, notes, it_hu_detail, it_hu_header, it_item, it_serial_no, (err, parameters, E_RETURN, E_VBELN) => {
+                    if (err) {
+                        console.error('ERROR: ' + err)
+                        return res.status(500).send(stringifyObj(err))
+                    } else {
+                        if (E_RETURN !== undefined && E_RETURN.length > 0) {
+                            return res.status(200).send({
+                                outSchedulations: E_RETURN
+                            })
+                        } else {
+                            if (E_VBELN !== undefined && E_VBELN !== '') {
+                                return res.status(200).send({
+                                    nInbound: E_VBELN
+                                })
+                            }
+                        }
+                    }
+                    })
+                })
+                }
+            })
+        }
+    })       
+
+    // CREATE SCHEDULATIONS
+
+    app.get('/GetHUPDF', function (req, res) {
+
+        var userid = req.user.id
+        var exidv = req.query.I_EXIDV
+                    
+        hdbext.createConnection(req.tenantContainer, (err, client) => {
+            if (err) {
+            return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
+            } else {
+            hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.InboundDelivery::MM00_INB_DLV_GET_PRINT', function (_err, sp) {
+                sp(userid, exidv, (err, parameters, results) => {
+                if (err) {
+                    console.error('ERROR: ' + err)
+                    return res.status(500).send(stringifyObj(err))
+                } else {
+                    // TODO CONTENT TYPE PDF
+                    return res.status(200).send(results.STREAM)                    
+                }
+                })
+            })
+            }
+        })
+    })   
 
     // Parse URL-encoded bodies (as sent by HTML forms)
     // app.use(express.urlencoded());
