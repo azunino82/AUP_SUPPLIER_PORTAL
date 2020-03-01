@@ -952,8 +952,137 @@ sap.ui.define([
 			}
 		},
 		onConfirmApproveReject: function () {
-			MessageToast.show("TODO");
+			// TODO ANCORA DA FINIRE
+			var modelData = that.getView().setModel(oModel, "SchedAgrToApproveRejectJSONModel");
+			if(modelData !== undefined && modelData.results !== undefined){
 
+				MessageBox.warning(that.getResourceBundle().getText("MSG_Confirm_Reject_Text"), {
+					icon: MessageBox.Icon.WARNING,
+					title: "Warning",
+					actions: [MessageBox.Action.CANCEL, MessageBox.Action.OK],
+					initialFocus: MessageBox.Action.CANCEL,
+					onClose: function (oAction) {
+						if (oAction === MessageBox.Action.OK) {
+							var body = {
+								"ekko": [],
+								"ekpo": [],
+								"ekes": [],
+								"notaReject":"",
+								"confirmType": ""
+							};
+							var ekpoRow = modelData.results;
+							for (var i = 0; i < ekpoRow.length; i++) {
+								var row = ekpoRow[i];
+
+								// RIGA APPROVATA O RIFIUTATA
+								if(row.APPROVE === true){
+									
+								}
+								
+								var singleEkpoModel = {};
+								singleEkpoModel.EBELN = row.EBELN;
+								singleEkpoModel.EBELP = row.EBELP;
+								singleEkpoModel.MENGE = row.MENGE;
+								singleEkpoModel.MEINS = row.MEINS;
+								singleEkpoModel.NETPR = row.NETPR;
+								singleEkpoModel.PEINH = row.PEINH;
+								if (row.KSCHL === undefined)
+									singleEkpoModel.KSCHL = "";
+								else
+									singleEkpoModel.KSCHL = row.KSCHL;
+								singleEkpoModel.BPRME = row.BPRME;
+								singleEkpoModel.BPUMZ = row.BPUMZ;
+								singleEkpoModel.BPUMN = row.BPUMN;
+								singleEkpoModel.UMREZ = row.UMREZ;
+								singleEkpoModel.UMREN = row.UMREN;
+								singleEkpoModel.LABNR = row.LABNR;
+								if (row.UPDKZ === undefined)
+									singleEkpoModel.UPDKZ = ""; // TODO Verificarne l'esattezza LS "-> Prima era "L"
+								else
+									singleEkpoModel.UPDKZ = row.UPDKZ;
+
+								// TODO FARE logiche save
+								singleEkpoModel.ZINVALIDITA = row.ZINVALIDITA;
+								singleEkpoModel.ZFINVALIDATA = row.ZFINVALIDATA;
+								singleEkpoModel.ZMODPREZZO = row.editPrice !== undefined && row.editPrice === true ? 'X' : '';
+								singleEkpoModel.ZMODSCHED = row.editQuantity === true ? 'X' : ''
+								singleEkpoModel.ZINSCONF = 'X';
+								singleEkpoModel.ZCONFPARZ = 'X'; // per ordini di tipo F prendere il flag da customizing campo: CONFERMA_PARZIALE altrimenti fisso X
+
+								body.ekpo.push(singleEkpoModel);
+
+								var singleEkkoModel = {};
+								singleEkkoModel.EBELN = row.EBELN;
+								singleEkkoModel.LIFNR = row.LIFNR;
+								singleEkkoModel.BSTYP = 'L'; // fisso perchè stiamo confermando i piani di consegna
+								singleEkkoModel.ZCUSTOM01 = row.ZCUSTOM01;
+								singleEkkoModel.ZCUSTOM02 = row.ZCUSTOM02;
+								singleEkkoModel.ZCUSTOM03 = row.ZCUSTOM03;
+								singleEkkoModel.ZCUSTOM04 = row.ZCUSTOM04;
+								singleEkkoModel.ZCUSTOM05 = row.ZCUSTOM05;
+								singleEkkoModel.ZCUSTOM06 = row.ZCUSTOM06;
+								singleEkkoModel.ZCUSTOM07 = row.ZCUSTOM07;
+								singleEkkoModel.ZCUSTOM08 = row.ZCUSTOM08;
+								singleEkkoModel.ZCUSTOM09 = row.ZCUSTOM09;
+								singleEkkoModel.ZCUSTOM10 = row.ZCUSTOM10;
+								body.ekko.push(singleEkkoModel);
+							}
+							
+	
+							var url = "/backend/OrdersManagement/ConfirmOrders";
+							that.showBusyDialog();
+							that.ajaxPost(url, body, function (oData) {
+								that.hideBusyDialog();
+								if (oData) {
+									if (oData.errLog) {
+										MessageBox.error(decodeURI(oData.errLog));
+										return;
+									}
+									if (oData.results && oData.results && oData.results.length > 0) {
+										var messageError = "";
+										var messageWarning = "";
+										$.each(oData.results, function (index, item) {
+											if (item.MSGTY !== undefined && item.MSGTY === 'E')
+												messageError = item.MESSAGE + " \n " + messageError;
+											if (item.MSGTY !== undefined && (item.MSGTY === 'W' || item.MSGTY === 'I'))
+												messageWarning = item.MESSAGE + " \n " + messageWarning;
+										});
+										if (messageError !== "" && messageWarning !== "") {
+											MessageBox.error(messageError + "\n" + messageWarning);
+										} else {
+											if (messageError !== "")
+												MessageBox.error(messageError);
+											if (messageWarning !== "")
+												MessageBox.warning(messageWarning);
+											if (messageError === "" && messageWarning === "") {
+												MessageBox.success(that.getResourceBundle().getText("correctConfirmPositions"), {
+													title: "Success", // default
+													onClose: function () {
+														that.onCloseOrderPositions();
+													} // default
+	
+												});
+											}
+										}
+	
+									} else {
+										MessageBox.success(that.getResourceBundle().getText("correctConfirmPositions"), {
+											title: "Success", // default
+											onClose: function () {
+												that.onCloseOrderPositions();
+											} // default
+	
+										});
+	
+									}
+								}
+	
+							});
+						}
+					}
+				});
+
+			}
 		}
 
 	});
