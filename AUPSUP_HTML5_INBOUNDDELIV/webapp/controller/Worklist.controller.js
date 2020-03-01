@@ -55,9 +55,8 @@ sap.ui.define([
 
 			if (startupParams != undefined && startupParams.objectId && startupParams.objectId[0]) {
 
-				var url = "/SupplierPortal_InboundDelivery/xsOdata/GetSchedulations.xsjs";
+				var url = "/backend/InboundDeliveryManagement/GetSchedulations";
 				var body = {
-					"userid": that.getCurrentUserId(),
 					"ekorg": [],
 					"ebeln": startupParams.objectId[0],
 					"lifnr": [],
@@ -67,7 +66,7 @@ sap.ui.define([
 					"dateTo": toD
 				};
 				this.showBusyDialog();
-				that.ajaxPost(url, body, "/SupplierPortal_InboundDelivery", function (oData) { // funzione generica su BaseController
+				that.ajaxPost(url, body, function (oData) { // funzione generica su BaseController
 					that.hideBusyDialog();
 					if (oData) {
 						var oModel = new JSONModel();
@@ -253,7 +252,7 @@ sap.ui.define([
 				body.dateTo = year + month + day;
 			}
 			this.showBusyDialog();			
-			that.ajaxPost(url, {}, function (oData) { 
+			that.ajaxPost(url, body, function (oData) { 
 				that.hideBusyDialog();
 				if (oData) {
 					var oModel = new JSONModel();
@@ -513,7 +512,6 @@ sap.ui.define([
 			var oItems = oTable.getItems();
 
 			var body = {
-				"userid": that.getCurrentUserId(),
 				"matnr": "",
 				"maktx": ""
 			};
@@ -542,18 +540,17 @@ sap.ui.define([
 		},
 		onSearchMatnr: function () {
 			// ricerca materiali da popup
-
-			var url = "/SupplierPortal_Utils/xsOdata/SearchMaterial.xsjs";
+			var url = "/backend/Utils/UtilsManagement/SearchMaterial";
 			var body = this.getView().getModel("MatnrSearchJSONModel").getData();
 			this.showBusyDialog();
-			that.ajaxPost(url, body, "/SupplierPortal_Utils", function (oData) { // funzione generica su BaseController
+			that.ajaxPost(url, body, function (oData) {
 				that.hideBusyDialog();
 				if (oData) {
 					var oModel = new JSONModel();
 					oModel.setData(oData);
 					that.getView().setModel(oModel, "MatnrJSONModel");
 				}
-			});
+			})
 		},
 		onConfirmMatnr: function () {
 			var oTable = sap.ui.getCore().byId("idMatnrTable");
@@ -804,7 +801,6 @@ sap.ui.define([
 					if (oAction === MessageBox.Action.OK) {
 
 						var body = {
-							"userid": that.getCurrentUserId(),
 							"lfart": "",
 							"verur": sap.ui.getCore().byId("XBLNR").getValue(),
 							"lfdat": sap.ui.getCore().byId("LFDAT").getValue(),
@@ -942,9 +938,9 @@ sap.ui.define([
 						}
 
 						// invio i dati a SAP
-						var url = "/SupplierPortal_InboundDelivery/xsOdata/CreateSchedulations.xsjs";
+						var url = "/backend/InboundDeliveryManagement/CreateSchedulations";
 						that.showBusyDialog();
-						that.ajaxPost(url, body, "/SupplierPortal_InboundDelivery", function (oData) { // funzione generica su BaseController
+						that.ajaxPost(url, body, function (oData) { // funzione generica su BaseController
 							that.hideBusyDialog();
 							if (oData) {
 								if (oData.errLog) {
@@ -980,13 +976,12 @@ sap.ui.define([
 												if (oAction === MessageBox.Action.OK) {
 
 													var body = {
-														"userid": that.getCurrentUserId(),
 														"vbeln": ""
 													};
 													body.vbeln = nInbound;
-													var url = "/SupplierPortal_InboundDelivery/xsOdata/GetInboundList.xsjs";
+													var url = "/backend/InboundDeliveryManagement/GetInboundList";
 													that.showBusyDialog();
-													that.ajaxPost(url, body, "/SupplierPortal_InboundDelivery", function (oData) { // funzione generica su BaseController
+													that.ajaxPost(url, body, function (oData) { // funzione generica su BaseController
 														that.hideBusyDialog();
 														if (oData) {
 															var oModel = new JSONModel();
@@ -1046,8 +1041,7 @@ sap.ui.define([
 			var selctedRowdata = getTabledata[itemPosition];
 			//	MessageToast.show("TODO Print " + selctedRowdata.EXIDV);
 
-			var url = "/SupplierPortal_InboundDelivery/xsOdata/GetHUPDF.xsjs?I_USERID=" + that.getCurrentUserId() +
-				"&I_EXIDV=" + selctedRowdata.EXIDV;
+			var url = "/backend/InboundDeliveryManagement/GetHUPDF?I_EXIDV=" + selctedRowdata.EXIDV;
 
 			that._pdfViewer = new PDFViewer();
 			that._pdfViewer.setShowDownloadButton(false);
@@ -1068,7 +1062,6 @@ sap.ui.define([
 				"eket": [],
 				"ekko": [],
 				"ekpo": [],
-				"userid": that.getCurrentUserId(),
 				"confirmType": ""
 			};
 			for (var i = 0; i < that.getView().byId("InboundDelivHeadersTable")._aSelectedPaths.length; i++) {
@@ -1081,7 +1074,7 @@ sap.ui.define([
 				}
 			}
 			//Chiamata al servizio per la conferma
-			var url = "/SupplierPortal_InboundDelivery/xsOdata/CreateSchedulations.xsjs";
+			var url = "/backend/InboundDeliveryManagement/CreateSchedulations";
 			that.showBusyDialog();
 			that.ajaxPost(url, body, function (oData) { // funzione generica su BaseController
 				that.hideBusyDialog();
