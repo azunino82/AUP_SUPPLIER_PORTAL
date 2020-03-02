@@ -27,7 +27,9 @@ sap.ui.define([
 			that = this;
 
 			var startupParams = undefined;
+			that.onGetOdataColumns();
 			that.getCurrentSYSID();
+
 			// questo meccanismo serve per navigare sull'ordine selezionato da RMO. funziona solo sul portale pubblicato non in preview da webide
 			if (this.getOwnerComponent().getComponentData() != undefined) {
 				startupParams = this.getOwnerComponent().getComponentData().startupParameters;
@@ -1000,6 +1002,9 @@ sap.ui.define([
 						that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].UPDKZ = selectedProfiloConfermaModel.TIPO_CONFERMA;
 					else
 						that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].UPDKZ = "";
+					// Apertura campo prezzo per posizione
+					if (selectedProfiloConfermaModel !== undefined && selectedProfiloConfermaModel.MODIFICA_PREZZO !== undefined)
+						that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].editPrice = selectedProfiloConfermaModel.MODIFICA_PREZZO === 'X' ? true : false;
 					// FINE DELLA SOVRASCRITTURA
 
 					// AGGIUNGO LA RIGA NELLE SCHEDULAZIONI
@@ -1016,7 +1021,9 @@ sap.ui.define([
 				for (var i = 0; i < mod.SchedulationsStatus.length; i++) {
 					var deltaMenge = (parseFloat(mod.SchedulationsStatus[i].MENGE) - parseFloat(mod.SchedulationsStatus[i].QTA_CONFERMATA));
 					if (deltaMenge > 0) {
-						arrETENR.push({ "ETENR": mod.SchedulationsStatus[i].ETENR })
+						arrETENR.push({
+							"ETENR": mod.SchedulationsStatus[i].ETENR
+						})
 					}
 				}
 			}
@@ -1252,7 +1259,7 @@ sap.ui.define([
 							"ekko": [],
 							"ekpo": [],
 							"ekes": [],
-							"notaReject":"",
+							"notaReject": "",
 							"confirmType": ""
 						};
 						var ekpoRow = that.getModel("SelectedPositionsJSONModel").getData();
@@ -1333,7 +1340,7 @@ sap.ui.define([
 								singleEkpoModel.ZMODSCHED = row.editQuantity === true ? 'X' : ''
 								singleEkpoModel.ZINSCONF = 'X';
 								singleEkpoModel.ZCONFPARZ = 'X'; // per ordini di tipo F prendere il flag da customizing campo: CONFERMA_PARZIALE altrimenti fisso X
-
+								singleEkpoModel.BESTAE = row.BESTAE;
 								body.ekpo.push(singleEkpoModel);
 
 								var singleEkkoModel = {};
@@ -2139,7 +2146,160 @@ sap.ui.define([
 				this._oPopover.openBy(oButton);
 			}
 		},
+		onColumnSelection: function (event) {
+			var that = this;
+			var List = that.byId("List");
+			var popOver = this.byId("popOver");
+			if (List !== undefined) {
+				List.destroy();
+			}
+			if (popOver !== undefined) {
+				popOver.destroy();
+			}
+			/*----- PopOver on Clicking ------ */
+			var popover = new sap.m.Popover(this.createId("popOver"), {
+				showHeader: true,
+				showFooter: true,
+				placement: sap.m.PlacementType.Bottom,
+				content: []
+			}).addStyleClass("sapMOTAPopover sapTntToolHeaderPopover");
 
+			/*----- Adding List to the PopOver -----*/
+			var oList = new sap.m.List(this.createId("List"), {});
+			this.byId("popOver").addContent(oList);
+			var openAssetTable = this.getView().byId("OrderHeadersTable"),
+				columnHeader = openAssetTable.getColumns();
+			var openAssetColumns = [];
+			for (var i = 0; i < columnHeader.length; i++) {
+				var hText = columnHeader[i].getAggregation("header") !== null ? columnHeader[i].getAggregation("header").getProperty("text") : "";
+				var columnObject = {};
+				columnObject.column = hText;
+				openAssetColumns.push(columnObject);
+			}
+			var oModel1 = new sap.ui.model.json.JSONModel({
+				list: openAssetColumns
+			});
+			var itemTemplate = new sap.m.StandardListItem({
+				title: "{oList>column}"
+			});
+			oList.setMode("MultiSelect");
+			oList.setModel(oModel1);
+			sap.ui.getCore().setModel(oModel1, "oList");
+			var oBindingInfo = {
+				path: 'oList>/list',
+				template: itemTemplate
+			};
+			oList.bindItems(oBindingInfo);
+			var footer = new sap.m.Bar({
+				contentLeft: [],
+				contentMiddle: [new sap.m.Button({
+						text: "Cancel",
+						press: function () {
+							that.onCancelPersonalization();
+						}
+					}),
+					new sap.m.Button({
+						text: that.getResourceBundle().getText("Comfirm"),
+						press: function () {
+							that.onSavePersonalization();
+						}
+					})
+				]
+
+			});
+
+			this.byId("popOver").setFooter(footer);
+			var oList1 = this.byId("List");
+			var table = this.byId("OrderHeadersTable").getColumns();
+			/*=== Update finished after list binded for selected visible columns ==*/
+			oList1.attachEventOnce("updateFinished", function () {
+				var a = [];
+				for (var j = 0; j < table.length; j++) {
+					var list = oList1.oModels.undefined.oData.list[j].column;
+					a.push(list);
+					var Text = table[j].getHeader() !== null ? table[j].getHeader().getProperty("text") : "";
+					var v = table[j].getProperty("visible");
+					if (v === true) {
+						if (a.indexOf(Text) > -1) {
+							var firstItem = oList1.getItems()[j];
+							oList1.setSelectedItem(firstItem, true);
+						}
+					}
+				}
+			});
+			popover.openBy(event.getSource());
+		},
+		onCancelPersonalization: function () {
+			this.byId("popOver").close();
+		},
+
+		onSavePersonalization: function () {
+			var that = this;
+			var oList = this.byId("List");
+			var array = [];
+			var items = oList.getSelectedItems();
+
+			// Getting the Selected Columns header Text.
+			for (var i = 0; i < items.length; i++) {
+				var item = items[i];
+				var context = item.getBindingContext("oList");
+				var obj = context.getProperty(null, context);
+				var column = obj.column;
+				array.push(column);
+			}
+			/*---- Displaying Columns Based on the selection of List ----*/
+			var table = this.byId("OrderHeadersTable").getColumns();
+			var columnModel = that.getView().getModel("columnVisibilityModel").getData();
+			for (var j = 0; j < table.length; j++) {
+				var idColonna = "";
+				var Text = table[j].getHeader() !== null ? table[j].getHeader().getProperty("text") : "";
+				var Column = table[j].getId();
+				if (Column !== null && Column !== undefined) {
+					idColonna = Column.split("--");
+					if (idColonna !== undefined && idColonna.length > 1) {
+						idColonna = idColonna[1];
+					}
+				}
+				var columnId = this.getView().byId(Column);
+				if (columnId !== undefined)
+					if (array.indexOf(Text) > -1) {
+						columnModel[idColonna] = true;
+						//	columnId.setVisible(true);
+					} else {
+						columnModel[idColonna] = false;
+						//columnId.setVisible(false);
+					}
+			}
+			that.getView().getModel("columnVisibilityModel").refresh();
+			this.byId("popOver").close();
+
+		},
+
+		onGetOdataColumns: function () {
+		// Implementare il servizio che in AMA è stato creato come "VariantsService.xsodata", inserire poi il model nel Manifest
+			
+		//	var oModelData = that.getOwnerComponent().getModel("VariantsModel");
+		//	oModelData.metadataLoaded().then(
+		//		that.onMetadataLoaded.bind(that, oModelData));
+		},
+		onMetadataLoaded: function (myODataModel) {
+			var metadata = myODataModel.getServiceMetadata();
+			if (metadata.dataServices.schema[0].entityType) {
+				var selected = metadata.dataServices.schema[0].entityType.find(x => x.name === "SearchOrderPosStructureType");
+				if (selected !== undefined) {
+					var str = "";
+					selected.property.forEach(function (elem) {
+						str = '"' + elem.name + '":true,' + str;
+					});
+					str = str.slice(0, -1);
+					str = '{' + str + '}';
+					var oModel = new JSONModel();
+					oModel.setData(JSON.parse(str));
+					that.getView().setModel(oModel, "columnVisibilityModel");
+
+				}
+			}
+		}
 	});
 
 });

@@ -128,6 +128,7 @@
 															<m:Button visible="false" id="headerFilterButton" tooltip="{i18n>clearFilter}" icon="sap-icon://clear-filter" press="onClearFilter"
 																type="Transparent"/>
 															<m:Button icon="sap-icon://excel-attachment" press="onExport" tooltip="{i18n>Export_Excel}"/>
+															<m:Button icon="sap-icon://vertical-grip" visible="true" press="onColumnSelection" tooltip="{i18n>personalization}"/>
 														</m:content>
 													</m:OverflowToolbar>
 												</m:headerToolbar>
@@ -135,40 +136,40 @@
 													<m:Column>
 														<m:CheckBox select="onSelectAll"/>
 													</m:Column>
-													<m:Column id="EBELN" minScreenWidth="Desktop" demandPopin="true">
+													<m:Column id="EBELN" visible="{columnVisibilityModel>/EBELN}" minScreenWidth="Desktop" demandPopin="true">
 														<m:Label text="{i18n>orderNumber}" class="columnLabelStyle" wrapping="true"/>
 													</m:Column>
-													<m:Column id="EBELP" minScreenWidth="Desktop" demandPopin="true">
+													<m:Column id="EBELP" visible="{columnVisibilityModel>/EBELP}" minScreenWidth="Desktop" demandPopin="true">
 														<m:Label text="{i18n>EBELP}" class="columnLabelStyle" wrapping="true"/>
 													</m:Column>
-													<m:Column id="LIFNR" minScreenWidth="Desktop" demandPopin="true">
+													<m:Column id="LIFNR" visible="{columnVisibilityModel>/LIFNR}" minScreenWidth="Desktop" demandPopin="true">
 														<m:Label text="{i18n>LIFNR}" class="columnLabelStyle" wrapping="true"/>
 													</m:Column>
-													<m:Column id="NAME1" minScreenWidth="Desktop" demandPopin="true">
+													<m:Column id="NAME1" visible="{columnVisibilityModel>/NAME1}" minScreenWidth="Desktop" demandPopin="true">
 														<m:Label text="{i18n>supplierName}" class="columnLabelStyle" wrapping="true"/>
 													</m:Column>
-													<m:Column id="MATNR" minScreenWidth="Desktop" demandPopin="true">
+													<m:Column id="MATNR" visible="{columnVisibilityModel>/MATNR}" minScreenWidth="Desktop" demandPopin="true">
 														<m:Label text="{i18n>MATNR}" class="columnLabelStyle" wrapping="true"/>
 													</m:Column>
-													<m:Column id="TXZ01" minScreenWidth="Desktop" demandPopin="true">
+													<m:Column id="TXZ01" visible="{columnVisibilityModel>/TXZ01}" minScreenWidth="Desktop" demandPopin="true">
 														<m:Label text="{i18n>TXZ01}" class="columnLabelStyle" wrapping="true"/>
 													</m:Column>
-													<m:Column id="IDNLF" minScreenWidth="Desktop" demandPopin="true">
+													<m:Column id="IDNLF" visible="{columnVisibilityModel>/IDNLF}" minScreenWidth="Desktop" demandPopin="true">
 														<m:Label text="{i18n>IDNLF}" class="columnLabelStyle" wrapping="true"/>
 													</m:Column>
-													<m:Column id="MENGE" minScreenWidth="Desktop" demandPopin="true">
+													<m:Column id="MENGE" visible="{columnVisibilityModel>/MENGE}" minScreenWidth="Desktop" demandPopin="true">
 														<m:Label text="{i18n>MENGE}" class="columnLabelStyle" wrapping="true"/>
 													</m:Column>
-													<m:Column id="MEINS" minScreenWidth="Desktop" demandPopin="true">
+													<m:Column id="MEINS" visible="{columnVisibilityModel>/MEINS}" minScreenWidth="Desktop" demandPopin="true">
 														<m:Label text="{i18n>MEINS}" class="columnLabelStyle" wrapping="true"/>
 													</m:Column>
-													<m:Column id="WAERS" minScreenWidth="Desktop" demandPopin="true">
+													<m:Column id="WAERS" visible="{columnVisibilityModel>/WAERS}" minScreenWidth="Desktop" demandPopin="true">
 														<m:Label text="{i18n>WAERS}" class="columnLabelStyle" wrapping="true"/>
 													</m:Column>
-													<m:Column id="PRIMO_PERIODO" minScreenWidth="Desktop" demandPopin="true">
+													<m:Column id="PRIMO_PERIODO" visible="{columnVisibilityModel>/PRIMO_PERIODO}" minScreenWidth="Desktop" demandPopin="true">
 														<m:Label text="{i18n>PRIMO_PERIODO}" class="columnLabelStyle" wrapping="true"/>
 													</m:Column>
-													<m:Column id="SECONDO_PERIODO" minScreenWidth="Desktop" demandPopin="true">
+													<m:Column id="SECONDO_PERIODO" visible="{columnVisibilityModel>/SECONDO_PERIODO}" minScreenWidth="Desktop" demandPopin="true">
 														<m:Label text="{i18n>SECONDO_PERIODO}" class="columnLabelStyle" wrapping="true"/>
 													</m:Column>
 												</m:columns>
