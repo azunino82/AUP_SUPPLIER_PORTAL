@@ -54,6 +54,10 @@
 					"id": "AUPSUP_HTML5_APR_SCDAGR",
 					"appId": "it.alteaup.supplier.portal.aprvschdagr.AUPSUP_HTML5_APR_SCDAGR",
 					"vizId": "ApproveSchedAgree-Display"
+				}, {
+					"id": "AUPSUP_HTML5_METASUPPLIER_M",
+					"appId": "it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER_M",
+					"vizId": "MetasupplierM-Display"
 				}]
 			}
 		}],

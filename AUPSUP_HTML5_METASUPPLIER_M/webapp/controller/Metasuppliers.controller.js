@@ -1,6 +1,6 @@
 var that;
 sap.ui.define([
-	"it/alteaup/supplier/portal/metasupplier/AUPSUP_HTML5_METASUPPLIER/controller/BaseController",
+	"it/alteaup/supplier/portal/metasupplier/AUPSUP_HTML5_METASUPPLIER_M/controller/BaseController",
 	"sap/ui/model/json/JSONModel",
 	"sap/m/MessageBox",
 	"sap/m/MessageToast",
@@ -10,7 +10,7 @@ sap.ui.define([
 ], function (BaseController, JSONModel, MessageBox, MessageToast, Export, ExportTypeCSV, Sorter) {
 	"use strict";
 
-	return BaseController.extend("it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER.controller.Metasuppliers", {
+	return BaseController.extend("it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER_M.controller.Metasuppliers", {
 		onInit: function () {
 			that = this;
 
@@ -55,55 +55,37 @@ sap.ui.define([
 
 			var metasupplierFilters = [];
 
-			if (user !== undefined && user !== "" && user.userType !== null) {
-				var appTitle = {
-					"AppTitle": ""
-				};
-				switch (user.userType) {
-				case "BC":
-					editVisibleBool = true;
-					deleteVisibleBool = true;
-					contactsVisibleBool = false;
-					createVisibleBool = true;
-					appTitle.AppTitle = that.getResourceBundle().getText("BC");
-					break;
-				case "BM":
-					editVisibleBool = false;
-					deleteVisibleBool = false;
-					contactsVisibleBool = true;
-					createVisibleBool = false;
-					appTitle.AppTitle = that.getResourceBundle().getText("BM");
-					break;
-				case "M":
-					editVisibleBool = false;
-					deleteVisibleBool = false;
-					contactsVisibleBool = true;
-					createVisibleBool = false;
-					appTitle.AppTitle = that.getResourceBundle().getText("M");
-					for (var i = 0; i < user.metaIDs.length; i++) {
-						var filter = new sap.ui.model.Filter({
-							path: "METAID",
-							operator: "EQ",
-							value1: user.metaIDs[i]
-						});
+			var appTitle = {
+				"AppTitle": ""
+			};
 
-						metasupplierFilters.push(filter);
-					}
+			editVisibleBool = false;
+			deleteVisibleBool = false;
+			contactsVisibleBool = true;
+			createVisibleBool = false;
+			appTitle.AppTitle = that.getResourceBundle().getText("M");
+			for (var i = 0; i < user.metaIDs.length; i++) {
+				var filter = new sap.ui.model.Filter({
+					path: "METAID",
+					operator: "EQ",
+					value1: user.metaIDs[i]
+				});
 
-					if (user.metaIDs.length === 0) {
-						var filter = new sap.ui.model.Filter({
-							path: "METAID",
-							operator: "EQ",
-							value1: " "
-						});
-						metasupplierFilters.push(filter);
-					}
-					break;
-				}
-				var jsonModel = new sap.ui.model.json.JSONModel();
-				jsonModel.setData(appTitle);
-				that.getOwnerComponent().setModel(jsonModel, "titleJSONModel");
+				metasupplierFilters.push(filter);
 			}
+
+			if (user.metaIDs.length === 0) {
+				var filter = new sap.ui.model.Filter({
+					path: "METAID",
+					operator: "EQ",
+					value1: " "
+				});
+				metasupplierFilters.push(filter);
+			}
+
+			var jsonModel = new sap.ui.model.json.JSONModel();
+			jsonModel.setData(appTitle);
+			that.getOwnerComponent().setModel(jsonModel, "titleJSONModel");
 
 			var url = "/backend/MetasupplierManagement/GetMetasupplier?I_ATTIVO=1";
 			this.showBusyDialog();

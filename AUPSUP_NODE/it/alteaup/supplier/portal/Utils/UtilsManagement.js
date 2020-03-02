@@ -477,6 +477,59 @@ module.exports = function () {
       })
     }
   })
+  
+  // GET VENDOR LIST
+
+  app.post('/GetVendorList', function (req, res) {
+    const body = req.body
+
+    console.log('INPUT BODY ==========> ' + JSON.stringify(body))
+
+    if (body !== undefined && body !== '' && body !== null) {
+		var userid = req.user.id
+		var name1 = req.user.I_NAME1 !== undefined && req.user.I_NAME1 !== '' ? req.user.NAME1 : ''
+		var stceg = req.user.I_NAME1 !== undefined && req.user.I_STCEG !== '' ? req.user.I_STCEG : ''
+		var lifnr = []
+		var ekorg = []
+
+		if (body.lifnr !== null && body.lifnr !== '') {
+			var oLifnr = []
+			for (var i = 0; i < body.lifnr.length; i++){
+				oLifnr.push({ LIFNR: body.lifnr[i] })
+			}
+			lifnr = oLifnr
+		}
+
+		if (body.ekorg !== null && body.ekorg !== '') {
+			var oEkorg = []
+			for (var i = 0; i < body.ekorg.length; i++) {
+				oEkorg.push({ EKORG: body.ekorg[i] })
+			}
+			ekorg = oEkorg
+		}
+
+      hdbext.createConnection(req.tenantContainer, (err, client) => {
+        if (err) {
+          return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
+        } else {
+          hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Orders::MM00_VENDOR_LIST', function (_err, sp) {
+            console.log('---->>> CLIENT END GetVendorList <<<<<-----')
+            client.close()
+            sp(userid, name1, stceg, lifnr, ekorg, (err, parameters, results) => {
+              if (err) {
+                console.error('ERROR: ' + err)
+                return res.status(500).send(stringifyObj(err))
+              } else {
+                return res.status(200).send({
+                  results: results
+                })
+              }
+            })
+          })
+        }
+      })
+    }
+  })
 
   // Parse URL-encoded bodies (as sent by HTML forms)
   // app.use(express.urlencoded());

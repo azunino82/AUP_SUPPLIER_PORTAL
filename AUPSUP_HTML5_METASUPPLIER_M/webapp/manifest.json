@@ -1,13 +1,13 @@
 {
 	"_version": "1.12.0",
 	"sap.app": {
-		"id": "it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER",
+		"id": "it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER_M",
 		"type": "application",
 		"i18n": "i18n/i18n.properties",
 		"applicationVersion": {
 			"version": "1.0.0"
 		},
-		"title": "{{appTitle}}",
+		"title": "{{appTitle_M}}",
 		"description": "{{appDescription}}",
 		"sourceTemplate": {
 			"id": "html5moduletemplates.basicSAPUI5ApplicationProjectModule",
@@ -16,27 +16,28 @@
 		"crossNavigation": {
 			"inbounds": {
 				"intent1": {
-					"signature": { 
+					"signature": {
 						"parameters": {
 							"mode": {
 								"required": true,
 								"defaultValue": {
-									"value": "BC"
+									"value": "M"
 								}
 							}
 						},
 						"additionalParameters": "allowed"
 					},
-					"semanticObject": "AppSemantic",
+					"semanticObject": "MetasupplierM",
 					"action": "Display",
-					"title": "{{appTitle}}",
-					"icon": "sap-icon://SAP-icons-TNT/actor"
+					"title": "{{appTitle_M}}",
+					"icon": "sap-icon://customer-briefing"
 				}
 			}
 		}
 	},
+
 	"sap.ui": {
-		"fullWidth": true,
+		"fullWidth": true,		
 		"technology": "UI5",
 		"icons": {
 			"icon": "",
@@ -52,13 +53,14 @@
 			"phone": true
 		}
 	},
+
 	"sap.ui5": {
 		"config": {
 			"fullWidth": true
 		},		
 		"flexEnabled": false,
 		"rootView": {
-			"viewName": "it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER.view.App",
+			"viewName": "it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER_M.view.App",
 			"type": "XML",
 			"async": true,
 			"id": "App"
@@ -83,7 +85,7 @@
 			"i18n": {
 				"type": "sap.ui.model.resource.ResourceModel",
 				"settings": {
-					"bundleName": "it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER.i18n.i18n"
+					"bundleName": "it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER_M.i18n.i18n"
 				}
 			}
 		},
@@ -97,7 +99,7 @@
 				"routerClass": "sap.m.routing.Router",
 				"viewType": "XML",
 				"async": true,
-				"viewPath": "it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER.view",
+				"viewPath": "it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER_M.view",
 				"controlAggregation": "pages",
 				"controlId": "idAppControl",
 				"clearControlAggregation": false
