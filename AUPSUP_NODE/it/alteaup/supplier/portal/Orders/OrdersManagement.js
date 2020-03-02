@@ -33,7 +33,7 @@ module.exports = function () {
             var ekpo = []
             var ekes = []
             var notaReject = ''
-            var confirmType = ''
+            var confirmTypes = []
             var userid = req.user.id
 
             if (body.ekko !== null && body.ekko !== undefined && body.ekko.length > 0) {
@@ -48,9 +48,17 @@ module.exports = function () {
             if (body.notaReject !== null && body.notaReject !== undefined && body.notaReject !== '') {
                 notaReject = body.notaReject
             }
-            if (body.confirmType !== null && body.confirmType !== undefined) {
-                confirmType = body.confirmType
-            }
+            if (body.confirmType !== null && body.confirmType !== undefined && body.confirmType !== '') {
+                var oConfType = []
+                for (var i = 0; i < body.confirmType.length; i++) {
+                    oConfType.push({
+                        EBELN: body.lifnr[i].EBELN,
+                        EBELP: body.lifnr[i].EBELP,
+                        CONF_TYPE: body.lifnr[i].CONF_TYPE
+                    })
+                }
+                confirmTypes = oConfType
+            }            
 
             hdbext.createConnection(req.tenantContainer, (err, client) => {
                 if (err) {
@@ -63,7 +71,7 @@ module.exports = function () {
                             client.close()
                             return res.status(500).send(stringifyObj(_err))
                         }
-                        sp(userid, confirmType, ekko, ekpo, ekes, notaReject, (err, parameters, results) => {
+                        sp(userid, confirmTypes, ekko, ekpo, ekes, notaReject, (err, parameters, results) => {
                             console.log('---->>> CLIENT END ConfirmOrders <<<<<-----')
                             client.close()
                             if (err) {

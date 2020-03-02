@@ -380,20 +380,20 @@ module.exports = function () {
                                                                                 if (client) {
                                                                                     async.waterfall([
 
-                                                                                        function prepare(callback) {
+                                                                                        function prepare (callback) {
                                                                                             client.prepare(sql,
                                                                                                 function (err, statement) {
                                                                                                     callback(null, err, statement)
                                                                                                 })
                                                                                         },
 
-                                                                                        function execute(_err, statement, callback) {
+                                                                                        function execute (_err, statement, callback) {
                                                                                             statement.exec([], function (execErr, results) {
                                                                                                 callback(null, execErr, results)
                                                                                             })
                                                                                         },
 
-                                                                                        function response(err, results, callback) {
+                                                                                        function response (err, results, callback) {
                                                                                             if (err) {
                                                                                                 res.type('application/json').status(500).send({ ERROR: err })
                                                                                                 return
@@ -426,20 +426,20 @@ module.exports = function () {
                                                                                                 if (client) {
                                                                                                     async.waterfall([
 
-                                                                                                        function prepare(callback) {
+                                                                                                        function prepare (callback) {
                                                                                                             client.prepare(sql,
                                                                                                                 function (err, statement) {
                                                                                                                     callback(null, err, statement)
                                                                                                                 })
                                                                                                         },
 
-                                                                                                        function execute(_err, statement, callback) {
+                                                                                                        function execute (_err, statement, callback) {
                                                                                                             statement.exec([], function (execErr, results) {
                                                                                                                 callback(null, execErr, results)
                                                                                                             })
                                                                                                         },
 
-                                                                                                        function response(err, results, callback) {
+                                                                                                        function response (err, results, callback) {
                                                                                                             if (err) {
                                                                                                                 res.type('application/json').status(500).send({ ERROR: err })
                                                                                                                 return
@@ -461,7 +461,7 @@ module.exports = function () {
                                                                                                             console.log('---->>> OUT FINALE post CALLBACK <<<<<-----')
                                                                                                             return res.status(200).send(megaResults)
                                                                                                         }
-                                                                                                    ], function done(err, parameters, rows) {
+                                                                                                    ], function done (err, parameters, rows) {
                                                                                                         console.log('---->>> CLIENT END T_ORDERS_TYPES <<<<<-----')
                                                                                                         client.close()
                                                                                                         if (err) {
@@ -471,7 +471,7 @@ module.exports = function () {
                                                                                                 }
                                                                                             })
                                                                                         }
-                                                                                    ], function done(err, parameters, rows) {
+                                                                                    ], function done (err, parameters, rows) {
                                                                                         console.log('---->>> CLIENT END PROFILO_CONTROLLO <<<<<-----')
                                                                                         client.close()
                                                                                         if (err) {
@@ -655,20 +655,20 @@ module.exports = function () {
                                                                                 if (client) {
                                                                                     async.waterfall([
 
-                                                                                        function prepare(callback) {
+                                                                                        function prepare (callback) {
                                                                                             client.prepare(sql,
                                                                                                 function (err, statement) {
                                                                                                     callback(null, err, statement)
                                                                                                 })
                                                                                         },
 
-                                                                                        function execute(_err, statement, callback) {
+                                                                                        function execute (_err, statement, callback) {
                                                                                             statement.exec([], function (execErr, results) {
                                                                                                 callback(null, execErr, results)
                                                                                             })
                                                                                         },
 
-                                                                                        function response(err, results, callback) {
+                                                                                        function response (err, results, callback) {
                                                                                             if (err) {
                                                                                                 res.type('application/json').status(500).send({ ERROR: err })
                                                                                                 return
@@ -700,20 +700,20 @@ module.exports = function () {
                                                                                                 if (client) {
                                                                                                     async.waterfall([
 
-                                                                                                        function prepare(callback) {
+                                                                                                        function prepare (callback) {
                                                                                                             client.prepare(sql,
                                                                                                                 function (err, statement) {
                                                                                                                     callback(null, err, statement)
                                                                                                                 })
                                                                                                         },
 
-                                                                                                        function execute(_err, statement, callback) {
+                                                                                                        function execute (_err, statement, callback) {
                                                                                                             statement.exec([], function (execErr, results) {
                                                                                                                 callback(null, execErr, results)
                                                                                                             })
                                                                                                         },
 
-                                                                                                        function response(err, results, callback) {
+                                                                                                        function response (err, results, callback) {
                                                                                                             if (err) {
                                                                                                                 res.type('application/json').status(500).send({ ERROR: err })
                                                                                                                 return
@@ -734,7 +734,7 @@ module.exports = function () {
                                                                                                             console.log('---->>> OUT FINALE post CALLBACK <<<<<-----')
                                                                                                             return res.status(200).send(megaResults)
                                                                                                         }
-                                                                                                    ], function done(err, parameters, rows) {
+                                                                                                    ], function done (err, parameters, rows) {
                                                                                                         console.log('---->>> CLIENT END T_ORDERS_TYPES <<<<<-----')
                                                                                                         client.close()
                                                                                                         if (err) {
@@ -744,7 +744,7 @@ module.exports = function () {
                                                                                                 }
                                                                                             })
                                                                                         }
-                                                                                    ], function done(err, parameters, rows) {
+                                                                                    ], function done (err, parameters, rows) {
                                                                                         console.log('---->>> CLIENT END PROFILO_CONTROLLO <<<<<-----')
                                                                                         client.close()
                                                                                         if (err) {
@@ -840,7 +840,7 @@ module.exports = function () {
                                 PEINH: header.PEINH
                             }
                             return res.status(200).send({
-                                results: results
+                                results
                             })
                         }
                     })
@@ -985,7 +985,6 @@ module.exports = function () {
                 })
             }
         })
-
     })
 
     // GET CONFERME QUANTiTA DA APPROVARE
