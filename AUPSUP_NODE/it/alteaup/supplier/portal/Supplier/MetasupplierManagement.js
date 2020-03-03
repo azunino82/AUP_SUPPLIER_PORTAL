@@ -189,6 +189,136 @@ module.exports = function () {
         }
     })
 
+    // LISTA TIPO CONTRATTO
+    app.get('/GetContactTypes', function (req, res) {
+        var status = req.query.I_ATTIVO
+        const sql = "SELECT * FROM \"AUPSUP_DATABASE.data.tables::T_CONTACT_TYPE\" WHERE ATTIVO = \'" + status + "\'"
+
+        hdbext.createConnection(req.tenantContainer, function (error, client) {
+            if (error) {
+                console.error(error)
+            }
+            if (client) {
+                async.waterfall([
+
+                    function prepare (callback) {
+                        client.prepare(sql,
+                            function (err, statement) {
+                                callback(null, err, statement)
+                            })
+                    },
+
+                    function execute (_err, statement, callback) {
+                        statement.exec([], function (execErr, results) {
+                            callback(null, execErr, results)
+                        })
+                    },
+
+                    function response (err, results, callback) {
+                        if (err) {
+                            res.type('application/json').status(500).send({ ERROR: err })
+                            return
+                        } else {
+                            res.type('application/json').status(200).send({ results: results })
+                        }
+                        callback()
+                    }
+                ], function done (err, parameters, rows) {
+                    if (err) {
+                        return console.error('Done error', err)
+                    }
+                })
+            }
+        })
+    })
+
+    // GET METAID
+    app.get('/GetMetaID', function (req, res) {
+        var userid = req.user.id
+        const sql = "SELECT * FROM \"AUPSUP_DATABASE.data.tables::T_USERID_METAID\" WHERE USERID = \'" + userid + "\'"
+
+        hdbext.createConnection(req.tenantContainer, function (error, client) {
+            if (error) {
+                console.error(error)
+            }
+            if (client) {
+                async.waterfall([
+
+                    function prepare (callback) {
+                        client.prepare(sql,
+                            function (err, statement) {
+                                callback(null, err, statement)
+                            })
+                    },
+
+                    function execute (_err, statement, callback) {
+                        statement.exec([], function (execErr, results) {
+                            callback(null, execErr, results)
+                        })
+                    },
+
+                    function response (err, results, callback) {
+                        if (err) {
+                            res.type('application/json').status(500).send({ ERROR: err })
+                            return
+                        } else {
+                            res.type('application/json').status(200).send({ results: results })
+                        }
+                        callback()
+                    }
+                ], function done (err, parameters, rows) {
+                    if (err) {
+                        return console.error('Done error', err)
+                    }
+                })
+            }
+        })
+    })    
+
+    // LISTA CONTATTI
+
+    app.get('/GetContacts', function (req, res) {
+        var metaid = req.query.I_METAID
+        const sql = "SELECT * FROM \"AUPSUP_DATABASE.data.tables::T_METASUPPLIER_CONTACTS\" WHERE METAID = \'" + metaid + "\'"
+
+        hdbext.createConnection(req.tenantContainer, function (error, client) {
+            if (error) {
+                console.error(error)
+            }
+            if (client) {
+                async.waterfall([
+
+                    function prepare (callback) {
+                        client.prepare(sql,
+                            function (err, statement) {
+                                callback(null, err, statement)
+                            })
+                    },
+
+                    function execute (_err, statement, callback) {
+                        statement.exec([], function (execErr, results) {
+                            callback(null, execErr, results)
+                        })
+                    },
+
+                    function response (err, results, callback) {
+                        if (err) {
+                            res.type('application/json').status(500).send({ ERROR: err })
+                            return
+                        } else {
+                            res.type('application/json').status(200).send({ results: results })
+                        }
+                        callback()
+                    }
+                ], function done (err, parameters, rows) {
+                    if (err) {
+                        return console.error('Done error', err)
+                    }
+                })
+            }
+        })
+    })
+        
     // Parse URL-encoded bodies (as sent by HTML forms)
     // app.use(express.urlencoded());
 
@@ -415,6 +545,153 @@ module.exports = function () {
             })
         } else {
             return res.status(500).send('I_METAID is Mandatory')
+        }
+    })
+
+    // Create Contact
+    app.post('/CreateContact', function (req, res) {
+        const body = req.body
+        console.log({ body_in: JSON.stringify(body) })
+
+        if (body !== undefined && body !== '' && body !== null && body.METAID !== undefined && body.METAID !== '') {
+            var sql = 'INSERT INTO "AUPSUP_DATABASE.data.tables::T_METASUPPLIER_CONTACTS" VALUES (?, ?, ?, ?, ?,?, ?, ?, ?)'
+
+            hdbext.createConnection(req.tenantContainer, function (error, client) {
+                if (error) {
+                    console.error(error)
+                }
+                if (client) {
+                    async.waterfall([
+
+                        function prepare (callback) {
+                            client.prepare(sql,
+                                function (err, statement) {
+                                    callback(null, err, statement)
+                                })
+                        },
+
+                        function execute (_err, statement, callback) {
+                            statement.exec([body.METAID, body.TIPOLOGIA, body.MAIL, body.TEL, body.TITOLO, body.NOME, body.COGNOME, body.FAX, body.TEL1], function (execErr, results) {
+                                callback(null, execErr, results)
+                            })
+                        },
+
+                        function response (err, results, callback) {
+                            if (err) {
+                                res.type('application/json').status(500).send({ ERROR: err })
+                                return
+                            } else {
+                                res.type('application/json').status(200).send({ results: results })
+                            }
+                            callback()
+                        }
+                    ], function done (err, parameters, rows) {
+                        if (err) {
+                            return console.error('Done error', err)
+                        }
+                    })
+                }
+            })
+        } else {
+            return res.status(500).send('BODY is Mandatory')
+        }
+    })    
+
+    // UPDATE METAFORNITORE
+    app.put('/UpdateContact', function (req, res) {
+        var key = req.query.KEY
+        const body = req.body
+        console.log({ body_in: JSON.stringify(body) })
+
+        if (key !== undefined) {
+            // eslint-disable-next-line quotes
+            var sql = "UPDATE \"AUPSUP_DATABASE.data.tables::T_METASUPPLIER_CONTACTS\" SET METAID = '" + body.METAID + "', TIPOLOGIA = '" + body.TIPOLOGIA + "', MAIL = '" + body.MAIL + "' , TEL = '" + body.TEL + "', TITOLO = '" + body.TITOLO + "', NOME = '" + body.NOME + "', COGNOME = '" + body.COGNOME + "', FAX = " + body.FAX + ", TEL1 = '" + body.TEL1 + "' WHERE KEY = \'" + key + "\'"
+            console.log({ sqlUPDATE: sql })
+            hdbext.createConnection(req.tenantContainer, function (error, client) {
+                if (error) {
+                    console.error(error)
+                }
+                if (client) {
+                    async.waterfall([
+
+                        function prepare (callback) {
+                            client.prepare(sql,
+                                function (err, statement) {
+                                    callback(null, err, statement)
+                                })
+                        },
+
+                        function execute (_err, statement, callback) {
+                            statement.exec([], function (execErr, results) {
+                                callback(null, execErr, results)
+                            })
+                        },
+
+                        function response (err, results, callback) {
+                            if (err) {
+                                res.type('application/json').status(500).send({ ERROR: err })
+                            } else {
+                                res.type('application/json').status(200).send({ results: results })
+                            }
+                            callback()
+                        }
+                    ], function done (err, parameters, rows) {
+                        if (err) {
+                            return console.error('Done error', err)
+                        }
+                    })
+                }
+            })
+        } else {
+            return res.status(500).send('key is Mandatory')
+        }
+    })    
+
+    // DELETE CONTACT
+    app.get('/DeleteContract', function (req, res) {
+        var key = req.query.KEY
+
+        if (key !== undefined) {
+            // eslint-disable-next-line quotes
+            var sql = "DELETE FROM \"AUPSUP_DATABASE.data.tables::T_METASUPPLIER_CONTACTS\" WHERE KEY = \'" + key + "\'"
+            console.log({ sqlUPDATE: sql })
+            hdbext.createConnection(req.tenantContainer, function (error, client) {
+                if (error) {
+                    console.error(error)
+                }
+                if (client) {
+                    async.waterfall([
+
+                        function prepare (callback) {
+                            client.prepare(sql,
+                                function (err, statement) {
+                                    callback(null, err, statement)
+                                })
+                        },
+
+                        function execute (_err, statement, callback) {
+                            statement.exec([], function (execErr, results) {
+                                callback(null, execErr, results)
+                            })
+                        },
+
+                        function response (err, results, callback) {
+                            if (err) {
+                                res.type('application/json').status(500).send({ ERROR: err })
+                            } else {
+                                res.type('application/json').status(200).send({ results: results })
+                            }
+                            callback()
+                        }
+                    ], function done (err, parameters, rows) {
+                        if (err) {
+                            return console.error('Done error', err)
+                        }
+                    })
+                }
+            })
+        } else {
+            return res.status(500).send('key is Mandatory')
         }
     })
 
