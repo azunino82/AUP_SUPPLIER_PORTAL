@@ -65,7 +65,7 @@ sap.ui.define([
 				//	if (user !== "" && user.userType === "M" && user.metaIDs.length === 0)
 				that.getView().byId("contactsPage").setShowNavButton(false);
 
-				var filters = [];
+				/*var filters = [];
 
 				var filter = new sap.ui.model.Filter({
 					path: "ATTIVO",
@@ -79,9 +79,25 @@ sap.ui.define([
 					"settings": {
 						"Sections": []
 					}
-				};
+				}; */
 
-				oModel.read("/ContactTypeSet", {
+				var url = "/backend/MetasupplierManagement/GetContactTypes?I_ATTIVO=1"
+				that.ajaxGet(url, function (oDataRes) {
+					if (oDataRes && oDataRes.results && oDataRes.results.length > 0) {
+						contactType = [];
+						for (var x = 0; x < oDataRes.results.length; x++) {
+							contactType.push({
+								key: oDataRes.results[x].TIPOLOGIA,
+								value: oDataRes.results[x].DESCRIZIONE,
+								data: []
+							});
+
+						}
+						that.getContact();
+					}
+				});
+
+				/* oModel.read("/ContactTypeSet", {
 					filters: filters,
 					success: function (oDataRes, oResponse) {
 						contactType = [];
@@ -96,7 +112,7 @@ sap.ui.define([
 						that.getContact();
 					},
 					error: function (oError) {}
-				});
+				}); */
 			}
 
 		},
@@ -158,7 +174,57 @@ sap.ui.define([
 		getContact: function () {
 			var contactFilters = [];
 
-			var filter = new sap.ui.model.Filter({
+
+			var url = "/backend/MetasupplierManagement/GetContactTypes?I_METAID=" + metaid
+			that.ajaxGet(url, function (oDataRes) {
+				if (oDataRes.results.length === 0) {
+					template = {
+						"settings": {
+							"Sections": []
+						}
+					};
+
+					for (var x = 0; x < contactType.length; x++) {
+						var jsonSection = {};
+						jsonSection.SectionTitle = contactType[x].value;
+						jsonSection.Subsections = [];
+						var jsonSubsection = {
+							"Data": false
+						};
+						jsonSection.Subsections.push(jsonSubsection);
+
+						template.settings.Sections.push(jsonSection);
+					}
+
+					var jsonModel = new sap.ui.model.json.JSONModel();
+					jsonModel.setData(template);
+					that.getView().setModel(jsonModel, "mysettings");
+				} else {
+					for (var x = 0; x < contactType.length; x++) {
+						contactType[x].data = [];
+						for (var i = 0; i < oDataRes.results.length; i++) {
+							if (oDataRes.results[i].TIPOLOGIA === contactType[x].key) {
+								var json = {
+									"Id": oDataRes.results[i].KEY,
+									"Mail": oDataRes.results[i].MAIL,
+									"Tel": oDataRes.results[i].TEL,
+									"Tel1": oDataRes.results[i].TEL1,
+									"Titolo": oDataRes.results[i].TITOLO,
+									"Nome": oDataRes.results[i].NOME,
+									"Cognome": oDataRes.results[i].COGNOME,
+									"Fax": oDataRes.results[i].FAX
+								};
+								contactType[x].data.push(json);
+							}
+						}
+					}
+					that.buildPage();
+
+				}
+
+			});
+
+			/* var filter = new sap.ui.model.Filter({
 				path: "METAID",
 				operator: "EQ",
 				value1: metaid
@@ -216,7 +282,7 @@ sap.ui.define([
 
 				},
 				error: function (oError) {}
-			});
+			}); */
 		},
 
 		buildPage: function () {
@@ -283,7 +349,7 @@ sap.ui.define([
 			if (!oDialogContact) {
 				// create dialog via fragment factory
 				oDialogContact = sap.ui.xmlfragment(this.getView().getId(),
-					"it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER.view.CreateContact", this);
+					"it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER.fragments.CreateContact", this);
 
 			}
 
@@ -332,7 +398,21 @@ sap.ui.define([
 			dataContact.COGNOME = oView.byId("surnameCreateContact").getValue();
 			dataContact.FAX = oView.byId("faxCreateContact").getValue();
 
-			var oModel = that.getOwnerComponent().getModel();
+			var url = "/backend/MetasupplierManagement/CreateContact";
+
+			that.showBusyDialog();
+
+			that.ajaxPost(url, dataContact, function (oData) {
+				that.hideBusyDialog();
+				sap.m.MessageToast.show(that.getOwnerComponent().getModel("i18n").getResourceBundle().getText(
+					"metasupplierContactCreated"));
+
+				that.closeDialog();
+				that.getContact();
+			});
+
+
+			/*var oModel = that.getOwnerComponent().getModel();
 			oModel.create("/MetasupplierContactSet", dataContact, {
 				success: function (oDataRes, oResponse) {
 					sap.m.MessageToast.show(that.getOwnerComponent().getModel("i18n").getResourceBundle().getText(
@@ -345,7 +425,7 @@ sap.ui.define([
 					sap.m.MessageBox.error(that.getOwnerComponent().getModel("i18n").getResourceBundle().getText(
 						"errorCreatingMetasupplierContact"));
 				}
-			});
+			});*/
 
 		},
 
@@ -398,7 +478,20 @@ sap.ui.define([
 			dataUpdate.COGNOME = dataUpdateTemp.Cognome;
 			dataUpdate.FAX = dataUpdateTemp.Fax;
 
-			var oModel = that.getOwnerComponent().getModel();
+			var url = "/backend/MetasupplierManagement/UpdateContact?KEY='" + key + "'";
+
+			that.showBusyDialog();
+
+			that.ajaxPut(url, dataUpdate, function (oData) {
+				that.hideBusyDialog();
+				sap.m.MessageToast.show(that.getOwnerComponent().getModel("i18n").getResourceBundle().getText(
+					"metasupplierContactCreated"));
+
+				that.closeDialog();
+				that.getContact();
+			});
+
+			/*var oModel = that.getOwnerComponent().getModel();
 			oModel.update("/MetasupplierContactSet(KEY='" + key + "')", dataUpdate, {
 				success: function (oData, oResponse) {
 					sap.m.MessageToast.show(that.getOwnerComponent().getModel("i18n").getResourceBundle().getText(
@@ -409,7 +502,7 @@ sap.ui.define([
 					sap.m.MessageBox.error(that.getOwnerComponent().getModel("i18n").getResourceBundle().getText(
 						"errorUpdateingMetasupplierContact"));
 				}
-			});
+			});*/
 
 		},
 
@@ -419,20 +512,32 @@ sap.ui.define([
 
 			sap.m.MessageBox.confirm(
 				that.getView().getModel("i18n").getResourceBundle().getText("confirmDeletion"), {
-					actions: [sap.m.MessageBox.Action.OK, sap.m.MessageBox.Action.CANCEL],
-					styleClass: "sapUiSizeCompact",
-					onClose: function (sAction) {
+				actions: [sap.m.MessageBox.Action.OK, sap.m.MessageBox.Action.CANCEL],
+				styleClass: "sapUiSizeCompact",
+				onClose: function (sAction) {
 
-						if (sAction === "OK")
-							that.deleteContact(key);
-					}
+					if (sAction === "OK")
+						that.deleteContact(key);
 				}
+			}
 			);
 
 		},
 
 		deleteContact: function (key) {
-			var sKey = "/MetasupplierContactSet(KEY='" + key + "')";
+
+			var url = "/backend/MetasupplierManagement/DeleteContract?KEY=" + key;
+			this.showBusyDialog();
+			that.ajaxGet(url, function (oDataRes) {
+				that.hideBusyDialog();
+
+				sap.m.MessageToast.show(that.getOwnerComponent().getModel("i18n").getResourceBundle().getText(
+					"metasupplierContactDeleted"));
+				that.getContact();
+
+			});
+
+			/*var sKey = "/MetasupplierContactSet(KEY='" + key + "')";
 
 			var oModel = that.getOwnerComponent().getModel();
 			oModel.remove(sKey, {
@@ -445,7 +550,7 @@ sap.ui.define([
 					sap.m.MessageBox.error(that.getOwnerComponent().getModel("i18n").getResourceBundle().getText(
 						"errorDeletingMetasupplierContact"));
 				}
-			});
+			});*/
 		},
 
 		_getFragment: function (sFragmentName) {
@@ -477,7 +582,7 @@ sap.ui.define([
 					var documentModel = sap.ui.getCore().getModel("DocumentManagementJSONModel").getData();
 					if (documentModel !== undefined && documentModel.DOC_IN === 'X') {
 						var oObjectPageLayout = that.getView().byId("ObjectPageLayoutId");
-						var sPath = "it.alteaup.supplier.portal.zmetasuppliers.view.Attachments";
+						var sPath = "it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER.view.Attachments";
 						var oFormFragment = sap.ui.xmlfragment(that.getView().getId(), sPath, that);
 						oObjectPageLayout.addSection(oFormFragment);
 						that.getView().byId("uploadDocBtn").setVisible(true);
@@ -503,18 +608,15 @@ sap.ui.define([
 						//var vContent = e.currentTarget.result.replace("data:" + file.type + ";base64,", "");
 						var vContent = e.currentTarget.result.split(',');
 						vContent = vContent[1];
-						var url = "/SupplierPortal_Documents/xsOdata/DocUpload.xsjs?I_USERID=" + that.getCurrentUserId() +
-							"&I_CLASSIFICATION=GEN&I_APPLICATION=CONT_META&I_FILE_NAME=" + lifnr.LIFNR + "&I_OBJECT_CODE=" +
-							lifnr.LIFNR + "&I_METAID=" + metasupplier;
+						//	var url = "/SupplierPortal_Documents/xsOdata/DocUpload.xsjs?I_USERID=" + that.getCurrentUserId() +
+						//		"&I_CLASSIFICATION=GEN&I_APPLICATION=CONT_META&I_FILE_NAME=" + lifnr.LIFNR + "&I_OBJECT_CODE=" +
+						//		lifnr.LIFNR + "&I_METAID=" + metasupplier;
+						var url = "/backend/DocumentManagement/DocUpload?I_CLASSIFICATION=GEN&I_APPLICATION=CONT_META&I_FILE_NAME=" + lifnr.LIFNR + "&I_OBJECT_CODE=" + lifnr.LIFNR + "&I_WERKS=" +
+							selctedRowdata.MAWERK + "&I_LIFNR=" + selctedRowdata.LIFNUM;
 
 						that.showBusyDialog();
-						that.getToken("/SupplierPortal_Documents", function (token) {
-
 							jQuery.ajax({
 								url: url,
-								headers: {
-									'x-csrf-token': token
-								},
 								data: vContent, //e.currentTarget.result,
 								method: 'POST',
 								cache: false,
@@ -544,7 +646,6 @@ sap.ui.define([
 								}
 							});
 
-						});
 					};
 					reader.readAsDataURL(file);
 				});
@@ -569,8 +670,7 @@ sap.ui.define([
 			var itemPosition = oEvent.getSource().getParent().getParent().indexOfItem(oEvent.getSource().getParent());
 			var elem = getTabledata[itemPosition];
 			that.showBusyDialog()
-			var url = "/sap/fiori/nonconformita/SupplierPortal_Documents/xsOdata/DocDownload.xsjs?I_USERID=" + that.getCurrentUserId() +
-				"&I_DOKAR=" + elem.DOKAR + "&I_DOKNR=" + elem.DOKNR + "&I_DOKTL=" + elem.DOKTL + "&I_DOKVR=" + elem.DOKVR +
+			var url = "/backend/DocumentManagement/DocDownload?&I_DOKAR=" + elem.DOKAR + "&I_DOKNR=" + elem.DOKNR + "&I_DOKTL=" + elem.DOKTL + "&I_DOKVR=" + elem.DOKVR +
 				"&I_LO_INDEX=" + elem.LO_INDEX + "&I_LO_OBJID=" + elem.LO_OBJID + "&I_OBJKY=" + elem.OBJKY + "&I_DOKOB=" + elem.DOKOB;
 			// NB: questa chiamata fetch funziona SOLO su portale non con webide preview
 			fetch(url)
