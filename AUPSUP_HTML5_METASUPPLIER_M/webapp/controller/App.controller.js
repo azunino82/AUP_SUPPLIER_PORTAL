@@ -1,10 +1,43 @@
 sap.ui.define([
-	"sap/ui/core/mvc/Controller"
-], function (Controller) {
+	"it/alteaup/supplier/portal/metasupplier/AUPSUP_HTML5_METASUPPLIER_M/controller/BaseController"
+], function (BaseController) {
 	"use strict";
-
-	return Controller.extend("it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER_M.controller.App", {
+	var that;
+	return BaseController.extend("it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER_M.controller.App", {
 		onInit: function () {
+			that = this;
+
+			that.getOwnerComponent().getRouter().getRoute("TargetApp").attachPatternMatched(
+				that.handleRoutePatternMatched,
+				that);
+
+			that.handleRoutePatternMatched();
+		},
+
+		handleRoutePatternMatched: function (oEvent) {
+			var url = "/backend/MetasupplierManagement/GetMetaID";
+			that.ajaxGet(url, function (oDataRes) {
+				var metaid = oDataRes.results[0].METAID;
+				that.setModel(metaid, null, 'M');
+			});
+		},
+
+		setModel: function (sMetaid, arrIDs, sUserType) {
+			var jsonModel = new sap.ui.model.json.JSONModel();
+			if (sMetaid !== "") {
+				jsonModel.setData([{
+					"userType": sUserType,
+					"metaIDs": arrIDs
+				}]);
+
+				that.getOwnerComponent().setModel(jsonModel, "user");
+
+				that.getOwnerComponent().getRouter().navTo("RouteMetasupplierContacts", {
+					metaid: sMetaid
+				});
+			}else{
+				sap.m.MessageToast.show("No MetaID Found!");
+			}
 
 		}
 	});

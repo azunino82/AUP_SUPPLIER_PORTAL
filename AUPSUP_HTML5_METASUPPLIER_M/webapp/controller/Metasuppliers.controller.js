@@ -19,6 +19,7 @@ sap.ui.define([
 
 			// gestione delle permissions per il documentale
 			that.getDocumentCustomizingData();
+			that.getPurchaseOrganizations();
 
 			var startupParams = undefined;
 			if (that.getOwnerComponent().getComponentData() != undefined) {
@@ -33,9 +34,10 @@ sap.ui.define([
 				return;
 			}
 
+			
 			that.getOwnerComponent().getRouter().getRoute("RouteMetasuppliers").attachPatternMatched(that.handleRoutePatternMatched,
 				this);
-			that.getPurchaseOrganizations();
+
 
 			this.getView().setModel(sap.ui.getCore().getModel("userapi"), "userapi");
 		},
