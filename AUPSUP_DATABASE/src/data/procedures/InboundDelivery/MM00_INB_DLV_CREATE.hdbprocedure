@@ -1,5 +1,5 @@
 PROCEDURE "AUPSUP_DATABASE.data.procedures.InboundDelivery::MM00_INB_DLV_CREATE"(
-IN userid VARCHAR(20),
+IN userid VARCHAR(250),
 IN LIFNR NVARCHAR(10), -- serve per invio mail
 
 IN LFART NVARCHAR(4),

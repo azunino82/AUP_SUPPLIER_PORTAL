@@ -839,9 +839,7 @@ module.exports = function () {
                                 MENGE: header.MENGE,
                                 PEINH: header.PEINH
                             }
-                            return res.status(200).send({
-                                results
-                            })
+                            return res.status(200).send(results)
                         }
                     })
                 })
