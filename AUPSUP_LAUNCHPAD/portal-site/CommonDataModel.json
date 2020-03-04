@@ -58,6 +58,10 @@
 					"id": "AUPSUP_HTML5_METASUPPLIER_M",
 					"appId": "it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER_M",
 					"vizId": "MetasupplierM-Display"
+				}, {
+					"id": "AUPSUP_HTML5_METASUPPLIER_BM",
+					"appId": "it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER_BM",
+					"vizId": "MetasupplierBM-Display"
 				}]
 			}
 		}],

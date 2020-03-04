@@ -61,6 +61,10 @@ modules:
           artifacts:
             - './*'
           target-path: resources/AUPSUP_HTML5_METASUPPLIER_M
+        - name: AUPSUP_HTML5_METASUPPLIER_BM
+          artifacts:
+            - './*'
+          target-path: resources/AUPSUP_HTML5_METASUPPLIER_BM
   - name: AUPSUP_LAUNCHPAD
     type: com.sap.portal.content
     path: AUPSUP_LAUNCHPAD
@@ -154,6 +158,13 @@ modules:
   - name: AUPSUP_HTML5_METASUPPLIER_M
     type: html5
     path: AUPSUP_HTML5_METASUPPLIER_M
+    build-parameters:
+      builder: grunt
+      supported-platforms: []
+      build-result: dist
+  - name: AUPSUP_HTML5_METASUPPLIER_BM
+    type: html5
+    path: AUPSUP_HTML5_METASUPPLIER_BM
     build-parameters:
       builder: grunt
       supported-platforms: []
