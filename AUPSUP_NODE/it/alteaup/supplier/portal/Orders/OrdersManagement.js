@@ -32,8 +32,6 @@ module.exports = function () {
             var ekko = []
             var ekpo = []
             var ekes = []
-            var notaReject = ''
-            var confirmTypes = []
             var userid = req.user.id
 
             if (body.ekko !== null && body.ekko !== undefined && body.ekko.length > 0) {
@@ -45,10 +43,10 @@ module.exports = function () {
             if (body.ekes !== null && body.ekes !== undefined && body.ekes.length > 0) {
                 ekes = body.ekes
             }
-            if (body.notaReject !== null && body.notaReject !== undefined && body.notaReject !== '') {
+            /* if (body.notaReject !== null && body.notaReject !== undefined && body.notaReject !== '') {
                 notaReject = body.notaReject
             }
-            if (body.confirmType !== null && body.confirmType !== undefined && body.confirmType !== '') {
+             if (body.confirmType !== null && body.confirmType !== undefined && body.confirmType !== '') {
                 var oConfType = []
                 for (var i = 0; i < body.confirmType.length; i++) {
                     oConfType.push({
@@ -58,7 +56,7 @@ module.exports = function () {
                     })
                 }
                 confirmTypes = oConfType
-            }            
+            } */           
 
             hdbext.createConnection(req.tenantContainer, (err, client) => {
                 if (err) {
@@ -71,7 +69,7 @@ module.exports = function () {
                             client.close()
                             return res.status(500).send(stringifyObj(_err))
                         }
-                        sp(userid, confirmTypes, ekko, ekpo, ekes, notaReject, (err, parameters, results) => {
+                        sp(userid, ekko, ekpo, ekes, (err, parameters, results) => {
                             console.log('---->>> CLIENT END ConfirmOrders <<<<<-----')
                             client.close()
                             if (err) {
@@ -88,6 +86,62 @@ module.exports = function () {
             })
         }
     })
+
+// APPROVA RIFIUTA IN BASE AL TIPO ORDINE O PIANO CONSEGNA
+app.post('/ConfirmReject', function (req, res) {
+    const body = req.body
+    req.setTimeout(60000)
+    res.setTimeout(60000)
+    console.log('INPUT BODY ==========> ' + JSON.stringify(body))
+    var notaReject = ''
+    var userid = req.user.id
+    var confirmTypes = []
+
+    if (body !== undefined && body !== '' && body !== null) {
+       
+        if (body.notaReject !== null && body.notaReject !== undefined && body.notaReject !== '') {
+            notaReject = body.notaReject
+        }
+         if (body.confirmType !== null && body.confirmType !== undefined && body.confirmType !== '') {
+            var oConfType = []
+            for (var i = 0; i < body.confirmType.length; i++) {
+                oConfType.push({
+                    EBELN: body.lifnr[i].EBELN,
+                    EBELP: body.lifnr[i].EBELP,
+                    CONF_TYPE: body.lifnr[i].CONF_TYPE
+                })
+            }
+            confirmTypes = oConfType
+        }        
+
+        hdbext.createConnection(req.tenantContainer, (err, client) => {
+            if (err) {
+                console.error('ERROR CONNECTION ConfirmReject:' + stringifyObj(err))
+                return res.status(500).send('CREATE CONNECTION ERROR ConfirmOrders: ' + stringifyObj(err))
+            } else {
+                hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Orders::ConfirmReject', function (_err, sp) {
+                    if (_err) {
+                        console.error('ERROR loadProcedure ConfirmReject: ' + stringifyObj(_err))
+                        client.close()
+                        return res.status(500).send(stringifyObj(_err))
+                    }
+                    sp(userid, confirmTypes, notaReject, (err, parameters, results) => {
+                        console.log('---->>> CLIENT END ConfirmReject <<<<<-----')
+                        client.close()
+                        if (err) {
+                            console.error('ERROR ConfirmReject SP: ' + stringifyObj(err))
+                            return res.status(500).send(stringifyObj(err))
+                        } else {
+                            return res.status(200).send({
+                                results: results
+                            })
+                        }
+                    })
+                })
+            }
+        })
+    }
+})    
 
     // Parse URL-encoded bodies (as sent by HTML forms)
     // app.use(express.urlencoded());
