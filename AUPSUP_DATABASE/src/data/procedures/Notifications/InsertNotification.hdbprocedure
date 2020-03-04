@@ -105,7 +105,7 @@ CONCAT(' I_LIFNR: ' , I_LIFNR))))))))),'I',:CURRENT_SYSID,'',:I_TIMESTAMP);
     				T_EMAIL = SELECT EMAIL AS RECEIVER,'U' as REC_TYPE,null as REC_ID,null as REPLY_DOC,null as REC_DATE,null as PROXY_ID,null as RETRN_CODE,null as EXPRESS,null as COPY,null as BLIND_COPY,null as NO_FORWARD,null as NO_PRINT,null as TO_ANSWER,null as TO_DO_EXPL,null as TO_DO_GRP,null as COM_TYPE,null as LFDNR,null as FAX,null as COUNTRY,null as SPOOL_ID,null as NOTIF_DEL,null as NOTIF_READ,null as NOTIF_NDEL,null as SAP_BODY FROM "AUPSUP_DATABASE.data.tables::T_NOTIF_CONTACTS" WHERE STRUTTURA = :I_WERKS AND FLUSSO = :FLUSSO;
     				
     				SELECT '%' || :I_WERKS || '%' INTO WERKS_LIKE FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
-    				T_P_USER = SELECT USERID FROM "AUPSUP_DATABASE.data.tables::T_BUYSERS" WHERE PLANTS LIKE :WERKS_LIKE;
+    				T_P_USER = SELECT USERID FROM "AUPSUP_DATABASE.data.tables::T_BUYERS" WHERE PLANTS LIKE :WERKS_LIKE;
     			ELSE
     				IF I_BU <> '' THEN
     					/*Se verso fornitore utilizzare la tabella dei contatti metafornitore con l’indicazione degli indirizzi mail a cui inviare la notifica.*/
@@ -122,7 +122,7 @@ CONCAT(' I_LIFNR: ' , I_LIFNR))))))))),'I',:CURRENT_SYSID,'',:I_TIMESTAMP);
     						T_EMAIL = SELECT MAIL AS RECEIVER,'U' as REC_TYPE,null as REC_ID,null as REPLY_DOC,null as REC_DATE,null as PROXY_ID,null as RETRN_CODE,null as EXPRESS,null as COPY,null as BLIND_COPY,null as NO_FORWARD,null as NO_PRINT,null as TO_ANSWER,null as TO_DO_EXPL,null as TO_DO_GRP,null as COM_TYPE,null as LFDNR,null as FAX,null as COUNTRY,null as SPOOL_ID,null as NOTIF_DEL,null as NOTIF_READ,null as NOTIF_NDEL,null as SAP_BODY FROM "AUPSUP_DATABASE.data.tables::T_METASUPPLIER_CONTACTS" WHERE METAID IN ( SELECT METAID FROM "AUPSUP_DATABASE.data.tables::T_METAID_BU" WHERE BU = :I_BU) AND TIPOLOGIA = '05';
     					END IF;	
     					
-    					T_P_USER = SELECT USERID FROM "AUPSUP_DATABASE.data.tables::T_BUYSERS" WHERE BU = :I_BU;
+    					T_P_USER = SELECT USERID FROM "AUPSUP_DATABASE.data.tables::T_BUYERS" WHERE BU = :I_BU;
     													
         			END IF;
     			END IF;
