@@ -558,7 +558,7 @@ sap.ui.define([
 				var documentModel = sap.ui.getCore().getModel("DocumentManagementJSONModel").getData();
 				if (documentModel !== undefined && documentModel.DOC_IN === 'X') {
 					var oObjectPageLayout = that.getView().byId("ObjectPageLayoutId");
-					var sPath = "it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER.view.Attachments";
+					var sPath = "it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER.fragments.Attachments";
 					var oFormFragment = sap.ui.xmlfragment(this.getView().getId(), sPath, this);
 					oObjectPageLayout.addSection(oFormFragment);
 					that.getView().byId("uploadDocBtn").setVisible(true);
@@ -582,7 +582,7 @@ sap.ui.define([
 					var documentModel = sap.ui.getCore().getModel("DocumentManagementJSONModel").getData();
 					if (documentModel !== undefined && documentModel.DOC_IN === 'X') {
 						var oObjectPageLayout = that.getView().byId("ObjectPageLayoutId");
-						var sPath = "it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER.view.Attachments";
+						var sPath = "it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER.fragments.Attachments";
 						var oFormFragment = sap.ui.xmlfragment(that.getView().getId(), sPath, that);
 						oObjectPageLayout.addSection(oFormFragment);
 						that.getView().byId("uploadDocBtn").setVisible(true);
