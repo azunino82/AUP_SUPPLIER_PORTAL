@@ -97,8 +97,7 @@ app.post('/ConfirmReject', function (req, res) {
     var userid = req.user.id
     var confirmTypes = []
 
-    if (body !== undefined && body !== '' && body !== null) {
-       
+    if (body !== undefined && body !== '' && body !== null) {       
         if (body.notaReject !== null && body.notaReject !== undefined && body.notaReject !== '') {
             notaReject = body.notaReject
         }
