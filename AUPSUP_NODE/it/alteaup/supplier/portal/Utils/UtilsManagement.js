@@ -20,10 +20,10 @@ module.exports = function () {
 
     if (req.authInfo.scopes !== null && req.authInfo.scopes !== undefined && req.authInfo.scopes !== '') {
       req.authInfo.scopes.forEach(element => {
-        if (element.includes('Z_RL_SUPPLIER')) {
+        if (element.includes('Z_RL_BUYER')) {
           outData.isBuyer = true
         }
-        if (element.includes('Z_RL_BUYER')) {
+        if (element.includes('Z_RL_SUPPLIER')) {
           outData.isSupplier = true
         }
       })

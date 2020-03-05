@@ -105,9 +105,10 @@ app.post('/ConfirmReject', function (req, res) {
             var oConfType = []
             for (var i = 0; i < body.confirmType.length; i++) {
                 oConfType.push({
-                    EBELN: body.lifnr[i].EBELN,
-                    EBELP: body.lifnr[i].EBELP,
-                    CONF_TYPE: body.lifnr[i].CONF_TYPE
+                    EBELN: body.confirmType[i].EBELN,
+                    EBELP: body.confirmType[i].EBELP,
+                    CONF_TYPE: body.confirmType[i].CONF_TYPE,
+                    BSTYP: body.confirmType[i].BSTYP
                 })
             }
             confirmTypes = oConfType
@@ -116,7 +117,7 @@ app.post('/ConfirmReject', function (req, res) {
         hdbext.createConnection(req.tenantContainer, (err, client) => {
             if (err) {
                 console.error('ERROR CONNECTION ConfirmReject:' + stringifyObj(err))
-                return res.status(500).send('CREATE CONNECTION ERROR ConfirmOrders: ' + stringifyObj(err))
+                return res.status(500).send('CREATE CONNECTION ERROR ConfirmReject: ' + stringifyObj(err))
             } else {
                 hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Orders::ConfirmReject', function (_err, sp) {
                     if (_err) {
