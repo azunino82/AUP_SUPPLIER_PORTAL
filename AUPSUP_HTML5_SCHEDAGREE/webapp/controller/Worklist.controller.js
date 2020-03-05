@@ -2282,8 +2282,15 @@ sap.ui.define([
 		//	var oModelData = that.getOwnerComponent().getModel("VariantsModel");
 		//	oModelData.metadataLoaded().then(
 		//		that.onMetadataLoaded.bind(that, oModelData));
+		var columModel = {"EBELN":true,"EBELP":true,"LIFNR":true,"NAME1":true,"MATNR":true,"TXZ01":true,"IDNLF":true,"MENGE":true,"MEINS":true,"WAERS":true,"PRIMO_PERIODO":true,"SECONDO_PERIODO":true};
+			var oModel = new JSONModel();
+					oModel.setData(columModel);
+					that.getView().setModel(oModel, "columnVisibilityModel");
+
 		},
 		onMetadataLoaded: function (myODataModel) {
+			
+
 			var metadata = myODataModel.getServiceMetadata();
 			if (metadata.dataServices.schema[0].entityType) {
 				var selected = metadata.dataServices.schema[0].entityType.find(x => x.name === "SearchOrderPosStructureType");

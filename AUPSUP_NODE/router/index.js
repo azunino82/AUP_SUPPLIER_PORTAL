@@ -24,4 +24,7 @@ module.exports = function (app, server) {
 
   // SERVIZI ORDINI e PIANI CONSEGNA (per creazione)
   app.use('/OrdersManagement', require('../it/alteaup/supplier/portal/Orders/OrdersManagement')())
+
+  // SERVIZI GESTIONE VARIANTI
+  app.use('/VariantsManagement', require('../it/alteaup/supplier/portal/Variants/VariantsManagement')())
 }
