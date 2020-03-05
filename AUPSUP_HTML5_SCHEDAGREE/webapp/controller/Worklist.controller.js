@@ -87,7 +87,7 @@ sap.ui.define([
 
 				// Inizio modifiche LS
 				var filterOrd = {
-					"bstyp": "F",
+					"bstyp": "L",
 					"ebeln": "",
 					"lifnr": [],
 					"matnr": [],
@@ -1005,7 +1005,8 @@ sap.ui.define([
 					// Apertura campo prezzo per posizione
 					if (selectedProfiloConfermaModel !== undefined && selectedProfiloConfermaModel.MODIFICA_PREZZO !== undefined)
 						that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].editPrice = selectedProfiloConfermaModel.MODIFICA_PREZZO === 'X' ? true : false;
-					// FINE DELLA SOVRASCRITTURA
+						that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].KSCHL = selectedProfiloConfermaModel.TIPO_COND_PREZZO;
+						// FINE DELLA SOVRASCRITTURA
 
 					// AGGIUNGO LA RIGA NELLE SCHEDULAZIONI
 
@@ -1340,7 +1341,7 @@ sap.ui.define([
 								singleEkpoModel.ZMODSCHED = row.editQuantity === true ? 'X' : ''
 								singleEkpoModel.ZINSCONF = 'X';
 								singleEkpoModel.ZCONFPARZ = 'X'; // per ordini di tipo F prendere il flag da customizing campo: CONFERMA_PARZIALE altrimenti fisso X
-								singleEkpoModel.BESTAE = row.BESTAE;
+								singleEkpoModel.BSTAE = row.BSTAE;
 								body.ekpo.push(singleEkpoModel);
 
 								var singleEkkoModel = {};
