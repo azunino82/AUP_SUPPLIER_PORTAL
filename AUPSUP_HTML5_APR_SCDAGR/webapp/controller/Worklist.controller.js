@@ -9,10 +9,17 @@ sap.ui.define([
 	"sap/ui/core/util/Export",
 	"sap/ui/core/util/ExportTypeCSV",
 	"it/alteaup/supplier/portal/aprvschdagr/AUPSUP_HTML5_APR_SCDAGR/js/Date",
-	"it/alteaup/supplier/portal/aprvschdagr/AUPSUP_HTML5_APR_SCDAGR/js/formatter"
-], function (BaseController, JSONModel, MessageBox, MessageToast, Sorter, Filter, FilterOperator, Export, ExportTypeCSV, Date, Formatter) {
+	"it/alteaup/supplier/portal/aprvschdagr/AUPSUP_HTML5_APR_SCDAGR/js/formatter",
+	"sap/m/Button",	
+	"sap/m/Dialog",
+	"sap/m/Label",
+	"sap/m/Text",
+	"sap/m/TextArea",
+	"sap/m/library",
+], function (BaseController, JSONModel, MessageBox, MessageToast, Sorter, Filter, FilterOperator, Export, ExportTypeCSV, Date, Formatter, Button, Dialog, Label, Text, TextArea, Library) {
 	"use strict";
 	var that = undefined;
+	var ButtonType = Library.ButtonType;
 	return BaseController.extend("it.alteaup.supplier.portal.aprvschdagr.AUPSUP_HTML5_APR_SCDAGR.controller.Worklist", {
 
 		onInit: function () {
@@ -84,7 +91,7 @@ sap.ui.define([
 				this._oResponsivePopover.setModel(oModelFilters, "filterJSONModel");
 			}
 
-			var oTable = this.getView().byId("OrderHeadersTable");
+			/*var oTable = this.getView().byId("OrderHeadersTable");
 			oTable.addEventDelegate({
 				onAfterRendering: function () {
 					var oHeader = this.$().find('.sapMListTblHeaderCell'); //Get hold of table header elements
@@ -93,7 +100,7 @@ sap.ui.define([
 						that.onClick(oID);
 					}
 				}
-			}, oTable);
+			}, oTable);*/
 
 			this.getView().setModel(sap.ui.getCore().getModel("userapi"), "userapi");
 
@@ -337,7 +344,7 @@ sap.ui.define([
 			that.ajaxPost(url, body, function (oData) {
 				that.hideBusyDialog();
 				if (oData) {
-					if (oData.results.EkkoEkpo){
+					if (oData.results.EkkoEkpo) {
 						oData.results.EkkoEkpo.forEach(element => {
 							element.isSelected = false;
 						});
@@ -381,7 +388,7 @@ sap.ui.define([
 					initialFocus: MessageBox.Action.CANCEL,
 					onClose: function (oAction) {
 						if (oAction === MessageBox.Action.OK) {
-							that.onSendData('A');
+							that.onSendData('A', '');
 						}
 					}
 				});
@@ -390,9 +397,13 @@ sap.ui.define([
 			}
 		},
 		onRejectPositions: function () {
-			var oTable = this.getView().byId("OrderHeadersTable");
-			var itemIndex = oTable.indexOfItem(oTable.getSelectedItem());
-			if (itemIndex !== -1) {
+			var oModel = that.getModel("SchedAgreeJSONModel").getData().results.EkkoEkpo;
+			var itemIndex = 0;
+			oModel.forEach(element => {
+				element.isSelected ? itemIndex++ : itemIndex
+			});
+
+			if (itemIndex > 0) {
 				MessageBox.warning(that.getResourceBundle().getText("MessReject"), {
 					icon: MessageBox.Icon.WARNING,
 					title: "Warning",
@@ -400,7 +411,42 @@ sap.ui.define([
 					initialFocus: MessageBox.Action.CANCEL,
 					onClose: function (oAction) {
 						if (oAction === MessageBox.Action.OK) {
-							that.onSendData('R');
+
+							var oDialog = new Dialog({
+								title: that.getOwnerComponent().getModel("i18n").getResourceBundle().getText("Reject"),
+								type: 'Message',
+								content: [
+									new Label({
+										text: that.getOwnerComponent().getModel("i18n").getResourceBundle().getText("MessReject"),
+										labelFor: 'rejectDialogTextarea'
+									}),
+									new TextArea('rejectDialogTextarea', {
+										width: '100%',
+										placeholder: that.getOwnerComponent().getModel("i18n").getResourceBundle().getText("AddNota")
+									})
+								],
+								beginButton: new Button({
+									type: ButtonType.Emphasized,
+									text: that.getOwnerComponent().getModel("i18n").getResourceBundle().getText("Reject"),
+									press: function () {
+										var sText = sap.ui.getCore().byId('rejectDialogTextarea').getValue();
+										that.onSendData('R', sText);
+										oDialog.close();
+									}
+								}),
+								endButton: new Button({
+									text: that.getOwnerComponent().getModel("i18n").getResourceBundle().getText("close"),
+									press: function () {
+										oDialog.close();
+									}
+								}),
+								afterClose: function () {
+									oDialog.destroy();
+								}
+							});
+
+							oDialog.open();
+
 						}
 					}
 				});
@@ -436,109 +482,28 @@ sap.ui.define([
 			return foundProfilo;
 		},
 
-		onSendData: function (confirmationType) {
-			//	singleEkpoModel.BSTAE = ekpoRow.BSTAE;	
+		onSendData: function (confirmationType, notaReject) {
+
 			var body = {
-				"ekes": [],
-				"eket": [],
-				"ekko": [],
-				"ekpo": [],
-				"confirmType": confirmationType
+				"confirmType": [],
+				"notaReject": notaReject
 			};
-			for (var i = 0; i < that.getView().byId("OrderHeadersTable")._aSelectedPaths.length; i++) {
-				var ind = that.getView().byId("OrderHeadersTable")._aSelectedPaths[i].split("/");
-				ind = ind[3];
-				var ekpoRow = that.getModel("SchedAgreeJSONModel").getData().results.EkkoEkpo[ind];
-				if (ekpoRow !== undefined) {
-					var ekesrow = that.getModel("SchedAgreeJSONModel").getData().results.EketEkes;
-					if (ekesrow !== undefined) {
-						for (var j = 0; j < ekesrow.length; j++) {
-							if ((ekesrow[j].EBELN === ekpoRow.EBELN) && (ekesrow[j].EBELP === ekpoRow.EBELP)) {
-								var singleEkesModel = {};
-								var singleEketModel = {};
 
-								singleEkesModel.ETENS = ekesrow[j].ETENS;
-								singleEketModel.ETENR = ekesrow[j].ETENS;
-								singleEkesModel.EBELN = ekesrow[j].EBELN;
-								singleEketModel.EBELN = ekesrow[j].EBELN;
-								singleEkesModel.EBELP = ekesrow[j].EBELP;
-								singleEketModel.EBELP = ekesrow[j].EBELP;
-								singleEkesModel.EBTYP = ekesrow[j].EBTYP;
-								singleEkesModel.EINDT = ekesrow[j].EINDT;
-								singleEketModel.EINDT = ekesrow[j].EINDT;
-								singleEkesModel.LPEIN = ekesrow[j].LPEIN;
-								singleEketModel.LPEIN = ekesrow[j].LPEIN;
-								singleEkesModel.MENGE = ekesrow[j].MENGE;
-								singleEketModel.MENGE = ekesrow[j].MENGE;
-								singleEketModel.WEMNG = ekesrow[j].WEMNG;
-								singleEketModel.MNG02 = ekesrow[j].MNG02;
-								singleEkesModel.UZEIT = ekesrow[j].UZEIT;
-								singleEkesModel.XBLNR = ekesrow[j].XBLNR;
-								body.ekes.push(singleEkesModel);
-								body.eket.push(singleEketModel);
-							}
-						}
-					}
-					var singleEkpoModel = {};
-					singleEkpoModel.PART1 = "";
-					var profiloConferma = that.filterProfiliConferma(ekpoRow.BSTAE, ekpoRow.UPDKZ);
-					if (profiloConferma !== undefined && profiloConferma.PARZIALE_QUANTITA !== undefined) {
-						singleEkpoModel.PART1 = profiloConferma.PARZIALE_QUANTITA;
-					}
+			var oModel = that.getModel("SchedAgreeJSONModel").getData().results.EkkoEkpo;
+			oModel.forEach(element => {
+				var elem = {};
+				elem.EBELN = element.EBELN;
+				elem.EBELP = element.EBELP;
+				elem.CONF_TYPE = confirmationType,
+				elem.BSTYP = 'L'; // per piani di consegna
 
-					singleEkpoModel.EBELN = ekpoRow.EBELN;
-					singleEkpoModel.EBELP = ekpoRow.EBELP;
-					if (ekpoRow.MENGE !== undefined && ekpoRow.MENGE !== null) {
-						singleEkpoModel.MENGE = ekpoRow.MENGE;
-					} else {
-						if (ekpoRow.MENGE_ORIGINAL !== undefined && ekpoRow.MENGE_ORIGINAL !== null) {
-							singleEkpoModel.MENGE = ekpoRow.MENGE_ORIGINAL;
-						}
-					}
-					singleEkpoModel.MEINS = "";
-					singleEkpoModel.NETPR = ekpoRow.NETPR;
-					singleEkpoModel.PEINH = ekpoRow.PEINH;
-					singleEkpoModel.KSCHL = ekpoRow.KSCHL;
-					singleEkpoModel.BPRME = "";
-					singleEkpoModel.BPUMZ = "0";
-					singleEkpoModel.BPUMN = "0";
-					singleEkpoModel.UMREZ = "0";
-					singleEkpoModel.UMREN = "0";
-					singleEkpoModel.LABNR = "";
-					singleEkpoModel.UPDKZ = ekpoRow.UPDKZ;
+				body.confirmType.push(elem);
+			});
 
-					singleEkpoModel.ZCUSTOM01 = "";
-					singleEkpoModel.ZCUSTOM02 = "";
-					singleEkpoModel.ZCUSTOM03 = "";
-					singleEkpoModel.ZCUSTOM04 = "";
-					singleEkpoModel.ZCUSTOM05 = "";
-					singleEkpoModel.ZCUSTOM06 = "";
-					singleEkpoModel.ZCUSTOM07 = "";
-					singleEkpoModel.ZCUSTOM08 = "";
-					singleEkpoModel.ZCUSTOM09 = "";
-					singleEkpoModel.ZCUSTOM10 = "";
-					body.ekpo.push(singleEkpoModel);
-
-					var singleEkkoModel = {};
-					singleEkkoModel.EBELN = ekpoRow.EBELN;
-					singleEkkoModel.LIFNR = ekpoRow.LIFNR;
-					singleEkkoModel.ZCUSTOM01 = "";
-					singleEkkoModel.ZCUSTOM02 = "";
-					singleEkkoModel.ZCUSTOM03 = "";
-					singleEkkoModel.ZCUSTOM04 = "";
-					singleEkkoModel.ZCUSTOM05 = "";
-					singleEkkoModel.ZCUSTOM06 = "";
-					singleEkkoModel.ZCUSTOM07 = "";
-					singleEkkoModel.ZCUSTOM08 = "";
-					singleEkkoModel.ZCUSTOM09 = "";
-					singleEkkoModel.ZCUSTOM10 = "";
-					body.ekko.push(singleEkkoModel);
-				}
-			}
 			//Chiamata al servizio per la conferma
-			var url = "/SupplierPortal_OrdersManagement/xsOdata/ConfirmOrders.xsjs";
+			var url = "/backend/OrdersManagement/ConfirmReject";
 			that.showBusyDialog();
-			that.ajaxPost(url, body, "/SupplierPortal_Utils", function (oData) { // funzione generica su BaseController
+			that.ajaxPost(url, body, function (oData) { // funzione generica su BaseController
 				that.hideBusyDialog();
 				if (oData) {
 					if (oData.errLog) {
@@ -954,7 +919,7 @@ sap.ui.define([
 		onConfirmApproveReject: function () {
 			// TODO ANCORA DA FINIRE
 			var modelData = that.getView().setModel(oModel, "SchedAgrToApproveRejectJSONModel");
-			if(modelData !== undefined && modelData.results !== undefined){
+			if (modelData !== undefined && modelData.results !== undefined) {
 
 				MessageBox.warning(that.getResourceBundle().getText("MSG_Confirm_Reject_Text"), {
 					icon: MessageBox.Icon.WARNING,
@@ -967,7 +932,7 @@ sap.ui.define([
 								"ekko": [],
 								"ekpo": [],
 								"ekes": [],
-								"notaReject":"",
+								"notaReject": "",
 								"confirmType": ""
 							};
 							var ekpoRow = modelData.results;
@@ -975,10 +940,10 @@ sap.ui.define([
 								var row = ekpoRow[i];
 
 								// RIGA APPROVATA O RIFIUTATA
-								if(row.APPROVE === true){
-									
+								if (row.APPROVE === true) {
+
 								}
-								
+
 								var singleEkpoModel = {};
 								singleEkpoModel.EBELN = row.EBELN;
 								singleEkpoModel.EBELP = row.EBELP;
@@ -1027,8 +992,8 @@ sap.ui.define([
 								singleEkkoModel.ZCUSTOM10 = row.ZCUSTOM10;
 								body.ekko.push(singleEkkoModel);
 							}
-							
-	
+
+
 							var url = "/backend/OrdersManagement/ConfirmOrders";
 							that.showBusyDialog();
 							that.ajaxPost(url, body, function (oData) {
@@ -1060,23 +1025,23 @@ sap.ui.define([
 													onClose: function () {
 														that.onCloseOrderPositions();
 													} // default
-	
+
 												});
 											}
 										}
-	
+
 									} else {
 										MessageBox.success(that.getResourceBundle().getText("correctConfirmPositions"), {
 											title: "Success", // default
 											onClose: function () {
 												that.onCloseOrderPositions();
 											} // default
-	
+
 										});
-	
+
 									}
 								}
-	
+
 							});
 						}
 					}

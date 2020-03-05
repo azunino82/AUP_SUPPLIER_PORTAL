@@ -207,6 +207,13 @@
 								</subSections>
 							</ObjectPageSection>
 						</sections>
+						<footer>
+							<m:Toolbar>
+								<m:ToolbarSpacer/>
+								<m:Button type="Reject" text="{i18n>Reject}" press="onRejectPositions"/>
+								<m:Button type="Accept" text="{i18n>Confirm}" press="onConfirmPositions"/>
+							</m:Toolbar>
+						</footer>						
 					</ObjectPageLayout>
 				</m:Page>
 			</m:pages>
