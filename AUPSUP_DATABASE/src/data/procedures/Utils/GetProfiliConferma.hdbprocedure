@@ -1,5 +1,5 @@
 PROCEDURE "AUPSUP_DATABASE.data.procedures.Utils::GetProfiliConferma" (
-IN userid NVARCHAR(20),
+IN userid NVARCHAR(250),
 IN BSTAE NVARCHAR(4),/*Profilo conferma sap*/
 OUT out_table "AUPSUP_DATABASE.data.structures.Utils::PROFILI_CONFERMAStructure" ) 
 	LANGUAGE SQLSCRIPT
