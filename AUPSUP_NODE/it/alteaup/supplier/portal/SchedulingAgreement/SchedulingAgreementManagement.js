@@ -125,10 +125,16 @@ module.exports = function () {
                                 if (OUT_POS_PIANI_CONS !== undefined && OUT_POS_PIANI_CONS !== null && OUT_POS_PIANI_CONS.length > 0) {
                                     for (var i = 0; i < OUT_POS_PIANI_CONS.length; i++) {
                                         var objectCopy = OUT_POS_PIANI_CONS[i]
-
-                                        objectCopy.PRIMO_PERIODO = objectCopy.P1_PROGR_RIC !== '0' ? ((parseFloat(objectCopy.P1_PROGR_CONF) / parseFloat(objectCopy.P1_PROGR_RIC)) * 100).toFixed(2) : 0
-                                        objectCopy.SECONDO_PERIODO = objectCopy.P2_PROGR_RIC !== '0' ? ((parseFloat(objectCopy.P2_PROGR_CONF) / parseFloat(objectCopy.P2_PROGR_RIC)) * 100).toFixed(2) : 0
-
+                                        if (objectCopy.P1_PROGR_RIC !== null){
+                                            objectCopy.PRIMO_PERIODO = objectCopy.P1_PROGR_RIC !== '0' ? ((parseFloat(objectCopy.P1_PROGR_CONF) / parseFloat(objectCopy.P1_PROGR_RIC)) * 100).toFixed(2) : 0
+                                         }else {
+                                            objectCopy.PRIMO_PERIODO = 0
+                                         }
+                                         if (objectCopy.P2_PROGR_RIC !== null){
+                                            objectCopy.SECONDO_PERIODO = objectCopy.P2_PROGR_RIC !== '0' ? ((parseFloat(objectCopy.P2_PROGR_CONF) / parseFloat(objectCopy.P2_PROGR_RIC)) * 100).toFixed(2) : 0
+                                         }else {
+                                            objectCopy.SECONDO_PERIODO = 0
+                                         }
                                         objectCopy.POItemSchedulers = {
                                             results: []
                                         }
@@ -153,6 +159,7 @@ module.exports = function () {
                                                     objectCopy.KDATB = objectCopyEkko.KDATB
                                                     objectCopy.KDATE = objectCopyEkko.KDATE
                                                     objectCopy.BSART = objectCopyEkko.BSART
+                                                    objectCopy.WAERS = objectCopyEkko.WAERS
                                                 }
                                             }
                                         }

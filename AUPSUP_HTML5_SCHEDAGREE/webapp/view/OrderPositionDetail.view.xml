@@ -80,7 +80,7 @@
 														<m:Text text="{OrderPrositionJSONModel>EBELN}"/>
 														<m:Text text="{OrderPrositionJSONModel>EBELP}"/>
 														<m:Text text="{OrderPrositionJSONModel>ETENR}"/>
-														<m:Text text="{ path: 'OrderPrositionJSONModel>EINDT', type: 'it.alteaup.supplier.portal.schedulingagreement.type.Date' }"/>
+														<m:Text text="{ path: 'OrderPrositionJSONModel>EINDT', type: 'it.alteaup.supplier.portal.schedulingagreement.AUPSUP_HTML5_SCHEDAGREE.type.Date' }"/>
 														<m:Text text="{OrderPrositionJSONModel>LPEIN}"/>
 														<m:Text text="{OrderPrositionJSONModel>MENGE}"/>
 														<!--<m:Text text="{OrderPrositionJSONModel>WEMNG}"/>-->
@@ -139,7 +139,7 @@
 														<m:Text text="{OrderPrositionJSONModel>EBELN}"/>
 														<m:Text text="{OrderPrositionJSONModel>EBELP}"/>
 														<m:Text text="{OrderPrositionJSONModel>ETENS}"/>
-														<m:Text text="{ path: 'OrderPrositionJSONModel>EINDT', type: 'it.alteaup.supplier.portal.schedulingagreement.type.Date' }"/>
+														<m:Text text="{ path: 'OrderPrositionJSONModel>EINDT', type: 'it.alteaup.supplier.portal.schedulingagreement.AUPSUP_HTML5_SCHEDAGREE.type.Date' }"/>
 														<m:Text text="{OrderPrositionJSONModel>LPEIN}"/>
 														<m:Text text="{OrderPrositionJSONModel>MENGE}"/>
 														<m:Text text="{OrderPrositionJSONModel>DABMG}"/>

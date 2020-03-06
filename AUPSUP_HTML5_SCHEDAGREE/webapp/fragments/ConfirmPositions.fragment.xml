@@ -69,7 +69,7 @@
 										<Text text="{i18n>ETENR}"/>
 									</Column>
 									<Column>
-										<Text text="{i18n>PROG_CONFERMA}"/>
+										<Text text="{i18n>QTA_CONFERMA}"/>
 									</Column>
 								</columns>
 								<items textAlign="Center">
