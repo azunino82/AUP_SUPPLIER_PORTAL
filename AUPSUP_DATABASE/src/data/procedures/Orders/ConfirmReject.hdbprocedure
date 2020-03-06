@@ -37,14 +37,27 @@ IF counter > 0 THEN
     ON a.EBELN = b.EBELN AND a.EBELP = b.EBELP AND a.BSTYP = b.BSTYP 
     WHERE a.STATUS = 'RC' AND b.CONF_TYPE = 'A' AND a.CONF_TYPE = :TIPO_OPERAZIONE;
 
-    CALL "AUPSUP_DATABASE.data.procedures.Orders::MM00_CONFIRM_ORD" (:userid,:IT_EKKO_CH,:IT_EKPO_CH,:IT_EKES_CH,:E_RETURN);
+    --CALL "AUPSUP_DATABASE.data.procedures.Orders::MM00_CONFIRM_ORD" (:userid,:IT_EKKO_CH,:IT_EKPO_CH,:IT_EKES_CH,:E_RETURN);
+    SELECT COUNT(*) INTO counter FROM :IT_EKPO_CH;
+    IF counter > 0 THEN
+        CALL "AUPSUP_DATABASE.data.virtualProcedures::VIRTUAL_MM00_CONFIRM_ORD"(:IT_EKES_CH,:IT_EKKO_CH,:IT_EKPO_CH,:E_RETURN);
 
-    SELECT COUNT(*) INTO counter FROM :E_RETURN WHERE MSGTY = 'E';
-    IF (counter = 0) THEN
-        SELECT COUNT(*) into counter FROM :IT_EKPO_CH;
-        IF (counter>0) THEN
-            DELETE FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" AS table1 WHERE (table1.EBELN,table1.EBELP) IN (SELECT EBELN,EBELP FROM :IT_EKPO_CH);
-        END IF;						
+        SELECT COUNT(*) INTO counter FROM :E_RETURN WHERE MSGTY = 'E';
+        IF (counter = 0) THEN
+            SELECT COUNT(*) into counter FROM :IT_EKPO_CH;
+            IF (counter>0) THEN
+                DELETE FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" AS table1 WHERE (table1.EBELN,table1.EBELP) IN (SELECT EBELN,EBELP FROM :IT_EKPO_CH) AND table1.CONF_TYPE = :TIPO_OPERAZIONE;
+            END IF;					
+
+        BEGIN
+            DECLARE CURSOR cursorApproveReject FOR SELECT * FROM :IT_EKPO_CH;
+
+            FOR cursorRow AS cursorApproveReject DO
+                UPDATE "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKKO_EKPO" SET STATUS = 'AP', MODIFY_STATUS_DATE = :V_CURRENT_TIMESTAMP WHERE EBELN = cursorRow.EBELN AND EBELP = cursorRow.EBELP AND CONF_TYPE = :TIPO_OPERAZIONE AND (MODIFY_STATUS_DATE = null OR MODIFY_STATUS_DATE = '') ;				
+            END FOR;
+        END;
+    END IF;
+
     END IF;
 
     --------------- UTTE LE POSIZIONI DA RIFIUTARE ---------------------------------
@@ -58,11 +71,11 @@ IF counter > 0 THEN
         DECLARE CURSOR cursorApproveReject FOR SELECT * FROM :IT_EKPO_CH;
 
         FOR cursorRow AS cursorApproveReject DO
-            UPDATE "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKKO_EKPO" SET STATUS = 'RF', MODIFY_STATUS_DATE = :V_CURRENT_TIMESTAMP WHERE EBELN = cursorRow.EBELN AND EBELP = cursorRow.EBELP;
+            UPDATE "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKKO_EKPO" SET STATUS = 'RF', MODIFY_STATUS_DATE = :V_CURRENT_TIMESTAMP WHERE EBELN = cursorRow.EBELN AND EBELP = cursorRow.EBELP AND CONF_TYPE = :TIPO_OPERAZIONE AND (MODIFY_STATUS_DATE = null OR MODIFY_STATUS_DATE = '');
             
             /*SEND NOTIFICATIONS*/
             /*cerco i plant delle posizioni verso le quali inviare le notifiche*/
-            UPSERT #LIFNR SELECT DISTINCT LIFNR,EBELN,EBELP FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKKO_EKPO" WHERE EBELN = cursorRow.EBELN AND EBELP = cursorRow.EBELP AND STATUS = 'RF';
+            UPSERT #LIFNR SELECT DISTINCT LIFNR,EBELN,EBELP FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKKO_EKPO" WHERE EBELN = cursorRow.EBELN AND EBELP = cursorRow.EBELP AND STATUS = 'RF' AND CONF_TYPE = :TIPO_OPERAZIONE;
                     
             /*SEND NOTIFICATIONS*/
             SELECT COUNT(*) INTO counter FROM #LIFNR;
@@ -75,7 +88,7 @@ IF counter > 0 THEN
                 END;
             END IF;		
             
-            DELETE FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" AS table1 WHERE (table1.EBELN,table1.EBELP) IN (SELECT EBELN,EBELP FROM :IT_EKPO_CH);			
+            DELETE FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" AS table1 WHERE (table1.EBELN,table1.EBELP) IN (SELECT EBELN,EBELP FROM :IT_EKPO_CH) AND table1.CONF_TYPE = :TIPO_OPERAZIONE;
             DELETE FROM #LIFNR;					
         END FOR;
     END;
