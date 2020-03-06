@@ -96,6 +96,7 @@ app.post('/ConfirmReject', function (req, res) {
     var notaReject = ''
     var userid = req.user.id
     var confirmTypes = []
+    var tipoOperazione = ''
 
     if (body !== undefined && body !== '' && body !== null) {       
         if (body.notaReject !== null && body.notaReject !== undefined && body.notaReject !== '') {
@@ -112,7 +113,10 @@ app.post('/ConfirmReject', function (req, res) {
                 })
             }
             confirmTypes = oConfType
-        }        
+        }      
+        if (body.tipoOperazione !== null && body.tipoOperazione !== undefined && body.tipoOperazione !== '') {
+            tipoOperazione = body.tipoOperazione
+        }          
 
         hdbext.createConnection(req.tenantContainer, (err, client) => {
             if (err) {
@@ -125,7 +129,7 @@ app.post('/ConfirmReject', function (req, res) {
                         client.close()
                         return res.status(500).send(stringifyObj(_err))
                     }
-                    sp(userid, confirmTypes, notaReject, (err, parameters, results) => {
+                    sp(userid, confirmTypes, tipoOperazione, notaReject, (err, parameters, results) => {
                         console.log('---->>> CLIENT END ConfirmReject <<<<<-----')
                         client.close()
                         if (err) {

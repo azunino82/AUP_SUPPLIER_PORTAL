@@ -477,7 +477,7 @@ module.exports = function () {
       })
     }
   })
-  
+
   // GET VENDOR LIST
 
   app.post('/GetVendorList', function (req, res) {
@@ -486,27 +486,28 @@ module.exports = function () {
     console.log('INPUT BODY ==========> ' + JSON.stringify(body))
 
     if (body !== undefined && body !== '' && body !== null) {
-		var userid = req.user.id
-		var name1 = req.user.I_NAME1 !== undefined && req.user.I_NAME1 !== '' ? req.user.NAME1 : ''
-		var stceg = req.user.I_NAME1 !== undefined && req.user.I_STCEG !== '' ? req.user.I_STCEG : ''
-		var lifnr = []
-		var ekorg = []
+      var userid = req.user.id
+      var name1 = req.user.I_NAME1 !== undefined && req.user.I_NAME1 !== '' ? req.user.NAME1 : ''
+      var stceg = req.user.I_NAME1 !== undefined && req.user.I_STCEG !== '' ? req.user.I_STCEG : ''
+      var lifnr = []
+      var ekorg = []
 
-		if (body.lifnr !== null && body.lifnr !== '') {
-			var oLifnr = []
-			for (var i = 0; i < body.lifnr.length; i++){
-				oLifnr.push({ LIFNR: body.lifnr[i] })
-			}
-			lifnr = oLifnr
-		}
+      if (body.lifnr !== null && body.lifnr !== '') {
+        var oLifnr = []
+        for (var i = 0; i < body.lifnr.length; i++) {
+          oLifnr.push({ LIFNR: body.lifnr[i] })
+        }
+        lifnr = oLifnr
+      }
 
-		if (body.ekorg !== null && body.ekorg !== '') {
-			var oEkorg = []
-			for (var i = 0; i < body.ekorg.length; i++) {
-				oEkorg.push({ EKORG: body.ekorg[i] })
-			}
-			ekorg = oEkorg
-		}
+      if (body.ekorg !== null && body.ekorg !== '') {
+        var oEkorg = []
+        // eslint-disable-next-line no-redeclare
+        for (var i = 0; i < body.ekorg.length; i++) {
+          oEkorg.push({ EKORG: body.ekorg[i] })
+        }
+        ekorg = oEkorg
+      }
 
       hdbext.createConnection(req.tenantContainer, (err, client) => {
         if (err) {

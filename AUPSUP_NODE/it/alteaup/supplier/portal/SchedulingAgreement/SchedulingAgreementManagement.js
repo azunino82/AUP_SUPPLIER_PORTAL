@@ -1008,7 +1008,7 @@ module.exports = function () {
                             console.error('ERROR GetConfermeRifiuti: ' + stringifyObj(err))
                             return res.status(500).send('ERROR GetConfermeRifiutiForQuant: ' + stringifyObj(err))
                         } else {
-                            console.log('OK GetConfermeRifiuti results: ' + (stringifyObj(results)))
+                            console.log('OK GetConfermeRifiutiForQuant results: ' + (stringifyObj(results)))
 
                             return res.status(200).send(
                                 { results: results }
