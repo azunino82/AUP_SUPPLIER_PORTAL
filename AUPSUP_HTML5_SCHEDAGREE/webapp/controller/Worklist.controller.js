@@ -80,7 +80,7 @@ sap.ui.define([
 
 				that.getPlants();
 				that.getPurchaseOrganizations();
-				that.getUserInfo();
+				//that.getUserInfo();
 				that.getMetasupplier();
 				that.getPurchaseGroup();
 				that.getAllProfiliConsegna();
@@ -134,7 +134,9 @@ sap.ui.define([
 			this.getView().setModel(sap.ui.getCore().getModel("userapi"), "userapi");
 
 		},
-
+		onAfterRendering: function () {
+			that.getUserInfo();
+		},
 		onClick: function (oID) {
 			$('#' + oID).click(function (oEvent) { //Attach Table Header Element Event
 				var oTarget = oEvent.currentTarget; //Get hold of Header Element
