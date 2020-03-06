@@ -127,13 +127,13 @@ module.exports = function () {
                                         var objectCopy = OUT_POS_PIANI_CONS[i]
                                         if (objectCopy.P1_PROGR_RIC !== null) {
                                             console.log('LS P1_PROGR_RIC: ' + objectCopy.P1_PROGR_RIC)
-                                            objectCopy.PRIMO_PERIODO = objectCopy.P1_PROGR_RIC !== 0 ? ((parseFloat(objectCopy.P1_PROGR_CONF) / parseFloat(objectCopy.P1_PROGR_RIC)) * 100).toFixed(2) : 0
+                                            objectCopy.PRIMO_PERIODO = parseFloat(objectCopy.P1_PROGR_RIC) > 0 ? ((parseFloat(objectCopy.P1_PROGR_CONF) / parseFloat(objectCopy.P1_PROGR_RIC)) * 100).toFixed(2) : 0
                                          } else {
                                             objectCopy.PRIMO_PERIODO = 0
                                          }
                                          if (objectCopy.P2_PROGR_RIC !== null) {
                                             console.log('LS P1_PROGR_RIC: ' + objectCopy.P2_PROGR_RIC)
-                                            objectCopy.SECONDO_PERIODO = objectCopy.P2_PROGR_RIC !== 0 ? ((parseFloat(objectCopy.P2_PROGR_CONF) / parseFloat(objectCopy.P2_PROGR_RIC)) * 100).toFixed(2) : 0
+                                            objectCopy.SECONDO_PERIODO = parseFloat(objectCopy.P2_PROGR_RIC) > 0 ? ((parseFloat(objectCopy.P2_PROGR_CONF) / parseFloat(objectCopy.P2_PROGR_RIC)) * 100).toFixed(2) : 0
                                          } else {
                                             objectCopy.SECONDO_PERIODO = 0
                                          }

@@ -1044,7 +1044,7 @@ sap.ui.define([
 							"EINDT": "",
 							"MENGE": "",
 							"ETENRS": arrETENR,
-							"EBTYP": mod.POItemSchedulers.results[i].EBTYP,
+							"EBTYP": mod.POItemSchedulers.results[i].CAT_CONFERMA,
 						};
 						if (mod !== undefined && mod.POItemSchedulers.results !== undefined) {
 							mod.POItemSchedulers.results.push(schedulation);
@@ -1077,6 +1077,7 @@ sap.ui.define([
 							oSchedulationsArray.push(schedulation);
 							mod.POItemSchedulers.results = oSchedulationsArray;
 						}
+						//that.getSchedulationsStatus(mod, schedulation.EBTYP);
 						that.getModel("SelectedPositionsJSONModel").refresh();
 					}
 
@@ -1091,7 +1092,7 @@ sap.ui.define([
 						"EINDT": "",
 						"MENGE": "",
 						"ETENRS": arrETENR,
-						"EBTYP": mod.profiliConferma[0].EBTYP,
+						"EBTYP": mod.profiliConferma[0].CAT_CONFERMA,
 					};
 					if (mod !== undefined && mod.POItemSchedulers.results !== undefined) {
 						mod.POItemSchedulers.results.push(schedulation);
@@ -1100,6 +1101,10 @@ sap.ui.define([
 						oSchedulationsArray.push(schedulation);
 						mod.POItemSchedulers.results = oSchedulationsArray;
 					}
+					mod.UPDKZ = mod.profiliConferma[0].TIPO_CONFERMA;
+					// CALCOLO SCHEDULAZIONI COLORATE
+					that.getSchedulationsStatus(mod, schedulation.EBTYP);
+					that.getModel("SelectedPositionsJSONModel").refresh();
 				}
 			}
 		},
