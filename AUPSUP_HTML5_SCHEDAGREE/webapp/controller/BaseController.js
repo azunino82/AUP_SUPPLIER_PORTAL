@@ -231,7 +231,17 @@ sap.ui.define([
 				}
 			});
 
-		}		
+		},
+		pad_with_zeroes : function (number, length) {
+			// aggiunge 000 davanti a striga
+			var my_string = '' + number;
+			while (my_string.length < length) {
+				my_string = '0' + my_string;
+			}
+		
+			return my_string;
+		
+		}
 
 
 	});

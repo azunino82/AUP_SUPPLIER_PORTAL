@@ -868,7 +868,7 @@ sap.ui.define([
 				oIndexs = oIndexs[oIndexs.length - 1];
 				if (mod.MODIFICA_PREZZO !== undefined && mod.MODIFICA_PREZZO !== "") {
 					if ((that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].KONNR === undefined || (that.getView().getModel(
-							"SelectedPositionsJSONModel").getData()[oIndexs].KONNR === "")) || (that.getView().getModel("SelectedPositionsJSONModel").getData()[
+						"SelectedPositionsJSONModel").getData()[oIndexs].KONNR === "")) || (that.getView().getModel("SelectedPositionsJSONModel").getData()[
 							oIndexs].KTPNR === undefined || (that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].KTPNR === "00000")))
 						that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].editPrice = true;
 				}
@@ -1007,8 +1007,8 @@ sap.ui.define([
 					// Apertura campo prezzo per posizione
 					if (selectedProfiloConfermaModel !== undefined && selectedProfiloConfermaModel.MODIFICA_PREZZO !== undefined)
 						that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].editPrice = selectedProfiloConfermaModel.MODIFICA_PREZZO === 'X' ? true : false;
-						that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].KSCHL = selectedProfiloConfermaModel.TIPO_COND_PREZZO;
-						// FINE DELLA SOVRASCRITTURA
+					that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].KSCHL = selectedProfiloConfermaModel.TIPO_COND_PREZZO;
+					// FINE DELLA SOVRASCRITTURA
 
 					// AGGIUNGO LA RIGA NELLE SCHEDULAZIONI
 
@@ -1018,8 +1018,19 @@ sap.ui.define([
 				}
 
 			});
+			
+			// PER LE CONFERME NON PARZIALI POSSO CONFERMARE SOLO LE CONFERME CHE HANNO DELTA QUANTITA > 0
+			if (mod.profiliConferma.length > 1)
+				oSelectDialog1.open();
+			else{
+				mod.UPDKZ = mod.profiliConferma[0].TIPO_CONFERMA;
+				that.getSchedulationsStatus(mod, mod.profiliConferma[0].CAT_CONFERMA);
+			}
+				
 
-			var arrETENR = [];
+
+
+			/* var arrETENR = [];
 			if (mod.SchedulationsStatus !== undefined) {
 				for (var i = 0; i < mod.SchedulationsStatus.length; i++) {
 					var deltaMenge = (parseFloat(mod.SchedulationsStatus[i].MENGE) - parseFloat(mod.SchedulationsStatus[i].QTA_CONFERMATA));
@@ -1107,6 +1118,7 @@ sap.ui.define([
 					that.getModel("SelectedPositionsJSONModel").refresh();
 				}
 			}
+			*/
 		},
 
 		onDeleteSchedulation: function (oEvent) {
@@ -1145,8 +1157,8 @@ sap.ui.define([
 
 						sommaQuantitaSchedulazioni = sommaQuantitaSchedulazioni + parseInt(model[i].POItemSchedulers.results[j].MENGE);
 						if ((model[i].POItemSchedulers.results[j]) && ((model[i].POItemSchedulers.results[j].EINDT == "") || (model[i].POItemSchedulers
-								.results[
-									j].MENGE == ""))) {
+							.results[
+							j].MENGE == ""))) {
 							err = that.getResourceBundle().getText("ERR_Schedulations_Mandatory");
 							contatoreRighe = contatoreRighe + 1;
 
@@ -1272,9 +1284,20 @@ sap.ui.define([
 						};
 						var ekpoRow = that.getModel("SelectedPositionsJSONModel").getData();
 						if (ekpoRow !== undefined) {
+							var lastETENR = '0000';
 							for (var i = 0; i < ekpoRow.length; i++) {
 								var row = ekpoRow[i];
 								if (row.POItemSchedulers.results !== undefined) {
+
+									// AZ prendo l'ultimo ETENR inserito per poi metterlo nelle righe che non ce l'hanno
+									row.POItemSchedulers.results.forEach(element => {
+										if (element.ETENR !== undefined && element.ETENR !== '')
+											lastETENR = element.ETENR;
+									});
+									var ETENRToInt = parseInt(lastETENR);
+									ETENRToInt = ETENRToInt + 1;
+									lastETENR = that.pad_with_zeroes(ETENRToInt, 4);
+
 									for (var j = 0; j < row.POItemSchedulers.results.length; j++) {
 
 										// AZ 03/12/2019 non passare a sap le schedulazioni precedentemente inserite
@@ -1304,17 +1327,17 @@ sap.ui.define([
 										} else {
 											singleEkesModel.LPEIN = row.POItemSchedulers.results[j].LPEIN;
 										}
-										singleEkesModel.MENGE = row.POItemSchedulers.results[j].MENGE;
+										singleEkesModel.MENGE = parseInt(row.POItemSchedulers.results[j].MENGE);
 
 										if (row.POItemSchedulers.results[j].UZEIT === undefined) {
 											singleEkesModel.UZEIT = "000000";
 										} else {
 											singleEkesModel.UZEIT = row.POItemSchedulers.results[j].UZEIT;
 										}
-										if (row.POItemSchedulers.results[j].XBLNR === undefined || row.POItemSchedulers.results[j].XBLNR === "") {
-											singleEkesModel.XBLNR = sap.ui.getCore().byId("XBLNR").getValue();
+										if (row.POItemSchedulers.results[j].ETENR === undefined || row.POItemSchedulers.results[j].ETENR === "") {
+											singleEkesModel.XBLNR = lastETENR;
 										} else {
-											singleEkesModel.XBLNR = row.POItemSchedulers.results[j].XBLNR;
+											singleEkesModel.XBLNR = row.POItemSchedulers.results[j].ETENR;
 										}
 										body.ekes.push(singleEkesModel);
 									}
@@ -1650,8 +1673,8 @@ sap.ui.define([
 					mod.POItemSchedulers.results[j].EINDT = mod.POItemSchedulers.results[j].EINDT.split('-').join('');
 					sommaQuantitaSchedulazioni = sommaQuantitaSchedulazioni + parseFloat(mod.POItemSchedulers.results[j].MENGE);
 					if ((mod.POItemSchedulers.results[j]) && ((mod.POItemSchedulers.results[j].EINDT === "") || (mod.POItemSchedulers
-							.results[
-								j].MENGE === ""))) {
+						.results[
+						j].MENGE === ""))) {
 						err = err + "\n" + that.getResourceBundle().getText("ERR_Schedulations_Mandatory");
 						break;
 					}
@@ -1788,7 +1811,7 @@ sap.ui.define([
 					if (mod.RMOData !== undefined && mod.RMOData.EkkoEkpo !== undefined && mod.RMOData.EkkoEkpo.length > 0) {
 						var EkkoEkpo = mod.RMOData.EkkoEkpo.find(x => x.STATUS === 'RC' && x.UPDKZ === '4' && x.EBELN === mod.EBELN && x.EBELP ===
 							mod
-							.EBELP);
+								.EBELP);
 						if (EkkoEkpo !== undefined)
 							trovato = true;
 					}
@@ -1836,7 +1859,7 @@ sap.ui.define([
 					if (mod.RMOData !== undefined && mod.RMOData.EkkoEkpo !== undefined && mod.RMOData.EkkoEkpo.length > 0) {
 						var EkkoEkpo = mod.RMOData.EkkoEkpo.find(x => x.STATUS === 'RC' && x.UPDKZ === '4' && x.EBELN === mod.EBELN && x.EBELP ===
 							mod
-							.EBELP);
+								.EBELP);
 						if (EkkoEkpo !== undefined)
 							trovato = true;
 					}
@@ -2201,17 +2224,17 @@ sap.ui.define([
 			var footer = new sap.m.Bar({
 				contentLeft: [],
 				contentMiddle: [new sap.m.Button({
-						text: "Cancel",
-						press: function () {
-							that.onCancelPersonalization();
-						}
-					}),
-					new sap.m.Button({
-						text: that.getResourceBundle().getText("Comfirm"),
-						press: function () {
-							that.onSavePersonalization();
-						}
-					})
+					text: "Cancel",
+					press: function () {
+						that.onCancelPersonalization();
+					}
+				}),
+				new sap.m.Button({
+					text: that.getResourceBundle().getText("Comfirm"),
+					press: function () {
+						that.onSavePersonalization();
+					}
+				})
 				]
 
 			});
@@ -2284,19 +2307,19 @@ sap.ui.define([
 		},
 
 		onGetOdataColumns: function () {
-		// Implementare il servizio che in AMA è stato creato come "VariantsService.xsodata", inserire poi il model nel Manifest
-			
-		//	var oModelData = that.getOwnerComponent().getModel("VariantsModel");
-		//	oModelData.metadataLoaded().then(
-		//		that.onMetadataLoaded.bind(that, oModelData));
-		var columModel = {"EBELN":true,"EBELP":true,"LIFNR":true,"NAME1":true,"MATNR":true,"TXZ01":true,"IDNLF":true,"MENGE":true,"MEINS":true,"WAERS":true,"PRIMO_PERIODO":true,"SECONDO_PERIODO":true};
+			// Implementare il servizio che in AMA è stato creato come "VariantsService.xsodata", inserire poi il model nel Manifest
+
+			//	var oModelData = that.getOwnerComponent().getModel("VariantsModel");
+			//	oModelData.metadataLoaded().then(
+			//		that.onMetadataLoaded.bind(that, oModelData));
+			var columModel = { "EBELN": true, "EBELP": true, "LIFNR": true, "NAME1": true, "MATNR": true, "TXZ01": true, "IDNLF": true, "MENGE": true, "MEINS": true, "WAERS": true, "PRIMO_PERIODO": true, "SECONDO_PERIODO": true };
 			var oModel = new JSONModel();
-					oModel.setData(columModel);
-					that.getView().setModel(oModel, "columnVisibilityModel");
+			oModel.setData(columModel);
+			that.getView().setModel(oModel, "columnVisibilityModel");
 
 		},
 		onMetadataLoaded: function (myODataModel) {
-			
+
 
 			var metadata = myODataModel.getServiceMetadata();
 			if (metadata.dataServices.schema[0].entityType) {
