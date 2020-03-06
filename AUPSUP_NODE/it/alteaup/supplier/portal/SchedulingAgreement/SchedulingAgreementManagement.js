@@ -121,18 +121,20 @@ module.exports = function () {
                                 var t_eket = []
                                 var t_ekeh = []
                                 var t_ekek = []
-
+                                console.log('OUT_POS_PIANI_CONS: ' + stringifyObj(err))
                                 if (OUT_POS_PIANI_CONS !== undefined && OUT_POS_PIANI_CONS !== null && OUT_POS_PIANI_CONS.length > 0) {
                                     for (var i = 0; i < OUT_POS_PIANI_CONS.length; i++) {
                                         var objectCopy = OUT_POS_PIANI_CONS[i]
-                                        if (objectCopy.P1_PROGR_RIC !== null){
-                                            objectCopy.PRIMO_PERIODO = objectCopy.P1_PROGR_RIC !== '0' ? ((parseFloat(objectCopy.P1_PROGR_CONF) / parseFloat(objectCopy.P1_PROGR_RIC)) * 100).toFixed(2) : 0
-                                         }else {
+                                        if (objectCopy.P1_PROGR_RIC !== null) {
+                                            console.log('LS P1_PROGR_RIC: ' + objectCopy.P1_PROGR_RIC)
+                                            objectCopy.PRIMO_PERIODO = objectCopy.P1_PROGR_RIC !== 0 ? ((parseFloat(objectCopy.P1_PROGR_CONF) / parseFloat(objectCopy.P1_PROGR_RIC)) * 100).toFixed(2) : 0
+                                         } else {
                                             objectCopy.PRIMO_PERIODO = 0
                                          }
-                                         if (objectCopy.P2_PROGR_RIC !== null){
-                                            objectCopy.SECONDO_PERIODO = objectCopy.P2_PROGR_RIC !== '0' ? ((parseFloat(objectCopy.P2_PROGR_CONF) / parseFloat(objectCopy.P2_PROGR_RIC)) * 100).toFixed(2) : 0
-                                         }else {
+                                         if (objectCopy.P2_PROGR_RIC !== null) {
+                                            console.log('LS P1_PROGR_RIC: ' + objectCopy.P2_PROGR_RIC)
+                                            objectCopy.SECONDO_PERIODO = objectCopy.P2_PROGR_RIC !== 0 ? ((parseFloat(objectCopy.P2_PROGR_CONF) / parseFloat(objectCopy.P2_PROGR_RIC)) * 100).toFixed(2) : 0
+                                         } else {
                                             objectCopy.SECONDO_PERIODO = 0
                                          }
                                         objectCopy.POItemSchedulers = {
@@ -1008,7 +1010,7 @@ module.exports = function () {
                         console.log('---->>> CLIENT END ERR GetConfermeRifiutiForQuant <<<<<-----')
                         return res.status(500).send('CLIENT END ERR GetConfermeRifiuti: ' + stringifyObj(_err))
                     }
-                    sp(userid, ebeln, ebelp, [], (err, parameters, results) => {
+                    sp(userid, ebeln, ebelp, (err, parameters, results) => {
                         console.log('---->>> CLIENT END GetConfermeRifiutiForQuant <<<<<-----')
                         client.close()
                         if (err) {
