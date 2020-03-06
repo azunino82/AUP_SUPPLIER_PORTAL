@@ -1019,9 +1019,23 @@ module.exports = function () {
                         } else {
                             console.log('OK GetConfermeRifiutiForQuant results: ' + (stringifyObj(results)))
 
-                            return res.status(200).send(
-                                { results: results }
-                            )
+                            var outArr = []
+                            var i = 0
+                            results.forEach(element => {
+                                element.RADIO_GRP_NAME = i
+                                if (element.ISTOCONFIRM === 'X') {
+                                    element.ISTOCONFIRM = true
+                                } else {
+                                    if (element.ISTOCONFIRM === '') {
+                                        element.ISTOCONFIRM = false
+                                    }
+                                }
+                                outArr.push(element)
+                                i++
+                            })
+                            return res.status(200).send({
+                                results: outArr
+                            })
                         }
                     })
                 })
