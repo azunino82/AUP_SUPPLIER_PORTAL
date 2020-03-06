@@ -378,7 +378,20 @@ sap.ui.define([
 
 
 		onConfirmPositions: function () {
-			var oTable = this.getView().byId("OrderHeadersTable");
+
+			var oModel = that.getModel("SchedAgreeJSONModel").getData().results.EkkoEkpo;
+			var itemIndex = 0;
+			oModel.forEach(element => {
+				element.isSelected ? itemIndex++ : itemIndex
+			});
+
+			if (itemIndex > 0) {
+				that.onSendData('A', '');
+			} else {
+				MessageBox.error(that.getResourceBundle().getText("ERR_NoOrderSelect"));
+			}
+
+			/*var oTable = this.getView().byId("OrderHeadersTable");
 			var itemIndex = oTable.indexOfItem(oTable.getSelectedItem());
 			if (itemIndex !== -1) {
 				MessageBox.warning((that.getResourceBundle().getText("MessConf")), {
@@ -394,8 +407,9 @@ sap.ui.define([
 				});
 			} else {
 				MessageBox.error(that.getResourceBundle().getText("ERR_NoOrderSelect"));
-			}
+			}*/
 		},
+
 		onRejectPositions: function () {
 			var oModel = that.getModel("SchedAgreeJSONModel").getData().results.EkkoEkpo;
 			var itemIndex = 0;
@@ -480,6 +494,77 @@ sap.ui.define([
 				});
 			}
 			return foundProfilo;
+		},
+
+		onSendDataForQuantity : function (posToReject,posToApprove,sText){
+			var body = {
+				"confirmType": [],
+				"notaReject": sText,
+				"tipoOperazione": "QUA"
+			};
+
+			if(posToApprove !== undefined && posToApprove.length>0){
+				posToApprove.forEach(element => {
+					var elem = {};
+					elem.EBELN = element.EBELN;
+					elem.EBELP = element.EBELP;
+					elem.CONF_TYPE = 'A',
+					elem.BSTYP = 'L'; // per piani di consegna
+					body.confirmType.push(elem);
+				});
+			}
+			if(posToReject !== undefined && posToReject.length>0){
+				posToReject.forEach(element => {
+					var elem = {};
+					elem.EBELN = element.EBELN;
+					elem.EBELP = element.EBELP;
+					elem.CONF_TYPE = 'R',
+					elem.BSTYP = 'L'; // per piani di consegna
+					body.confirmType.push(elem);
+				});
+			}
+
+			//Chiamata al servizio per la conferma
+			var url = "/backend/OrdersManagement/ConfirmReject";
+			that.showBusyDialog();
+			that.ajaxPost(url, body, function (oData) { // funzione generica su BaseController
+				that.hideBusyDialog();
+				if (oData) {
+					if (oData.errLog) {
+						MessageBox.error(decodeURI(oData.errLog));
+						return;
+					}
+					if (oData.results && oData.results && oData.results.length > 0) {
+						var message = "";
+						$.each(oData.results, function (index, item) {
+							message = item.MESSAGE + " \n " + message;
+						});
+						if (message !== "") {
+							MessageBox.show(message, {
+								onClose: function () {
+									// aggiorno la lista
+									that.onCloseApproveRejectFragment();
+									that.onSearchOrders(); 
+								} // default
+
+							});
+						}
+
+					} else {
+						MessageBox.success(that.getResourceBundle().getText("correctConfirmData"), {
+							title: "Success", // default
+							onClose: function () {
+								// aggiorno la lista
+								that.onCloseApproveRejectFragment();
+								that.onSearchOrders();
+							} // default
+
+						});
+
+					}
+				}
+			});
+
 		},
 
 		onSendData: function (confirmationType, notaReject) {
@@ -861,7 +946,6 @@ sap.ui.define([
 			var mod = that.getModel("SchedAgreeJSONModel").getProperty(oPath);
 
 			var filtri = "";
-			// TODO SERVIZIO 
 			var url = "/backend/SchedulingAgreementManagement/GetConfermeRifiutiForQuant?I_EBELN=" + mod.EBELN +
 				"&I_EBELP=" + mod.EBELP;
 			this.showBusyDialog();
@@ -921,7 +1005,7 @@ sap.ui.define([
 		},
 		onConfirmApproveReject: function () {
 			// TODO ANCORA DA FINIRE
-			var modelData = that.getView().setModel(oModel, "SchedAgrToApproveRejectJSONModel");
+			var modelData = that.getView().getModel("SchedAgrToApproveRejectJSONModel").getData();
 			if (modelData !== undefined && modelData.results !== undefined) {
 
 				MessageBox.warning(that.getResourceBundle().getText("MSG_Confirm_Reject_Text"), {
@@ -931,121 +1015,62 @@ sap.ui.define([
 					initialFocus: MessageBox.Action.CANCEL,
 					onClose: function (oAction) {
 						if (oAction === MessageBox.Action.OK) {
-							var body = {
-								"ekko": [],
-								"ekpo": [],
-								"ekes": [],
-								"notaReject": "",
-								"confirmType": ""
-							};
-							var ekpoRow = modelData.results;
-							for (var i = 0; i < ekpoRow.length; i++) {
-								var row = ekpoRow[i];
 
-								// RIGA APPROVATA O RIFIUTATA
-								if (row.APPROVE === true) {
-
+							// 1 controllo se ci sono righe da rifiutare così capisco se devo esporre la popup con la nota
+							var posToReject = [];
+							var posToApprove = [];
+							modelData.results.forEach(element => {
+								if (element.REJECT === true) {
+									posToReject.push(element);
 								}
+								if (element.APPROVE === true) {
+									posToApprove.push(element);
+								}
+							});
 
-								var singleEkpoModel = {};
-								singleEkpoModel.EBELN = row.EBELN;
-								singleEkpoModel.EBELP = row.EBELP;
-								singleEkpoModel.MENGE = row.MENGE;
-								singleEkpoModel.MEINS = row.MEINS;
-								singleEkpoModel.NETPR = row.NETPR;
-								singleEkpoModel.PEINH = row.PEINH;
-								if (row.KSCHL === undefined)
-									singleEkpoModel.KSCHL = "";
-								else
-									singleEkpoModel.KSCHL = row.KSCHL;
-								singleEkpoModel.BPRME = row.BPRME;
-								singleEkpoModel.BPUMZ = row.BPUMZ;
-								singleEkpoModel.BPUMN = row.BPUMN;
-								singleEkpoModel.UMREZ = row.UMREZ;
-								singleEkpoModel.UMREN = row.UMREN;
-								singleEkpoModel.LABNR = row.LABNR;
-								if (row.UPDKZ === undefined)
-									singleEkpoModel.UPDKZ = ""; // TODO Verificarne l'esattezza LS "-> Prima era "L"
-								else
-									singleEkpoModel.UPDKZ = row.UPDKZ;
+							if (posToReject !== undefined && posToReject.length > 0) {
+								// c'è almeno una riga da rifiutare quindi faccio inserire la nota di reject
+								var oDialog = new Dialog({
+									title: that.getOwnerComponent().getModel("i18n").getResourceBundle().getText("Reject"),
+									type: 'Message',
+									content: [
+										new Label({
+											text: that.getOwnerComponent().getModel("i18n").getResourceBundle().getText("MessReject"),
+											labelFor: 'rejectDialogTextarea'
+										}),
+										new TextArea('rejectDialogTextarea', {
+											width: '100%',
+											placeholder: that.getOwnerComponent().getModel("i18n").getResourceBundle().getText("AddNota")
+										})
+									],
+									beginButton: new Button({
+										type: ButtonType.Emphasized,
+										text: that.getOwnerComponent().getModel("i18n").getResourceBundle().getText("Reject"),
+										press: function () {
+											var sText = sap.ui.getCore().byId('rejectDialogTextarea').getValue();
+											that.onSendDataForQuantity(posToReject,posToApprove,sText);
+											oDialog.close();
+										}
+									}),
+									endButton: new Button({
+										text: that.getOwnerComponent().getModel("i18n").getResourceBundle().getText("close"),
+										press: function () {
+											oDialog.close();
+										}
+									}),
+									afterClose: function () {
+										oDialog.destroy();
+									}
+								});
 
-								// TODO FARE logiche save
-								singleEkpoModel.ZINVALIDITA = row.ZINVALIDITA;
-								singleEkpoModel.ZFINVALIDATA = row.ZFINVALIDATA;
-								singleEkpoModel.ZMODPREZZO = row.editPrice !== undefined && row.editPrice === true ? 'X' : '';
-								singleEkpoModel.ZMODSCHED = row.editQuantity === true ? 'X' : ''
-								singleEkpoModel.ZINSCONF = 'X';
-								singleEkpoModel.ZCONFPARZ = 'X'; // per ordini di tipo F prendere il flag da customizing campo: CONFERMA_PARZIALE altrimenti fisso X
+								oDialog.open();
 
-								body.ekpo.push(singleEkpoModel);
 
-								var singleEkkoModel = {};
-								singleEkkoModel.EBELN = row.EBELN;
-								singleEkkoModel.LIFNR = row.LIFNR;
-								singleEkkoModel.BSTYP = 'L'; // fisso perchè stiamo confermando i piani di consegna
-								singleEkkoModel.ZCUSTOM01 = row.ZCUSTOM01;
-								singleEkkoModel.ZCUSTOM02 = row.ZCUSTOM02;
-								singleEkkoModel.ZCUSTOM03 = row.ZCUSTOM03;
-								singleEkkoModel.ZCUSTOM04 = row.ZCUSTOM04;
-								singleEkkoModel.ZCUSTOM05 = row.ZCUSTOM05;
-								singleEkkoModel.ZCUSTOM06 = row.ZCUSTOM06;
-								singleEkkoModel.ZCUSTOM07 = row.ZCUSTOM07;
-								singleEkkoModel.ZCUSTOM08 = row.ZCUSTOM08;
-								singleEkkoModel.ZCUSTOM09 = row.ZCUSTOM09;
-								singleEkkoModel.ZCUSTOM10 = row.ZCUSTOM10;
-								body.ekko.push(singleEkkoModel);
+							} else {
+								that.onSendDataForQuantity(posToReject,posToApprove,'');
 							}
 
 
-							var url = "/backend/OrdersManagement/ConfirmOrders";
-							that.showBusyDialog();
-							that.ajaxPost(url, body, function (oData) {
-								that.hideBusyDialog();
-								if (oData) {
-									if (oData.errLog) {
-										MessageBox.error(decodeURI(oData.errLog));
-										return;
-									}
-									if (oData.results && oData.results && oData.results.length > 0) {
-										var messageError = "";
-										var messageWarning = "";
-										$.each(oData.results, function (index, item) {
-											if (item.MSGTY !== undefined && item.MSGTY === 'E')
-												messageError = item.MESSAGE + " \n " + messageError;
-											if (item.MSGTY !== undefined && (item.MSGTY === 'W' || item.MSGTY === 'I'))
-												messageWarning = item.MESSAGE + " \n " + messageWarning;
-										});
-										if (messageError !== "" && messageWarning !== "") {
-											MessageBox.error(messageError + "\n" + messageWarning);
-										} else {
-											if (messageError !== "")
-												MessageBox.error(messageError);
-											if (messageWarning !== "")
-												MessageBox.warning(messageWarning);
-											if (messageError === "" && messageWarning === "") {
-												MessageBox.success(that.getResourceBundle().getText("correctConfirmPositions"), {
-													title: "Success", // default
-													onClose: function () {
-														that.onCloseOrderPositions();
-													} // default
-
-												});
-											}
-										}
-
-									} else {
-										MessageBox.success(that.getResourceBundle().getText("correctConfirmPositions"), {
-											title: "Success", // default
-											onClose: function () {
-												that.onCloseOrderPositions();
-											} // default
-
-										});
-
-									}
-								}
-
-							});
 						}
 					}
 				});

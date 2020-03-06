@@ -13,12 +13,6 @@
 						</OverflowToolbar>
 					</headerToolbar>
 					<columns>
-						<Column>
-							<Text text="{i18n>date}"/>
-						</Column>
-						<Column>
-							<Text text="{i18n>qtaRichiesta}"/>
-						</Column>
 						<Column><Text text="{i18n>dataConferma}"/></Column>
 						<Column><Text text="{i18n>quantitaConferma}"/></Column>
 						<Column><Text text="{i18n>ETENR}"/></Column>
@@ -26,19 +20,19 @@
 						<Column><Text text="{i18n>quantitaRichiesta}"/></Column>
 						<Column><Text text="{i18n>deltaGG}"/></Column>
 						<Column><Text text="{i18n>deltaQuantita}"/></Column>
+						<Column><Text text="{i18n>approva}"/></Column>
 						<Column><Text text="{i18n>rifiuta}"/></Column>
 					</columns>
 					<items textAlign="Center">
 						<ColumnListItem highlight="{path:'SchedAgrToApproveRejectJSONModel>STATUS', formatter:'.onSetSchedulationStatus'}">
 							<cells>
-								<Text text="{ path: 'SchedAgrToApproveRejectJSONModel>EINDT', type: 'it.alteaup.supplier.portal.schedAgrQuantConf.type.Date' }"/>
-								<Text text="{SchedAgrToApproveRejectJSONModel>QTA_RICHIESTA}"/>
-								<Text text="{SchedAgrToApproveRejectJSONModel>QTA_CONFERMATA}"/>
-								<Text text="{SchedAgrToApproveRejectJSONModel>PROG_RICHIESTO}"/>
-								<Text text="{SchedAgrToApproveRejectJSONModel>PROG_CONFERMA}"/>
-								<Text text="{SchedAgrToApproveRejectJSONModel>DELTA_PROGR}"/>
+								<Text text="{ path: 'SchedAgrToApproveRejectJSONModel>EKES_EINDT', type: 'it.alteaup.supplier.portal.aprvschdagr.AUPSUP_HTML5_APR_SCDAGR.type.Date' }"/>
+								<Text text="{SchedAgrToApproveRejectJSONModel>MENGE}"/>
+								<Text text="{SchedAgrToApproveRejectJSONModel>XBLNR}"/>
+								<Text text="{ path: 'SchedAgrToApproveRejectJSONModel>EKET_EINDT', type: 'it.alteaup.supplier.portal.aprvschdagr.AUPSUP_HTML5_APR_SCDAGR.type.Date' }"/>
+								<Text text="{SchedAgrToApproveRejectJSONModel>MENGE}"/>
+								<Text text="{SchedAgrToApproveRejectJSONModel>DELTA_GG}"/>
 								<Text text="{SchedAgrToApproveRejectJSONModel>DELTA_QUANT}"/>
-								<Text text="{SchedAgrToApproveRejectJSONModel>PERC_DIFF_PROGR}"/>
 								<RadioButton groupName="{SchedAgrToApproveRejectJSONModel>RADIO_GRP_NAME}" selected="{SchedAgrToApproveRejectJSONModel>APPROVE}"
 									visible="{SchedAgrToApproveRejectJSONModel>ISTOCONFIRM}"></RadioButton>
 								<RadioButton groupName="{SchedAgrToApproveRejectJSONModel>RADIO_GRP_NAME}" selected="{SchedAgrToApproveRejectJSONModel>REJECT}"
