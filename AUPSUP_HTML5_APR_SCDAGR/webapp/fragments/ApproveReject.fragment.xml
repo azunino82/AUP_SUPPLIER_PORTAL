@@ -19,13 +19,13 @@
 						<Column>
 							<Text text="{i18n>qtaRichiesta}"/>
 						</Column>
-						<Column><Text text="{i18n>qtaConfermata}"/></Column>
-						<Column><Text text="{i18n>progRichiesto}"/></Column>
-						<Column><Text text="{i18n>progConfermato}"/></Column>
-						<Column><Text text="{i18n>deltaProgr}"/></Column>
-						<Column><Text text="{i18n>deltaQuant}"/></Column>
-						<Column><Text text="{i18n>percDiffProgr}"/></Column>
-						<Column><Text text="{i18n>approva}"/></Column>
+						<Column><Text text="{i18n>dataConferma}"/></Column>
+						<Column><Text text="{i18n>quantitaConferma}"/></Column>
+						<Column><Text text="{i18n>ETENR}"/></Column>
+						<Column><Text text="{i18n>dataRichiesta}"/></Column>
+						<Column><Text text="{i18n>quantitaRichiesta}"/></Column>
+						<Column><Text text="{i18n>deltaGG}"/></Column>
+						<Column><Text text="{i18n>deltaQuantita}"/></Column>
 						<Column><Text text="{i18n>rifiuta}"/></Column>
 					</columns>
 					<items textAlign="Center">

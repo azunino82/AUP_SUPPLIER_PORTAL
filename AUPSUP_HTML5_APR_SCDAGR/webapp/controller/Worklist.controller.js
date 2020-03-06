@@ -10,7 +10,7 @@ sap.ui.define([
 	"sap/ui/core/util/ExportTypeCSV",
 	"it/alteaup/supplier/portal/aprvschdagr/AUPSUP_HTML5_APR_SCDAGR/js/Date",
 	"it/alteaup/supplier/portal/aprvschdagr/AUPSUP_HTML5_APR_SCDAGR/js/formatter",
-	"sap/m/Button",	
+	"sap/m/Button",
 	"sap/m/Dialog",
 	"sap/m/Label",
 	"sap/m/Text",
@@ -486,18 +486,21 @@ sap.ui.define([
 
 			var body = {
 				"confirmType": [],
-				"notaReject": notaReject
+				"notaReject": notaReject,
+				"tipoOperazione": "PRZ"
 			};
 
 			var oModel = that.getModel("SchedAgreeJSONModel").getData().results.EkkoEkpo;
 			oModel.forEach(element => {
-				var elem = {};
-				elem.EBELN = element.EBELN;
-				elem.EBELP = element.EBELP;
-				elem.CONF_TYPE = confirmationType,
-				elem.BSTYP = 'L'; // per piani di consegna
+				if (element.isSelected) {
+					var elem = {};
+					elem.EBELN = element.EBELN;
+					elem.EBELP = element.EBELP;
+					elem.CONF_TYPE = confirmationType,
+						elem.BSTYP = 'L'; // per piani di consegna
 
-				body.confirmType.push(elem);
+					body.confirmType.push(elem);
+				}
 			});
 
 			//Chiamata al servizio per la conferma
