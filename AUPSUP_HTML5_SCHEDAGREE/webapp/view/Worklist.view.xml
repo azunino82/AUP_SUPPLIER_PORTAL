@@ -117,7 +117,7 @@
 									<subSections>
 										<ObjectPageSubSection >
 											<m:Table id="OrderHeadersTable"
-												items="{ path: 'OrderJSONModel>/results', sorter: [{ path: 'PRIMO_PERIODO', ascending: true } , { path: 'SECONDO_PERIODO', ascending: true }]}"
+												items="{ path: 'OrderJSONModel>/results', sorter: { path: 'PRIMO_PERIODO', ascending: true }}"
 												itemPress="onRowSelectionChange" growing="true" growingThreshold="500" growingScrollToLoad="false">
 												<m:headerToolbar>
 													<m:OverflowToolbar>

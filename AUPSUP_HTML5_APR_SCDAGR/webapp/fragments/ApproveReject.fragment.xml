@@ -16,6 +16,7 @@
 						<Column><Text text="{i18n>dataConferma}"/></Column>
 						<Column><Text text="{i18n>quantitaConferma}"/></Column>
 						<Column><Text text="{i18n>ETENR}"/></Column>
+						<Column><Text text="{i18n>EBTYP}"/></Column>
 						<Column><Text text="{i18n>dataRichiesta}"/></Column>
 						<Column><Text text="{i18n>quantitaRichiesta}"/></Column>
 						<Column><Text text="{i18n>deltaGG}"/></Column>
@@ -29,6 +30,7 @@
 								<Text text="{ path: 'SchedAgrToApproveRejectJSONModel>EKES_EINDT', type: 'it.alteaup.supplier.portal.aprvschdagr.AUPSUP_HTML5_APR_SCDAGR.type.Date' }"/>
 								<Text text="{SchedAgrToApproveRejectJSONModel>MENGE}"/>
 								<Text text="{SchedAgrToApproveRejectJSONModel>XBLNR}"/>
+								<Text text="{SchedAgrToApproveRejectJSONModel>EBTYP}"/>
 								<Text text="{ path: 'SchedAgrToApproveRejectJSONModel>EKET_EINDT', type: 'it.alteaup.supplier.portal.aprvschdagr.AUPSUP_HTML5_APR_SCDAGR.type.Date' }"/>
 								<Text text="{SchedAgrToApproveRejectJSONModel>MENGE}"/>
 								<Text text="{SchedAgrToApproveRejectJSONModel>DELTA_GG}"/>

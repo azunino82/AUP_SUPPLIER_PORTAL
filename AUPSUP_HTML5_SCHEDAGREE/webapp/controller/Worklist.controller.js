@@ -271,8 +271,8 @@ sap.ui.define([
 					that.getView().byId("OrderHeadersTable").setModel(oModel);
 
 					var oSorter = new Sorter({
-						path: 'Priority',
-						descending: true
+						path: 'PRIMO_PERIODO',
+						ascending: true
 					});
 
 					that.getView().byId("OrderHeadersTable").getBinding("items").sort(oSorter);
@@ -1367,7 +1367,12 @@ sap.ui.define([
 								// TODO FARE logiche save
 								singleEkpoModel.ZINVALIDITA = row.ZINVALIDITA;
 								singleEkpoModel.ZFINVALIDATA = row.ZFINVALIDATA;
+								//Verifico che il campo testo sia valorizzato
+								var nuovoPrezzoPosizione = row.NETPR / row.PEINH;
+								if (nuovoPrezzoPosizione !== row.OriginalPrice)
 								singleEkpoModel.ZMODPREZZO = row.editPrice !== undefined && row.editPrice === true ? 'X' : '';
+								else
+								singleEkpoModel.ZMODPREZZO = '';
 								singleEkpoModel.ZMODSCHED = row.editQuantity === true ? 'X' : ''
 								singleEkpoModel.ZINSCONF = 'X';
 								singleEkpoModel.ZCONFPARZ = 'X'; // per ordini di tipo F prendere il flag da customizing campo: CONFERMA_PARZIALE altrimenti fisso X

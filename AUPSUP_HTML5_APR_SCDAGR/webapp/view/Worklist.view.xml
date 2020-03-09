@@ -140,7 +140,7 @@
 												<m:Column id="EBELP" minScreenWidth="Desktop" demandPopin="true">
 													<m:Label text="{i18n>EBELP}" class="columnLabelStyle" wrapping="true"/>
 												</m:Column>
-												<m:Column id="EBTYP" minScreenWidth="Desktop" demandPopin="true">
+												<m:Column id="EBTYP" visible="false" minScreenWidth="Desktop" demandPopin="true">
 													<m:Label text="{i18n>EBTYP}" class="columnLabelStyle" wrapping="true"/>
 												</m:Column>
 												<m:Column id="MATNR" minScreenWidth="Desktop" demandPopin="true">
