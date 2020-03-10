@@ -28,6 +28,8 @@ END IF;
 
 -- prendo i giorni di estrazione dalla tabella di customizing
 SELECT GG_ESTRAZIONE INTO GG_ESTRAZIONE FROM "AUPSUP_DATABASE.data.tables::T_ORDERS_TYPES" WHERE BSTYP = :I_BSTYP AND BSART = :I_BSART;
+/*Per far eseguire alla select un minore che è equivalente ad un minore uguale*/
+GG_ESTRAZIONE = GG_ESTRAZIONE + 1; 
 
 SELECT CURRENT_DATE INTO TODAY_DATE FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
 -- sommo alla data di oggi i giorni inseriti nella tabella di customizing 

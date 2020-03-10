@@ -1025,12 +1025,13 @@ module.exports = function () {
                                 element.RADIO_GRP_NAME = i
                                 if (element.ISTOCONFIRM === 'X') {
                                     element.ISTOCONFIRM = true
+                                    outArr.push(element)
                                 } else {
                                     if (element.ISTOCONFIRM === '') {
                                         element.ISTOCONFIRM = false
                                     }
                                 }
-                                outArr.push(element)
+                               // outArr.push(element)
                                 i++
                             })
                             return res.status(200).send({

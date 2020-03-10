@@ -951,7 +951,7 @@ sap.ui.define([
 			this.showBusyDialog();
 			that.ajaxGet(url, function (oData) { // funzione generica su BaseController
 				that.hideBusyDialog();
-				if (oData) {
+				if (oData && oData.results && oData.results.length > 0) {
 					var oModel = new JSONModel();
 					oModel.setData(oData);
 					that.getView().setModel(oModel, "SchedAgrToApproveRejectJSONModel");
@@ -962,6 +962,8 @@ sap.ui.define([
 					}
 
 					that.approveRejectFragment.open();
+				} else {
+					MessageBox.error(that.getResourceBundle().getText("MSG_NO_TO_CONFIRM"));
 				}
 			});
 
@@ -971,6 +973,7 @@ sap.ui.define([
 				this.approveRejectFragment.close();
 				this.approveRejectFragment.destroy();
 				this.approveRejectFragment = undefined;
+				that.onSearchOrders();
 			}
 		},
 		onSetSchedulationStatus: function (oValue) {

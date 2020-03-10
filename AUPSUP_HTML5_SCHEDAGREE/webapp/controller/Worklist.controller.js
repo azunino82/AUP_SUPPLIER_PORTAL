@@ -938,6 +938,7 @@ sap.ui.define([
 				this.oConfirmPositionsFragment.close();
 				this.oConfirmPositionsFragment.destroy();
 				this.oConfirmPositionsFragment = undefined;
+				that.onSearchOrders();
 			}
 		},
 
