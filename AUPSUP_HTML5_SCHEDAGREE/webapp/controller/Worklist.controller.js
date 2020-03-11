@@ -1401,19 +1401,12 @@ sap.ui.define([
 								singleskipAppBuyerModel.EBELN = row.EBELN;
 								singleskipAppBuyerModel.EBELP = row.EBELP;
 								singleskipAppBuyerModel.CONF_TYPE = 'QUA'
-								if (row.skipQ !== null && row.skipQ !== undefined){
-									singleskipAppBuyerModel.SKIP = row.skipQ;																		
+								if (row.skip !== null && row.skip !== undefined){
+									singleskipAppBuyerModel.SKIP = row.skip;																		
 								}else{
 									singleskipAppBuyerModel.SKIP = '';	
 								}
-								singleskipAppBuyerModel.CONF_TYPE = 'PRZ'
-								if (row.skipP !== null && row.skipP !== undefined){
-									singleskipAppBuyerModel.SKIP = row.skipP;																		
-								}else{
-									singleskipAppBuyerModel.SKIP = '';	
-								}
-								body.skipAppBuyer.push(singleskipAppBuyerModel);
-								
+								body.skipAppBuyer.push(singleskipAppBuyerModel);								
 							}
 						}
 
@@ -1656,13 +1649,10 @@ sap.ui.define([
 								var ordine = mod.EBELN + "-" + mod.EBELP;
 								err = err + "\n" + that.getResourceBundle().getText("ERR_Price_Perc_Up", ordine);
 							} else {
+								 else {
 								var dateErr = that.onControllDateOK(mod);
 								if (dateErr !== ''){
 									err = err + "\n" + dateErr;
-								}else{
-									//Valorizzo tabella Skip
-									if (mod.CONFERMA_MANDATORY === true)
-									mod.skipP = 'X'
 								}
 							}
 						}
@@ -1676,10 +1666,6 @@ sap.ui.define([
 								var dateErr = that.onControllDateOK(mod);
 								if (dateErr !== ''){
 									err = err + "\n" + dateErr;
-								}else{
-									//Valorizzo tabella Skip
-									if (mod.CONFERMA_MANDATORY === true)
-									mod.skipP = 'X'
 								}
 							}
 						}
@@ -1778,7 +1764,7 @@ sap.ui.define([
 							}else{
 								//Valorizzo tabella Skip
 								if (mod.CONFERMA_MANDATORY === true)
-								mod.skipQ = 'X'
+								mod.skip = 'X'
 							}
 						}
 						if (differenzaQuant < 0) {
@@ -1790,7 +1776,7 @@ sap.ui.define([
 							}else{
 								//Valorizzo tabella Skip
 								if (mod.CONFERMA_MANDATORY === true)
-								mod.skipQ = 'X'
+								mod.skip = 'X'
 							}
 						}
 					}
@@ -2085,7 +2071,7 @@ sap.ui.define([
 						}else{
 							//Valorizzo tabella Skip
 							if (mod.CONFERMA_MANDATORY === true)
-							mod.skipQ = 'X'
+							mod.skip = 'X'
 						}
 					}
 
@@ -2098,7 +2084,7 @@ sap.ui.define([
 						}else{
 							//Valorizzo tabella Skip
 							if (mod.CONFERMA_MANDATORY === true)
-							mod.skipQ = 'X'
+							mod.skip = 'X'
 						}
 					}
 
