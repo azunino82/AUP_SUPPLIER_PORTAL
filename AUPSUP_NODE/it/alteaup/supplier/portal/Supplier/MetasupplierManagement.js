@@ -554,7 +554,7 @@ module.exports = function () {
         console.log({ body_in: JSON.stringify(body) })
 
         if (body !== undefined && body !== '' && body !== null && body.METAID !== undefined && body.METAID !== '') {
-            var sql = 'INSERT INTO "AUPSUP_DATABASE.data.tables::T_METASUPPLIER_CONTACTS" VALUES (?, ?, ?, ?, ?,?, ?, ?, ?)'
+            var sql = 'INSERT INTO "AUPSUP_DATABASE.data.tables::T_METASUPPLIER_CONTACTS" VALUES (?, ?, ?, ?, ?, ?,?, ?, ?, ?)'
 
             hdbext.createConnection(req.tenantContainer, function (error, client) {
                 if (error) {
@@ -571,7 +571,7 @@ module.exports = function () {
                         },
 
                         function execute (_err, statement, callback) {
-                            statement.exec([body.METAID, body.TIPOLOGIA, body.MAIL, body.TEL, body.TITOLO, body.NOME, body.COGNOME, body.FAX, body.TEL1], function (execErr, results) {
+                            statement.exec([body.KEY, body.METAID, body.TIPOLOGIA, body.MAIL, body.TEL, body.TITOLO, body.NOME, body.COGNOME, body.FAX, body.TEL1], function (execErr, results) {
                                 callback(null, execErr, results)
                             })
                         },
@@ -605,7 +605,7 @@ module.exports = function () {
 
         if (key !== undefined) {
             // eslint-disable-next-line quotes
-            var sql = "UPDATE \"AUPSUP_DATABASE.data.tables::T_METASUPPLIER_CONTACTS\" SET METAID = '" + body.METAID + "', TIPOLOGIA = '" + body.TIPOLOGIA + "', MAIL = '" + body.MAIL + "' , TEL = '" + body.TEL + "', TITOLO = '" + body.TITOLO + "', NOME = '" + body.NOME + "', COGNOME = '" + body.COGNOME + "', FAX = " + body.FAX + ", TEL1 = '" + body.TEL1 + "' WHERE KEY = \'" + key + "\'"
+            var sql = "UPDATE \"AUPSUP_DATABASE.data.tables::T_METASUPPLIER_CONTACTS\" SET METAID = '" + body.METAID + "', TIPOLOGIA = '" + body.TIPOLOGIA + "', MAIL = '" + body.MAIL + "' , TEL = '" + body.TEL + "', TITOLO = '" + body.TITOLO + "', NOME = '" + body.NOME + "', COGNOME = '" + body.COGNOME + "', FAX = '" + body.FAX + "', TEL1 = '" + body.TEL1 + "' WHERE KEY = \'" + key + "\'"
             console.log({ sqlUPDATE: sql })
             hdbext.createConnection(req.tenantContainer, function (error, client) {
                 if (error) {
@@ -614,7 +614,7 @@ module.exports = function () {
                 if (client) {
                     async.waterfall([
 
-                        function prepare (callback) {
+                        function prepare (callback) {   
                             client.prepare(sql,
                                 function (err, statement) {
                                     callback(null, err, statement)
