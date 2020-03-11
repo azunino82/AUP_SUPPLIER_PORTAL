@@ -17,8 +17,12 @@ sap.ui.define([
 		handleRoutePatternMatched: function (oEvent) {
 			var url = "/backend/MetasupplierManagement/GetMetaID";
 			that.ajaxGet(url, function (oDataRes) {
-				var metaid = oDataRes.results[0].METAID;
-				that.setModel(metaid, null, 'M');
+				if (oDataRes && oDataRes.results && oDataRes.results.length > 0) {
+					var metaid = oDataRes.results[0].METAID;
+					that.setModel(metaid, null, 'M');
+				}else{
+					sap.m.MessageToast.show("No MetaID Found!");
+				}
 			});
 		},
 
@@ -35,7 +39,7 @@ sap.ui.define([
 				that.getOwnerComponent().getRouter().navTo("RouteMetasupplierContacts", {
 					metaid: sMetaid
 				});
-			}else{
+			} else {
 				sap.m.MessageToast.show("No MetaID Found!");
 			}
 
