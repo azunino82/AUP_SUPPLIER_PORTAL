@@ -1280,6 +1280,7 @@ sap.ui.define([
 							"ekko": [],
 							"ekpo": [],
 							"ekes": [],
+							"skipAppBuyer": [],
 							"notaReject": "",
 							"confirmType": ""
 						};
@@ -1395,6 +1396,24 @@ sap.ui.define([
 								singleEkkoModel.ZCUSTOM09 = row.ZCUSTOM09;
 								singleEkkoModel.ZCUSTOM10 = row.ZCUSTOM10;
 								body.ekko.push(singleEkkoModel);
+
+								var singleskipAppBuyerModel = {};
+								singleskipAppBuyerModel.EBELN = row.EBELN;
+								singleskipAppBuyerModel.EBELP = row.EBELP;
+								singleskipAppBuyerModel.CONF_TYPE = 'QUA'
+								if (row.skipQ !== null && row.skipQ !== undefined){
+									singleskipAppBuyerModel.SKIP = row.skipQ;																		
+								}else{
+									singleskipAppBuyerModel.SKIP = '';	
+								}
+								singleskipAppBuyerModel.CONF_TYPE = 'PRZ'
+								if (row.skipP !== null && row.skipP !== undefined){
+									singleskipAppBuyerModel.SKIP = row.skipP;																		
+								}else{
+									singleskipAppBuyerModel.SKIP = '';	
+								}
+								body.skipAppBuyer.push(singleskipAppBuyerModel);
+								
 							}
 						}
 
@@ -1638,8 +1657,13 @@ sap.ui.define([
 								err = err + "\n" + that.getResourceBundle().getText("ERR_Price_Perc_Up", ordine);
 							} else {
 								var dateErr = that.onControllDateOK(mod);
-								if (dateErr !== '')
+								if (dateErr !== ''){
 									err = err + "\n" + dateErr;
+								}else{
+									//Valorizzo tabella Skip
+									if (mod.CONFERMA_MANDATORY === true)
+									mod.skipP = 'X'
+								}
 							}
 						}
 						if (differenzaPrezzo < 0) {
@@ -1650,8 +1674,13 @@ sap.ui.define([
 								err = err + "\n" + that.getResourceBundle().getText("ERR_Price_Perc_Down", ordine);
 							} else {
 								var dateErr = that.onControllDateOK(mod);
-								if (dateErr !== '')
+								if (dateErr !== ''){
 									err = err + "\n" + dateErr;
+								}else{
+									//Valorizzo tabella Skip
+									if (mod.CONFERMA_MANDATORY === true)
+									mod.skipP = 'X'
+								}
 							}
 						}
 					}
@@ -1746,6 +1775,10 @@ sap.ui.define([
 							if (percScostamentoUP > mod.QuantPercUP) {
 								var ordine = mod.EBELN + "-" + mod.EBELP;
 								err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Up_Single", ordine);
+							}else{
+								//Valorizzo tabella Skip
+								if (mod.CONFERMA_MANDATORY === true)
+								mod.skipQ = 'X'
 							}
 						}
 						if (differenzaQuant < 0) {
@@ -1754,6 +1787,10 @@ sap.ui.define([
 							if (percScostamentoDown > mod.QuantPercDOWN) {
 								var ordine = mod.EBELN + "-" + mod.EBELP;
 								err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Down_Single", ordine);
+							}else{
+								//Valorizzo tabella Skip
+								if (mod.CONFERMA_MANDATORY === true)
+								mod.skipQ = 'X'
 							}
 						}
 					}
@@ -2045,6 +2082,10 @@ sap.ui.define([
 						if (percScostamentoUP > mod.QuantPercUP) {
 							var ordine = mod.EBELN + "-" + mod.EBELP;
 							err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Up_Single", ordine);
+						}else{
+							//Valorizzo tabella Skip
+							if (mod.CONFERMA_MANDATORY === true)
+							mod.skipQ = 'X'
 						}
 					}
 
@@ -2054,6 +2095,10 @@ sap.ui.define([
 						if (percScostamentoDown > mod.QuantPercDOWN) {
 							var ordine = mod.EBELN + "-" + mod.EBELP;
 							err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Down_Single", ordine);
+						}else{
+							//Valorizzo tabella Skip
+							if (mod.CONFERMA_MANDATORY === true)
+							mod.skipQ = 'X'
 						}
 					}
 
