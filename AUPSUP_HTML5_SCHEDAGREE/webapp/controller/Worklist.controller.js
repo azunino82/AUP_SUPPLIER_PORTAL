@@ -1459,7 +1459,7 @@ sap.ui.define([
 														"CONF_TYPE": "QUA"
 													})
 
-
+													break
 												}
 											}
 										}
