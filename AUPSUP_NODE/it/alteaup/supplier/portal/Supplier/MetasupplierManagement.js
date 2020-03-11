@@ -605,7 +605,7 @@ module.exports = function () {
 
         if (key !== undefined) {
             // eslint-disable-next-line quotes
-            var sql = "UPDATE \"AUPSUP_DATABASE.data.tables::T_METASUPPLIER_CONTACTS\" SET METAID = '" + body.METAID + "', TIPOLOGIA = '" + body.TIPOLOGIA + "', MAIL = '" + body.MAIL + "' , TEL = '" + body.TEL + "', TITOLO = '" + body.TITOLO + "', NOME = '" + body.NOME + "', COGNOME = '" + body.COGNOME + "', FAX = '" + body.FAX + "', TEL1 = '" + body.TEL1 + "' WHERE KEY = \'" + key + "\'"
+            var sql = "UPDATE \"AUPSUP_DATABASE.data.tables::T_METASUPPLIER_CONTACTS\" SET TIPOLOGIA = '" + body.TIPOLOGIA + "', MAIL = '" + body.MAIL + "' , TEL = '" + body.TEL + "', TITOLO = '" + body.TITOLO + "', NOME = '" + body.NOME + "', COGNOME = '" + body.COGNOME + "', FAX = '" + body.FAX + "', TEL1 = '" + body.TEL1 + "' WHERE KEY = \'" + key + "\'"
             console.log({ sqlUPDATE: sql })
             hdbext.createConnection(req.tenantContainer, function (error, client) {
                 if (error) {
