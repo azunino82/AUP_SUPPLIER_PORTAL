@@ -1009,6 +1009,31 @@ sap.ui.define([
 					if (selectedProfiloConfermaModel !== undefined && selectedProfiloConfermaModel.MODIFICA_PREZZO !== undefined)
 						that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].editPrice = selectedProfiloConfermaModel.MODIFICA_PREZZO === 'X' ? true : false;
 					that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].KSCHL = selectedProfiloConfermaModel.TIPO_COND_PREZZO;
+					
+					if (selectedProfiloConfermaModel !== undefined && selectedProfiloConfermaModel.ZAPPPERINF !== undefined &&
+						selectedProfiloConfermaModel.ZAPPPERINF !== "")
+						that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].QuantTollDown = parseInt(selectedProfiloConfermaModel
+							.ZAPPPERINF);
+					else
+						that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].QuantTollDown = "";
+					if (selectedProfiloConfermaModel !== undefined && selectedProfiloConfermaModel.ZAPPPERSUP !== undefined &&
+						selectedProfiloConfermaModel.ZAPPPERSUP !== "")
+						that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].QuantTollUp = parseInt(selectedProfiloConfermaModel
+							.ZAPPPERSUP);
+					else
+						that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].QuantTollUp = "";
+					if (selectedProfiloConfermaModel !== undefined && selectedProfiloConfermaModel.ZAPPGGINF !== undefined &&
+						selectedProfiloConfermaModel.ZAPPGGINF !== "")
+						that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].ggTollDown = parseInt(selectedProfiloConfermaModel
+							.ZAPPGGINF);
+					else
+						that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].ggTollDown = "";
+					if (selectedProfiloConfermaModel !== undefined && selectedProfiloConfermaModel.ZAPPGGSUP !== undefined &&
+						selectedProfiloConfermaModel.ZAPPGGSUP !== "")
+						that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].ggTollUp = parseInt(selectedProfiloConfermaModel
+							.ZAPPGGSUP);
+					else
+						that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].ggTollUp = "";
 					// FINE DELLA SOVRASCRITTURA
 
 					// AGGIUNGO LA RIGA NELLE SCHEDULAZIONI
@@ -1025,6 +1050,40 @@ sap.ui.define([
 				oSelectDialog1.open();
 			else{
 				mod.UPDKZ = mod.profiliConferma[0].TIPO_CONFERMA;
+				if (mod.profiliConferma[0] !== undefined && mod.profiliConferma[0].PERC_INFERIORE_QUANT !== undefined &&
+					mod.profiliConferma[0].PERC_INFERIORE_QUANT !== "")
+					mod.QuantPercDOWN = parseInt(mod.profiliConferma[0].PERC_INFERIORE_QUANT);
+				else
+					mod.QuantPercDOWN = "";
+				if (mod.profiliConferma[0] !== undefined && mod.profiliConferma[0].PERC_SUPERIORE_QUANT !== undefined &&
+					mod.profiliConferma[0].PERC_SUPERIORE_QUANT !== "")
+					mod.QuantPercUP = parseInt(mod.profiliConferma[0].PERC_SUPERIORE_QUANT);
+				else
+					mod.QuantPercUP = "";
+				if (mod.profiliConferma[0] !== undefined && mod.profiliConferma[0].MODIFICA_PREZZO !== undefined)
+					mod.editPrice = mod.profiliConferma[0].MODIFICA_PREZZO === 'X' ? true : false;
+				mod.KSCHL = mod.profiliConferma[0].TIPO_COND_PREZZO;
+				if (mod.profiliConferma[0] !== undefined && mod.profiliConferma[0].ZAPPPERSUP !== undefined &&
+					mod.profiliConferma[0].ZAPPPERSUP !== "")
+					mod.QuantTollUp = parseInt(mod.profiliConferma[0].ZAPPPERSUP);
+				else
+					mod.QuantTollUp = "";
+				if (mod.profiliConferma[0] !== undefined && mod.profiliConferma[0].ZAPPPERINF !== undefined &&
+					mod.profiliConferma[0].ZAPPPERINF !== "")
+					mod.QuantTollDown = parseInt(mod.profiliConferma[0].ZAPPPERINF);
+				else
+					mod.QuantTollDown = "";
+				if (mod.profiliConferma[0] !== undefined && mod.profiliConferma[0].ZAPPGGSUP !== undefined &&
+					mod.profiliConferma[0].ZAPPGGSUP !== "")
+					mod.ggTollUp = parseInt(mod.profiliConferma[0].ZAPPGGSUP);
+				else
+					mod.ggTollUP = "";
+				if (mod.profiliConferma[0] !== undefined && mod.profiliConferma[0].ZAPPGGINF !== undefined &&
+					mod.profiliConferma[0].ZAPPGGINF !== "")
+					mod.ggTollDown = parseInt(mod.profiliConferma[0].ZAPPGGINF);
+				else
+					mod.ggTollDown = "";
+				
 				that.getSchedulationsStatus(mod, mod.profiliConferma[0].CAT_CONFERMA);
 			}
 				
@@ -1649,7 +1708,6 @@ sap.ui.define([
 								var ordine = mod.EBELN + "-" + mod.EBELP;
 								err = err + "\n" + that.getResourceBundle().getText("ERR_Price_Perc_Up", ordine);
 							} else {
-								 else {
 								var dateErr = that.onControllDateOK(mod);
 								if (dateErr !== ''){
 									err = err + "\n" + dateErr;
@@ -1763,7 +1821,7 @@ sap.ui.define([
 								err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Up_Single", ordine);
 							}else{
 								//Valorizzo tabella Skip
-								if (mod.CONFERMA_MANDATORY === true)
+								if (percScostamentoUP > mod.QuantTollUp && mod.CONFERMA_MANDATORY === true)
 								mod.skip = 'X'
 							}
 						}
@@ -1775,7 +1833,7 @@ sap.ui.define([
 								err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Down_Single", ordine);
 							}else{
 								//Valorizzo tabella Skip
-								if (mod.CONFERMA_MANDATORY === true)
+								if (percScostamentoDown > mod.QuantTollDown && mod.CONFERMA_MANDATORY === true)
 								mod.skip = 'X'
 							}
 						}
@@ -2070,8 +2128,8 @@ sap.ui.define([
 							err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Up_Single", ordine);
 						}else{
 							//Valorizzo tabella Skip
-							if (mod.CONFERMA_MANDATORY === true)
-							mod.skip = 'X'
+							if (percScostamentoUP > mod.QuantTollUp && mod.CONFERMA_MANDATORY === true)
+								mod.skip = 'X'
 						}
 					}
 
@@ -2083,8 +2141,8 @@ sap.ui.define([
 							err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Down_Single", ordine);
 						}else{
 							//Valorizzo tabella Skip
-							if (mod.CONFERMA_MANDATORY === true)
-							mod.skip = 'X'
+							if (percScostamentoDown > mod.QuantTollDown && mod.CONFERMA_MANDATORY === true)
+								mod.skip = 'X'
 						}
 					}
 
