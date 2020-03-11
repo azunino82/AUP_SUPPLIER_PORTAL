@@ -11,8 +11,7 @@ sap.ui.define([
 	"sap/ui/core/util/Export",
 	"sap/ui/core/util/ExportTypeCSV",
 	"sap/m/Dialog"
-], function (BaseController, Filter, FilterOperator, JSONModel, MessageBox, MessageToast, Sorter, Date, Formatter, Export, ExportTypeCSV,
-	Dialog) {
+], function (BaseController, Filter, FilterOperator, JSONModel, MessageBox, MessageToast, Sorter, DateF, Formatter, Export, ExportTypeCSV, Dialog) {
 	"use strict";
 	var that;
 	return BaseController.extend("it.alteaup.supplier.portal.schedulingagreement.AUPSUP_HTML5_SCHEDAGREE.controller.Worklist", {
@@ -933,12 +932,13 @@ sap.ui.define([
 			}
 		},
 
-		onCloseOrderPositions: function () {
+		onCloseOrderPositions: function (needReserarch) {
 			if (this.oConfirmPositionsFragment) {
 				this.oConfirmPositionsFragment.close();
 				this.oConfirmPositionsFragment.destroy();
 				this.oConfirmPositionsFragment = undefined;
-				that.onSearchOrders();
+				if (needReserarch === true)
+					that.onSearchOrders();
 			}
 		},
 
@@ -1009,7 +1009,7 @@ sap.ui.define([
 					if (selectedProfiloConfermaModel !== undefined && selectedProfiloConfermaModel.MODIFICA_PREZZO !== undefined)
 						that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].editPrice = selectedProfiloConfermaModel.MODIFICA_PREZZO === 'X' ? true : false;
 					that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].KSCHL = selectedProfiloConfermaModel.TIPO_COND_PREZZO;
-					
+
 					if (selectedProfiloConfermaModel !== undefined && selectedProfiloConfermaModel.ZAPPPERINF !== undefined &&
 						selectedProfiloConfermaModel.ZAPPPERINF !== "")
 						that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].QuantTollDown = parseInt(selectedProfiloConfermaModel
@@ -1044,11 +1044,11 @@ sap.ui.define([
 				}
 
 			});
-			
+
 			// PER LE CONFERME NON PARZIALI POSSO CONFERMARE SOLO LE CONFERME CHE HANNO DELTA QUANTITA > 0
 			if (mod.profiliConferma.length > 1)
 				oSelectDialog1.open();
-			else{
+			else {
 				mod.UPDKZ = mod.profiliConferma[0].TIPO_CONFERMA;
 				if (mod.profiliConferma[0] !== undefined && mod.profiliConferma[0].PERC_INFERIORE_QUANT !== undefined &&
 					mod.profiliConferma[0].PERC_INFERIORE_QUANT !== "")
@@ -1083,10 +1083,10 @@ sap.ui.define([
 					mod.ggTollDown = parseInt(mod.profiliConferma[0].ZAPPGGINF);
 				else
 					mod.ggTollDown = "";
-				
+
 				that.getSchedulationsStatus(mod, mod.profiliConferma[0].CAT_CONFERMA);
 			}
-				
+
 
 
 
@@ -1335,6 +1335,7 @@ sap.ui.define([
 				initialFocus: MessageBox.Action.CANCEL,
 				onClose: function (oAction) {
 					if (oAction === MessageBox.Action.OK) {
+
 						var body = {
 							"ekko": [],
 							"ekpo": [],
@@ -1401,6 +1402,69 @@ sap.ui.define([
 											singleEkesModel.XBLNR = row.POItemSchedulers.results[j].ETENR;
 										}
 										body.ekes.push(singleEkesModel);
+
+										// per ogni conferma capire se inviare a buyer o inviarla a sap in base alle percentuali di quant e gg 
+
+										if (row.SchedulationsStatus && row.SchedulationsStatus.length > 0) {
+											for (var u = 0; u < row.SchedulationsStatus.length; u++) {
+												// prendo la schedulazione dalla lista delle schedulazioni superiore (SCHEDULES)
+												if (row.SchedulationsStatus[u].ETENR === singleEkesModel.XBLNR && row.SchedulationsStatus[u].EBELN === singleEkesModel.EBELN && row.SchedulationsStatus[u].EBELP === singleEkesModel.EBELP) {
+
+													var quantSched = row.SchedulationsStatus[u].QTA_CONFERMATA !== undefined && row.SchedulationsStatus[u].QTA_CONFERMATA !== null ? parseFloat(row.SchedulationsStatus[u].QTA_CONFERMATA) : 0
+													var mengeCOnf = singleEkesModel.MENGE !== undefined && singleEkesModel.MENGE !== null ? parseFloat(singleEkesModel.MENGE) : 0
+													var sum = quantSched + mengeCOnf
+													var diff = row.SchedulationsStatus[u].MENGE - sum;
+													var perc = (diff / row.SchedulationsStatus[u].MENGE) * 100
+
+													var skipToBuyer = ''
+
+													if (row.QuantTollDown && row.QuantTollUp) {
+
+														if (perc >= row.QuantTollDown && perc <= ekpoRow.QuantTollUp) {
+															// la percentuale di quantità è all'interno dei limiti
+															skipToBuyer = 'X'
+														}
+
+													}
+
+													var dataSched = row.SchedulationsStatus[u].EINDT
+													var year = dataSched.substring(0, 4);
+													var month = dataSched.substring(4, 6);
+													var day = dataSched.substring(6, 8);
+
+													var dataSched = month + "/" + day + "/" + year
+													dataSched = new Date(dataSched)
+
+													var dataConf = singleEkesModel.EINDT
+													var year = dataConf.substring(0, 4)
+													var month = dataConf.substring(4, 6)
+													var day = dataConf.substring(6, 8);
+													var dataConf = month + "/" + day + "/" + year
+													dataConf = new Date(dataConf)
+
+													var Difference_In_Time = dataConf.getTime() - dataSched.getTime();
+
+													// To calculate the no. of days between two dates 
+													var days = Difference_In_Time / (1000 * 3600 * 24);
+
+													if (days <= row.ggTollUP && days > row.ggTollDown) {
+														skipToBuyer = 'X'
+													}
+
+													body.skipAppBuyer.push({
+														"EBELN": row.EBELN,
+														"EBELP": row.EBELP,
+														"XBLNR": singleEkesModel.XBLNR,
+														"SKIP": skipToBuyer,
+														"CONF_TYPE": "QUA"
+													})
+
+
+												}
+											}
+										}
+
+
 									}
 								}
 								var singleEkpoModel = {};
@@ -1431,9 +1495,9 @@ sap.ui.define([
 								//Verifico che il campo testo sia valorizzato
 								var nuovoPrezzoPosizione = row.NETPR / row.PEINH;
 								if (nuovoPrezzoPosizione !== row.OriginalPrice)
-								singleEkpoModel.ZMODPREZZO = row.editPrice !== undefined && row.editPrice === true ? 'X' : '';
+									singleEkpoModel.ZMODPREZZO = row.editPrice !== undefined && row.editPrice === true ? 'X' : '';
 								else
-								singleEkpoModel.ZMODPREZZO = '';
+									singleEkpoModel.ZMODPREZZO = '';
 								singleEkpoModel.ZMODSCHED = row.editQuantity === true ? 'X' : ''
 								singleEkpoModel.ZINSCONF = 'X';
 								singleEkpoModel.ZCONFPARZ = 'X'; // per ordini di tipo F prendere il flag da customizing campo: CONFERMA_PARZIALE altrimenti fisso X
@@ -1456,16 +1520,8 @@ sap.ui.define([
 								singleEkkoModel.ZCUSTOM10 = row.ZCUSTOM10;
 								body.ekko.push(singleEkkoModel);
 
-								var singleskipAppBuyerModel = {};
-								singleskipAppBuyerModel.EBELN = row.EBELN;
-								singleskipAppBuyerModel.EBELP = row.EBELP;
-								singleskipAppBuyerModel.CONF_TYPE = 'QUA'
-								if (row.skip !== null && row.skip !== undefined){
-									singleskipAppBuyerModel.SKIP = row.skip;																		
-								}else{
-									singleskipAppBuyerModel.SKIP = '';	
-								}
-								body.skipAppBuyer.push(singleskipAppBuyerModel);								
+
+
 							}
 						}
 
@@ -1498,7 +1554,7 @@ sap.ui.define([
 											MessageBox.success(that.getResourceBundle().getText("correctConfirmPositions"), {
 												title: "Success", // default
 												onClose: function () {
-													that.onCloseOrderPositions();
+													that.onCloseOrderPositions(true);
 												} // default
 
 											});
@@ -1509,7 +1565,7 @@ sap.ui.define([
 									MessageBox.success(that.getResourceBundle().getText("correctConfirmPositions"), {
 										title: "Success", // default
 										onClose: function () {
-											that.onCloseOrderPositions();
+											that.onCloseOrderPositions(true);
 										} // default
 
 									});
@@ -1709,7 +1765,7 @@ sap.ui.define([
 								err = err + "\n" + that.getResourceBundle().getText("ERR_Price_Perc_Up", ordine);
 							} else {
 								var dateErr = that.onControllDateOK(mod);
-								if (dateErr !== ''){
+								if (dateErr !== '') {
 									err = err + "\n" + dateErr;
 								}
 							}
@@ -1722,7 +1778,7 @@ sap.ui.define([
 								err = err + "\n" + that.getResourceBundle().getText("ERR_Price_Perc_Down", ordine);
 							} else {
 								var dateErr = that.onControllDateOK(mod);
-								if (dateErr !== ''){
+								if (dateErr !== '') {
 									err = err + "\n" + dateErr;
 								}
 							}
@@ -1819,10 +1875,10 @@ sap.ui.define([
 							if (percScostamentoUP > mod.QuantPercUP) {
 								var ordine = mod.EBELN + "-" + mod.EBELP;
 								err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Up_Single", ordine);
-							}else{
+							} else {
 								//Valorizzo tabella Skip
 								if (percScostamentoUP > mod.QuantTollUp && mod.CONFERMA_MANDATORY === true)
-								mod.skip = 'X'
+									mod.skip = 'X'
 							}
 						}
 						if (differenzaQuant < 0) {
@@ -1831,10 +1887,6 @@ sap.ui.define([
 							if (percScostamentoDown > mod.QuantPercDOWN) {
 								var ordine = mod.EBELN + "-" + mod.EBELP;
 								err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Down_Single", ordine);
-							}else{
-								//Valorizzo tabella Skip
-								if (percScostamentoDown > mod.QuantTollDown && mod.CONFERMA_MANDATORY === true)
-								mod.skip = 'X'
 							}
 						}
 					}
@@ -2126,10 +2178,6 @@ sap.ui.define([
 						if (percScostamentoUP > mod.QuantPercUP) {
 							var ordine = mod.EBELN + "-" + mod.EBELP;
 							err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Up_Single", ordine);
-						}else{
-							//Valorizzo tabella Skip
-							if (percScostamentoUP > mod.QuantTollUp && mod.CONFERMA_MANDATORY === true)
-								mod.skip = 'X'
 						}
 					}
 
@@ -2139,10 +2187,6 @@ sap.ui.define([
 						if (percScostamentoDown > mod.QuantPercDOWN) {
 							var ordine = mod.EBELN + "-" + mod.EBELP;
 							err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Down_Single", ordine);
-						}else{
-							//Valorizzo tabella Skip
-							if (percScostamentoDown > mod.QuantTollDown && mod.CONFERMA_MANDATORY === true)
-								mod.skip = 'X'
 						}
 					}
 
