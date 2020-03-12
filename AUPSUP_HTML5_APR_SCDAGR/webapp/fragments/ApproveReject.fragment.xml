@@ -9,7 +9,7 @@
 						<OverflowToolbar>
 							<Title text="{i18n>confirmations}" level="H2"/>
 							<ToolbarSpacer/>
-							<Button icon="sap-icon://legend" press="onLegend" tooltip="{i18n>Legend}"/>
+							<Button icon="sap-icon://legend" press="onLegend" tooltip="{i18n>Legend}" visible="false"/>
 						</OverflowToolbar>
 					</headerToolbar>
 					<columns>
@@ -28,11 +28,11 @@
 						<ColumnListItem highlight="{path:'SchedAgrToApproveRejectJSONModel>STATUS', formatter:'.onSetSchedulationStatus'}">
 							<cells>
 								<Text text="{ path: 'SchedAgrToApproveRejectJSONModel>EKES_EINDT', type: 'it.alteaup.supplier.portal.aprvschdagr.AUPSUP_HTML5_APR_SCDAGR.type.Date' }"/>
-								<Text text="{SchedAgrToApproveRejectJSONModel>MENGE}"/>
+								<Text text="{SchedAgrToApproveRejectJSONModel>EKES_MENGE}"/>
 								<Text text="{SchedAgrToApproveRejectJSONModel>XBLNR}"/>
 								<Text text="{SchedAgrToApproveRejectJSONModel>EBTYP}"/>
 								<Text text="{ path: 'SchedAgrToApproveRejectJSONModel>EKET_EINDT', type: 'it.alteaup.supplier.portal.aprvschdagr.AUPSUP_HTML5_APR_SCDAGR.type.Date' }"/>
-								<Text text="{SchedAgrToApproveRejectJSONModel>MENGE}"/>
+								<Text text="{SchedAgrToApproveRejectJSONModel>EKET_MENGE}"/>
 								<Text text="{SchedAgrToApproveRejectJSONModel>DELTA_GG}"/>
 								<Text text="{SchedAgrToApproveRejectJSONModel>DELTA_QUANT}"/>
 								<RadioButton groupName="{SchedAgrToApproveRejectJSONModel>RADIO_GRP_NAME}" selected="{SchedAgrToApproveRejectJSONModel>APPROVE}"

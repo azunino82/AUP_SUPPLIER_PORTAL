@@ -508,6 +508,7 @@ sap.ui.define([
 					var elem = {};
 					elem.EBELN = element.EBELN;
 					elem.EBELP = element.EBELP;
+					elem.XBLNR = element.XBLNR;
 					elem.CONF_TYPE = 'A',
 					elem.BSTYP = 'L'; // per piani di consegna
 					body.confirmType.push(elem);
@@ -518,6 +519,7 @@ sap.ui.define([
 					var elem = {};
 					elem.EBELN = element.EBELN;
 					elem.EBELP = element.EBELP;
+					elem.XBLNR = element.XBLNR;
 					elem.CONF_TYPE = 'R',
 					elem.BSTYP = 'L'; // per piani di consegna
 					body.confirmType.push(elem);
