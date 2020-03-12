@@ -684,9 +684,10 @@ sap.ui.define([
 		onSearchSupplier: function () {
 			var ekorgs =
 				sap.ui.getCore().byId("EKORG").getSelectedKeys();
-			var url = "/SupplierPortal_Utils/xsOdata/GetVendorList.xsjs?I_USERID=" + that.getCurrentUserId() + "&I_NAME1=" + sap.ui
+
+			var url = "/backend/Utils/UtilsManagement/GetVendorList?I_NAME1=" + sap.ui
 				.getCore().byId("NAME1").getValue() + "&ISTCE=" + sap.ui.getCore().byId("STCEG").getValue();
-			that.showBusyDialog();
+	
 			var body = {
 				"ekorg": []
 			};
@@ -710,7 +711,16 @@ sap.ui.define([
 			// clear del modello
 			that.getView().setModel(null, "tableModelSuppliers");
 
-			that.ajaxPost(url, body, "/SupplierPortal_Utils", function (oData) { // funzione generica su BaseController
+			var body = {
+				"lifnr": []
+			};
+
+			oDatalf.results.forEach(function (lifnrElem) {
+				body.lifnr.push(lifnrElem.LIFNR);
+			});
+
+			that.showBusyDialog();
+			that.ajaxPost(url, body, function (oData) {
 				that.hideBusyDialog();
 				if (oData && oData.results && oData.results.length > 0) {
 					oData.results.forEach(function (lifnrElem) {
@@ -725,8 +735,7 @@ sap.ui.define([
 					jsonModelLf.setData(oData);
 					that.getView().setModel(jsonModelLf, "tableModelSuppliers");
 				}
-			});
-
+			});			
 		},
 
 		getPurchaseOrganizations: function () {

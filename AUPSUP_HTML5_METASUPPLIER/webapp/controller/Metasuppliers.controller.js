@@ -60,45 +60,45 @@ sap.ui.define([
 					"AppTitle": ""
 				};
 				switch (user.userType) {
-				case "BC":
-					editVisibleBool = true;
-					deleteVisibleBool = true;
-					contactsVisibleBool = false;
-					createVisibleBool = true;
-					appTitle.AppTitle = that.getResourceBundle().getText("BC");
-					break;
-				case "BM":
-					editVisibleBool = false;
-					deleteVisibleBool = false;
-					contactsVisibleBool = true;
-					createVisibleBool = false;
-					appTitle.AppTitle = that.getResourceBundle().getText("BM");
-					break;
-				case "M":
-					editVisibleBool = false;
-					deleteVisibleBool = false;
-					contactsVisibleBool = true;
-					createVisibleBool = false;
-					appTitle.AppTitle = that.getResourceBundle().getText("M");
-					for (var i = 0; i < user.metaIDs.length; i++) {
-						var filter = new sap.ui.model.Filter({
-							path: "METAID",
-							operator: "EQ",
-							value1: user.metaIDs[i]
-						});
+					case "BC":
+						editVisibleBool = true;
+						deleteVisibleBool = true;
+						contactsVisibleBool = false;
+						createVisibleBool = true;
+						appTitle.AppTitle = that.getResourceBundle().getText("BC");
+						break;
+					case "BM":
+						editVisibleBool = false;
+						deleteVisibleBool = false;
+						contactsVisibleBool = true;
+						createVisibleBool = false;
+						appTitle.AppTitle = that.getResourceBundle().getText("BM");
+						break;
+					case "M":
+						editVisibleBool = false;
+						deleteVisibleBool = false;
+						contactsVisibleBool = true;
+						createVisibleBool = false;
+						appTitle.AppTitle = that.getResourceBundle().getText("M");
+						for (var i = 0; i < user.metaIDs.length; i++) {
+							var filter = new sap.ui.model.Filter({
+								path: "METAID",
+								operator: "EQ",
+								value1: user.metaIDs[i]
+							});
 
-						metasupplierFilters.push(filter);
-					}
+							metasupplierFilters.push(filter);
+						}
 
-					if (user.metaIDs.length === 0) {
-						var filter = new sap.ui.model.Filter({
-							path: "METAID",
-							operator: "EQ",
-							value1: " "
-						});
-						metasupplierFilters.push(filter);
-					}
-					break;
+						if (user.metaIDs.length === 0) {
+							var filter = new sap.ui.model.Filter({
+								path: "METAID",
+								operator: "EQ",
+								value1: " "
+							});
+							metasupplierFilters.push(filter);
+						}
+						break;
 				}
 				var jsonModel = new sap.ui.model.json.JSONModel();
 				jsonModel.setData(appTitle);
@@ -301,7 +301,7 @@ sap.ui.define([
 		deleteMetasupplierRow: function (id) {
 
 			if (id !== "" && id !== undefined) {
-				var url = "/backend/Utils/MetasupplierManagement/DeleteMetaid?I_METAID=" + id;
+				var url = "/backend/MetasupplierManagement/DeleteMetaid?I_METAID=" + id;
 				that.ajaxGet(url, function (oData) {
 					if (oData) {
 						that.handleRoutePatternMatched(null);
@@ -700,9 +700,9 @@ sap.ui.define([
 		onSearchSupplier: function () {
 			var ekorgs =
 				sap.ui.getCore().byId("EKORG").getSelectedKeys();
-			var url = "/SupplierPortal_Utils/xsOdata/GetVendorList.xsjs?I_USERID=" + that.getCurrentUserId() + "&I_NAME1=" + sap.ui
+			var url = "/backend/Utils/UtilsManagement/GetVendorList??I_NAME1=" + sap.ui
 				.getCore().byId("NAME1").getValue() + "&ISTCE=" + sap.ui.getCore().byId("STCEG").getValue();
-			that.showBusyDialog();
+		
 			var body = {
 				"ekorg": []
 			};
@@ -712,7 +712,7 @@ sap.ui.define([
 
 			var lifnrStorico;
 			if (that.getView().getModel("tableModelSuppliers") !== undefined && that.getView().getModel(
-					"tableModelSuppliers").getData() !== undefined) {
+				"tableModelSuppliers").getData() !== undefined) {
 				lifnrStorico = that.getView().getModel("tableModelSuppliers").getData();
 				if (lifnrStorico && lifnrStorico.results && lifnrStorico.results.length > 0) {
 					var oldArrayLifnr = [];
@@ -726,7 +726,8 @@ sap.ui.define([
 			// clear del modello
 			that.getView().setModel(null, "tableModelSuppliers");
 
-			that.ajaxPost(url, body, "/SupplierPortal_Utils", function (oData) { // funzione generica su BaseController
+			that.showBusyDialog();
+			that.ajaxPost(url, body, function (oData) {
 				that.hideBusyDialog();
 				if (oData && oData.results && oData.results.length > 0) {
 					oData.results.forEach(function (lifnrElem) {
@@ -741,7 +742,8 @@ sap.ui.define([
 					jsonModelLf.setData(oData);
 					that.getView().setModel(jsonModelLf, "tableModelSuppliers");
 				}
-			});
+			});						
+
 
 		},
 
