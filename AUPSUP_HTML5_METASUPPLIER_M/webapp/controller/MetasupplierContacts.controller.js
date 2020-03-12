@@ -107,8 +107,8 @@ sap.ui.define([
 
 				var url = "/backend/MetasupplierManagement/GetContactTypes?I_ATTIVO=1";
 				that.ajaxGet(url, function (oDataRes) {
-					if (oDataRes.results.length === 0) {
-						var contactType = [];
+					if (oDataRes && oDataRes.results && oDataRes.results.length > 0) {
+						//var contactType = [];
 						for (var x = 0; x < oDataRes.results.length; x++) {
 							contactType.push({
 								key: oDataRes.results[x].TIPOLOGIA,
@@ -505,7 +505,19 @@ sap.ui.define([
 			dataUpdate.COGNOME = dataUpdateTemp.Cognome;
 			dataUpdate.FAX = dataUpdateTemp.Fax;
 
-			var oModel = that.getOwnerComponent().getModel();
+			
+			var url = "/backend/MetasupplierManagement/UpdateContact?KEY=" + key;
+			that.showBusyDialog();
+			that.ajaxPut(url, dataUpdate, function (oData) {
+				that.hideBusyDialog();
+				sap.m.MessageToast.show(that.getOwnerComponent().getModel("i18n").getResourceBundle().getText(
+					"metasupplierContactUpdated"));
+				that.getContact();
+			});
+
+
+
+		/*	var oModel = that.getOwnerComponent().getModel();
 			oModel.update("/MetasupplierContactSet(KEY='" + key + "')", dataUpdate, {
 				success: function (oData, oResponse) {
 					sap.m.MessageToast.show(that.getOwnerComponent().getModel("i18n").getResourceBundle().getText(
@@ -516,7 +528,7 @@ sap.ui.define([
 					sap.m.MessageBox.error(that.getOwnerComponent().getModel("i18n").getResourceBundle().getText(
 						"errorUpdateingMetasupplierContact"));
 				}
-			});
+			}); */
 
 		},
 

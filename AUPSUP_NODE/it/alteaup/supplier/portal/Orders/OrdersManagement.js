@@ -112,6 +112,7 @@ app.post('/ConfirmReject', function (req, res) {
                 oConfType.push({
                     EBELN: body.confirmType[i].EBELN,
                     EBELP: body.confirmType[i].EBELP,
+                    XBLNR: body.confirmType[i].XBLNR,
                     CONF_TYPE: body.confirmType[i].CONF_TYPE,
                     BSTYP: body.confirmType[i].BSTYP
                 })
