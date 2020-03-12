@@ -1410,23 +1410,31 @@ sap.ui.define([
 												// prendo la schedulazione dalla lista delle schedulazioni superiore (SCHEDULES)
 												if (row.SchedulationsStatus[u].ETENR === singleEkesModel.XBLNR && row.SchedulationsStatus[u].EBELN === singleEkesModel.EBELN && row.SchedulationsStatus[u].EBELP === singleEkesModel.EBELP) {
 
+													var skipToBuyerQua = ''
 													var quantSched = row.SchedulationsStatus[u].QTA_CONFERMATA !== undefined && row.SchedulationsStatus[u].QTA_CONFERMATA !== null ? parseFloat(row.SchedulationsStatus[u].QTA_CONFERMATA) : 0
 													var mengeCOnf = singleEkesModel.MENGE !== undefined && singleEkesModel.MENGE !== null ? parseFloat(singleEkesModel.MENGE) : 0
 													var sum = quantSched + mengeCOnf
 													var diff = row.SchedulationsStatus[u].MENGE - sum;
 													var perc = (diff / row.SchedulationsStatus[u].MENGE) * 100
 
-													var skipToBuyer = ''
-
-													if (row.QuantTollDown && row.QuantTollUp) {
-
-														if (perc >= row.QuantTollDown && perc <= ekpoRow.QuantTollUp) {
-															// la percentuale di quantità è all'interno dei limiti
-															skipToBuyer = 'X'
+													if (diff === 0) {
+														skipToBuyerQua = 'X'
+													} else
+														if (diff > 0) {
+															if (perc <= row.QuantTollUp) {
+																// la percentuale di quantità è all'interno dei limiti
+																skipToBuyerQua = 'X'
+															}
+														} else {
+															if (diff < 0) {
+																if (perc >= row.QuantTollDown) {
+																	// la percentuale di quantità è all'interno dei limiti
+																	skipToBuyerQua = 'X'
+																}
+															}
 														}
 
-													}
-
+													var skipToBuyerGG = ''
 													var dataSched = row.SchedulationsStatus[u].EINDT
 													var year = dataSched.substring(0, 4);
 													var month = dataSched.substring(4, 6);
@@ -1447,15 +1455,33 @@ sap.ui.define([
 													// To calculate the no. of days between two dates 
 													var days = Difference_In_Time / (1000 * 3600 * 24);
 
-													if (days <= row.ggTollUP && days > row.ggTollDown) {
-														skipToBuyer = 'X'
+													if (days === 0) {
+														skipToBuyerGG = 'X'
+													} else
+														if (days > 0) {
+															if (days <= row.ggTollUp) {
+																// la percentuale di quantità è all'interno dei limiti
+																skipToBuyerGG = 'X'
+															}
+														} else {
+															if (days < 0) {
+																if (days >= row.ggTollDown) {
+																	// la percentuale di quantità è all'interno dei limiti
+																	skipToBuyerGG = 'X'
+																}
+															}
+														}
+													
+													var skip = '';
+													if(skipToBuyerQua !== '' && skipToBuyerGG !== ''){
+														skip = 'X';
 													}
 
 													body.skipAppBuyer.push({
 														"EBELN": row.EBELN,
 														"EBELP": row.EBELP,
 														"XBLNR": singleEkesModel.XBLNR,
-														"SKIP": skipToBuyer,
+														"SKIP": skip,
 														"CONF_TYPE": "QUA"
 													})
 
