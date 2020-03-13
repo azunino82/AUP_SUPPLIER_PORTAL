@@ -40,7 +40,7 @@
 									visible="{SchedAgrToApproveRejectJSONModel>ISTOCONFIRM}"></RadioButton>
 								<RadioButton groupName="{SchedAgrToApproveRejectJSONModel>RADIO_GRP_NAME}" selected="{SchedAgrToApproveRejectJSONModel>REJECT}"
 									visible="{SchedAgrToApproveRejectJSONModel>ISTOCONFIRM}"></RadioButton>
-								<Text text="{i18n>advice_msg}" visible = "{= ${SchedAgrToApproveRejectJSONModel>DELTA_QUANT} !== '0'}"/>			
+								<Text text="{i18n>advice_msg}" visible = "{= ${SchedAgrToApproveRejectJSONModel>DELTA_QUANT} !== '0.000'}"/>			
 							</cells>
 						</ColumnListItem>
 					</items>
