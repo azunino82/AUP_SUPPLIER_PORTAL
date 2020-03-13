@@ -71,6 +71,9 @@
 									<Column>
 										<Text text="{i18n>QTA_CONFERMA}"/>
 									</Column>
+									<Column>
+										<Text text=""/>
+									</Column>									
 								</columns>
 								<items textAlign="Center">
 									<ColumnListItem highlight="{path:'SelectedPositionsJSONModel>STATUS', formatter:'.onSetSchedulationStatus'}">
@@ -79,6 +82,7 @@
 											<Text text="{SelectedPositionsJSONModel>MENGE}"/>
 											<Text text="{SelectedPositionsJSONModel>ETENR}"/>
 											<Text text="{SelectedPositionsJSONModel>QTA_CONFERMATA}"/>
+											<Text text=" {= ${SelectedPositionsJSONModel>ZPERIODO} === '1' ? 'F' : ''}"/>											
 										</cells>
 									</ColumnListItem>
 								</items>

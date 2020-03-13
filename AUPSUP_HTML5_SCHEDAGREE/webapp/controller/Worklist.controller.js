@@ -1773,13 +1773,6 @@ sap.ui.define([
 		onControllPosition: function (mod) {
 			var err = ''
 
-			// //se per la posizione i-esima non ho selezionato il profiliConferma blocco tutto - temporaneamente eliminato!
-			// if (mod.profiliConferma != undefined && mod.profiliConferma != "") {
-			// 	if (mod.EBTYP === undefined || mod.EBTYP === "") {
-			// 		return err = that.getResourceBundle().getText("WRR_No_CatConf"); //Modificato messaggio di errore "ERR_Confirmation_Type_Mandatory_Single"
-			// 	}
-			// }
-
 			var sommaQuantitaSchedulazioni = 0;
 			var sommaTotalePosizioniNuove = 0;
 			if (mod.POItemSchedulers.results && mod.POItemSchedulers.results.length > 0) {
@@ -1801,24 +1794,10 @@ sap.ui.define([
 					}
 				}
 				if (sommaTotalePosizioniNuove === 0) {
-					// var nuovoPrezzoPosizione = mod.NETPR / mod.PEINH;
-					// var differenzaPrezzo = nuovoPrezzoPosizione - mod.OriginalPrice;
-					// var ordine = mod.EBELN + "-" + mod.EBELP;
-					// if (differenzaPrezzo === 0)
-					// 	err = err + "\n" + that.getResourceBundle().getText("ERR_empty", ordine);
-
 					// Eliminato controllo sulle consegne perchè non gestito quando il prezzo viene modificato
 					//err = err + "\n" + that.getResourceBundle().getText("ERR_no_schedulations");
 				}
-				// Eliminato messaggio di errore NO SCHEDULAZIONI
-				// } else {
-				// var nuovoPrezzoPosizione = mod.NETPR / mod.PEINH;
-				// var differenzaPrezzo = nuovoPrezzoPosizione - mod.OriginalPrice;
-				// var ordine = mod.EBELN + "-" + mod.EBELP;
-				// if (differenzaPrezzo === 0)
-				// 	err = err + "\n" + that.getResourceBundle().getText("ERR_empty", ordine);
 
-				//err = err + "\n" + that.getResourceBundle().getText("ERR_no_schedulations");
 			}
 
 			var profiliConsegna = that.getModel("AllProfiliConfermaJSONModel").getData().results;
@@ -1832,100 +1811,58 @@ sap.ui.define([
 					}
 
 				});
-
-				//	profiloSelezionato = profiliConsegna.find(x => x.TIPO_CONFERMA === mod.UPDKZ && x => x.PROFILO_CONTROLLO === mod.BSTAE);
 			}
 
-			// nel caso in cui sono in modifica ("TIPO_CONFERMA": "4" ma a sap passiamo EBTYP === "CH") devo controllare che la somma delle quantità sia = alla quantità totale di posizione
-			if (mod.UPDKZ === '4') {
-				// if (mod.MENGE !== undefined && mod.MENGE != "" && sommaQuantitaSchedulazioni > parseFloat(mod.MENGE)) {
-				// 	err = err + "\n" + that.getResourceBundle().getText("ERR_Sum_Schedulations_Single");
-				// }
 
-				// Indipendentemente se flag quantità parziale è attivo o no [Simbolo] 
-				// verificare se la quantità inserita è all’interno delle % settate su customizing portale Se interno al range OK se fuori dal range KO
-				if (mod.QuantPercDOWN !== undefined && mod.QuantPercUP !== undefined) {
-					var origQuant = mod.MENGE;
-					if (origQuant !== undefined && origQuant !== "" && sommaQuantitaSchedulazioni > 0) {
-						origQuant = parseFloat(origQuant);
-						var differenzaQuant = sommaQuantitaSchedulazioni - origQuant;
-						if (differenzaQuant > 0) {
-							// differenza positiva
-							var percScostamentoUP = (differenzaQuant / origQuant) * 100;
-							if (percScostamentoUP > mod.QuantPercUP) {
-								var ordine = mod.EBELN + "-" + mod.EBELP;
-								err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Up_Single", ordine);
-							} else {
-								//Valorizzo tabella Skip
-								if (percScostamentoUP > mod.QuantTollUp && mod.CONFERMA_MANDATORY === true)
-									mod.skip = 'X'
+			//LUVE
+
+			/* 1 -  controllare se c'è il parziale quantità
+			se parziale = 'X' allora controllo verificare solo percQuant superiore
+				- SE FLAG PROFRESSIVO NON ATTIVO usare la quantità della schedulazione singola e confrontarlo con tutte le conferme (in essere, su backend, in rmo)
+				- SE FLAG PROGRESSIVO é ATTIVO usare (NON ORA)
+			se parziale = '' allora controllare percQuantSup e Inf 
+				- SE FLAG PROFRESSIVO NON ATTIVO usare la quantità della schedulazione singola e confrontarlo con tutte le conferme (in essere, su backend, in rmo) */
+
+
+			if (mod.QuantPercDOWN !== undefined && mod.QuantPercUP !== undefined) {
+
+				// per ogni conferma 
+				mod.POItemSchedulers.results.forEach(conferma => {
+					if (mod.SchedulationsStatus && mod.SchedulationsStatus.length > 0 && conferma.SYSID === undefined) {
+						mod.SchedulationsStatus.forEach(schedulazione => {
+							var mengeSomma = 0
+							if (conferma.ETENR === schedulazione.ETENR) {
+								mengeSomma = parseFloat(schedulazione.QTA_CONFERMATA) + parseFloat(conferma.MENGE)
+								var diff = parseFloat(schedulazione.MENGE) - mengeSomma
+								var perc = (Math.abs(diff) / parseFloat(schedulazione.MENGE)) * 100
+
+								var ordine = mod.EBELN + "-" + mod.EBELP + " CONF: " + conferma.ETENS;
+
+								if (profiloSelezionato.PARZIALE_QUANTITA === 'X') {
+									if (diff > 0)
+										if (perc > mod.QuantPercUP) {
+											err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Up_Single", ordine);
+										}
+								} else {
+									if (diff > 0)
+										if (perc > mod.QuantPercUP) {
+											err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Up_Single", ordine);
+										}
+									if (diff < 0)
+										if (perc > mod.QuantPercDOWN) {
+											err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Down_Single", ordine);
+										}
+								}
 							}
-						}
-						if (differenzaQuant < 0) {
-							// differenza positiva
-							var percScostamentoDown = ((differenzaQuant * -1) / origQuant) * 100;
-							if (percScostamentoDown > mod.QuantPercDOWN) {
-								var ordine = mod.EBELN + "-" + mod.EBELP;
-								err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Down_Single", ordine);
-							}
-						}
+						});
 					}
-				}
+				});
 
-				// Creata funzione dedicata.
-				// // controllo che il prezzo modificato sia all'interno delle percentuali di scostamento se ci sono
-				// if (mod.PricePercDOWN !== undefined) {
-				// 	if (mod.OriginalPrice !== undefined) {
+			}
 
-				// 		var PEINH = mod.PEINH;
-				// 		var NETPR = mod.NETPR;
-				// 		if (NETPR != undefined && NETPR != "" && PEINH != undefined && PEINH != "") {
-				// 			PEINH = parseFloat(PEINH);
-				// 			NETPR = parseFloat(NETPR);
-				// 			var nuovoPrezzoPosizione = NETPR / PEINH;
-				// 			var differenzaPrezzo = nuovoPrezzoPosizione - mod.OriginalPrice;
-				// 			if (differenzaPrezzo > 0) {
-				// 				// differenza positiva
-				// 				var percScostamentoUP = (differenzaPrezzo / mod.OriginalPrice) * 100;
-				// 				if (percScostamentoUP > mod.PricePercUP) {
-				// 					err = err + "\n" + that.getResourceBundle().getText("ERR_Price_Perc_Up", mod.EBELN, mod.EBELP);
-				// 				}
-				// 			}
-				// 			if (differenzaPrezzo < 0) {
-				// 				// differenza positiva
-				// 				var percScostamentoDown = ((differenzaPrezzo * -1) / mod.OriginalPrice) * 100;
-				// 				if (percScostamentoDown > mod.PricePercDOWN) {
-				// 					err = err + "\n" + that.getResourceBundle().getText("ERR_Price_Perc_Down", mod.EBELN, mod.EBELP);
-				// 				}
-				// 			}
-				// 		}
-				// 	}
-				// }
+			if (mod.UPDKZ === '4') {
+				if (profiloSelezionato.CONTROLLO_CORSO_APP !== '') { // DA TENERE PER IL 4
 
-				if (profiloSelezionato.CONTROLLO_CORSO_APP !== '') {
-					// Verificare prima che per l’ordine item non ci siano una conferma ti tipo 4 in corso di approvazione. Se esiste conferma di tipo 4 in corso di approvazione ERRORE su front end. 
-					// Promise.all([
-					// 	new Promise(function (resolve, reject) {
-
-					// 		var url = "/SupplierPortal_RMO/xsOdata/GetRMO.xsjs";
-
-					// 		if (mod.EBELN !== undefined && mod.EBELN !== "" && mod.EBELP !== undefined && mod.EBELP !== "") {
-					// 			url = url + "?$filter=(EBELN='" + mod.EBELN + "' and EBELP='" + mod.EBELP + "')";
-					// 		}
-
-					// 		// Inizio modifiche LS
-					// 		var body = {
-					// 			"userid": that.getCurrentUserId()
-					// 		};
-
-					// 		that.showBusyDialog();
-					// 		that.ajaxPost(url, body, "/SupplierPortal_RMO", function (oData) {
-					// 			that.hideBusyDialog();
-					// 			if (oData && oData.results && oData.results.EkkoEkpo && oData.results.EkkoEkpo.length > 0) {
-					// 				if (oData.results.EkkoEkpo[0].STATUS === 'RC' && oData.results.EkkoEkpo[0].UPDKZ === '4') {
-					// 					resolve();
-					// 				}
-					// 			}
 					var trovato = false;
 					if (mod.RMOData !== undefined && mod.RMOData.EkkoEkpo !== undefined && mod.RMOData.EkkoEkpo.length > 0) {
 						var EkkoEkpo = mod.RMOData.EkkoEkpo.find(x => x.STATUS === 'RC' && x.UPDKZ === '4' && x.EBELN === mod.EBELN && x.EBELP ===
@@ -1934,9 +1871,6 @@ sap.ui.define([
 						if (EkkoEkpo !== undefined)
 							trovato = true;
 					}
-					//mod.RMOData.EkkoEkpo.forEach(function (r) {
-
-					//});
 
 					/*Controllo CH già approvato se flagh CONTROLLO_CORSO_APP nella tabella di Customizing è attivo (T_PROFILI_CONFERMA)*/
 					var trovato = false;
@@ -1961,16 +1895,6 @@ sap.ui.define([
 					}
 					if (trovato)
 						err = err + "\n" + that.getResourceBundle().getText("ERR_Confirmation_In_Corso_Approvazione");
-					// 			reject();
-					// 		});
-
-					// 	})
-					// ]).then(function (values) {
-					// 	return +"\n" + that.getResourceBundle().getText("ERR_Confirmation_In_Corso_Approvazione");
-
-					// }).catch(function () {
-					// 	return err;
-					// });
 
 				} else {
 					/*Controllo CH in fase di Approvazione*/
@@ -1999,191 +1923,7 @@ sap.ui.define([
 				}
 			}
 
-			if (mod.UPDKZ === '1') {
 
-				/*10/12/2019 
-				ES:: Se stiamo inserendo una AB con conferma parziale (sempre da customzing) usiamo le AB che sono nuove, 
-				+ quelle in corso di approvazione di tipo AB + quelle che sono già su back end di tipo AB. 
-				se invece AB ha attivo conferma totale, usiamo le conferme nuove che stiamo insrendo più le conferme AB 
-				che sono in corso di approvazione*/
-
-				if (profiloSelezionato.PARZIALE_QUANTITA === 'X') {
-					mod.PART1 = 'X';
-					/*Se flag quantità parziale attivo [Simbolo] verificare solo il superamento della tolleranza superiore. 
-					Per capire la quantità confermata usare la quantità della conferma in corso più tutte le conferme già 
-					approvate con tipo conferma in oggetto più eventuali conferme in corso di approvazione. 
-					Se controllo OK deve essere inviato a backend e creata la conferma */
-					// Promise.all([
-					// 		new Promise(function (resolve, reject) {
-
-					// var url = "/SupplierPortal_RMO/xsOdata/GetRMO.xsjs";
-					// // estrarre dalla RMO solo quelle in stato RC poi sommare le EKES dell'ordine corrente che hanno UPDKZ = a quello selezionato + TIPO CONFERMA selezionato 'AB'
-					// if (mod.EBELN !== undefined && mod.EBELN !== "" && mod.EBELP !== undefined && mod.EBELP !== "") {
-					// 	url = url + "?$filter=(EBELN='" + mod.EBELN + "' and EBELP='" + mod.EBELP + "' and STATUS = 'RC')";
-					// }
-
-					//sommare le EKES dell'ordine corrente che hanno UPDKZ = a quello selezionato + TIPO CONFERMA selezionato 'AB'
-
-					var sommaEkes = 0;
-					//	var ekesModel = that.getView().getModel("SelectedPositionsJSONModel").getData().POItemSchedulers;
-					var ekesModel = mod.POItemSchedulers;
-					if (ekesModel !== undefined && ekesModel.results !== undefined) {
-						ekesModel.results.forEach(function (r) {
-							if (r.EBTYP === undefined) // ho inserito una nuova riga
-								sommaEkes = sommaEkes + parseFloat(r.MENGE);
-							else {
-								if (r.EBTYP === mod.EBTYP) {
-									sommaEkes = sommaEkes + parseFloat(r.MENGE);
-								}
-							}
-						});
-					}
-
-					// var body = {
-					// 	"userid": that.getCurrentUserId()
-					// };
-
-					// 		that.showBusyDialog();
-					// 		that.ajaxPost(url, body, "/SupplierPortal_RMO", function (oData) {
-					// 			that.hideBusyDialog();
-
-					// 			if (oData && oData.results && oData.results.EkkoEkpo && oData.results.EkkoEkpo.length > 0) {
-					var quantDaControllare = 0;
-					var trovato = false;
-					if (mod.RMOData !== undefined && mod.RMOData.EkkoEkpo !== undefined && mod.RMOData.EkkoEkpo.length > 0) {
-						var EkkoEkpo = undefined; // mod.RMOData.EkkoEkpo.find(x => x.STATUS === 'RC');
-						mod.RMOData.EkkoEkpo.forEach(function (r) {
-							if (r.EBELN === mod.EBELN && r.EBELP === mod.EBELP && r.EBTYP === mod.EBTYP) {
-								EkkoEkpo = r;
-								return true;
-							}
-						});
-						if (EkkoEkpo !== undefined)
-							if (EkkoEkpo.MENGE !== undefined && EkkoEkpo.MENGE !== null) {
-								quantDaControllare = parseFloat(EkkoEkpo.MENGE);
-							} else {
-								if (EkkoEkpo.MENGE_ORIGINAL !== undefined && EkkoEkpo.MENGE_ORIGINAL !== null) {
-									quantDaControllare = +parseFloat(EkkoEkpo.MENGE_ORIGINAL);
-								}
-							}
-					}
-
-					var qta = parseFloat(sommaEkes) + parseFloat(quantDaControllare);
-					var origQuant = parseFloat(mod.MENGE);
-					var differenzaQuant = qta - origQuant;
-					if (differenzaQuant > 0) {
-						// differenza positiva
-						var percScostamentoUP = (differenzaQuant / origQuant) * 100;
-						if (percScostamentoUP > mod.QuantPercUP) {
-							var ordine = mod.EBELN + "-" + mod.EBELP;
-							err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Up_Single", ordine);
-						}
-					}
-
-					// 			}
-					// 			resolve();
-					// 		});
-
-					// 	})
-					// ]).then(function (values) {
-					// 	return err;
-					// }).catch(function () {
-					// 	return err;
-					// });
-
-				} else {
-					mod.PART1 = '';
-					/*Se flag quantità parziale non attivo verificare se la quantità inserita è all’interno delle 
-					% settate su customizing portale (utilizzare le quantità della conferma in corso ). 
-					Se interno al range OK se fuori dal range KO. Se OK mandare a back end.  Devono essere cancellate le 
-					conferme con lo stesso tipo conferma e create nuove. */
-
-					// 10/12/2019 CONFERMA TOTALE: deve tenere in considerazione le conferme nuove che si stanno 
-					// inserendo (le righe nuove inserite nella schermata) + conferme in corso di approvazione con categoria uguale
-
-					// Promise.all([
-					// 	new Promise(function (resolve, reject) {
-
-					// 		var url = "/SupplierPortal_RMO/xsOdata/GetRMO.xsjs";
-
-					// 		if (mod.EBELN !== undefined && mod.EBELN !== "" && mod.EBELP !== undefined && mod.EBELP !== "") {
-					// 			url = url + "?$filter=(EBELN='" + mod.EBELN + "' and EBELP='" + mod.EBELP + "' and STATUS = 'RC' and UPDKZ = '" + mod.UPDKZ +
-					// 				"')";
-					// 		}
-
-					// 		// Inizio modifiche LS
-					// 		var body = {
-					// 			"userid": that.getCurrentUserId()
-					// 		};
-
-					// 		// sommo solo le quantità delle righe "Nuove"
-					sommaQuantitaSchedulazioni = 0;
-					for (var j = 0; j < mod.POItemSchedulers.results.length; j++) {
-						if (mod.POItemSchedulers.results[j].SYSID === undefined) {
-							sommaQuantitaSchedulazioni = sommaQuantitaSchedulazioni + parseFloat(mod.POItemSchedulers.results[j].MENGE);
-						}
-					}
-
-					// 		that.showBusyDialog();
-					// 		// ESTRAGGO le conferme in corso di approvazione con categoria uguale
-					// 		that.ajaxPost(url, body, "/SupplierPortal_RMO", function (oData) {
-					// 			that.hideBusyDialog();
-
-					if (err !== null && err !== "")
-						return err;
-					// var oData = confermeInApprovazione;
-					if (mod.RMOData.EkkoEkpo && mod.RMOData.EkkoEkpo.length > 0) {
-						var quantDaControllare = 0;
-						if (mod.RMOData.EkkoEkpo[0].MENGE !== undefined && mod.RMOData.EkkoEkpo[0].MENGE !== null) {
-							quantDaControllare = sommaQuantitaSchedulazioni + parseFloat(mod.RMOData.EkkoEkpo[0].MENGE);
-						} else {
-							if (mod.RMOData.EkkoEkpo[0].MENGE_ORIGINAL !== undefined && mod.RMOData.EkkoEkpo[0].MENGE_ORIGINAL !== null) {
-								quantDaControllare = sommaQuantitaSchedulazioni + parseFloat(mod.RMOData.EkkoEkpo[0].MENGE_ORIGINAL);
-							}
-						}
-						sommaQuantitaSchedulazioni = quantDaControllare;
-					}
-					// 			resolve();
-					// 		});
-
-					// 	})
-					// ]).then(function (values) {
-
-					var origQuant = parseFloat(mod.MENGE);
-
-					var differenzaQuant = sommaQuantitaSchedulazioni - origQuant;
-					if (differenzaQuant > 0) {
-						// differenza positiva
-						var percScostamentoUP = (differenzaQuant / origQuant) * 100;
-						if (percScostamentoUP > mod.QuantPercUP) {
-							var ordine = mod.EBELN + "-" + mod.EBELP;
-							err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Up_Single", ordine);
-						}
-					}
-
-					if (differenzaQuant < 0) {
-						// differenza positiva
-						var percScostamentoDown = ((differenzaQuant * -1) / origQuant) * 100;
-						if (percScostamentoDown > mod.QuantPercDOWN) {
-							var ordine = mod.EBELN + "-" + mod.EBELP;
-							err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Down_Single", ordine);
-						}
-					}
-
-					// }).catch(function () {
-					// 	if (err !== "")
-					// 		MessageBox.error(err, {
-					// 			icon: MessageBox.Icon.ERROR,
-					// 			title: "Error",
-					// 		});
-					// 	else
-					// 		MessageBox.success(that.getResourceBundle().getText("OK_Position_confirm"), {
-					// 			icon: MessageBox.Icon.SUCCESS
-					// 		});
-					// });
-				}
-
-			}
 			return err;
 		},
 
