@@ -23,6 +23,7 @@
 						<Column><Text text="{i18n>deltaQuantita}"/></Column>
 						<Column><Text text="{i18n>approva}"/></Column>
 						<Column><Text text="{i18n>rifiuta}"/></Column>
+						<Column><Text text="{i18n>advice}"/></Column>						
 					</columns>
 					<items textAlign="Center">
 						<ColumnListItem highlight="{path:'SchedAgrToApproveRejectJSONModel>STATUS', formatter:'.onSetSchedulationStatus'}">
@@ -39,6 +40,7 @@
 									visible="{SchedAgrToApproveRejectJSONModel>ISTOCONFIRM}"></RadioButton>
 								<RadioButton groupName="{SchedAgrToApproveRejectJSONModel>RADIO_GRP_NAME}" selected="{SchedAgrToApproveRejectJSONModel>REJECT}"
 									visible="{SchedAgrToApproveRejectJSONModel>ISTOCONFIRM}"></RadioButton>
+								<Text text="{i18n>advice_msg}" visible = "{= ${SchedAgrToApproveRejectJSONModel>DELTA_QUANT} !== '0'}"/>			
 							</cells>
 						</ColumnListItem>
 					</items>
