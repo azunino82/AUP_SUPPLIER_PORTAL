@@ -62,6 +62,10 @@
 					"id": "AUPSUP_HTML5_METASUPPLIER_BM",
 					"appId": "it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER_BM",
 					"vizId": "MetasupplierBM-Display"
+				}, {
+					"id": "AUPSUP_HTML5_PURCH_ORDS",
+					"appId": "it.alteaup.supplier.portal.purchords.AUPSUP_HTML5_PURCH_ORDS",
+					"vizId": "PurchaseOrders-Display"
 				}]
 			}
 		}],
