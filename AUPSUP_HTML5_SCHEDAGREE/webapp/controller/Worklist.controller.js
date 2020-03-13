@@ -1001,14 +1001,20 @@ sap.ui.define([
 						that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].QuantPercUP = parseInt(selectedProfiloConfermaModel.PERC_SUPERIORE_QUANT);
 					else
 						that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].QuantPercUP = "";
+
 					if (selectedProfiloConfermaModel !== undefined && selectedProfiloConfermaModel.TIPO_CONFERMA !== undefined)
 						that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].UPDKZ = selectedProfiloConfermaModel.TIPO_CONFERMA;
 					else
 						that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].UPDKZ = "";
-					// Apertura campo prezzo per posizione
-					if (selectedProfiloConfermaModel !== undefined && selectedProfiloConfermaModel.MODIFICA_PREZZO !== undefined)
-						that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].editPrice = selectedProfiloConfermaModel.MODIFICA_PREZZO === 'X' ? true : false;
-					that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].KSCHL = selectedProfiloConfermaModel.TIPO_COND_PREZZO;
+
+					// se il prezzo è già editabile dalla COND_HEADER allora non lo sovrascrivoS
+					if (!that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].editPrice) {
+						if (selectedProfiloConfermaModel !== undefined && selectedProfiloConfermaModel.MODIFICA_PREZZO !== undefined)
+							that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].editPrice = selectedProfiloConfermaModel.MODIFICA_PREZZO === 'X' ? true : false;
+						that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].KSCHL = selectedProfiloConfermaModel.TIPO_COND_PREZZO;
+					}
+
+
 
 					if (selectedProfiloConfermaModel !== undefined && selectedProfiloConfermaModel.ZAPPPERINF !== undefined &&
 						selectedProfiloConfermaModel.ZAPPPERINF !== "")
@@ -1060,9 +1066,13 @@ sap.ui.define([
 					mod.QuantPercUP = parseInt(mod.profiliConferma[0].PERC_SUPERIORE_QUANT);
 				else
 					mod.QuantPercUP = "";
-				if (mod.profiliConferma[0] !== undefined && mod.profiliConferma[0].MODIFICA_PREZZO !== undefined)
-					mod.editPrice = mod.profiliConferma[0].MODIFICA_PREZZO === 'X' ? true : false;
-				mod.KSCHL = mod.profiliConferma[0].TIPO_COND_PREZZO;
+				// se il prezzo è già editabile dalla COND_HEADER allora non lo sovrascrivo	
+				if (!mod.editPrice) {
+					if (mod.profiliConferma[0] !== undefined && mod.profiliConferma[0].MODIFICA_PREZZO !== undefined)
+						mod.editPrice = mod.profiliConferma[0].MODIFICA_PREZZO === 'X' ? true : false;
+					mod.KSCHL = mod.profiliConferma[0].TIPO_COND_PREZZO;
+				}
+
 				if (mod.profiliConferma[0] !== undefined && mod.profiliConferma[0].ZAPPPERSUP !== undefined &&
 					mod.profiliConferma[0].ZAPPPERSUP !== "")
 					mod.QuantTollUp = parseInt(mod.profiliConferma[0].ZAPPPERSUP);
@@ -1202,13 +1212,6 @@ sap.ui.define([
 			var contatoreRighe = 0;
 			for (var i = 0; i < model.length; i++) {
 
-				// //se per la posizione i-esima non ho selezionato il profiliConferma blocco tutto
-				// if (model[i].profiliConferma != undefined && model[i].profiliConferma != "") {
-				// 	if (model[i].EBTYP === undefined || model[i].EBTYP === "") {
-				// 		err = that.getResourceBundle().getText("ERR_Confirmation_Type_Mandatory", model[i].EBELP)
-				// 		contatoreRighe = contatoreRighe + 1;
-				// 	}
-				// }
 				var sommaQuantitaSchedulazioni = 0;
 				if (model[i].POItemSchedulers.results && model[i].POItemSchedulers.results.length > 0) {
 					for (var j = 0; j < model[i].POItemSchedulers.results.length; j++) {
@@ -1227,16 +1230,6 @@ sap.ui.define([
 					if (err != "") {
 						contatoreRighe = contatoreRighe + 1;
 					}
-					// } else { tolto obbligo inserimento Schedulazioni
-					//var ordine = model[i].EBELN + "-" + model[i].EBELP;
-					//err = that.getResourceBundle().getText("ERR_Schedulations_empty", ordine);
-					//contatoreRighe = contatoreRighe + 1;
-
-					// var nuovoPrezzoPosizione = model[i].NETPR / model[i].PEINH;
-					// var differenzaPrezzo = nuovoPrezzoPosizione - mod.OriginalPrice;
-					// var ordine = model[i].EBELN + "-" + model[i].EBELP;
-					// if (differenzaPrezzo === 0)
-					// 	err = that.getResourceBundle().getText("ERR_empty", ordine);
 				}
 				// Richiamo controlli implementati dal tasto CheckPosition
 
@@ -1245,51 +1238,6 @@ sap.ui.define([
 					return;
 				}
 
-				// if (model[i].UPDKZ === '1') {  Inserita nella checkPositions
-				// var url = "/SupplierPortal_RMO/xsOdata/GetRMO.xsjs";
-
-				// var body = {
-				// 	"userid": that.getCurrentUserId(),
-				// 	"ebeln": model[i].EBELN
-				// };
-
-				//that.showBusyDialog();
-
-				//Sostituita la chiamata RMO con il ciclo FOR//
-
-				// // ESTRAGGO le conferme in corso di approvazione con categoria uguale
-				// that.ajaxPost(url, body, "/SupplierPortal_RMO", function (oData) {
-				// 	that.hideBusyDialog();
-				// 	if (oData && oData.results && oData.results.EkkoEkpo && oData.results.EkkoEkpo.length > 0) {
-				// 		var selectEkkoEkpo = oData.results.EkkoEkpo.find(function (element) {
-				// 			if (element.EBELN === model[contatoreRighe].EBELN && element.EBELP === model[contatoreRighe].EBELP && element.STATUS ===
-				// 				'RC' && element.UPDKZ ===
-				// 				model[contatoreRighe].UPDKZ) {
-				// 				return element;
-				// 			}
-				// 		});
-				// 		if (selectEkkoEkpo === undefined) {
-				// 			oData = undefined;
-				// 		}
-				// 	}
-				// 	var errore = that.onControllPosition(model[contatoreRighe], oData);
-				// 	if (errore !== undefined && errore !== "") {
-				// 		err = err + errore + " in pos: " + model[contatoreRighe].EBELP;
-				// 	}
-
-				// 	contatoreRighe = contatoreRighe + 1;
-
-				// 	if (contatoreRighe >= model.length) {
-				// 		if (err !== "") {
-				// 			MessageBox.error(err);
-				// 			err = "";
-				// 		} else {
-				// 			var navCon = sap.ui.getCore().byId("navCon");
-				// 			navCon.to(sap.ui.getCore().byId("p2"), "slide");
-				// 		}
-				// 	}
-
-				// });
 				if (model[i].editPrice === true) {
 					var errP = that.onControllPriceOK(model[i]);
 					if (errP !== "" && errP !== undefined) {
@@ -1305,28 +1253,19 @@ sap.ui.define([
 				if (errore !== undefined && errore !== "") {
 					err = err + errore + " ordine: " + model[i].EBELN + " in pos: " + model[i].EBELP;
 				}
-				//err = err + that.onControllPosition(model[i], null) + " in pos: " + model[i].EBELP;
 				contatoreRighe = contatoreRighe + 1;
+			}
 
-				//if (contatoreRighe >= model.length) {
-				if (err !== "") {
-					MessageBox.error(err);
-					err = "";
-				} else {
-					that.onConfirmAndClose();
-				}
-				//	}
-				//}
+			if (err !== "") {
+				MessageBox.error(err);
+				err = "";
+			} else {
+				that.onConfirmAndClose();
 			}
 
 		},
 
 		onConfirmAndClose: function () {
-
-			//if (sap.ui.getCore().byId("XBLNR").getValue() === undefined || sap.ui.getCore().byId("XBLNR").getValue() === "") {
-			//	MessageBox.error(that.getResourceBundle().getText("ERR_Confirm_Position_Text"));
-			//	return;
-			//}
 
 			MessageBox.warning(that.getResourceBundle().getText("MSG_Confirm_Position_Text"), {
 				icon: MessageBox.Icon.WARNING,
@@ -1418,52 +1357,55 @@ sap.ui.define([
 													var perc = (diff / row.SchedulationsStatus[u].MENGE) * 100
 
 
-													if (diff > 0) {
-														if (perc < row.QuantTollUp) {
-															// la percentuale di quantità è all'interno dei limiti
-															skipToBuyerQua = 'X'
-														}
-													} else {
-														if (diff < 0) {
-															if (perc > row.QuantTollDown) {
+													if (row.QuantTollUp > 0 && row.QuantTollDown > 0) {
+														if (diff >= 0) {
+															if (perc < row.QuantTollUp) {
 																// la percentuale di quantità è all'interno dei limiti
 																skipToBuyerQua = 'X'
+															}
+														} else {
+															if (diff < 0) {
+																if (perc > row.QuantTollDown) {
+																	// la percentuale di quantità è all'interno dei limiti
+																	skipToBuyerQua = 'X'
+																}
 															}
 														}
 													}
 
+													if (row.ggTollUp > 0 && row.ggTollDown > 0) {
+														var skipToBuyerGG = ''
+														var dataSched = row.SchedulationsStatus[u].EINDT
+														var year = dataSched.substring(0, 4);
+														var month = dataSched.substring(4, 6);
+														var day = dataSched.substring(6, 8);
 
-													var skipToBuyerGG = ''
-													var dataSched = row.SchedulationsStatus[u].EINDT
-													var year = dataSched.substring(0, 4);
-													var month = dataSched.substring(4, 6);
-													var day = dataSched.substring(6, 8);
+														var dataSched = month + "/" + day + "/" + year
+														dataSched = new Date(dataSched)
 
-													var dataSched = month + "/" + day + "/" + year
-													dataSched = new Date(dataSched)
+														var dataConf = singleEkesModel.EINDT
+														var year = dataConf.substring(0, 4)
+														var month = dataConf.substring(4, 6)
+														var day = dataConf.substring(6, 8);
+														var dataConf = month + "/" + day + "/" + year
+														dataConf = new Date(dataConf)
 
-													var dataConf = singleEkesModel.EINDT
-													var year = dataConf.substring(0, 4)
-													var month = dataConf.substring(4, 6)
-													var day = dataConf.substring(6, 8);
-													var dataConf = month + "/" + day + "/" + year
-													dataConf = new Date(dataConf)
+														var Difference_In_Time = dataConf.getTime() - dataSched.getTime();
 
-													var Difference_In_Time = dataConf.getTime() - dataSched.getTime();
+														// To calculate the no. of days between two dates 
+														var days = Difference_In_Time / (1000 * 3600 * 24);
 
-													// To calculate the no. of days between two dates 
-													var days = Difference_In_Time / (1000 * 3600 * 24);
-
-													if (days > 0) {
-														if (days < row.ggTollUp) {
-															// la percentuale di quantità è all'interno dei limiti
-															skipToBuyerGG = 'X'
-														}
-													} else {
-														if (days < 0) {
-															if (days > row.ggTollDown) {
+														if (days >= 0) {
+															if (days < row.ggTollUp) {
 																// la percentuale di quantità è all'interno dei limiti
 																skipToBuyerGG = 'X'
+															}
+														} else {
+															if (days < 0) {
+																if (days > row.ggTollDown) {
+																	// la percentuale di quantità è all'interno dei limiti
+																	skipToBuyerGG = 'X'
+																}
 															}
 														}
 													}
@@ -1644,21 +1586,21 @@ sap.ui.define([
 		/*onChangeProfiloConsegna: function (oEvent) {
 			var sObjectId = that.getModel("OrderJSONModel").getData().EBELN;
 			var selectedKey = oEvent.getSource().getSelectedItem().getKey();
-
+	
 			var profiliConsegna = that.getModel("ListProfiliConfermaJSONModel").getData().results;
 			var profiloSelezionato = [];
 			if (profiliConsegna != undefined) {
 				profiloSelezionato = profiliConsegna.find(x => x.CAT_CONFERMA === selectedKey);
 			}
-
+	
 			that.loadObject(sObjectId, profiloSelezionato !== undefined ? profiloSelezionato.PROFILO_CONTROLLO : "", selectedKey, function (
 				oData) {
 				that.hideBusyDialog();
 				if (oData === null || oData === undefined) {
-
+	
 				} else {
 					that._completeInit("Display", oData, function () {
-
+	
 					});
 				}
 			});
@@ -1829,7 +1771,7 @@ sap.ui.define([
 		},
 
 		onControllPosition: function (mod) {
-			var err = "";
+			var err = ''
 
 			// //se per la posizione i-esima non ho selezionato il profiliConferma blocco tutto - temporaneamente eliminato!
 			// if (mod.profiliConferma != undefined && mod.profiliConferma != "") {
@@ -1865,7 +1807,8 @@ sap.ui.define([
 					// if (differenzaPrezzo === 0)
 					// 	err = err + "\n" + that.getResourceBundle().getText("ERR_empty", ordine);
 
-					err = err + "\n" + that.getResourceBundle().getText("ERR_no_schedulations");
+					// Eliminato controllo sulle consegne perchè non gestito quando il prezzo viene modificato
+					//err = err + "\n" + that.getResourceBundle().getText("ERR_no_schedulations");
 				}
 				// Eliminato messaggio di errore NO SCHEDULAZIONI
 				// } else {
@@ -2274,7 +2217,7 @@ sap.ui.define([
 			mod.POItemSchedulers.results.forEach(function (aData) {
 				// 				// distruggo il binding con il modello altrimenti non funziona la cler dei dati
 				var oPositionModel = {};
-
+	
 				if (aData.SYSID === undefined && aData.MENGE !== null && aData.MENGE !== "" && aData.EINDT !==
 					null && aData.EINDT !== "") {
 					oPositionModel.EBELN = mod.EBELN;
@@ -2284,7 +2227,7 @@ sap.ui.define([
 					new_ekes.push(oPositionModel);
 				}
 			});
-
+	
 			if (new_ekes.length > 0) {
 				var body = {
 					"newEkes": new_ekes
