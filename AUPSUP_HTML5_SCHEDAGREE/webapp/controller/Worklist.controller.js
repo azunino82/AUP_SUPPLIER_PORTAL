@@ -1417,22 +1417,21 @@ sap.ui.define([
 													var diff = row.SchedulationsStatus[u].MENGE - sum;
 													var perc = (diff / row.SchedulationsStatus[u].MENGE) * 100
 
-													if (diff === 0) {
-														skipToBuyerQua = 'X'
-													} else
-														if (diff > 0) {
-															if (perc <= row.QuantTollUp) {
+
+													if (diff > 0) {
+														if (perc < row.QuantTollUp) {
+															// la percentuale di quantità è all'interno dei limiti
+															skipToBuyerQua = 'X'
+														}
+													} else {
+														if (diff < 0) {
+															if (perc > row.QuantTollDown) {
 																// la percentuale di quantità è all'interno dei limiti
 																skipToBuyerQua = 'X'
 															}
-														} else {
-															if (diff < 0) {
-																if (perc >= row.QuantTollDown) {
-																	// la percentuale di quantità è all'interno dei limiti
-																	skipToBuyerQua = 'X'
-																}
-															}
 														}
+													}
+
 
 													var skipToBuyerGG = ''
 													var dataSched = row.SchedulationsStatus[u].EINDT
@@ -1455,27 +1454,39 @@ sap.ui.define([
 													// To calculate the no. of days between two dates 
 													var days = Difference_In_Time / (1000 * 3600 * 24);
 
-													if (days === 0) {
-														skipToBuyerGG = 'X'
-													} else
-														if (days > 0) {
-															if (days <= row.ggTollUp) {
+													if (days > 0) {
+														if (days < row.ggTollUp) {
+															// la percentuale di quantità è all'interno dei limiti
+															skipToBuyerGG = 'X'
+														}
+													} else {
+														if (days < 0) {
+															if (days > row.ggTollDown) {
 																// la percentuale di quantità è all'interno dei limiti
 																skipToBuyerGG = 'X'
 															}
+														}
+													}
+
+													var skip = '';
+													if (row.QuantTollUp !== 0 || row.QuantTollDown !== 0 && row.ggTollUp === 0 && row.ggTollDown === 0) {
+														if (skipToBuyerQua !== '') {
+															skip = 'X';
+														}
+													} else {
+														if (row.QuantTollUp === 0 && row.QuantTollDown === 0 && row.ggTollUp !== 0 || row.ggTollDown !== 0) {
+															if (skipToBuyerGG !== '') {
+																skip = 'X';
+															}
 														} else {
-															if (days < 0) {
-																if (days >= row.ggTollDown) {
-																	// la percentuale di quantità è all'interno dei limiti
-																	skipToBuyerGG = 'X'
+															if (row.QuantTollUp !== 0 || row.QuantTollDown !== 0 && row.ggTollUp !== 0 || row.ggTollDown !== 0) {
+																if (skipToBuyerQua !== '' && skipToBuyerGG !== '') {
+																	skip = 'X';
 																}
 															}
 														}
-													
-													var skip = '';
-													if(skipToBuyerQua !== '' && skipToBuyerGG !== ''){
-														skip = 'X';
 													}
+
 
 													body.skipAppBuyer.push({
 														"EBELN": row.EBELN,
@@ -2287,7 +2298,14 @@ sap.ui.define([
 				if (oData) {
 					mod.SchedulationsStatus = oData.results;
 					var arrETENR = [];
-					mod.SchedulationsStatus.forEach(element => {
+					for (var index = 0; index < mod.SchedulationsStatus.length; index++) {
+						var element = mod.SchedulationsStatus[index];
+
+
+						// Eliminare le schedulazioni che hanno zperiodo <> 1
+						if (element.ZPERIODO !== "1")
+							continue
+
 						var deltaMenge = (parseFloat(element.MENGE) - parseFloat(element.QTA_CONFERMATA));
 
 						if (deltaMenge > 0) {
@@ -2312,7 +2330,8 @@ sap.ui.define([
 								mod.POItemSchedulers.results = oSchedulationsArray;
 							}
 						}
-					});
+
+					}
 
 					mod.POItemSchedulers.results.forEach(element => {
 						element.ETENRS = arrETENR;

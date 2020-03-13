@@ -31,7 +31,7 @@
 									<core:Title text=""/>
 									<Label text="{i18n>BPRME}"/>
 									<Text text="{SelectedPositionsJSONModel>BPRME}"/>
-									<Label text="{i18n>MENGE}"/>
+									<Label text="{i18n>MENGE_RELEASE}"/>
 									<Text text="{SelectedPositionsJSONModel>MENGE}"/>
 									<Label text="{i18n>KTMNG}"/>
 									<Text text="{SelectedPositionsJSONModel>KTMNG}"/>
