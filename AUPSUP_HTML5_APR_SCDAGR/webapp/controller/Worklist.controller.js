@@ -496,32 +496,32 @@ sap.ui.define([
 			return foundProfilo;
 		},
 
-		onSendDataForQuantity : function (posToReject,posToApprove,sText){
+		onSendDataForQuantity: function (posToReject, posToApprove, sText) {
 			var body = {
 				"confirmType": [],
 				"notaReject": sText,
 				"tipoOperazione": "QUA"
 			};
 
-			if(posToApprove !== undefined && posToApprove.length>0){
+			if (posToApprove !== undefined && posToApprove.length > 0) {
 				posToApprove.forEach(element => {
 					var elem = {};
 					elem.EBELN = element.EBELN;
 					elem.EBELP = element.EBELP;
 					elem.XBLNR = element.XBLNR;
 					elem.CONF_TYPE = 'A',
-					elem.BSTYP = 'L'; // per piani di consegna
+						elem.BSTYP = 'L'; // per piani di consegna
 					body.confirmType.push(elem);
 				});
 			}
-			if(posToReject !== undefined && posToReject.length>0){
+			if (posToReject !== undefined && posToReject.length > 0) {
 				posToReject.forEach(element => {
 					var elem = {};
 					elem.EBELN = element.EBELN;
 					elem.EBELP = element.EBELP;
 					elem.XBLNR = element.XBLNR;
 					elem.CONF_TYPE = 'R',
-					elem.BSTYP = 'L'; // per piani di consegna
+						elem.BSTYP = 'L'; // per piani di consegna
 					body.confirmType.push(elem);
 				});
 			}
@@ -545,8 +545,8 @@ sap.ui.define([
 							MessageBox.show(message, {
 								onClose: function () {
 									// aggiorno la lista
-									that.onCloseApproveRejectFragment();
-									that.onSearchOrders(); 
+									that.onCloseApproveRejectFragment(true);
+									that.onSearchOrders();
 								} // default
 
 							});
@@ -557,7 +557,7 @@ sap.ui.define([
 							title: "Success", // default
 							onClose: function () {
 								// aggiorno la lista
-								that.onCloseApproveRejectFragment();
+								that.onCloseApproveRejectFragment(true);
 								that.onSearchOrders();
 							} // default
 
@@ -970,12 +970,13 @@ sap.ui.define([
 			});
 
 		},
-		onCloseApproveRejectFragment: function () {
+		onCloseApproveRejectFragment: function (makeRefresh) {
 			if (this.approveRejectFragment) {
 				this.approveRejectFragment.close();
 				this.approveRejectFragment.destroy();
 				this.approveRejectFragment = undefined;
-				that.onSearchOrders();
+				if (makeRefresh === true)
+					that.onSearchOrders();
 			}
 		},
 		onSetSchedulationStatus: function (oValue) {
@@ -1053,7 +1054,7 @@ sap.ui.define([
 										text: that.getOwnerComponent().getModel("i18n").getResourceBundle().getText("Reject"),
 										press: function () {
 											var sText = sap.ui.getCore().byId('rejectDialogTextarea').getValue();
-											that.onSendDataForQuantity(posToReject,posToApprove,sText);
+											that.onSendDataForQuantity(posToReject, posToApprove, sText);
 											oDialog.close();
 										}
 									}),
@@ -1072,7 +1073,7 @@ sap.ui.define([
 
 
 							} else {
-								that.onSendDataForQuantity(posToReject,posToApprove,'');
+								that.onSendDataForQuantity(posToReject, posToApprove, '');
 							}
 
 
