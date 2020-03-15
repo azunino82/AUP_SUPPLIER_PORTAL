@@ -1,0 +1,27 @@
+<Dialog xmlns:f="sap.ui.layout.form" 
+	xmlns:core="sap.ui.core" 
+	xmlns:u="sap.ui.unified" 
+	xmlns:mvc="sap.ui.core.mvc" 
+	xmlns="sap.m" 
+	xmlns:table="sap.ui.table" 
+	xmlns:smartFilterBar="sap.ui.comp.smartfilterbar" contentWidth="100%" contentHeight="100%" title="{i18n>Detail} {DetailJSONModel>/QMNUM}">
+	<App>
+		<Page id="p1" showHeader="false">
+			<content>
+				<VBox height="20px"></VBox>
+				<FlexBox alignItems="Start" justifyContent="Center">
+					<items>
+						<Title text="{i18n>HeaderTexts}" titleStyle="H2"/>
+					</items>
+				</FlexBox>
+
+			</content>
+			<footer>
+				<Toolbar>
+					<ToolbarSpacer/>
+					<Button text="{i18n>close}" press="onCloseTexts" type="Reject"/>
+				</Toolbar>
+			</footer>
+		</Page>
+	</App>
+</Dialog>
