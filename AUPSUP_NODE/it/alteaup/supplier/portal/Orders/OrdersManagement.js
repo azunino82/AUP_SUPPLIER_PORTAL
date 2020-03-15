@@ -21,6 +21,111 @@ module.exports = function () {
 
     app.use(bodyParser.json())
 
+    // GET PURCHASE ORDERS
+    app.post('/GetOrders', function (req, res) {
+        const body = req.body
+
+        console.log('INPUT BODY ==========> ' + JSON.stringify(body))
+
+        if (body !== undefined && body !== '' && body !== null) {
+            var lifnr = []
+            var ebeln = []
+            var ebelp = []
+            var ekorg = []
+            var ekgrp = []
+            var matnr = []
+            var werks = []
+            var userid = req.user.id
+
+            if (body.lifnr !== null && body.lifnr !== undefined && body.lifnr !== '') {
+                var oLifnr = []
+                for (var i = 0; i < body.lifnr.length; i++) {
+                    oLifnr.push({
+                        ELIFN: body.lifnr[i]
+                    })
+                }
+                lifnr = oLifnr
+            }
+
+            if (body.ebeln !== null && body.ebeln !== undefined && body.ebeln !== '') {
+                ebeln.push({
+                    ebeln: body.ebeln
+                })
+            }
+            if (body.ebelp !== null && body.ebelp !== undefined && body.ebelp !== '') {
+                ebelp.push({
+                    ebelp: body.ebelp
+                })
+            }
+            if (body.ekorg !== null && body.ekorg !== undefined && body.ekorg.length > 0) {
+                var oEkorg = []
+                // eslint-disable-next-line no-redeclare
+                for (var i = 0; i < body.ekorg.length; i++) {
+                    oEkorg.push({
+                        EKORG: body.ekorg[i]
+                    })
+                }
+                ekorg = oEkorg
+            }
+
+            if (body.ekgrp !== null && body.ekgrp !== undefined && body.ekgrp.length > 0) {
+                var oEkgrp = []
+                // eslint-disable-next-line no-redeclare
+                for (var i = 0; i < body.ekgrp.length; i++) {
+                    oEkgrp.push({
+                        EKGRP: body.ekgrp[i]
+                    })
+                }
+                ekgrp = oEkgrp
+            }
+            if (body.matnr !== null && body.matnr !== undefined && body.matnr.length > 0) {
+                var oMatnr = []
+                // eslint-disable-next-line no-redeclare
+                for (var i = 0; i < body.matnr.length; i++) {
+                    oMatnr.push({
+                        MATNR: body.matnr[i]
+                    })
+                }
+                matnr = oMatnr
+            }
+            if (body.werks !== null && body.werks !== undefined && body.werks.length > 0) {
+                var oWerks = []
+                // eslint-disable-next-line no-redeclare
+                for (var i = 0; i < body.werks.length; i++) {
+                    oWerks.push({
+                        EWERK: body.werks[i],
+                        DESCR: ''
+                    })
+                }
+                werks = oWerks
+            }
+
+            hdbext.createConnection(req.tenantContainer, (err, client) => {
+                if (err) {
+                    return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
+                } else {
+                    hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.SchedulingAgreement::MM00_PURDOC_LIST', function (_err, sp) {
+                        if (_err) {
+                            console.log('---->>> CLIENT END ERR MM00_PURDOC_LIST <<<<<-----')
+                        }
+                        sp(userid, 'ODA', 'F', lifnr, ebeln, ekorg, matnr, ekgrp, werks, (err, parameters, ET_EKKO) => {
+                            console.log('---->>> CLIENT END MM00_PURDOC_LIST <<<<<-----')
+                            client.close()
+                            if (err) {
+                                console.error('ERROR: ' + err)
+                                return res.status(500).send(stringifyObj(err))
+                            } else {
+                                return res.status(200).send({
+                                    results: ET_EKKO
+                                })
+                            }
+                        })
+                    })
+                }
+            })
+        }
+    })
+
     // CREATE CONFIRM ORD
     app.post('/ConfirmOrders', function (req, res) {
         const body = req.body

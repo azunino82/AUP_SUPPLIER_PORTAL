@@ -9,6 +9,21 @@ var async = require('async')
 module.exports = function () {
   var app = express.Router()
 
+  app.get('/testTimeout', function (req, res) {
+    req.setTimeout(4 * 60 * 1000)
+    req.connection.setTimeout(4 * 60 * 1000)
+    req.socket.setTimeout(4 * 60 * 1000)
+
+    res.setTimeout(4 * 60 * 1000)
+    res.connection.setTimeout(4 * 60 * 1000)
+    res.socket.setTimeout(4 * 60 * 1000)
+
+    setTimeout(function () {
+      console.log('prova timeout 50 secondi')
+      return res.status(200).send()
+    }, 50000)
+  })
+
   app.get('/GetUserInfo', function (req, res) {
     var outData = {
       firstname: req.authInfo.userInfo.givenName,
@@ -362,6 +377,34 @@ module.exports = function () {
     })
   })
 
+  // GET TEXTS
+
+  app.get('/GetDocumentTexts', function (req, res) {
+    var ebeln = req.query.I_EBELN
+    hdbext.createConnection(req.tenantContainer, (err, client) => {
+      if (err) {
+        return res.status(500).send('GetDocumentTexts CONNECTION ERROR: ' + stringifyObj(err))
+      } else {
+        hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Utils::GetDocumentTexts', function (_err, sp) {
+          if (_err) {
+            console.error('---->>> ERROR GetDocumentTexts <<<<<-----')
+            return res.status(500).send('GetDocumentTexts CONNECTION ERROR SP: ' + stringifyObj(_err))
+          }
+          sp(req.user.id, ebeln, (err, parameters, results) => {
+            console.log('---->>> CLIENT END GetDocumentTexts <<<<<-----')
+            client.close()
+            if (err) {
+              return res.status(500).send(stringifyObj(err))
+            } else {
+              return res.status(200).send({
+                results: results
+              })
+            }
+          })
+        })
+      }
+    })
+  })
   // GET LIST OF PURCHASE DOC from BACKEND SAP
 
   app.post('/GetPurchaseDoc', function (req, res) {
