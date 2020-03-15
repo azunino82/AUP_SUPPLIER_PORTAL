@@ -241,12 +241,6 @@ sap.ui.define([
 
 		onSearchOrders: function () {
 
-			// SupplierPortal_OrdersManagement è una destination che ho creato su SCP la trovi sotto DESTINATION
-			// inoltre ho aggiunto un pezzo al neo-app.json
-
-			//var url = "/SupplierPortal_OrdersManagement/xsOdata/GetOrders_pos.xsjs";
-
-
 			var url = "/backend/SchedulingAgreementManagement/GetPianiConsegna";
 			var body = that.getModel("filterOrdersJSONModel").getData();
 			that.showBusyDialog();
@@ -2203,6 +2197,42 @@ sap.ui.define([
 					that.getView().setModel(oModel, "columnVisibilityModel");
 
 				}
+			}
+		},
+
+		onGetTexts: function (oEvent) {
+			var getTabledata = that.getView().getModel("OrderJSONModel").getData().results;
+			var itemPosition = oEvent.getSource().getParent().getParent().indexOfItem(oEvent.getSource().getParent());
+			var selectedRowdata = getTabledata[itemPosition];
+			console.log(selectedRowdata)
+
+			var url = "/backend/Utils/UtilsManagement/GetDocumentTexts?I_EBELN=" + selectedRowdata.EBELN;
+
+			that.ajaxGet(url, function (oData) {
+				if (oData) {
+					var oModel = new JSONModel();
+					oModel.setData(oData);
+					var oComponent = that.getOwnerComponent();
+					oComponent.setModel(oModel, "TextsJSONModel");
+
+					if (!that.oSearchTextsDialog) {
+						that.oSearchTextsDialog = sap.ui.xmlfragment("it.alteaup.supplier.portal.schedulingagreement.AUPSUP_HTML5_SCHEDAGREE.fragments.Texts", that);
+						that.getView().addDependent(that.oSearchTextsDialog);
+					}
+					that.oSearchTextsDialog.open();
+
+				} else {
+					MessageBox.error(that.getResourceBundle().getText("noTextsFound"));
+				}
+			});
+
+		},
+
+		onCloseTexts: function () {
+			if (that.oSearchTextsDialog) {
+				that.oSearchTextsDialog.close();
+				that.oSearchTextsDialog.destroy();
+				that.oSearchTextsDialog = undefined;
 			}
 		}
 	});
