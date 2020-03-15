@@ -1,0 +1,213 @@
+PROCEDURE "AUPSUP_DATABASE.data.procedures.Orders::MM00_PURDOC_LIST" (
+      IN userid VARCHAR(250),
+      IN orderType NVARCHAR(4),     /*tipo di applicazione che identifica le colonne 4-5-6-7 della T_ORDERS_TYPES*/
+      IN bstyp NVARCHAR(1),         /*tipo da passare in select all'estrazione ordini. passata per parametro da servizio in base all'app*/
+      IN IT_LIFNR TABLE (ELIFN NVARCHAR(10)), 
+      IN IT_EBELN TABLE (EBELN NVARCHAR(10)),
+      IN IT_EKORG TABLE (EKORG NVARCHAR(4)),
+      IN IT_MATNR TABLE (MATNR NVARCHAR(40)), 
+      IN IT_EKGRP TABLE (EKGRP NVARCHAR(3)),
+      IN IT_WERKS TABLE (EWERK NVARCHAR(4),DESCR NVARCHAR(255)),
+      OUT out_Table "AUPSUP_DATABASE.data.structures.Orders::EKKOStructure")
+      LANGUAGE SQLSCRIPT 
+      SQL SECURITY INVOKER AS 
+BEGIN  
+
+DECLARE IT_BSART TABLE (ESART NVARCHAR(4));
+DECLARE IT_BSTYP TABLE (BSTYP NVARCHAR(1));
+DECLARE IT_CUST_FIELDS TABLE (CUST_FIELD NVARCHAR(30),SOURCE_TABLE NVARCHAR(30),SOURCE_FIELD NVARCHAR(30));
+/*DECLARE IT_EBELN TABLE (EBELN NVARCHAR(10));
+DECLARE IT_EKORG TABLE (EKORG NVARCHAR(4));
+DECLARE IT_LIFNR TABLE (ELIFN NVARCHAR(10));*/
+DECLARE IT_VENDOR TABLE (LIFNR NVARCHAR(10),EKORG NVARCHAR(4));
+
+DECLARE I_EGLKZ_P_EXCL NVARCHAR(1);
+DECLARE I_ELIKZ_P_EXCL NVARCHAR(1);
+DECLARE I_LOEKZ_K_EXCL NVARCHAR(1);
+DECLARE I_LOEKZ_P_EXCL NVARCHAR(1);
+DECLARE I_MEMORY_EXCL NVARCHAR(1);  
+DECLARE I_RETPO_P_EXCL NVARCHAR(1);
+DECLARE I_WITH_EKES NVARCHAR(1);
+DECLARE I_WITH_EKET NVARCHAR(1); 
+
+DECLARE ET_PURDOC_EKET "AUPSUP_DATABASE.data.structures.Orders::EKETStructure";
+DECLARE ET_PURDOC_EKES "AUPSUP_DATABASE.data.structures.Orders::EKESStructure";
+DECLARE ET_PURDOC_EKKO "AUPSUP_DATABASE.data.structures.Orders::EKKOStructure";
+DECLARE ET_PURDOC_EKKO_B "AUPSUP_DATABASE.data.structures.Orders::EKKOStructure";
+DECLARE ET_PURDOC_EKPO "AUPSUP_DATABASE.data.structures.Orders::EKPOStructure";
+DECLARE ET_PURDOC_EKPO_B "AUPSUP_DATABASE.data.structures.Orders::EKPOStructure";
+
+DECLARE EKORG_ROW INTEGER;
+DECLARE TODAY DATETIME;
+DECLARE TODAY_TIMESTAMP TIMESTAMP;
+DECLARE FORMAT_TODAY VARCHAR(8);
+DECLARE counter INTEGER;
+DECLARE COUNT_DELETE_EKPO INTEGER;
+DECLARE T_EKPO_DELETED TABLE (EBELN NVARCHAR(10),EBELP VARCHAR(5),COUNT INTEGER);
+DECLARE T_EKET_DELETED TABLE (EBELN NVARCHAR(10),COUNT INTEGER);
+DECLARE out_anagrafica TABLE(METAID VARCHAR(50), DESCR NVARCHAR(255));
+DECLARE out_lifnr TABLE(METAID VARCHAR(50), LIFNR NVARCHAR(10), DESCR NVARCHAR(35));
+
+DECLARE T_ORIG_EKPO_ROW_NUMBER TABLE (EBELN NVARCHAR(10),COUNTER INTEGER);
+DECLARE T_AFTER_EKPO_ROW_NUMBER TABLE (EBELN NVARCHAR(10),COUNTER INTEGER);
+
+DECLARE CURRENT_SYSID NVARCHAR(30);
+
+create local temporary table #IT_BSART (ESART NVARCHAR(4));
+create local temporary table #IT_BSTYP (BSTYP NVARCHAR(1));
+create local temporary table #IT_CUST_FIELDS (CUST_FIELD NVARCHAR(30),SOURCE_TABLE NVARCHAR(30),SOURCE_FIELD NVARCHAR(30));
+create local temporary table #IT_VENDOR (LIFNR NVARCHAR(10),EKORG NVARCHAR(4));
+
+/*PRENDO IL SYD DA PASSARE AL SERVIZIO*/
+SELECT SYSID INTO CURRENT_SYSID FROM "AUPSUP_DATABASE.data.tables::T_BCKND_SYSTEMS";
+
+IT_BSART = SELECT * FROM #IT_BSART;
+IT_BSTYP = SELECT * FROM #IT_BSTYP;
+IT_CUST_FIELDS = SELECT * FROM #IT_CUST_FIELDS;
+
+SELECT COUNT(*) into counter FROM :IT_LIFNR;
+IF counter = 0 THEN
+CALL "AUPSUP_DATABASE.data.procedures.Utils::GetMetasupplierList"(:userid,:out_anagrafica,:out_lifnr);
+IT_LIFNR = SELECT LIFNR AS ELIFN FROM :out_lifnr;
+END IF;
+
+
+IT_VENDOR = SELECT * FROM #IT_VENDOR;
+
+/*Controllo se le organizzazioni commerciali sono state passate dal servizio*/
+SELECT COUNT(*) into EKORG_ROW FROM :IT_EKORG WHERE EKORG <> '';
+IF EKORG_ROW = 0 THEN
+      /* prendo le organizzazioni commerciali dell'utente connesso*/
+      CALL "AUPSUP_DATABASE.data.procedures.Utils::GetUserPurchaseOrgs"(:userid,:IT_EKORG);
+END IF;
+
+/*estrazione dei PLANT (WERKS) dell'utente connesso bisogna capire dove prendere il SYSID*/
+SELECT COUNT(*) into counter FROM :IT_WERKS;
+IF counter = 0 THEN
+      CALL "AUPSUP_DATABASE.data.procedures.Utils::GetUserPlants"(:userid,:IT_WERKS);
+END IF;
+      
+IF :orderType = 'ODA' THEN /*customizing per purch orders :bstyp = F*/
+      IT_BSTYP = SELECT :bstyp AS BSTYP FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
+      IT_BSART = SELECT BSART AS ESART FROM "AUPSUP_DATABASE.data.tables::T_ORDERS_TYPES" WHERE SYSID = :CURRENT_SYSID and LISTA_ODA = 'X' and BSTYP = :bstyp;
+END IF;
+IF :orderType = 'CONT' THEN /*customizing per contratti :bstyp = K*/
+      IT_BSTYP = SELECT :bstyp AS BSTYP FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
+      IT_BSART = SELECT BSART AS ESART FROM "AUPSUP_DATABASE.data.tables::T_ORDERS_TYPES" WHERE SYSID = :CURRENT_SYSID and LISTA_ODA = 'X' and BSTYP = :bstyp;
+END IF;
+
+CALL "AUPSUP_DATABASE.data.virtualProcedures::VIRTUAL_MM00_PURDOC_LIST"(:IT_BSART,:IT_BSTYP,:IT_CUST_FIELDS,:IT_EBELN,:IT_EKGRP,:IT_EKORG,:IT_LIFNR,:IT_MATNR,:IT_VENDOR,:IT_WERKS,:I_EGLKZ_P_EXCL,:I_ELIKZ_P_EXCL,:I_LOEKZ_K_EXCL,:I_LOEKZ_P_EXCL,:I_MEMORY_EXCL,'X',:I_RETPO_P_EXCL,'X','X',:ET_PURDOC_EKES,:ET_PURDOC_EKET,:ET_PURDOC_EKKO,:ET_PURDOC_EKPO);
+
+UPSERT "AUPSUP_DATABASE.data.tables::ET_PURDOC_EKES"  SELECT * 
+            FROM  :ET_PURDOC_EKES;
+
+UPSERT "AUPSUP_DATABASE.data.tables::ET_PURDOC_EKET"  SELECT * 
+            FROM  :ET_PURDOC_EKET;
+
+
+UPSERT "AUPSUP_DATABASE.data.tables::ET_PURDOC_EKKO"  SELECT * 
+            FROM  :ET_PURDOC_EKKO;
+
+UPSERT "AUPSUP_DATABASE.data.tables::ET_PURDOC_EKPO"  SELECT *  
+            FROM  :ET_PURDOC_EKPO;
+            
+/*Logiche di aggiornamento tabella testate e pos*/
+
+SELECT CURRENT_DATE "current date" INTO TODAY FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
+SELECT CURRENT_UTCTIMESTAMP "Coordinated Universal Timestamp" INTO TODAY_TIMESTAMP FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
+SELECT TO_VARCHAR (TO_DATE(:TODAY), 'YYYYMMDD') INTO FORMAT_TODAY FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
+/*scarico nella tabella appoggio ET_PURDOC_EKKO tutte le righe con KDATB < di data odierna OR LOEKZ = 'X'*/
+ET_PURDOC_EKKO_B = SELECT * FROM "AUPSUP_DATABASE.data.tables::ET_PURDOC_EKKO" WHERE EBELN IN (SELECT EBELN FROM :ET_PURDOC_EKKO WHERE ( KDATB < FORMAT_TODAY AND KDATB <> '00000000' ) OR LOEKZ = 'X');
+
+/*cerco tutte le posizioni che hanno KDATB < oggi OR LOEKZ = 'X'*/
+ET_PURDOC_EKPO_B = SELECT * FROM "AUPSUP_DATABASE.data.tables::ET_PURDOC_EKPO" AS table1 WHERE EXISTS ( SELECT * FROM :ET_PURDOC_EKKO_B as table2
+              WHERE table1.EBELN = table2.EBELN );
+
+
+/*se tutte le posizioni dell’ordine (EKPO) hanno flag di cancellazione (EKPO-LOEKZ) e/o sono chiuse  al Consegnato (EKPO-ELIKZ = X) */
+ET_PURDOC_EKPO_B = SELECT * FROM "AUPSUP_DATABASE.data.tables::ET_PURDOC_EKPO" AS table1 WHERE (table1.EBELN,table1.EBELP) IN (SELECT EBELN,EBELP FROM :ET_PURDOC_EKPO WHERE LOEKZ <> '' OR ELIKZ = 'X');
+/*metto le posizioni cancellate o chiuse in una tabella di appoggio con contatore*/
+T_EKPO_DELETED = SELECT EBELN,EBELP,COUNT(*) AS COUNT FROM :ET_PURDOC_EKPO_B GROUP BY EBELN,EBELP;
+/*conto tutte le posizioni di ogni singolo ordine letto da sap*/
+T_EKET_DELETED = SELECT EBELN,COUNT(*) AS COUNT FROM :ET_PURDOC_EKPO GROUP BY EBELN;
+/*estraggo tutte gli EBELN e EBELP degli ordini da cancellare*/
+T_EKPO_DELETED = 
+/*seleziono tutti gli ordini che hanno tutte le posizioni cancellate cioè dove il COUNT delle numero di posizioni = COUNT delle posizioni cancellate per singolo ordine*/
+SELECT EBELN,EBELP,1 as COUNT FROM :T_EKPO_DELETED AS table1 WHERE (table1.EBELN, table1.EBELP) in ( SELECT EBELN,EBELP FROM :T_EKET_DELETED as table2 WHERE table1.COUNT = table2.COUNT)
+UNION
+/*unisco il risultato della selezione di tutte gli ordini che hanno DATA SCANDEZA < OGGI o LOEKZ = 'X'*/
+SELECT EBELN,EBELP,1 AS COUNT FROM "AUPSUP_DATABASE.data.tables::ET_PURDOC_EKPO" AS table1
+WHERE (table1.EBELN, table1.EBELP) in (SELECT EBELN,EBELP FROM :ET_PURDOC_EKPO_B as table2
+              WHERE table1.EBELN = table2.EBELN and table1.EBELP = table2.EBELP);
+              
+/*dopo aver preparato la tabella T_EKPO_DELETED contentente tutti gli ordini e posizioni da cancellare procedo con la cancellazione da tutte le tabelle*/
+              
+/*cancello dalla tabella delle schedulazioni le righe che hanno EBELN con data < data di oggi*/   
+
+/*UPSERT "AUPSUP_DATABASE.data.tables::ET_PURDOC_EKES_LOG" SELECT MANDT,SYSID,EBELN,EBELP,ETENS,EINDT,EBTYP,LPEIN,UZEIT,MENGE,DABMG,ESTKZ,KZDIS,XBLNR,MPROF,EMATN,ZCUSTOM01,ZCUSTOM02,ZCUSTOM03,ZCUSTOM04,ZCUSTOM05,ZCUSTOM06,ZCUSTOM07,ZCUSTOM08,ZCUSTOM09,ZCUSTOM10,:TODAY_TIMESTAMP as DELETE_DATE, :userid as USERID from "AUPSUP_DATABASE.data.tables::ET_PURDOC_EKES" AS table1
+WHERE (table1.EBELN, table1.EBELP) in (SELECT EBELN,EBELP FROM :T_EKPO_DELETED as table2
+              WHERE table1.EBELN = table2.EBELN and table1.EBELP = table2.EBELP);  */
+                
+DELETE FROM "AUPSUP_DATABASE.data.tables::ET_PURDOC_EKES" AS table1
+WHERE (table1.EBELN, table1.EBELP) in ( SELECT EBELN,EBELP FROM :T_EKPO_DELETED as table2
+              WHERE table1.EBELN = table2.EBELN and table1.EBELP = table2.EBELP );
+
+/*Cancello da EKES le righe che non sono state estratte dalla bapi */
+DELETE FROM "AUPSUP_DATABASE.data.tables::ET_PURDOC_EKES" AS table1 
+WHERE (table1.EBELN, table1.EBELP, table1.ETENS) NOT in ( SELECT EBELN,EBELP,ETENS FROM :ET_PURDOC_EKES as table2
+             WHERE table1.EBELN = table2.EBELN and table1.EBELP = table2.EBELP and table1.ETENS = table2.ETENS );
+
+
+/*cancello dalla tabella delle consegne le righe che hanno EBELN con data < data di oggi*/
+/*UPSERT "AUPSUP_DATABASE.data.tables::ET_PURDOC_EKET_LOG" SELECT MANDT,SYSID,EBELN,EBELP,ETENR,EINDT,LPEIN,MENGE,WEMNG,MNG02,ZCUSTOM01,ZCUSTOM02,ZCUSTOM03,ZCUSTOM04,ZCUSTOM05,ZCUSTOM06,ZCUSTOM07,ZCUSTOM08,ZCUSTOM09,ZCUSTOM10,:TODAY_TIMESTAMP as DELETE_DATE, :userid as USERID from "AUPSUP_DATABASE.data.tables::ET_PURDOC_EKET" AS table1
+WHERE (table1.EBELN, table1.EBELP) in (SELECT EBELN,EBELP FROM :T_EKPO_DELETED as table2
+              WHERE table1.EBELN = table2.EBELN and table1.EBELP = table2.EBELP);  */
+DELETE FROM "AUPSUP_DATABASE.data.tables::ET_PURDOC_EKET" AS table1 --NB:commentato perchè cancellava tutte le volte che cercavo
+WHERE (table1.EBELN, table1.EBELP) in ( SELECT EBELN,EBELP FROM :T_EKPO_DELETED as table2
+              WHERE table1.EBELN = table2.EBELN and table1.EBELP = table2.EBELP );
+              
+/*Cancello da EKET le righe che non sono state estratte dalla bapi*/
+DELETE FROM "AUPSUP_DATABASE.data.tables::ET_PURDOC_EKET" AS table1 
+WHERE (table1.EBELN, table1.EBELP, table1.ETENR) NOT in ( SELECT EBELN,EBELP,ETENR FROM :ET_PURDOC_EKET as table2
+              WHERE table1.EBELN = table2.EBELN and table1.EBELP = table2.EBELP and table1.ETENR = table2.ETENR );
+              
+/*cancello dalla tabella delle posizioni le righe che hanno EBELN con data < data di oggi*/
+
+/*UPSERT "AUPSUP_DATABASE.data.tables::ET_PURDOC_EKPO_LOG" SELECT MANDT,SYSID,EBELN,EBELP,MATNR,TXZ01,IDNLF,MENGE,MEINS,NETPR,PEINH,BPRME,BPUMZ,BPUMN,UMREZ,UMREN,WERKS,SCHPR,KANBA,HANDOVERLOC,BSTAE,MAHNZ,MAHN1,MAHN2,MAHN3,
+UEBTO,UEBTK,UNTTO,PSTYP,KNTTP,RETPO,KZABS,LABNR,KONNR,KTPNR,ABDAT,ABFTZ,ETFZ1,ETFZ2,BSTYP,ZGTYP,EAN11,INCO1,INCO2,MFRPN,MFRNR,EMNFR,LOEKZ,ELIKZ,EGLKZ,ZCUSTOM01,ZCUSTOM02,ZCUSTOM03,ZCUSTOM04,ZCUSTOM05,ZCUSTOM06,ZCUSTOM07,ZCUSTOM08,ZCUSTOM09,ZCUSTOM10,:TODAY_TIMESTAMP as DELETE_DATE, :userid as USERID from "AUPSUP_DATABASE.data.tables::ET_PURDOC_EKPO" AS table1
+WHERE (table1.EBELN, table1.EBELP) in (SELECT EBELN,EBELP FROM :T_EKPO_DELETED as table2
+              WHERE table1.EBELN = table2.EBELN and table1.EBELP = table2.EBELP);   */   
+              
+delete from "AUPSUP_DATABASE.data.tables::ET_PURDOC_EKPO" AS table1
+WHERE (table1.EBELN, table1.EBELP) in (SELECT EBELN,EBELP FROM :T_EKPO_DELETED as table2
+              WHERE table1.EBELN = table2.EBELN and table1.EBELP = table2.EBELP);                
+                       
+              
+/*se l'ordine ha tutte le posizioni cancellate allora non lo faccio vedere ma se solo 1 delle posizioni dell'ordine non risulta
+cancellata allora devo far vedere l'ordine*/
+
+T_ORIG_EKPO_ROW_NUMBER = SELECT EBELN, COUNT(*) AS COUNTER FROM :ET_PURDOC_EKPO GROUP BY EBELN;
+T_AFTER_EKPO_ROW_NUMBER = SELECT EBELN, COUNT(*) AS COUNTER FROM :T_EKPO_DELETED GROUP BY EBELN;                    
+
+out_Table = SELECT table1.* FROM :ET_PURDOC_EKKO as table1 WHERE table1.EBELN IN (SELECT EBELN FROM "AUPSUP_DATABASE.data.tables::ET_PURDOC_EKPO" as table2 WHERE table1.EBELN = table2.EBELN);
+
+/*cancello dalla tabella delle testatae le righe che hanno EBELN con data < data di oggi  
+UPSERT "AUPSUP_DATABASE.data.tables::ET_PURDOC_EKKO_LOG" SELECT MANDT,SYSID,EBELN,ZTERM,VTEXT,LIFNR,WAERS,EKORG,EKGRP,EKNAM,EKTEL,SMTP_ADDR,GWLDT,AUSNR,ANGNR,KDATB,KDATE,ZBD1T,ZBD2T,ZBD3T,ZBD1P,ZBD2P,INCO1,INCO2,MEMORY,LOEKZ,ZCUSTOM01,ZCUSTOM02,ZCUSTOM03,ZCUSTOM04,ZCUSTOM05,ZCUSTOM06,ZCUSTOM07,ZCUSTOM08,ZCUSTOM09,ZCUSTOM10,:TODAY_TIMESTAMP as DELETE_DATE, :userid as USERID from "AUPSUP_DATABASE.data.tables::ET_PURDOC_EKKO" AS table1
+WHERE (table1.EBELN) NOT IN (SELECT EBELN FROM :out_Table as table2
+              WHERE table1.EBELN = table2.EBELN );              
+DELETE FROM "AUPSUP_DATABASE.data.tables::ET_PURDOC_EKKO" AS table1 
+WHERE (table1.EBELN) NOT IN ( SELECT EBELN FROM :out_Table as table2
+              WHERE table1.EBELN = table2.EBELN ); 
+      
+/*
+out_Table = SELECT * FROM :ET_PURDOC_EKKO AS table1
+WHERE (table1.EBELN) NOT IN (SELECT EBELN FROM :T_EKPO_DELETED as table2
+              WHERE table1.EBELN = table2.EBELN);           
+*/
+
+DROP TABLE #IT_BSART;
+DROP TABLE #IT_BSTYP;
+DROP TABLE #IT_CUST_FIELDS;
+DROP TABLE #IT_VENDOR;
+
+END;
