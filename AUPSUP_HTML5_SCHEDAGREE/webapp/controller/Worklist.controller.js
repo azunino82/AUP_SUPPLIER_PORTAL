@@ -2201,15 +2201,16 @@ sap.ui.define([
 		},
 
 		onGetTexts: function (oEvent) {
-			var getTabledata = that.getView().getModel("OrderJSONModel").getData().results;
-			var itemPosition = oEvent.getSource().getParent().getParent().indexOfItem(oEvent.getSource().getParent());
-			var selectedRowdata = getTabledata[itemPosition];
-			console.log(selectedRowdata)
+			var oPath = oEvent.getSource().getParent().getBindingContext("OrderJSONModel").sPath;
+			var selectedRowdata = that.getModel("OrderJSONModel").getProperty(oPath);
 
-			var url = "/backend/Utils/UtilsManagement/GetDocumentTexts?I_EBELN=" + selectedRowdata.EBELN;
+
+			that.showBusyDialog()
+			var url = "/backend/Utils/UtilsManagement/GetDocumentTexts?I_EBELN=" + selectedRowdata.EBELN + "&I_BSTYP=L&I_EBELP=" + selectedRowdata.EBELP
 
 			that.ajaxGet(url, function (oData) {
-				if (oData) {
+				that.hideBusyDialog()
+				if (oData && (oData.header_texts || oData.pos_texts) && (oData.header_texts.results.length > 0 || oData.pos_texts.results.length > 0)) {
 					var oModel = new JSONModel();
 					oModel.setData(oData);
 					var oComponent = that.getOwnerComponent();
@@ -2233,6 +2234,57 @@ sap.ui.define([
 				that.oSearchTextsDialog.close();
 				that.oSearchTextsDialog.destroy();
 				that.oSearchTextsDialog = undefined;
+			}
+		},
+
+		onEditTexts: function (oEvent) {
+			sap.ui.getCore().byId('saveTextsButton').setVisible(true)
+		},
+
+		onSaveTexts: function (oEvent) {
+			var oComponent = that.getOwnerComponent();
+			var oModel = oComponent.getModel("TextsJSONModel").getData();
+			if (oModel && oModel.header_texts && oModel.header_texts.results && oModel.header_texts.results.length > 0) {
+				var body = {}
+
+				var currentSYSID = sap.ui.getCore().getModel("sysIdJSONModel") !== undefined && sap.ui.getCore().getModel(
+					"sysIdJSONModel").getData() !==
+					undefined ? sap.ui.getCore().getModel("sysIdJSONModel").getData().SYSID : "";
+
+				var numberOfConfirmable = 0
+				oModel.header_texts.results.forEach(element => {
+					if (element.COMMENTABLE) {
+						numberOfConfirmable++
+					}
+				})
+
+				var numberOfConfirms = 0
+				oModel.header_texts.results.forEach(element => {
+					if (element.COMMENTABLE) {
+						body.SYSID = currentSYSID,
+							body.EBELN = element.EBELN,
+							body.EBELP = '',
+							body.BSTYP = 'L',
+							body.TABLE = 'EKKO',
+							body.ID = element.ID,
+							body.COMMENT = element.COMMENT
+					}
+
+					var url = "/backend/Utils/UtilsManagement/SaveDocumentTexts";
+					that.ajaxPost(url, body, function (oData) {
+						if (oData) {
+							numberOfConfirms++
+							if (numberOfConfirms === numberOfConfirmable) {
+								MessageBox.success("Data correctly saved");
+								that.onCloseTexts()
+							}
+						}
+					})
+
+				});
+
+
+
 			}
 		}
 	});
