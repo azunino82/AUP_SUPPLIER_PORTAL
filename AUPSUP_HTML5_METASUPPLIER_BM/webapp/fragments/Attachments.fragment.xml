@@ -1,0 +1,63 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:form="sap.ui.layout.form" xmlns:core="sap.ui.core"
+	xmlns:uxap="sap.uxap" xmlns:table="sap.ui.table" xmlns:u="sap.ui.unified">
+	<uxap:ObjectPageSection title="Attachments" id="Attachments_Display" visible="{DocumentManagementJSONModel>DOC_OUT}">
+		<uxap:subSections>
+			<uxap:ObjectPageSubSection>
+				<Table id="NCTable" items="{AttachmentsJSONModel>/Attachments}" itemPress="onRowSelectionChange">
+					<headerToolbar>
+						<OverflowToolbar>
+							<content>
+								<Title text="{i18n>attachments}" level="H2"/>
+								<Title text="{= ${AttachmentsJSONModel>/Attachments}.length}" level="H2"/>
+								<ToolbarSpacer/>
+								<u:FileUploader id="uploadDocBtn" class="pickingUploader" sameFilenameAllowed="true" change="onItemUpload"
+									fileType="xlsx,docx,pdf,txt,doc,xls" iconFirst="true" buttonOnly="true" typeMissmatch="onTypeMissmatch" maximumFileSize="5"
+									fileSizeExceed="onFileSizeExceed" iconOnly="true" icon="sap-icon://upload" tooltip="upload doc" style="Transparent"/>
+							</content>
+						</OverflowToolbar>
+					</headerToolbar>
+					<columns>
+						<Column minScreenWidth="Desktop" demandPopin="true" width="2rem">
+							<Label text="" class="columnLabelStyle" wrapping="true"/>
+						</Column>
+						<Column minScreenWidth="Desktop" demandPopin="true">
+							<Label text="" class="columnLabelStyle" wrapping="true"/>
+						</Column>
+					</columns>
+					<items>
+						<ColumnListItem>
+							<cells>
+								<core:Icon src="sap-icon://attachment" decorative="false" press="onAttachmetnsClick"/>
+								<Text text="{AttachmentsJSONModel>DESCRIPTION}"/>
+							</cells>
+						</ColumnListItem>
+					</items>
+				</Table>
+				<!--<UploadCollection-->
+				<!--	items="{-->
+				<!--		path: 'AttachmentsJSONModel>/Attachments'-->
+				<!--	}"-->
+				<!--	uploadButtonInvisible="true"-->
+				<!--	uploadEnabled="false">-->
+				<!--	<items>-->
+				<!--		<UploadCollectionItem-->
+				<!--			documentId="{AttachmentsJSONModel>LO_OBJID}"-->
+				<!--			fileName="{AttachmentsJSONModel>DESCRIPTION}"-->
+				<!--			mimeType="{= ${AttachmentsJSONModel>EXTENSION} !== '' ? {AttachmentsJSONModel>EXTENSION} : {AttachmentsJSONModel>DAPPL}  }"-->
+				<!--			url="{SettingsJSONModel>/ApplicationServerURL}/api/rest/File/Download?UID={AttachmentsJSONModel>UID}&amp;FileName={AttachmentsJSONModel>Name}"-->
+				<!--			visibleEdit="false"-->
+				<!--			visibleDelete="false">-->
+				<!--			<attributes>-->
+				<!--				<ObjectAttribute-->
+				<!--					title="{i18n>fileName}"-->
+				<!--					text="{-->
+				<!--						path: 'AttachmentsJSONModel>DESCRIPTION'-->
+				<!--					}"/>-->
+				<!--			</attributes>-->
+				<!--		</UploadCollectionItem>-->
+				<!--	</items>-->
+				<!--</UploadCollection>-->
+			</uxap:ObjectPageSubSection>
+		</uxap:subSections>
+	</uxap:ObjectPageSection>
+</core:FragmentDefinition>

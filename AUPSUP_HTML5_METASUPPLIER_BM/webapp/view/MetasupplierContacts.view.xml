@@ -1,0 +1,107 @@
+<mvc:View xmlns:uxap="sap.uxap" xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:l="sap.ui.layout" xmlns:forms="sap.ui.layout.form"
+	controllerName="it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER_BM.controller.MetasupplierContacts" displayBlock="true" xmlns:f="sap.ui.layout.form"
+	xmlns:core="sap.ui.core" xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" >
+	<Shell id="shell" appWidthLimited="false">
+		<Page id="contactsPage" showNavButton="false" navButtonPress="onNavBack" title="{titleJSONModel>/AppTitle}">
+			<uxap:ObjectPageLayout id="ObjectPageLayoutId" sections="{mysettings>/settings/Sections}" showTitleInHeaderContent="true">
+				<uxap:headerTitle>
+					<uxap:ObjectPageHeader objectImageURI="sap-icon://person-placeholder" objectImageShape="Circle"
+						objectTitle="{metasupplierData>/RAG_SOCIALE}" objectImageAlt="Senior UI Developer" id="ObjectPageLayoutHeaderTitle"
+						isObjectTitleAlwaysVisible="false" showPlaceholder="true">
+	
+					</uxap:ObjectPageHeader>
+				</uxap:headerTitle>
+				<uxap:headerContent>
+					<l:VerticalLayout>
+						<ObjectStatus text="{metasupplierData>/STATO}" state="{metasupplierData>/ICON}"/>
+						<ObjectStatus title="{DocumentManagementJSONModel>/DOC_IN}" text="{metasupplierData>/INDIRIZZO} / {metasupplierData>/N_CIVICO}"/>
+						<ObjectStatus title="{i18n>statoMetafornitore}" text="{metasupplierData>/STATO_FORNITORE}"/>
+					</l:VerticalLayout>
+					<l:VerticalLayout>
+						<l:layoutData>
+							<uxap:ObjectPageHeaderLayoutData visibleS="false"/>
+						</l:layoutData>
+						<ObjectStatus title="{i18n>codiceMetafornitore}" text="{metasupplierData>/METAID}"/>
+						<ObjectStatus title="{i18n>pivaMetafornitore}" text="{metasupplierData>/PIVA}"/>
+						<ObjectStatus title="{i18n>paeseMetafornitore}" text="{metasupplierData>/PAESE}"/>
+						<ObjectStatus title="{i18n>lingua}" text="{metasupplierData>/LINGUA}"/>
+					</l:VerticalLayout>
+				</uxap:headerContent>
+				<uxap:sections>
+					<uxap:ObjectPageSection title="{mysettings>SectionTitle}">
+						<uxap:subSections templateShareable="true">
+							<uxap:ObjectPageSubSection title="">
+								<List items="{mysettings>Subsections}" headerText="" visible="{mysettings>Data}">
+									<headerToolbar>
+										<OverflowToolbar>
+											<ToolbarSpacer/>
+											<Button icon="sap-icon://add" press="handleCreateContactPress" app:section="{mysettings>SectionTitle}"/>
+										</OverflowToolbar>
+									</headerToolbar>
+									<items>
+										<CustomListItem>
+											<VBox>
+												<f:SimpleForm visible="{mysettings>Data}" editable="false" layout="ResponsiveGridLayout" labelSpanXL="4" labelSpanL="4" labelSpanM="3"
+													labelSpanS="3" adjustLabelSpan="false" emptySpanXL="1" emptySpanL="1" emptySpanM="1" emptySpanS="0" columnsXL="4" columnsL="4" columnsM="2">
+													<f:content>
+														<core:Title text=""/>
+														<Label text="{i18n>titleForm}"/>
+														<Text text="{mysettings>Titolo}"/>
+														<Input type="Text" value="{mysettings>Titolo}" visible="false"></Input>
+														<Label text="{i18n>Name}"/>
+														<Text text="{mysettings>Nome}"/>
+														<Label text="{i18n>Surname}"/>
+														<Text text="{mysettings>Cognome}"/>
+														<core:Title text=""/>
+														<Label text="Mail"/>
+														<Text text="{mysettings>Mail}"/>
+														<Label text="Tel"/>
+														<Text text="{mysettings>Tel}"/>
+														<Label text="Tel 1"/>
+														<Text text="{mysettings>Tel1}"/>
+														<core:Title text=""/>
+														<Label text="Fax"/>
+														<Text text="{mysettings>Fax}"/>
+														<core:Title text=""/>
+														<Button icon="sap-icon://edit" app:id="{mysettings>ID}" press="handleEditContactPressed" type="Transparent"/>
+														<Button icon="sap-icon://delete" app:id="{mysettings>ID}" press="handleDeleteContactPressed" type="Transparent"/>
+													</f:content>
+												</f:SimpleForm>
+												<f:SimpleForm visible="false" editable="true" layout="ResponsiveGridLayout" labelSpanXL="4" labelSpanL="4" labelSpanM="3" labelSpanS="3"
+													adjustLabelSpan="false" emptySpanXL="1" emptySpanL="1" emptySpanM="1" emptySpanS="0" columnsXL="4" columnsL="4" columnsM="2">
+													<f:content>
+														<core:Title text=""/>
+														<Label text="{i18n>titleForm}"/>
+														<Input type="Text" value="{mysettings>Titolo}" maxLength="10"/>
+														<Label text="{i18n>name}"/>
+														<Input type="Text" value="{mysettings>Nome}" maxLength="50"/>
+														<Label text="{i18n>surname}"/>
+														<Input type="Text" value="{mysettings>Cognome}" maxLength="50"/>
+														<core:Title text=""/>
+														<Label text="Mail"/>
+														<Input type="Email" value="{mysettings>Mail}" maxLength="50"/>
+														<Label text="Tel"/>
+														<Input type="Text" value="{mysettings>Tel}" maxLength="20"/>
+														<Label text="Tel 1"/>
+														<Input type="Text" value="{mysettings>Tel1}" maxLength="20"/>
+														<core:Title text=""/>
+														<Label text="Fax"/>
+														<Input type="Text" value="{mysettings>Fax}" maxLength="50"/>
+														<core:Title text=""/>
+														<Button app:id="{mysettings>ID}" app:section="{mysettings>SectionTitle}" icon="sap-icon://save" press="handleSaveContactPressed"
+															type="Transparent"/>
+														<Button icon="sap-icon://reset" press="handleResetContactPressed" type="Transparent"/>
+													</f:content>
+												</f:SimpleForm>
+											</VBox>
+										</CustomListItem>
+									</items>
+								</List>
+							</uxap:ObjectPageSubSection>
+						</uxap:subSections>
+					</uxap:ObjectPageSection>
+				</uxap:sections>
+			</uxap:ObjectPageLayout>
+		</Page>
+	</Shell>
+</mvc:View>

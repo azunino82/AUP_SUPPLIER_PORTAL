@@ -1,0 +1,37 @@
+<core:FragmentDefinition xmlns:m="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core"
+	xmlns:u="sap.ui.unified">
+	<m:Dialog title="{i18n>createContact}" id="CreateContact" class="sapUiTinyMargin" contentWidth="25%">
+		<l:Grid defaultSpan="L12 M12 S12" width="auto">
+			<l:content>
+				<l:VerticalLayout id="containerLayout1" width="100%">
+					<l:BlockLayout id="BlockLayout1">
+						<l:BlockLayoutRow accentCells="Accent2">
+							<l:BlockLayoutCell id="Accent3" width="2" title="">
+								<m:Label text="{i18n>titleForm}"/>
+								<m:Input id="titleCreateContact" value="" editable="true" maxLength="10"/>
+								<m:Label text="{i18n>Name}"/>
+								<m:Input id="nameCreateContact" value="" editable="true" maxLength="50"/>
+								<m:Label text="{i18n>Surname}"/>
+								<m:Input id="surnameCreateContact" value="" editable="true" maxLength="50"/>
+								<m:Label text="Mail"/>
+								<m:Input type="Email" id="mailCreateContact" value="" editable="true" maxLength="50"/>
+								<m:Label text="Tel"/>
+								<m:Input id="telCreateContact" value="" editable="true" maxLength="20"/>
+								<m:Label text="Tel1"/>
+								<m:Input id="tel1CreateContact" value="" editable="true" maxLength="20"/>
+								<m:Label text="Fax"/>
+								<m:Input id="faxCreateContact" value="" editable="true" maxLength="50"/>
+								<m:Input id="metaidCreateContact" visible="false"/>
+								<m:Input id="contactTypeCreateContact" visible="false"/>
+							</l:BlockLayoutCell>
+						</l:BlockLayoutRow>
+					</l:BlockLayout>
+				</l:VerticalLayout>
+			</l:content>
+		</l:Grid>
+		<m:buttons>
+			<m:Button text="{i18n>Confirm}" press="createContactConfirm"/>
+			<m:Button text="{i18n>Cancel}" press="closeDialog"/>
+		</m:buttons>
+	</m:Dialog>
+</core:FragmentDefinition>
