@@ -10,14 +10,6 @@ module.exports = function () {
   var app = express.Router()
 
   app.get('/testTimeout', function (req, res) {
-    req.setTimeout(4 * 60 * 1000)
-    req.connection.setTimeout(4 * 60 * 1000)
-    req.socket.setTimeout(4 * 60 * 1000)
-
-    res.setTimeout(4 * 60 * 1000)
-    res.connection.setTimeout(4 * 60 * 1000)
-    res.socket.setTimeout(4 * 60 * 1000)
-
     setTimeout(function () {
       console.log('prova timeout 50 secondi')
       return res.status(200).send()
@@ -380,31 +372,108 @@ module.exports = function () {
   // GET TEXTS
 
   app.get('/GetDocumentTexts', function (req, res) {
-    var ebeln = req.query.I_EBELN
-    hdbext.createConnection(req.tenantContainer, (err, client) => {
-      if (err) {
-        return res.status(500).send('GetDocumentTexts CONNECTION ERROR: ' + stringifyObj(err))
-      } else {
-        hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Utils::GetDocumentTexts', function (_err, sp) {
-          if (_err) {
-            console.error('---->>> ERROR GetDocumentTexts <<<<<-----')
-            return res.status(500).send('GetDocumentTexts CONNECTION ERROR SP: ' + stringifyObj(_err))
-          }
-          sp(req.user.id, ebeln, (err, parameters, results) => {
-            console.log('---->>> CLIENT END GetDocumentTexts <<<<<-----')
-            client.close()
-            if (err) {
-              return res.status(500).send(stringifyObj(err))
-            } else {
-              return res.status(200).send({
-                results: results
-              })
+    var ebeln = req.query.I_EBELN !== null && req.query.I_EBELN !== undefined ? req.query.I_EBELN : ''
+    var ebelp = req.query.I_EBELP !== null && req.query.I_EBELP !== undefined ? req.query.I_EBELP : ''
+    var bstyp = req.query.I_BSTYP !== null && req.query.I_BSTYP !== undefined ? req.query.I_BSTYP : ''
+
+    if (ebeln !== '' && bstyp !== '') {
+      hdbext.createConnection(req.tenantContainer, (err, client) => {
+        if (err) {
+          return res.status(500).send('GetDocumentTexts CONNECTION ERROR: ' + stringifyObj(err))
+        } else {
+          hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Utils::GetDocumentTexts', function (_err, sp) {
+            if (_err) {
+              console.error('---->>> ERROR GetDocumentTexts <<<<<-----')
+              return res.status(500).send('GetDocumentTexts CONNECTION ERROR SP: ' + stringifyObj(_err))
             }
+            // eslint-disable-next-line camelcase
+            sp(req.user.id, ebeln, ebelp, bstyp, (err, parameters, t_header, t_pos) => {
+              console.log('---->>> CLIENT END GetDocumentTexts <<<<<-----')
+              client.close()
+              if (err) {
+                return res.status(500).send(stringifyObj(err))
+              } else {
+                // eslint-disable-next-line camelcase
+                if (t_header !== undefined && t_header.length > 0) {
+                  t_header.forEach(element => {
+                    if (element.COMMENTABLE === 'X') {
+                      element.COMMENTABLE = true
+                    } else {
+                      element.COMMENTABLE = false
+                    }
+                  })
+                }
+                // eslint-disable-next-line camelcase
+                if (t_pos !== undefined && t_pos.length > 0) {
+                  t_pos.forEach(element => {
+                    if (element.COMMENTABLE === 'X') {
+                      element.COMMENTABLE = true
+                    } else {
+                      element.COMMENTABLE = false
+                    }
+                  })
+                }
+                return res.status(200).send({
+                  header_texts: { results: t_header },
+                  pos_texts: { results: t_pos }
+                })
+              }
+            })
           })
+        }
+      })
+    } else {
+      return res.status(500).send('I_EBELN and I_BSTYP are mandatory')
+    }
+  })
+
+  // GET VENDOR LIST
+
+  app.post('/SaveDocumentTexts', function (req, res) {
+    const body = req.body
+
+    var sql = 'UPSERT \"AUPSUP_DATABASE.data.tables::T_TEXTS_COMMENTS\" VALUES (\'' + body.SYSID + '\',\'' + body.BSTYP + '\',\'' + body.TABLE + '\',\'' + body.ID + '\',\'' + body.EBELN + '\',\'' + body.EBELP + '\',\'' + body.COMMENT + '\')'
+    hdbext.createConnection(req.tenantContainer, function (error, client) {
+      if (error) {
+        console.error('ERROR T_TEXTS_COMMENTS :' + stringifyObj(error))
+        return res.status(500).send('T_TEXTS_COMMENTS CONNECTION ERROR: ' + stringifyObj(error))
+      }
+      if (client) {
+        async.waterfall([
+
+          function prepare (callback) {
+            client.prepare(sql,
+              function (err, statement) {
+                callback(null, err, statement)
+              })
+          },
+
+          function execute (_err, statement, callback) {
+            statement.exec([], function (execErr, results) {
+              callback(null, execErr, results)
+            })
+          },
+
+          function response (err, results, callback) {
+            if (err) {
+              res.type('application/json').status(500).send({ ERROR: err })
+              return
+            } else {
+              res.type('application/json').status(200).send({ results: 'OK' })
+            }
+            callback()
+          }
+        ], function done (err, parameters, rows) {
+          console.log('---->>> CLIENT END T_TEXTS_COMMENTS <<<<<-----')
+          client.close()
+          if (err) {
+            return console.error('Done error', err)
+          }
         })
       }
     })
   })
+
   // GET LIST OF PURCHASE DOC from BACKEND SAP
 
   app.post('/GetPurchaseDoc', function (req, res) {
