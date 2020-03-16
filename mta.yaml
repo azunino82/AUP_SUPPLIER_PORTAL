@@ -113,6 +113,10 @@ modules:
       - name: uaa_AUP_SUPPLIER_PORTAL
       - name: SaasRegistry
       - name: hdi_AUPSUP_DATABASE
+    properties:
+      NODE_TLS_REJECT_UNAUTHORIZED: 0
+      INCOMING_CONNECTION_TIMEOUT: 0
+      timeout: 0
   - name: AUPSUP_DATABASE
     type: hdb
     path: AUPSUP_DATABASE
