@@ -1833,16 +1833,16 @@ sap.ui.define([
 								var ordine = mod.EBELN + "-" + mod.EBELP + " CONF: " + conferma.ETENS;
 
 								if (profiloSelezionato.PARZIALE_QUANTITA === 'X') {
-									if (diff > 0)
+									if (diff < 0)
 										if (perc > mod.QuantPercUP) {
 											err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Up_Single", ordine);
 										}
 								} else {
-									if (diff > 0)
+									if (diff < 0)
 										if (perc > mod.QuantPercUP) {
 											err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Up_Single", ordine);
 										}
-									if (diff < 0)
+									if (diff > 0)
 										if (perc > mod.QuantPercDOWN) {
 											err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Down_Single", ordine);
 										}

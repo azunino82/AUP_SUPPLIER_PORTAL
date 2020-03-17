@@ -21,12 +21,12 @@
 							<FlexBox alignItems="Center" justifyContent="Start" height="50px" class="sapMTableTH" width="100%">
 								<items>
 									<Label text=" " width="1rem"/>
-									<Label text="{i18n>ID}" width="21rem">
+									<Label text="{i18n>ID}" width="7rem">
 										<layoutData>
 											<FlexItemData growFactor="1"/>
 										</layoutData>
 									</Label>
-									<Label text="{i18n>DESCRIPTION}" width="31rem">
+									<Label text="{i18n>DESCRIPTION}" width="21rem">
 										<layoutData>
 											<FlexItemData growFactor="1"/>
 										</layoutData>
@@ -36,7 +36,7 @@
 											<FlexItemData growFactor="1"/>
 										</layoutData>
 									</Label>
-									<Label text="{i18n>COMMENT}" visible="{TextsJSONModel>COMMENTABLE}" width="30.5rem">
+									<Label text="{i18n>COMMENT}" visible="{TextsJSONModel>COMMENTABLE}" width="31rem">
 										<layoutData>
 											<FlexItemData growFactor="2"/>
 										</layoutData>
