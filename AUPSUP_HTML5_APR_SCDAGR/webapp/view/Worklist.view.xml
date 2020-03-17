@@ -127,6 +127,7 @@
 														<m:Button visible="false" id="headerFilterButton" tooltip="{i18n>clearFilter}" icon="sap-icon://clear-filter" press="onClearFilter" type="Transparent"/>
 														<m:SearchField id="searchField" tooltip="{i18n>worklistSearchTooltip}" search="onGlobalFilter" width="auto" visible="false"/>
 														<m:Button icon="sap-icon://excel-attachment" press="onExport" tooltip="{i18n>Export_Excel}"/>
+														<m:Button icon="sap-icon://vertical-grip" visible="true" press="onColumnSelection" tooltip="{i18n>personalization}"/>
 													</m:content>
 												</m:OverflowToolbar>
 											</m:headerToolbar>
@@ -134,52 +135,52 @@
 												<m:Column>
 													<m:CheckBox select="onSelectAll"/>
 												</m:Column>
-												<m:Column id="EBELN" minScreenWidth="Desktop" demandPopin="true" width="6rem">
+												<m:Column id="EBELN" visible="{columnVisibilityModel>/EBELN}" minScreenWidth="Desktop" demandPopin="true" width="6rem">
 													<m:Label text="{i18n>EBELN}" class="columnLabelStyle" wrapping="true"/>
 												</m:Column>
-												<m:Column id="EBELP" minScreenWidth="Desktop" demandPopin="true">
+												<m:Column id="EBELP" visible="{columnVisibilityModel>/EBELP}" minScreenWidth="Desktop" demandPopin="true">
 													<m:Label text="{i18n>EBELP}" class="columnLabelStyle" wrapping="true"/>
 												</m:Column>
-												<m:Column id="EBTYP" visible="false" minScreenWidth="Desktop" demandPopin="true">
+												<m:Column id="EBTYP" visible="{columnVisibilityModel>/EBTYP}" minScreenWidth="Desktop" demandPopin="true">
 													<m:Label text="{i18n>EBTYP}" class="columnLabelStyle" wrapping="true"/>
 												</m:Column>
-												<m:Column id="MATNR" minScreenWidth="Desktop" demandPopin="true">
+												<m:Column id="MATNR" visible="{columnVisibilityModel>/MATNR}" minScreenWidth="Desktop" demandPopin="true">
 													<m:Label text="{i18n>MATNR}" class="columnLabelStyle" wrapping="true"/>
 												</m:Column>
-												<m:Column id="TXZ01" minScreenWidth="Desktop" demandPopin="true">
+												<m:Column id="TXZ01" visible="{columnVisibilityModel>/TXZ01}" minScreenWidth="Desktop" demandPopin="true">
 													<m:Label text="{i18n>TXZ01}" class="columnLabelStyle" wrapping="true"/>
 												</m:Column>
-												<m:Column id="LIFNR" minScreenWidth="Desktop" demandPopin="true">
+												<m:Column id="LIFNR" visible="{columnVisibilityModel>/LIFNR}" minScreenWidth="Desktop" demandPopin="true">
 													<m:Label text="{i18n>LIFNR}" class="columnLabelStyle" wrapping="true"/>
 												</m:Column>
-												<m:Column id="NAME1" minScreenWidth="Desktop" demandPopin="true">
+												<m:Column id="NAME1" visible="{columnVisibilityModel>/NAME1}" minScreenWidth="Desktop" demandPopin="true">
 													<m:Label text="{i18n>NAME1}" class="columnLabelStyle" wrapping="true"/>
 												</m:Column>
-												<m:Column id="MENGE_ORIGINAL" minScreenWidth="Desktop" demandPopin="true" visible="false">
+												<m:Column id="MENGE_ORIGINAL" visible="{columnVisibilityModel>/MENGE_ORIGINAL}" minScreenWidth="Desktop" demandPopin="true">
 													<m:Label text="{i18n>MENGE}" class="columnLabelStyle" wrapping="true"/>
 												</m:Column>
-												<m:Column id="MENGE" minScreenWidth="Desktop" demandPopin="true" visible="false">
+												<m:Column id="MENGE" visible="{columnVisibilityModel>/MENGE}" minScreenWidth="Desktop" demandPopin="true">
 													<m:Label text="{i18n>MENGE_NEW}" class="columnLabelStyle" wrapping="true"/>
 												</m:Column>
-												<m:Column id="NETPR_ORIGINAL" minScreenWidth="Desktop" demandPopin="true">
+												<m:Column id="NETPR_ORIGINAL" visible="{columnVisibilityModel>/NETPR_ORIGINAL}" minScreenWidth="Desktop" demandPopin="true">
 													<m:Label text="{i18n>NETPR}" class="columnLabelStyle" wrapping="true"/>
 												</m:Column>
-												<m:Column id="NETPR" minScreenWidth="Desktop" demandPopin="true">
+												<m:Column id="NETPR" visible="{columnVisibilityModel>/NETPR}" minScreenWidth="Desktop" demandPopin="true">
 													<m:Label text="{i18n>NETPR_NEW}" class="columnLabelStyle" wrapping="true"/>
 												</m:Column>												
-												<m:Column id="ZINVALIDITA" minScreenWidth="Desktop" demandPopin="true">
+												<m:Column id="ZINVALIDITA" visible="{columnVisibilityModel>/ZINVALIDITA}" minScreenWidth="Desktop" demandPopin="true">
 													<m:Label text="{i18n>ZINVALIDITA}" class="columnLabelStyle" wrapping="true"/>
 												</m:Column>
-												<m:Column id="ZFINVALIDATA" minScreenWidth="Desktop" demandPopin="true">
+												<m:Column id="ZFINVALIDATA" visible="{columnVisibilityModel>/ZFINVALIDATA}" minScreenWidth="Desktop" demandPopin="true">
 													<m:Label text="{i18n>ZFINVALIDATA}" class="columnLabelStyle" wrapping="true"/>
 												</m:Column>
-												<m:Column id="PEINH_ORIGINAL" minScreenWidth="Desktop" demandPopin="true">
+												<m:Column id="PEINH_ORIGINAL" visible="{columnVisibilityModel>/PEINH_ORIGINAL}" minScreenWidth="Desktop" demandPopin="true">
 													<m:Label text="{i18n>PEINH}" class="columnLabelStyle" wrapping="true"/>
 												</m:Column>
-												<m:Column id="PEINH" minScreenWidth="Desktop" demandPopin="true">
+												<m:Column id="PEINH" visible="{columnVisibilityModel>/PEINH}" minScreenWidth="Desktop" demandPopin="true">
 													<m:Label text="{i18n>PEINH_NEW}" class="columnLabelStyle" wrapping="true"/>
 												</m:Column>
-												<m:Column id="SCHEDMOD" minScreenWidth="Desktop" demandPopin="true" visible="false">
+												<m:Column id="SCHEDMOD" visible="{columnVisibilityModel>/SCHEDMOD}" minScreenWidth="Desktop" demandPopin="true">
 													<m:Label text="{i18n>SchedMod}" class="columnLabelStyle" wrapping="true"/>
 												</m:Column>
 												<m:Column minScreenWidth="Desktop" demandPopin="true" hAlign="Center">

@@ -7,7 +7,7 @@
 				<Table width="auto" items="{ path: 'SchedAgrToApproveRejectJSONModel>/results' }">
 					<headerToolbar>
 						<OverflowToolbar>
-							<Title text="{i18n>confirmations} - {SchedAgrToApproveRejectJSONModel>/results/0/EBELN} / {SchedAgrToApproveRejectJSONModel>/results/0/EBELP}" level="H2"/>
+							<Title text="{i18n>confirmations} : {SchedAgrToApproveRejectJSONModel>/results/0/EBELN} / {SchedAgrToApproveRejectJSONModel>/results/0/EBELP} {i18n>MATNR} : {SchedAgrToApproveRejectJSONModel>/results/0/MATNR} - {SchedAgrToApproveRejectJSONModel>/results/0/TXZ01}" level="H2"/>
 							<ToolbarSpacer/>
 							<Button icon="sap-icon://legend" press="onLegend" tooltip="{i18n>Legend}" visible="false"/>
 						</OverflowToolbar>
