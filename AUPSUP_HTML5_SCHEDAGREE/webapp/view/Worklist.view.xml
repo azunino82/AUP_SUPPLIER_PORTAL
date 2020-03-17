@@ -146,6 +146,9 @@
 													<m:Column id="NAME1" visible="{columnVisibilityModel>/NAME1}" minScreenWidth="Desktop" demandPopin="true">
 														<m:Label text="{i18n>supplierName}" class="columnLabelStyle" wrapping="true"/>
 													</m:Column>
+													<m:Column id="PLANT_DESCR" visible="{columnVisibilityModel>/PLANT_DESCR}" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>PLANT_DESCR}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
 													<m:Column id="MATNR" visible="{columnVisibilityModel>/MATNR}" minScreenWidth="Desktop" demandPopin="true">
 														<m:Label text="{i18n>MATNR}" class="columnLabelStyle" wrapping="true"/>
 													</m:Column>
@@ -182,10 +185,11 @@
 															<m:Text text="{OrderJSONModel>EBELP}"/>
 															<m:Text text="{OrderJSONModel>LIFNR}"/>
 															<m:Text text="{OrderJSONModel>NAME1}"/>
+															<m:Text text="{OrderJSONModel>WERKS} / {OrderJSONModel>PLANT_DESCR}"/>
 															<m:Text text="{OrderJSONModel>MATNR}"/>
 															<m:Text text="{OrderJSONModel>TXZ01}"/>
 															<m:Text text="{OrderJSONModel>IDNLF}"/>
-															<m:Text text="{OrderJSONModel>MENGE}"/>
+															<m:Text text="{OrderJSONModel>KTMNG}"/>
 															<m:Text text="{OrderJSONModel>MEINS}"/>
 															<m:Text text="{OrderJSONModel>WAERS}"/>
 															<m:Text text="{OrderJSONModel>PRIMO_PERIODO}"/>

@@ -1406,23 +1406,23 @@ sap.ui.define([
 													}
 
 													var skip = '';
-													if (row.QuantTollUp !== 0 && row.QuantTollDown !== 0 && row.ggTollUp === 0 && row.ggTollDown === 0) {
-														if (skipToBuyerQua !== '') {
-															skip = 'X';
-														}
-													} else {
-														if (row.QuantTollUp === 0 && row.QuantTollDown === 0 && row.ggTollUp !== 0 && row.ggTollDown !== 0) {
-															if (skipToBuyerGG !== '') {
-																skip = 'X';
-															}
-														} else {
-															if (row.QuantTollUp !== 0 && row.QuantTollDown !== 0 && row.ggTollUp !== 0 && row.ggTollDown !== 0) {
-																if (skipToBuyerQua !== '' && skipToBuyerGG !== '') {
+													//if (row.QuantTollUp !== 0 && row.QuantTollDown !== 0 && row.ggTollUp === 0 && row.ggTollDown === 0) {
+													//	if (skipToBuyerQua !== '') {
+													//		skip = 'X';
+													//	}
+													//} else {
+													//	if (row.QuantTollUp === 0 && row.QuantTollDown === 0 && row.ggTollUp !== 0 && row.ggTollDown !== 0) {
+													//		if (skipToBuyerGG !== '') {
+													//			skip = 'X';
+													//		}
+													//	} else {
+													//		if (row.QuantTollUp !== 0 && row.QuantTollDown !== 0 && row.ggTollUp !== 0 && row.ggTollDown !== 0) {
+																if (skipToBuyerQua !== '' && skipToBuyerGG !== '' && skipToBuyerQua !== undefined && skipToBuyerGG !== undefined) {
 																	skip = 'X';
 																}
-															}
-														}
-													}
+													//		}
+													//	}
+													//}
 
 
 													body.skipAppBuyer.push({
