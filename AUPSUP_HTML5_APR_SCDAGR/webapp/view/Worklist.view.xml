@@ -166,6 +166,12 @@
 												</m:Column>
 												<m:Column id="NETPR" minScreenWidth="Desktop" demandPopin="true">
 													<m:Label text="{i18n>NETPR_NEW}" class="columnLabelStyle" wrapping="true"/>
+												</m:Column>												
+												<m:Column id="ZINVALIDITA" minScreenWidth="Desktop" demandPopin="true">
+													<m:Label text="{i18n>ZINVALIDITA}" class="columnLabelStyle" wrapping="true"/>
+												</m:Column>
+												<m:Column id="ZFINVALIDATA" minScreenWidth="Desktop" demandPopin="true">
+													<m:Label text="{i18n>ZFINVALIDATA}" class="columnLabelStyle" wrapping="true"/>
 												</m:Column>
 												<m:Column id="PEINH_ORIGINAL" minScreenWidth="Desktop" demandPopin="true">
 													<m:Label text="{i18n>PEINH}" class="columnLabelStyle" wrapping="true"/>
@@ -195,6 +201,8 @@
 														<m:Text text="{SchedAgreeJSONModel>MENGE}"/>
 														<m:Text text="{SchedAgreeJSONModel>NETPR_ORIGINAL}"/>
 														<m:Text text="{SchedAgreeJSONModel>NETPR}" visible="{= ${SchedAgreeJSONModel>NETPR_ORIGINAL} !== ${SchedAgreeJSONModel>NETPR}}"/>
+														<m:Text text="{ path: 'SchedAgreeJSONModel>ZINVALIDITA', type: 'it.alteaup.supplier.portal.aprvschdagr.AUPSUP_HTML5_APR_SCDAGR.type.Date' }" visible="{= ${SchedAgreeJSONModel>NETPR_ORIGINAL} !== ${SchedAgreeJSONModel>NETPR}}"/>
+														<m:Text text="{ path: 'SchedAgreeJSONModel>ZFINVALIDATA', type: 'it.alteaup.supplier.portal.aprvschdagr.AUPSUP_HTML5_APR_SCDAGR.type.Date' }" visible="{= ${SchedAgreeJSONModel>NETPR_ORIGINAL} !== ${SchedAgreeJSONModel>NETPR}}"/>
 														<m:Text text="{SchedAgreeJSONModel>PEINH_ORIGINAL}"/>
 														<m:Text text="{SchedAgreeJSONModel>PEINH}"/>
 														<m:Text text="{SchedAgreeJSONModel>SCHEDMOD}"/>
@@ -213,7 +221,7 @@
 								<m:Button type="Reject" text="{i18n>Reject}" press="onRejectPositions"/>
 								<m:Button type="Accept" text="{i18n>Confirm}" press="onConfirmPositions"/>
 							</m:Toolbar>
-						</footer>						
+						</footer>
 					</ObjectPageLayout>
 				</m:Page>
 			</m:pages>

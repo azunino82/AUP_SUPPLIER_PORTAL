@@ -2000,7 +2000,14 @@ sap.ui.define([
 								"ETENRenabled": false
 							};
 							if (mod !== undefined && mod.POItemSchedulers.results !== undefined) {
-								mod.POItemSchedulers.results.push(schedulation);
+								// se nelle consegne hp già inserito una riga ETENR non la ri-aggiungo
+								var trovato = false
+								mod.POItemSchedulers.results.forEach(el => {
+									if (element.ETENR === el.ETENR)
+										trovato = true
+								});
+								if (!trovato)
+									mod.POItemSchedulers.results.push(schedulation);
 							} else {
 								var oSchedulationsArray = [];
 								oSchedulationsArray.push(schedulation);
