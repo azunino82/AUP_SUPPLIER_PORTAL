@@ -26,8 +26,9 @@ sap.ui.define([
 			// set the device model
 			this.setModel(models.createDeviceModel(), "device");
 
+			/* LS 17.03.2020 ho asteriscato perchè va in errore verificare
 			var userModel = new sap.ui.model.json.JSONModel("/services/userapi/currentUser");
-			sap.ui.getCore().setModel(userModel, "userapi");
+			sap.ui.getCore().setModel(userModel, "userapi");*/
 
 			
 
