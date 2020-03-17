@@ -10,7 +10,7 @@
 			<content>
 				<FlexBox alignItems="Start" justifyContent="Center">
 					<items>
-						<Title text="{i18n>Header}" titleStyle="H2"/>
+						<Title text="{i18n>Header} - {TextsJSONModel>/header_texts/results[0].EBELN}" titleStyle="H2"/>
 					</items>
 				</FlexBox>
 				<VBox height="10px"></VBox>
@@ -26,7 +26,7 @@
 											<FlexItemData growFactor="1"/>
 										</layoutData>
 									</Label>
-									<Label text="{i18n>DESCRIPTION}" width="21rem">
+									<Label text="{i18n>DESCRIPTION}" width="15rem">
 										<layoutData>
 											<FlexItemData growFactor="1"/>
 										</layoutData>
@@ -47,12 +47,12 @@
 							<FlexBox alignItems="Start" justifyContent="Start" width="100%">
 								<items>
 									<Label text=" " width="1rem"/>
-									<Label text="{TextsJSONModel>ID}" width="21rem">
+									<Label text="{TextsJSONModel>ID}" width="7rem">
 										<layoutData>
 											<FlexItemData growFactor="1"/>
 										</layoutData>
 									</Label>
-									<Text text="{TextsJSONModel>DESCRIPTION}" visible="true" width="31rem">
+									<Text text="{TextsJSONModel>DESCRIPTION}" visible="true" width="15rem">
 										<layoutData>
 											<FlexItemData growFactor="1"/>
 										</layoutData>
@@ -76,7 +76,7 @@
 				<VBox height="20px"></VBox>
 				<FlexBox alignItems="Start" justifyContent="Center">
 					<items>
-						<Title text="{i18n>Positions}" titleStyle="H2"/>
+						<Title text="{i18n>Positions} - {TextsJSONModel>/pos_texts/results/EBELP}" titleStyle="H2"/>
 					</items>
 				</FlexBox>
 				<VBox height="10px"></VBox>
@@ -87,12 +87,12 @@
 							<FlexBox alignItems="Center" justifyContent="Start" height="50px" class="sapMTableTH" width="100%">
 								<items>
 									<Label text=" " width="1rem"/>
-									<Label text="{i18n>ID}" width="21rem">
+									<Label text="{i18n>ID}" width="7rem">
 										<layoutData>
 											<FlexItemData growFactor="1"/>
 										</layoutData>
 									</Label>
-									<Label text="{i18n>DESCRIPTION}" width="31rem">
+									<Label text="{i18n>DESCRIPTION}" width="15rem">
 										<layoutData>
 											<FlexItemData growFactor="1"/>
 										</layoutData>
@@ -102,7 +102,7 @@
 											<FlexItemData growFactor="1"/>
 										</layoutData>
 									</Label>
-									<Label text="{i18n>COMMENT}" visible="{TextsJSONModel>COMMENTABLE}" width="30.5rem">
+									<Label text="{i18n>COMMENT}" visible="{TextsJSONModel>COMMENTABLE}" width="31rem">
 										<layoutData>
 											<FlexItemData growFactor="2"/>
 										</layoutData>
@@ -113,12 +113,12 @@
 							<FlexBox alignItems="Start" justifyContent="Start" width="100%">
 								<items>
 									<Label text=" " width="1rem"/>
-									<Label text="{TextsJSONModel>ID}" width="21rem">
+									<Label text="{TextsJSONModel>ID}" width="7rem">
 										<layoutData>
 											<FlexItemData growFactor="1"/>
 										</layoutData>
 									</Label>
-									<Text text="{TextsJSONModel>DESCRIPTION}" visible="true" width="31rem">
+									<Text text="{TextsJSONModel>DESCRIPTION}" visible="true" width="15rem">
 										<layoutData>
 											<FlexItemData growFactor="1"/>
 										</layoutData>

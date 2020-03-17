@@ -1245,7 +1245,8 @@ sap.ui.define([
 
 				var errore = that.onControllPosition(model[i]);
 				if (errore !== undefined && errore !== "") {
-					err = err + errore + " ordine: " + model[i].EBELN + " in pos: " + model[i].EBELP;
+					// err = err + errore + " ordine: " + model[i].EBELN + " in pos: " + model[i].EBELP;
+					err = err + errore;
 				}
 				contatoreRighe = contatoreRighe + 1;
 			}
@@ -1830,21 +1831,24 @@ sap.ui.define([
 								var diff = parseFloat(schedulazione.MENGE) - mengeSomma
 								var perc = (Math.abs(diff) / parseFloat(schedulazione.MENGE)) * 100
 
-								var ordine = mod.EBELN + "-" + mod.EBELP + " CONF: " + conferma.ETENS;
+								var ordine = mod.EBELN + "-" + mod.EBELP + " CONF: " + conferma.ETENR;
 
 								if (profiloSelezionato.PARZIALE_QUANTITA === 'X') {
 									if (diff < 0)
 										if (perc > mod.QuantPercUP) {
-											err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Up_Single", ordine);
+											err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Up_Single");
+											err = err + "\n" + ordine;
 										}
 								} else {
 									if (diff < 0)
 										if (perc > mod.QuantPercUP) {
-											err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Up_Single", ordine);
+											err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Up_Single");
+											err = err + "\n" + ordine;
 										}
 									if (diff > 0)
 										if (perc > mod.QuantPercDOWN) {
-											err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Down_Single", ordine);
+											err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Down_Single");
+											err = err + "\n" + ordine;
 										}
 								}
 							}
