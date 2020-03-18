@@ -50,12 +50,12 @@ module.exports = function () {
 
             if (body.ebeln !== null && body.ebeln !== undefined && body.ebeln !== '') {
                 ebeln.push({
-                    ebeln: body.ebeln
+                    EBELN: body.ebeln
                 })
             }
             if (body.ebelp !== null && body.ebelp !== undefined && body.ebelp !== '') {
                 ebelp.push({
-                    ebelp: body.ebelp
+                    EBELP: body.ebelp
                 })
             }
             if (body.ekorg !== null && body.ekorg !== undefined && body.ekorg.length > 0) {
