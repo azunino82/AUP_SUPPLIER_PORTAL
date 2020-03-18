@@ -2263,7 +2263,7 @@ sap.ui.define([
 					undefined ? sap.ui.getCore().getModel("sysIdJSONModel").getData().SYSID : "";
 
 				var numberOfConfirmable = 0
-				if (oModel.header_texts && oModel.header_texts.length > 0) {
+				if (oModel.header_texts && oModel.header_texts.results.length > 0) {
 
 					oModel.header_texts.results.forEach(element => {
 						if (element.COMMENTABLE) {
@@ -2277,7 +2277,7 @@ sap.ui.define([
 							if (element.COMMENTABLE) {
 								body.SYSID = currentSYSID,
 									body.EBELN = element.EBELN,
-									body.EBELP = '',
+									body.EBELP = element.EBELP,
 									body.BSTYP = 'L',
 									body.TABLE = 'EKKO',
 									body.ID = element.ID,
@@ -2300,8 +2300,8 @@ sap.ui.define([
 				}
 
 				var numberOfConfirmablePos = 0
-				if (oModel.header_pos && oModel.header_pos.length > 0) {
-					oModel.header_pos.results.forEach(element => {
+				if (oModel.pos_texts && oModel.pos_texts.results.length > 0) {
+					oModel.pos_texts.results.forEach(element => {
 						if (element.COMMENTABLE) {
 							numberOfConfirmablePos++
 						}
@@ -2309,7 +2309,7 @@ sap.ui.define([
 
 					if (numberOfConfirmablePos > 0) {
 						var numberOfConfirmsPos = 0
-						oModel.header_pos.results.forEach(element => {
+						oModel.pos_texts.results.forEach(element => {
 							if (element.COMMENTABLE) {
 								body.SYSID = currentSYSID,
 									body.EBELN = element.EBELN,
