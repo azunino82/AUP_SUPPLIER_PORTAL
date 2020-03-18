@@ -432,7 +432,7 @@ module.exports = function () {
   app.post('/SaveDocumentTexts', function (req, res) {
     const body = req.body
 
-    var sql = 'UPSERT \"AUPSUP_DATABASE.data.tables::T_TEXTS_COMMENTS\" VALUES (\'' + body.SYSID + '\',\'' + body.BSTYP + '\',\'' + body.TABLE + '\',\'' + body.ID + '\',\'' + body.EBELN + '\',\'' + body.EBELP + '\',\'' + body.COMMENT + '\') WHERE SYSID = \'' + body.SYSID + '\' AND BSTYP = \'' + body.BSTYP + '\' AND TABLE = \'' + body.TABLE + '\' AND ID=\'' + body.ID + '\' AND EBELP= \'' + body.EBELP + '\' AND EBELN = \'' + body.EBELN + '\''
+    var sql = 'UPSERT \"AUPSUP_DATABASE.data.tables::T_TEXTS_COMMENT\" VALUES (\'' + body.SYSID + '\',\'' + body.BSTYP + '\',\'' + body.TABLE + '\',\'' + body.ID + '\',\'' + body.EBELN + '\',\'' + body.EBELP + '\',\'' + body.COMMENT + '\') WITH PRIMARY KEY'
     console.log('sql: ' + sql)
     hdbext.createConnection(req.tenantContainer, function (error, client) {
       if (error) {
