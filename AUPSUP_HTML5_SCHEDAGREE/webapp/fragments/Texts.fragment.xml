@@ -62,7 +62,7 @@
 											<FlexItemData growFactor="1"/>
 										</layoutData>
 									</Text>
-									<TextArea growing="true" change="onEditTexts" value="{TextsJSONModel>COMMENT}" visible="{TextsJSONModel>COMMENTABLE}" rows="3" width="30.5rem">
+									<TextArea growing="true" value="{TextsJSONModel>COMMENT}" visible="{TextsJSONModel>COMMENTABLE}" rows="3" width="30.5rem">
 										<layoutData>
 											<FlexItemData growFactor="2"/>
 										</layoutData>
@@ -143,8 +143,8 @@
 			<footer>
 				<Toolbar>
 					<ToolbarSpacer/>
-					<Button text="{i18n>close}" press="onCloseTexts" type="Reject"/>
-					<Button id="saveTextsButton" text="{i18n>Confirm}" press="onSaveTexts" type="Accept" visible="false"/>
+					<Button text="{i18n>close}" press="onSaveTexts" type="Reject"/>
+					<Button id="saveTextsButton" text="{i18n>SaveAndClose}" press="onSaveTexts" type="Accept" visible="false"/>
 				</Toolbar>
 			</footer>
 		</Page>

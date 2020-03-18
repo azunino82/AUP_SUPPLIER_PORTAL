@@ -1417,9 +1417,9 @@ sap.ui.define([
 													//		}
 													//	} else {
 													//		if (row.QuantTollUp !== 0 && row.QuantTollDown !== 0 && row.ggTollUp !== 0 && row.ggTollDown !== 0) {
-																if (skipToBuyerQua !== '' && skipToBuyerGG !== '' && skipToBuyerQua !== undefined && skipToBuyerGG !== undefined) {
-																	skip = 'X';
-																}
+													if (skipToBuyerQua !== '' && skipToBuyerGG !== '' && skipToBuyerQua !== undefined && skipToBuyerGG !== undefined) {
+														skip = 'X';
+													}
 													//		}
 													//	}
 													//}
@@ -2263,37 +2263,81 @@ sap.ui.define([
 					undefined ? sap.ui.getCore().getModel("sysIdJSONModel").getData().SYSID : "";
 
 				var numberOfConfirmable = 0
-				oModel.header_texts.results.forEach(element => {
-					if (element.COMMENTABLE) {
-						numberOfConfirmable++
-					}
-				})
-
-				var numberOfConfirms = 0
-				oModel.header_texts.results.forEach(element => {
-					if (element.COMMENTABLE) {
-						body.SYSID = currentSYSID,
-							body.EBELN = element.EBELN,
-							body.EBELP = '',
-							body.BSTYP = 'L',
-							body.TABLE = 'EKKO',
-							body.ID = element.ID,
-							body.COMMENT = element.COMMENT
-					}
-
-					var url = "/backend/Utils/UtilsManagement/SaveDocumentTexts";
-					that.ajaxPost(url, body, function (oData) {
-						if (oData) {
-							numberOfConfirms++
-							if (numberOfConfirms === numberOfConfirmable) {
-								MessageBox.success("Data correctly saved");
-								that.onCloseTexts()
-							}
+				if (oModel.header_texts && oModel.header_texts.length > 0) {
+					
+					oModel.header_texts.results.forEach(element => {
+						if (element.COMMENTABLE) {
+							numberOfConfirmable++
 						}
 					})
 
-				});
+					if (numberOfConfirmable > 0) {
+						var numberOfConfirms = 0
+						oModel.header_texts.results.forEach(element => {
+							if (element.COMMENTABLE) {
+								body.SYSID = currentSYSID,
+									body.EBELN = element.EBELN,
+									body.EBELP = '',
+									body.BSTYP = 'L',
+									body.TABLE = 'EKKO',
+									body.ID = element.ID,
+									body.COMMENT = element.COMMENT
+							}
 
+							var url = "/backend/Utils/UtilsManagement/SaveDocumentTexts";
+							that.ajaxPost(url, body, function (oData) {
+								if (oData) {
+									numberOfConfirms++
+									if (numberOfConfirms === numberOfConfirmable) {
+										//MessageBox.success("Data correctly saved");
+										that.onCloseTexts()
+									}
+								}
+							})
+
+						});
+					}
+				}
+
+				var numberOfConfirmablePos = 0
+				if (oModel.header_pos && oModel.header_pos.length > 0) {
+					oModel.header_pos.results.forEach(element => {
+						if (element.COMMENTABLE) {
+							numberOfConfirmablePos++
+						}
+					})
+
+					if (numberOfConfirmablePos > 0) {
+						var numberOfConfirmsPos = 0
+						oModel.header_pos.results.forEach(element => {
+							if (element.COMMENTABLE) {
+								body.SYSID = currentSYSID,
+									body.EBELN = element.EBELN,
+									body.EBELP = element.EBELP,
+									body.BSTYP = 'L',
+									body.TABLE = 'EKPO',
+									body.ID = element.ID,
+									body.COMMENT = element.COMMENT
+							}
+
+							var url = "/backend/Utils/UtilsManagement/SaveDocumentTexts";
+							that.ajaxPost(url, body, function (oData) {
+								if (oData) {
+									numberOfConfirmsPos++
+									if (numberOfConfirmablePos === numberOfConfirmsPos) {
+										//MessageBox.success("Data correctly saved");
+										that.onCloseTexts()
+									}
+								}
+							})
+
+						});
+					}
+				}
+
+				if (numberOfConfirmable === 0 && numberOfConfirmablePos === 0) {
+					that.onCloseTexts()
+				}
 
 
 			}
