@@ -1618,17 +1618,17 @@ sap.ui.define([
 
 		onSelectAll: function (oEvent) {
 
-			var oTable = that.getView().byId("OrderJSONModel");
+			var oTable = that.getView().byId("OrderHeadersTable");
 			oTable.getItems().forEach(function (r) {
 				var oPath = r.oBindingContexts.OrderJSONModel.sPath;
 				that.getModel("OrderJSONModel").getProperty(oPath);
 
-				if (that.getModel("OrderJSONModel").getProperty(oPath).canEditPosition) {
-					if (oEvent.getParameters().selected)
-						that.getModel("OrderJSONModel").getProperty(oPath).isSelected = true;
-					else
-						that.getModel("OrderJSONModel").getProperty(oPath).isSelected = false;
-				}
+				//if (that.getModel("OrderJSONModel").getProperty(oPath).canEditPosition) {
+				if (oEvent.getParameters().selected)
+					that.getModel("OrderJSONModel").getProperty(oPath).isSelected = true;
+				else
+					that.getModel("OrderJSONModel").getProperty(oPath).isSelected = false;
+				//}
 			});
 
 			that.getModel("OrderJSONModel").refresh();
@@ -2264,7 +2264,7 @@ sap.ui.define([
 
 				var numberOfConfirmable = 0
 				if (oModel.header_texts && oModel.header_texts.length > 0) {
-					
+
 					oModel.header_texts.results.forEach(element => {
 						if (element.COMMENTABLE) {
 							numberOfConfirmable++
