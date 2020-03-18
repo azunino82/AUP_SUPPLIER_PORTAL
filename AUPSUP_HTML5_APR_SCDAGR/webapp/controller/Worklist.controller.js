@@ -584,8 +584,11 @@ sap.ui.define([
 					var elem = {};
 					elem.EBELN = element.EBELN;
 					elem.EBELP = element.EBELP;
+					if (element.XBLNR === undefined){
+					elem.XBLNR = ""} else {
+					elem.XBLNR = element.XBLNR};
 					elem.CONF_TYPE = confirmationType,
-						elem.BSTYP = 'L'; // per piani di consegna
+					elem.BSTYP = 'L'; // per piani di consegna
 
 					body.confirmType.push(elem);
 				}
