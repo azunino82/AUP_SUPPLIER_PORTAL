@@ -1,3 +1,4 @@
+/* eslint-disable prefer-promise-reject-errors */
 /* eslint-disable camelcase */
 /* eslint-disable no-trailing-spaces */
 /* eslint-disable no-useless-escape */
@@ -36,10 +37,26 @@ module.exports = function () {
             var ekgrp = []
             var matnr = []
             var werks = []
+            var bstyp = []
             var userid = req.user.id
+
+            if (body.bstyp !== null && body.bstyp !== undefined && body.bstyp !== '') {
+                var oBstyp = []
+                for (var i = 0; i < body.bstyp.length; i++) {
+                    oBstyp.push({
+                        BSTYP: body.bstyp[i]
+                    })
+                }
+                bstyp = oBstyp
+            }
+
+            if (bstyp.length === 0) {
+                return res.status(500).send('bstyp is mandatory')
+            }         
 
             if (body.lifnr !== null && body.lifnr !== undefined && body.lifnr !== '') {
                 var oLifnr = []
+                // eslint-disable-next-line no-redeclare
                 for (var i = 0; i < body.lifnr.length; i++) {
                     oLifnr.push({
                         ELIFN: body.lifnr[i]
@@ -109,7 +126,7 @@ module.exports = function () {
                         if (_err) {
                             console.log('---->>> CLIENT END ERR MM00_SAG_DOC_LIST <<<<<-----')
                         }
-                        sp(userid, lifnr, ebeln, ebelp, ekorg, matnr, ekgrp, werks, (err, parameters, ET_SAG_EKEH, ET_SAG_EKEK, ET_SAG_EKES, ET_SAG_EKET, ET_SAG_EKKO, ET_SAG_EKPO, OUT_POS_PIANI_CONS) => {
+                        sp(userid, lifnr, ebeln, ebelp, ekorg, matnr, ekgrp, werks, bstyp, (err, parameters, ET_SAG_EKEH, ET_SAG_EKEK, ET_SAG_EKES, ET_SAG_EKET, ET_SAG_EKKO, ET_SAG_EKPO, OUT_POS_PIANI_CONS) => {
                             console.log('---->>> CLIENT END MM00_SAG_DOC_LIST <<<<<-----')
                             client.close()
                             if (err) {

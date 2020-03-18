@@ -432,7 +432,8 @@ module.exports = function () {
   app.post('/SaveDocumentTexts', function (req, res) {
     const body = req.body
 
-    var sql = 'UPSERT \"AUPSUP_DATABASE.data.tables::T_TEXTS_COMMENTS\" VALUES (\'' + body.SYSID + '\',\'' + body.BSTYP + '\',\'' + body.TABLE + '\',\'' + body.ID + '\',\'' + body.EBELN + '\',\'' + body.EBELP + '\',\'' + body.COMMENT + '\')'
+    var sql = 'UPSERT \"AUPSUP_DATABASE.data.tables::T_TEXTS_COMMENTS\" VALUES (\'' + body.SYSID + '\',\'' + body.BSTYP + '\',\'' + body.TABLE + '\',\'' + body.ID + '\',\'' + body.EBELN + '\',\'' + body.EBELP + '\',\'' + body.COMMENT + '\') WHERE SYSID = \'' + body.SYSID + '\' AND BSTYP = \'' + body.BSTYP + '\' AND TABLE = \'' + body.TABLE + '\' AND ID=\'' + body.ID + '\' AND EBELP= \'' + body.EBELP + '\' AND EBELN = \'' + body.EBELN + '\''
+    console.log('sql: ' + sql)
     hdbext.createConnection(req.tenantContainer, function (error, client) {
       if (error) {
         console.error('ERROR T_TEXTS_COMMENTS :' + stringifyObj(error))
@@ -600,11 +601,11 @@ module.exports = function () {
     if (body !== undefined && body !== '' && body !== null) {
       var userid = req.user.id
       var name1 = req.user.I_NAME1 !== undefined && req.user.I_NAME1 !== '' ? req.user.NAME1 : ''
-      var stceg = req.user.I_NAME1 !== undefined && req.user.I_STCEG !== '' ? req.user.I_STCEG : ''
+      var stceg = req.user.I_STCEG !== undefined && req.user.I_STCEG !== '' ? req.user.I_STCEG : ''
       var lifnr = []
       var ekorg = []
 
-      if (body.lifnr !== null && body.lifnr !== '') {
+      if (body.lifnr !== null && body.lifnr !== undefined && body.lifnr !== '') {
         var oLifnr = []
         for (var i = 0; i < body.lifnr.length; i++) {
           oLifnr.push({ LIFNR: body.lifnr[i] })
@@ -612,7 +613,7 @@ module.exports = function () {
         lifnr = oLifnr
       }
 
-      if (body.ekorg !== null && body.ekorg !== '') {
+      if (body.ekorg !== null && body.ekorg !== undefined && body.ekorg !== '') {
         var oEkorg = []
         // eslint-disable-next-line no-redeclare
         for (var i = 0; i < body.ekorg.length; i++) {
@@ -626,11 +627,15 @@ module.exports = function () {
           return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
         } else {
           hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Orders::MM00_VENDOR_LIST', function (_err, sp) {
-            console.log('---->>> CLIENT END GetVendorList <<<<<-----')
-            client.close()
+            if (_err) {
+              console.error('ERROR CONNECTION GetSearchHelp: ' + stringifyObj(_err))
+              return res.status(500).send('GetVendorList CONNECTION ERROR: ' + stringifyObj(_err))
+            }
             sp(userid, name1, stceg, lifnr, ekorg, (err, parameters, results) => {
+              console.log('---->>> CLIENT END <<<<<-----')
+              client.close()
               if (err) {
-                console.error('ERROR: ' + err)
+                console.error('ERROR: ' + stringifyObj(err))
                 return res.status(500).send(stringifyObj(err))
               } else {
                 return res.status(200).send({
