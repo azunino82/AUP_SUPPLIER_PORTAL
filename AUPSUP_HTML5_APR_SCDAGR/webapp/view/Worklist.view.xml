@@ -200,12 +200,12 @@
 														<m:Text text="{SchedAgreeJSONModel>NAME1}"/>
 														<m:Text text="{SchedAgreeJSONModel>MENGE_ORIGINAL}"/>
 														<m:Text text="{SchedAgreeJSONModel>MENGE}"/>
-														<m:Text text="{SchedAgreeJSONModel>NETPR_ORIGINAL}"/>
+														<m:Text text="{SchedAgreeJSONModel>NETPR_ORIGINAL}" visible="{= ${SchedAgreeJSONModel>CONF_TYPE} === 'PRZ'}"/>
 														<m:Text text="{SchedAgreeJSONModel>NETPR}" visible="{= ${SchedAgreeJSONModel>NETPR_ORIGINAL} !== ${SchedAgreeJSONModel>NETPR}}"/>
 														<m:Text text="{ path: 'SchedAgreeJSONModel>ZINVALIDITA', type: 'it.alteaup.supplier.portal.aprvschdagr.AUPSUP_HTML5_APR_SCDAGR.type.Date' }" visible="{= ${SchedAgreeJSONModel>NETPR_ORIGINAL} !== ${SchedAgreeJSONModel>NETPR}}"/>
 														<m:Text text="{ path: 'SchedAgreeJSONModel>ZFINVALIDATA', type: 'it.alteaup.supplier.portal.aprvschdagr.AUPSUP_HTML5_APR_SCDAGR.type.Date' }" visible="{= ${SchedAgreeJSONModel>NETPR_ORIGINAL} !== ${SchedAgreeJSONModel>NETPR}}"/>
-														<m:Text text="{SchedAgreeJSONModel>PEINH_ORIGINAL}"/>
-														<m:Text text="{SchedAgreeJSONModel>PEINH}"/>
+														<m:Text text="{SchedAgreeJSONModel>PEINH_ORIGINAL}" visible="{= ${SchedAgreeJSONModel>CONF_TYPE} === 'PRZ'}"/>
+														<m:Text text="{SchedAgreeJSONModel>PEINH}" visible="{= ${SchedAgreeJSONModel>CONF_TYPE} === 'PRZ'}"/>
 														<m:Text text="{SchedAgreeJSONModel>SCHEDMOD}"/>
 														<m:Button icon="sap-icon://validate" press="onValidate" ariaLabelledBy="editButtonLabel" visible="{= ${SchedAgreeJSONModel>CONF_TYPE} === 'QUA'}"/>
 													</m:cells>
