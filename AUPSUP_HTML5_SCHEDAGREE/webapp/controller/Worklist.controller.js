@@ -2222,6 +2222,10 @@ sap.ui.define([
 			that.ajaxGet(url, function (oData) {
 				that.hideBusyDialog()
 				if (oData && (oData.header_texts || oData.pos_texts) && (oData.header_texts.results.length > 0 || oData.pos_texts.results.length > 0)) {
+
+					oData.EBELP = selectedRowdata.EBELP
+					oData.EBELN = selectedRowdata.EBELN
+
 					var oModel = new JSONModel();
 					oModel.setData(oData);
 					var oComponent = that.getOwnerComponent();
@@ -2276,8 +2280,8 @@ sap.ui.define([
 						oModel.header_texts.results.forEach(element => {
 							if (element.COMMENTABLE) {
 								body.SYSID = currentSYSID,
-									body.EBELN = element.EBELN,
-									body.EBELP = element.EBELP,
+									body.EBELN = oModel.EBELN,
+									body.EBELP = oModel.EBELP,
 									body.BSTYP = 'L',
 									body.TABLE = 'EKKO',
 									body.ID = element.ID,
@@ -2312,8 +2316,8 @@ sap.ui.define([
 						oModel.pos_texts.results.forEach(element => {
 							if (element.COMMENTABLE) {
 								body.SYSID = currentSYSID,
-									body.EBELN = element.EBELN,
-									body.EBELP = element.EBELP,
+									body.EBELN = oModel.EBELN,
+									body.EBELP = oModel.EBELP,
 									body.BSTYP = 'L',
 									body.TABLE = 'EKPO',
 									body.ID = element.ID,
