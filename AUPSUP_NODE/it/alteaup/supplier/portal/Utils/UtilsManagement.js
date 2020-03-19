@@ -427,7 +427,7 @@ module.exports = function () {
     }
   })
 
-  // GET VENDOR LIST
+  // SAVE TEXTS
 
   app.post('/SaveDocumentTexts', function (req, res) {
     const body = req.body

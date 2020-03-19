@@ -27,4 +27,7 @@ module.exports = function (app, server) {
 
   // SERVIZI GESTIONE VARIANTI
   app.use('/VariantsManagement', require('../it/alteaup/supplier/portal/Variants/VariantsManagement')())
+
+  // SERVIZI APP CUSTOMIZING
+  app.use('/CustomizingManagement', require('../it/alteaup/supplier/portal/Customizing/CustomizingManagement')())
 }
