@@ -124,7 +124,7 @@ module.exports = function () {
                         if (_err) {
                             console.log('---->>> CLIENT END ERR MM00_SAG_DOC_LIST <<<<<-----')
                         }
-                        sp(userid, lifnr, ebeln, ebelp, ekorg, matnr, ekgrp, werks, bstyp, (err, parameters, ET_SAG_EKEH, ET_SAG_EKEK, ET_SAG_EKES, ET_SAG_EKET, ET_SAG_EKKO, ET_SAG_EKPO, OUT_POS_PIANI_CONS) => {
+                        sp(userid, lifnr, ebeln, ebelp, ekorg, matnr, ekgrp, werks, bstyp, (err, parameters, ET_SAG_EKEH, ET_SAG_EKEK, ET_SAG_EKES, ET_SAG_EKET, ET_SAG_EKKO, ET_SAG_EKPO, OUT_POS_ORDERS) => {
                             console.log('---->>> CLIENT END MM00_SAG_DOC_LIST <<<<<-----')
                             client.close()
                             if (err) {
@@ -136,10 +136,10 @@ module.exports = function () {
                                 var t_eket = []
                                 var t_ekeh = []
                                 var t_ekek = []
-                                console.log('OUT_POS_PIANI_CONS: ' + stringifyObj(err))
-                                if (OUT_POS_PIANI_CONS !== undefined && OUT_POS_PIANI_CONS !== null && OUT_POS_PIANI_CONS.length > 0) {
-                                    for (var i = 0; i < OUT_POS_PIANI_CONS.length; i++) {
-                                        var objectCopy = OUT_POS_PIANI_CONS[i]
+                                console.log('OUT_POS_ORDERS: ' + stringifyObj(err))
+                                if (OUT_POS_ORDERS !== undefined && OUT_POS_ORDERS !== null && OUT_POS_ORDERS.length > 0) {
+                                    for (var i = 0; i < OUT_POS_ORDERS.length; i++) {
+                                        var objectCopy = OUT_POS_ORDERS[i]
                                         if (objectCopy.P1_PROGR_RIC !== null) {
                                             console.log('LS P1_PROGR_RIC: ' + objectCopy.P1_PROGR_RIC)
                                             objectCopy.PRIMO_PERIODO = parseFloat(objectCopy.P1_PROGR_RIC) > 0 ? ((parseFloat(objectCopy.P1_PROGR_CONF) / parseFloat(objectCopy.P1_PROGR_RIC)) * 100).toFixed(2) : 0
