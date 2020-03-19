@@ -17,6 +17,9 @@
 	}, {
 		"name": "$XSAPPNAME.Z_RL_SUPPLIER",
 		"description": "Role Supplier uaa"
+	}, {
+		"name": "$XSAPPNAME.Z_RL_PLANNER",
+		"description": "Role Planner uaa"
 	}],
 	"role-templates": [{
 		"name": "Token_Exchange",
@@ -35,6 +38,12 @@
 		"description": "Role supplier on xs-security",
 		"scope-references": [
 			"$XSAPPNAME.Z_RL_SUPPLIER"
+		]
+	}, {
+		"name": "Role_Planner",
+		"description": "Role planner on xs-security",
+		"scope-references": [
+			"$XSAPPNAME.Z_RL_PLANNER"
 		]
 	}]
 }
