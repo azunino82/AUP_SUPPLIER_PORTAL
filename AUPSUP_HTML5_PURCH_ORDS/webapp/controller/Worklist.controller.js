@@ -149,6 +149,27 @@ sap.ui.define([
 			});
 		},
 
+		/* onChange: function (oEvent) {
+			var oValue = oEvent.getParameter("value");
+			var oMultipleValues = oValue.split(",");
+			var oTable = this.getView().byId("OrderHeadersTable");
+			var oBindingPath = this.getView().getModel("OrderJSONModel").getProperty("/bindingValue"); //Get Hold of Model Key value that was saved
+			var aFilters = [];
+			for (var i = 0; i < oMultipleValues.length; i++) {
+				var oFilter = new Filter(oBindingPath, "Contains", oMultipleValues[i]);
+				aFilters.push(oFilter);
+			}
+			var oItems = oTable.getBinding("items");
+			oItems.filter(aFilters, "Application");
+
+			this._oResponsivePopover.setModel(new JSONModel({
+				"element": ""
+			}), "filterElementJSONModel");
+			this.getView().byId("headerFilterButton").setVisible(true);
+
+			this._oResponsivePopover.close();
+		}, */
+
 		onAscending: function () {
 			var oTable = this.getView().byId("OrderHeadersTable");
 			var oItems = oTable.getBinding("items");
@@ -227,14 +248,25 @@ sap.ui.define([
 			that.ajaxPost(url, body, function (oData) {
 				that.hideBusyDialog();
 				if (oData) {
+					// Valorizzare OriginalPrice LS
+					for (var i = 0; i < oData.results.length; i++) {
+						var PEINH = oData.results[i].PEINH;
+						var NETPR = oData.results[i].NETPR;
+						if (NETPR != undefined && NETPR != "" && PEINH != undefined && PEINH != "") {
+							PEINH = parseFloat(PEINH);
+							NETPR = parseFloat(NETPR);
+							var prezzoOriginale = NETPR / PEINH;
+							oData.results[i].OriginalPrice = prezzoOriginale;
+						}
+					}
 					var oModel = new JSONModel();
 					oModel.setData(oData);
 					that.getView().setModel(oModel, "OrderJSONModel");
 					that.getView().byId("OrderHeadersTable").setModel(oModel);
 
 					var oSorter = new Sorter({
-						path: 'Priority',
-						descending: true
+						path: 'PRIMO_PERIODO',
+						ascending: true
 					});
 
 					that.getView().byId("OrderHeadersTable").getBinding("items").sort(oSorter);
@@ -1214,7 +1246,8 @@ sap.ui.define([
 
 				var errore = that.onControllPosition(model[i]);
 				if (errore !== undefined && errore !== "") {
-					err = err + errore + " ordine: " + model[i].EBELN + " in pos: " + model[i].EBELP;
+					// err = err + errore + " ordine: " + model[i].EBELN + " in pos: " + model[i].EBELP;
+					err = err + errore;
 				}
 				contatoreRighe = contatoreRighe + 1;
 			}
@@ -1374,23 +1407,23 @@ sap.ui.define([
 													}
 
 													var skip = '';
-													if (row.QuantTollUp !== 0 && row.QuantTollDown !== 0 && row.ggTollUp === 0 && row.ggTollDown === 0) {
-														if (skipToBuyerQua !== '') {
-															skip = 'X';
-														}
-													} else {
-														if (row.QuantTollUp === 0 && row.QuantTollDown === 0 && row.ggTollUp !== 0 && row.ggTollDown !== 0) {
-															if (skipToBuyerGG !== '') {
-																skip = 'X';
-															}
-														} else {
-															if (row.QuantTollUp !== 0 && row.QuantTollDown !== 0 && row.ggTollUp !== 0 && row.ggTollDown !== 0) {
-																if (skipToBuyerQua !== '' && skipToBuyerGG !== '') {
-																	skip = 'X';
-																}
-															}
-														}
+													//if (row.QuantTollUp !== 0 && row.QuantTollDown !== 0 && row.ggTollUp === 0 && row.ggTollDown === 0) {
+													//	if (skipToBuyerQua !== '') {
+													//		skip = 'X';
+													//	}
+													//} else {
+													//	if (row.QuantTollUp === 0 && row.QuantTollDown === 0 && row.ggTollUp !== 0 && row.ggTollDown !== 0) {
+													//		if (skipToBuyerGG !== '') {
+													//			skip = 'X';
+													//		}
+													//	} else {
+													//		if (row.QuantTollUp !== 0 && row.QuantTollDown !== 0 && row.ggTollUp !== 0 && row.ggTollDown !== 0) {
+													if (skipToBuyerQua !== '' && skipToBuyerGG !== '' && skipToBuyerQua !== undefined && skipToBuyerGG !== undefined) {
+														skip = 'X';
 													}
+													//		}
+													//	}
+													//}
 
 
 													body.skipAppBuyer.push({
@@ -1586,17 +1619,17 @@ sap.ui.define([
 
 		onSelectAll: function (oEvent) {
 
-			var oTable = that.getView().byId("OrderJSONModel");
+			var oTable = that.getView().byId("OrderHeadersTable");
 			oTable.getItems().forEach(function (r) {
 				var oPath = r.oBindingContexts.OrderJSONModel.sPath;
 				that.getModel("OrderJSONModel").getProperty(oPath);
 
-				if (that.getModel("OrderJSONModel").getProperty(oPath).canEditPosition) {
-					if (oEvent.getParameters().selected)
-						that.getModel("OrderJSONModel").getProperty(oPath).isSelected = true;
-					else
-						that.getModel("OrderJSONModel").getProperty(oPath).isSelected = false;
-				}
+				//if (that.getModel("OrderJSONModel").getProperty(oPath).canEditPosition) {
+				if (oEvent.getParameters().selected)
+					that.getModel("OrderJSONModel").getProperty(oPath).isSelected = true;
+				else
+					that.getModel("OrderJSONModel").getProperty(oPath).isSelected = false;
+				//}
 			});
 
 			that.getModel("OrderJSONModel").refresh();
@@ -1799,21 +1832,24 @@ sap.ui.define([
 								var diff = parseFloat(schedulazione.MENGE) - mengeSomma
 								var perc = (Math.abs(diff) / parseFloat(schedulazione.MENGE)) * 100
 
-								var ordine = mod.EBELN + "-" + mod.EBELP + " CONF: " + conferma.ETENS;
+								var ordine = mod.EBELN + "-" + mod.EBELP + " CONF: " + conferma.ETENR;
 
 								if (profiloSelezionato.PARZIALE_QUANTITA === 'X') {
-									if (diff > 0)
+									if (diff < 0)
 										if (perc > mod.QuantPercUP) {
-											err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Up_Single", ordine);
+											err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Up_Single");
+											err = err + "\n" + ordine;
 										}
 								} else {
-									if (diff > 0)
-										if (perc > mod.QuantPercUP) {
-											err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Up_Single", ordine);
-										}
 									if (diff < 0)
+										if (perc > mod.QuantPercUP) {
+											err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Up_Single");
+											err = err + "\n" + ordine;
+										}
+									if (diff > 0)
 										if (perc > mod.QuantPercDOWN) {
-											err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Down_Single", ordine);
+											err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Down_Single");
+											err = err + "\n" + ordine;
 										}
 								}
 							}
@@ -1969,7 +2005,14 @@ sap.ui.define([
 								"ETENRenabled": false
 							};
 							if (mod !== undefined && mod.POItemSchedulers.results !== undefined) {
-								mod.POItemSchedulers.results.push(schedulation);
+								// se nelle consegne hp già inserito una riga ETENR non la ri-aggiungo
+								var trovato = false
+								mod.POItemSchedulers.results.forEach(el => {
+									if (element.ETENR === el.ETENR)
+										trovato = true
+								});
+								if (!trovato)
+									mod.POItemSchedulers.results.push(schedulation);
 							} else {
 								var oSchedulationsArray = [];
 								oSchedulationsArray.push(schedulation);
@@ -2142,7 +2185,7 @@ sap.ui.define([
 			//	var oModelData = that.getOwnerComponent().getModel("VariantsModel");
 			//	oModelData.metadataLoaded().then(
 			//		that.onMetadataLoaded.bind(that, oModelData));
-			var columModel = { "EBELN": true, "EBELP": true, "LIFNR": true, "NAME1": true, "MATNR": true, "TXZ01": true, "IDNLF": true, "MENGE": true, "MEINS": true, "WAERS": true, "PRIMO_PERIODO": true, "SECONDO_PERIODO": true };
+			var columModel = { "EBELN": true, "EBELP": true, "LIFNR": true, "NAME1": true, "MATNR": true, "TXZ01": true, "IDNLF": true, "MENGE": true, "MEINS": true, "WAERS": true, "PRIMO_PERIODO": false, "SECONDO_PERIODO": false };
 			var oModel = new JSONModel();
 			oModel.setData(columModel);
 			that.getView().setModel(oModel, "columnVisibilityModel");
@@ -2166,6 +2209,142 @@ sap.ui.define([
 					that.getView().setModel(oModel, "columnVisibilityModel");
 
 				}
+			}
+		},
+
+		onGetTexts: function (oEvent) {
+			var oPath = oEvent.getSource().getParent().getBindingContext("OrderJSONModel").sPath;
+			var selectedRowdata = that.getModel("OrderJSONModel").getProperty(oPath);
+
+
+			that.showBusyDialog()
+			var url = "/backend/Utils/UtilsManagement/GetDocumentTexts?I_EBELN=" + selectedRowdata.EBELN + "&I_BSTYP=L&I_EBELP=" + selectedRowdata.EBELP
+
+			that.ajaxGet(url, function (oData) {
+				that.hideBusyDialog()
+				if (oData && (oData.header_texts || oData.pos_texts) && (oData.header_texts.results.length > 0 || oData.pos_texts.results.length > 0)) {
+
+					oData.EBELP = selectedRowdata.EBELP
+					oData.EBELN = selectedRowdata.EBELN
+
+					var oModel = new JSONModel();
+					oModel.setData(oData);
+					var oComponent = that.getOwnerComponent();
+					oComponent.setModel(oModel, "TextsJSONModel");
+
+					if (!that.oSearchTextsDialog) {
+						that.oSearchTextsDialog = sap.ui.xmlfragment("it.alteaup.supplier.portal.purchords.AUPSUP_HTML5_PURCH_ORDS.fragments.Texts", that);
+						that.getView().addDependent(that.oSearchTextsDialog);
+					}
+					that.oSearchTextsDialog.open();
+
+				} else {
+					MessageBox.error(that.getResourceBundle().getText("noTextsFound"));
+				}
+			});
+
+		},
+
+		onCloseTexts: function () {
+			if (that.oSearchTextsDialog) {
+				that.oSearchTextsDialog.close();
+				that.oSearchTextsDialog.destroy();
+				that.oSearchTextsDialog = undefined;
+			}
+		},
+
+		onEditTexts: function (oEvent) {
+			sap.ui.getCore().byId('saveTextsButton').setVisible(true)
+		},
+
+		onSaveTexts: function (oEvent) {
+			var oComponent = that.getOwnerComponent();
+			var oModel = oComponent.getModel("TextsJSONModel").getData();
+			if (oModel && oModel.header_texts && oModel.header_texts.results && oModel.header_texts.results.length > 0) {
+				var body = {}
+
+				var currentSYSID = sap.ui.getCore().getModel("sysIdJSONModel") !== undefined && sap.ui.getCore().getModel(
+					"sysIdJSONModel").getData() !==
+					undefined ? sap.ui.getCore().getModel("sysIdJSONModel").getData().SYSID : "";
+
+				var numberOfConfirmable = 0
+				if (oModel.header_texts && oModel.header_texts.results.length > 0) {
+
+					oModel.header_texts.results.forEach(element => {
+						if (element.COMMENTABLE) {
+							numberOfConfirmable++
+						}
+					})
+
+					if (numberOfConfirmable > 0) {
+						var numberOfConfirms = 0
+						oModel.header_texts.results.forEach(element => {
+							if (element.COMMENTABLE) {
+								body.SYSID = currentSYSID,
+									body.EBELN = oModel.EBELN,
+									body.EBELP = oModel.EBELP,
+									body.BSTYP = 'L',
+									body.TABLE = 'EKKO',
+									body.ID = element.ID,
+									body.COMMENT = element.COMMENT
+							}
+
+							var url = "/backend/Utils/UtilsManagement/SaveDocumentTexts";
+							that.ajaxPost(url, body, function (oData) {
+								if (oData) {
+									numberOfConfirms++
+									if (numberOfConfirms === numberOfConfirmable) {
+										//MessageBox.success("Data correctly saved");
+										that.onCloseTexts()
+									}
+								}
+							})
+
+						});
+					}
+				}
+
+				var numberOfConfirmablePos = 0
+				if (oModel.pos_texts && oModel.pos_texts.results.length > 0) {
+					oModel.pos_texts.results.forEach(element => {
+						if (element.COMMENTABLE) {
+							numberOfConfirmablePos++
+						}
+					})
+
+					if (numberOfConfirmablePos > 0) {
+						var numberOfConfirmsPos = 0
+						oModel.pos_texts.results.forEach(element => {
+							if (element.COMMENTABLE) {
+								body.SYSID = currentSYSID,
+									body.EBELN = oModel.EBELN,
+									body.EBELP = oModel.EBELP,
+									body.BSTYP = 'L',
+									body.TABLE = 'EKPO',
+									body.ID = element.ID,
+									body.COMMENT = element.COMMENT
+							}
+
+							var url = "/backend/Utils/UtilsManagement/SaveDocumentTexts";
+							that.ajaxPost(url, body, function (oData) {
+								if (oData) {
+									numberOfConfirmsPos++
+									if (numberOfConfirmablePos === numberOfConfirmsPos) {
+										//MessageBox.success("Data correctly saved");
+										that.onCloseTexts()
+									}
+								}
+							})
+
+						});
+					}
+				}
+
+				if (numberOfConfirmable === 0 && numberOfConfirmablePos === 0) {
+					that.onCloseTexts()
+				}
+
+
 			}
 		}
 	});

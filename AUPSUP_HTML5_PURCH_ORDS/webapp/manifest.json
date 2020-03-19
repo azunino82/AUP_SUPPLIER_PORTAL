@@ -28,7 +28,6 @@
 			}
 		}
 	},
-
 	"sap.ui": {
 		"fullWidth": true,
 		"technology": "UI5",
@@ -46,7 +45,6 @@
 			"phone": true
 		}
 	},
-
 	"sap.ui5": {
 		"config": {
 			"fullWidth": true
@@ -79,9 +77,11 @@
 			}
 		},
 		"resources": {
-			"css": [{
-				"uri": "css/style.css"
-			}]
+			"css": [
+				{
+					"uri": "css/style.css"
+				}
+			]
 		},
 		"routing": {
 			"config": {
@@ -101,12 +101,33 @@
 					"target": [
 						"worklist"
 					]
+				},
+				{
+					"name": "detail",
+					"pattern": "detail/{datas}",
+					"titleTarget": "",
+					"greedy": false,
+					"target": [
+						"detail"
+					]
 				}
 			],
 			"targets": {
 				"worklist": {
 					"viewLevel": 1,
 					"viewName": "Worklist"
+				},
+				"detail": {
+					"viewLevel": 2,
+					"viewName": "OrderPositionDetail"
+				},
+				"OrderPositions": {
+					"viewType": "XML",
+					"viewName": "OrderPositions"
+				},
+				"OrderPositionDetail": {
+					"viewType": "XML",
+					"viewName": "OrderPositionDetail"
 				}
 			}
 		}
