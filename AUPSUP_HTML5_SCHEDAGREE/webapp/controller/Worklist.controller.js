@@ -1367,30 +1367,33 @@ sap.ui.define([
 																}
 															}
 														}
+													} else {
+														if (row.QuantTollUp === 0 && diff === 0 && row.QuantTollDown === 0)
+															skipToBuyerQua = 'X'
 													}
 
+
+													var skipToBuyerGG = ''
+													var dataSched = row.SchedulationsStatus[u].EINDT
+													var year = dataSched.substring(0, 4);
+													var month = dataSched.substring(4, 6);
+													var day = dataSched.substring(6, 8);
+
+													var dataSched = month + "/" + day + "/" + year
+													dataSched = new Date(dataSched)
+
+													var dataConf = singleEkesModel.EINDT
+													var year = dataConf.substring(0, 4)
+													var month = dataConf.substring(4, 6)
+													var day = dataConf.substring(6, 8);
+													var dataConf = month + "/" + day + "/" + year
+													dataConf = new Date(dataConf)
+
+													var Difference_In_Time = dataConf.getTime() - dataSched.getTime();
+
+													// To calculate the no. of days between two dates 
+													var days = Difference_In_Time / (1000 * 3600 * 24);
 													if (row.ggTollUp > 0 && row.ggTollDown > 0) {
-														var skipToBuyerGG = ''
-														var dataSched = row.SchedulationsStatus[u].EINDT
-														var year = dataSched.substring(0, 4);
-														var month = dataSched.substring(4, 6);
-														var day = dataSched.substring(6, 8);
-
-														var dataSched = month + "/" + day + "/" + year
-														dataSched = new Date(dataSched)
-
-														var dataConf = singleEkesModel.EINDT
-														var year = dataConf.substring(0, 4)
-														var month = dataConf.substring(4, 6)
-														var day = dataConf.substring(6, 8);
-														var dataConf = month + "/" + day + "/" + year
-														dataConf = new Date(dataConf)
-
-														var Difference_In_Time = dataConf.getTime() - dataSched.getTime();
-
-														// To calculate the no. of days between two dates 
-														var days = Difference_In_Time / (1000 * 3600 * 24);
-
 														if (days >= 0) {
 															if (days < row.ggTollUp) {
 																// la percentuale di quantità è all'interno dei limiti
@@ -1404,6 +1407,9 @@ sap.ui.define([
 																}
 															}
 														}
+													} else {
+														if (row.ggTollUp === 0 && days === 0 && row.ggTollDown === 0)
+															skipToBuyerGG = 'X'
 													}
 
 													var skip = '';
