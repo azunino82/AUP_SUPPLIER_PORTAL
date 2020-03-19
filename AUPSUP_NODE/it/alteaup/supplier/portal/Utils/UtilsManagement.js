@@ -569,19 +569,19 @@ module.exports = function () {
           return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
         } else {
           hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Utils::GetSearchHelp', function (_err, sp) {
-            console.log('---->>> CLIENT END SearchMaterial <<<<<-----')
-            client.close()
+            if (_err) {
+              console.error('ERROR CONNECTION GetSearchHelp: ' + stringifyObj(_err))
+              return res.status(500).send('GetVendorList CONNECTION ERROR: ' + stringifyObj(_err))
+            }
             sp(userId, matnr, maktx, filter, 'MATNR', (err, parameters, results) => {
+              console.log('---->>> CLIENT END <<<<<-----')
+              client.close()
               if (err) {
-                console.error('ERROR: ' + err)
+                console.error('ERROR: ' + stringifyObj(err))
                 return res.status(500).send(stringifyObj(err))
               } else {
-                var outArr = []
-                results.forEach(element => {
-                  outArr.push(element)
-                })
                 return res.status(200).send({
-                  results: outArr
+                  results: results
                 })
               }
             })

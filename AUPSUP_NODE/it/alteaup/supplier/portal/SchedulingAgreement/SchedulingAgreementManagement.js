@@ -1028,6 +1028,11 @@ module.exports = function () {
         var userid = req.user.id
         var ebeln = req.query.I_EBELN !== null && req.query.I_EBELN !== undefined ? req.query.I_EBELN : ''
         var ebelp = req.query.I_EBELP !== null && req.query.I_EBELP !== undefined ? req.query.I_EBELP : ''
+        var bstyp = []
+
+        if (req.query.I_BSTYP !== null && req.query.I_BSTYP !== undefined) {
+            bstyp.push({ BSTYP: req.query.I_BSTYP })
+        }
 
         hdbext.createConnection(req.tenantContainer, (err, client) => {
             if (err) {
@@ -1039,7 +1044,7 @@ module.exports = function () {
                         console.log('---->>> CLIENT END ERR GetConfermeRifiutiForQuant <<<<<-----')
                         return res.status(500).send('CLIENT END ERR GetConfermeRifiuti: ' + stringifyObj(_err))
                     }
-                    sp(userid, ebeln, ebelp, (err, parameters, results) => {
+                    sp(userid, ebeln, ebelp, bstyp, (err, parameters, results) => {
                         console.log('---->>> CLIENT END GetConfermeRifiutiForQuant <<<<<-----')
                         client.close()
                         if (err) {
