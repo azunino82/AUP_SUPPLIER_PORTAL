@@ -866,11 +866,6 @@ sap.ui.define([
 							oIndexs].KTPNR === undefined || (that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].KTPNR === "00000")))
 						that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].editPrice = true;
 				}
-				if (mod.MODIFICA_QUANTITA !== undefined && mod.MODIFICA_QUANTITA !== "") {
-					that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].editQuantity = true;
-				} else {
-					that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].editQuantity = false;
-				}
 				that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].editMode = true;
 				// salvo il prezzo calcolato originale di posizione e le percentuali di scostamento prese dalla tabella T_PROFILI_CONFERMA per poi fare i controlli sullo scostamento percentuale
 				var PEINH = that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].PEINH;
@@ -898,7 +893,7 @@ sap.ui.define([
 				var oIndexs = oEvent.getSource().sId.split("-");
 				oIndexs = oIndexs[oIndexs.length - 1];
 				that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].editPrice = false;
-				that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].editQuantity = true;
+				//that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].editQuantity = true;
 				that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].editMode = false;
 				that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].UPDKZ = "";
 				that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].PricePercDOWN = undefined;
@@ -917,6 +912,13 @@ sap.ui.define([
 
 				that.getView().getModel("SelectedPositionsJSONModel").refresh();
 			}
+
+			if (mod.MODIFICA_QUANTITA !== undefined && mod.MODIFICA_QUANTITA !== "") {
+				that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].editQuantity = true;
+			} else {
+				that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].editQuantity = false;
+			}
+
 			that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].EBTYP = sSelectedKey;
 			if (mod !== undefined) {
 				that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].KSCHL = mod.TIPO_COND_PREZZO;
@@ -1009,7 +1011,7 @@ sap.ui.define([
 						that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].KSCHL = selectedProfiloConfermaModel.TIPO_COND_PREZZO;
 					}
 
-
+dsaasda
 
 					if (selectedProfiloConfermaModel !== undefined && selectedProfiloConfermaModel.ZAPPPERINF !== undefined &&
 						selectedProfiloConfermaModel.ZAPPPERINF !== "")
@@ -1367,30 +1369,33 @@ sap.ui.define([
 																}
 															}
 														}
+													} else {
+														if (row.QuantTollUp === 0 && diff === 0 && row.QuantTollDown === 0)
+															skipToBuyerQua = 'X'
 													}
 
+
+													var skipToBuyerGG = ''
+													var dataSched = row.SchedulationsStatus[u].EINDT
+													var year = dataSched.substring(0, 4);
+													var month = dataSched.substring(4, 6);
+													var day = dataSched.substring(6, 8);
+
+													var dataSched = month + "/" + day + "/" + year
+													dataSched = new Date(dataSched)
+
+													var dataConf = singleEkesModel.EINDT
+													var year = dataConf.substring(0, 4)
+													var month = dataConf.substring(4, 6)
+													var day = dataConf.substring(6, 8);
+													var dataConf = month + "/" + day + "/" + year
+													dataConf = new Date(dataConf)
+
+													var Difference_In_Time = dataConf.getTime() - dataSched.getTime();
+
+													// To calculate the no. of days between two dates 
+													var days = Difference_In_Time / (1000 * 3600 * 24);
 													if (row.ggTollUp > 0 && row.ggTollDown > 0) {
-														var skipToBuyerGG = ''
-														var dataSched = row.SchedulationsStatus[u].EINDT
-														var year = dataSched.substring(0, 4);
-														var month = dataSched.substring(4, 6);
-														var day = dataSched.substring(6, 8);
-
-														var dataSched = month + "/" + day + "/" + year
-														dataSched = new Date(dataSched)
-
-														var dataConf = singleEkesModel.EINDT
-														var year = dataConf.substring(0, 4)
-														var month = dataConf.substring(4, 6)
-														var day = dataConf.substring(6, 8);
-														var dataConf = month + "/" + day + "/" + year
-														dataConf = new Date(dataConf)
-
-														var Difference_In_Time = dataConf.getTime() - dataSched.getTime();
-
-														// To calculate the no. of days between two dates 
-														var days = Difference_In_Time / (1000 * 3600 * 24);
-
 														if (days >= 0) {
 															if (days < row.ggTollUp) {
 																// la percentuale di quantità è all'interno dei limiti
@@ -1404,6 +1409,9 @@ sap.ui.define([
 																}
 															}
 														}
+													} else {
+														if (row.ggTollUp === 0 && days === 0 && row.ggTollDown === 0)
+															skipToBuyerGG = 'X'
 													}
 
 													var skip = '';
@@ -1482,7 +1490,7 @@ sap.ui.define([
 								var singleEkkoModel = {};
 								singleEkkoModel.EBELN = row.EBELN;
 								singleEkkoModel.LIFNR = row.LIFNR;
-								singleEkkoModel.BSTYP = 'L'; // fisso perchè stiamo confermando i piani di consegna
+								singleEkkoModel.BSTYP = 'F'; // fisso perchè stiamo confermando i piani di consegna
 								singleEkkoModel.ZCUSTOM01 = row.ZCUSTOM01;
 								singleEkkoModel.ZCUSTOM02 = row.ZCUSTOM02;
 								singleEkkoModel.ZCUSTOM03 = row.ZCUSTOM03;
@@ -2283,7 +2291,7 @@ sap.ui.define([
 								body.SYSID = currentSYSID,
 									body.EBELN = oModel.EBELN,
 									body.EBELP = oModel.EBELP,
-									body.BSTYP = 'L',
+									body.BSTYP = 'F',
 									body.TABLE = 'EKKO',
 									body.ID = element.ID,
 									body.COMMENT = element.COMMENT
@@ -2319,7 +2327,7 @@ sap.ui.define([
 								body.SYSID = currentSYSID,
 									body.EBELN = oModel.EBELN,
 									body.EBELP = oModel.EBELP,
-									body.BSTYP = 'L',
+									body.BSTYP = 'F',
 									body.TABLE = 'EKPO',
 									body.ID = element.ID,
 									body.COMMENT = element.COMMENT
