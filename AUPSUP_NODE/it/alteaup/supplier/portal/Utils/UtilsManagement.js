@@ -437,7 +437,7 @@ module.exports = function () {
     hdbext.createConnection(req.tenantContainer, function (error, client) {
       if (error) {
         console.error('ERROR T_TEXTS_COMMENTS :' + stringifyObj(error))
-        return res.status(500).send('T_TEXTS_COMMENTS CONNECTION ERROR: ' + stringifyObj(error))
+        return res.status(500).send('T_TEXTS_COMMENT CONNECTION ERROR: ' + stringifyObj(error))
       }
       if (client) {
         async.waterfall([
@@ -465,7 +465,7 @@ module.exports = function () {
             callback()
           }
         ], function done (err, parameters, rows) {
-          console.log('---->>> CLIENT END T_TEXTS_COMMENTS <<<<<-----')
+          console.log('---->>> CLIENT END T_TEXTS_COMMENT <<<<<-----')
           client.close()
           if (err) {
             return console.error('Done error', err)
