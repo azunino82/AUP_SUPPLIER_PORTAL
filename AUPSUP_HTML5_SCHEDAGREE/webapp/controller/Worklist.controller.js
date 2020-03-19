@@ -123,7 +123,8 @@ sap.ui.define([
 						var oHeader = this.$().find('.sapMListTblHeaderCell'); //Get hold of table header elements
 						for (var i = 0; i < oHeader.length; i++) {
 							var oID = oHeader[i].id;
-							that.onClick(oID, i + 1);
+							if (oID !== '__column0') // prima colonna con checkbox
+								that.onClick(oID, i + 1);
 						}
 					}
 				}, oTable);
