@@ -1709,22 +1709,24 @@ dsaasda
 			var today = new Date();
 
 			var ordine = mod.EBELN + "-" + mod.EBELP;
-			if (mod.ZINVALIDITA === undefined || mod.ZINVALIDITA === "" || mod.ZINVALIDITA === null) {
-				err = err + "\n" + that.getResourceBundle().getText("ERR_Price_DateB", ordine);
-			} else {
-				var dateString = mod.ZINVALIDITA;
-				var year = dateString.substring(0, 4);
-				var month = dateString.substring(4, 6);
-				var day = dateString.substring(6, 8);
-				var date = new Date(year, month - 1, day);
-				if (date < today)
-					err = err + "\n" + that.getResourceBundle().getText("ERR_Price_valB", ordine);
+			if (mod.TimeDependent === true){
+				if (mod.ZINVALIDITA === undefined || mod.ZINVALIDITA === "" || mod.ZINVALIDITA === null) {
+					err = err + "\n" + that.getResourceBundle().getText("ERR_Price_DateB", ordine);
+				} else {
+					var dateString = mod.ZINVALIDITA;
+					var year = dateString.substring(0, 4);
+					var month = dateString.substring(4, 6);
+					var day = dateString.substring(6, 8);
+					var date = new Date(year, month - 1, day);
+					if (date < today)
+						err = err + "\n" + that.getResourceBundle().getText("ERR_Price_valB", ordine);
+				}
+			
+				if (mod.ZFINVALIDATA === undefined || mod.ZFINVALIDATA === "" || mod.ZFINVALIDATA === null)
+					err = err + "\n" + that.getResourceBundle().getText("ERR_Price_DateE", ordine);
 			}
-
-			if (mod.ZFINVALIDATA === undefined || mod.ZFINVALIDATA === "" || mod.ZFINVALIDATA === null)
-				err = err + "\n" + that.getResourceBundle().getText("ERR_Price_DateE", ordine);
-
 			return err;
+
 		},
 		onControllPriceOK: function (mod) {
 			var err = "";
