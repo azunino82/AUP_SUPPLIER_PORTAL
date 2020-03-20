@@ -2228,7 +2228,7 @@ dsaasda
 
 
 			that.showBusyDialog()
-			var url = "/backend/Utils/UtilsManagement/GetDocumentTexts?I_EBELN=" + selectedRowdata.EBELN + "&I_BSTYP=L&I_EBELP=" + selectedRowdata.EBELP
+			var url = "/backend/Utils/UtilsManagement/GetDocumentTexts?I_EBELN=" + selectedRowdata.EBELN + "&I_BSTYP=" + selectedRowdata.BSTYP +"&I_EBELP=" + selectedRowdata.EBELP
 
 			that.ajaxGet(url, function (oData) {
 				that.hideBusyDialog()
@@ -2293,7 +2293,7 @@ dsaasda
 								body.SYSID = currentSYSID,
 									body.EBELN = oModel.EBELN,
 									body.EBELP = oModel.EBELP,
-									body.BSTYP = 'F',
+									body.BSTYP = 'L',
 									body.TABLE = 'EKKO',
 									body.ID = element.ID,
 									body.COMMENT = element.COMMENT
@@ -2329,7 +2329,7 @@ dsaasda
 								body.SYSID = currentSYSID,
 									body.EBELN = oModel.EBELN,
 									body.EBELP = oModel.EBELP,
-									body.BSTYP = 'F',
+									body.BSTYP = 'L',
 									body.TABLE = 'EKPO',
 									body.ID = element.ID,
 									body.COMMENT = element.COMMENT
@@ -2354,8 +2354,8 @@ dsaasda
 					that.onCloseTexts()
 				}
 
-
 			}
+			that.onCloseTexts()
 		}
 	});
 
