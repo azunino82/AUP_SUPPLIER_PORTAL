@@ -33,6 +33,15 @@ module.exports = function () {
         if (element.includes('Z_RL_SUPPLIER')) {
           outData.isSupplier = true
         }
+        if (element.includes('Z_RL_SUPPLIER_D')) {
+          outData.isSupplierD = true
+        }
+        if (element.includes('Z_RL_ADMINISTRATOR')) {
+          outData.isAdministrator = true
+        }
+        if (element.includes('Z_RL_PLANNER')) {
+          outData.isPlanner = true
+        }
       })
     }
 
@@ -647,6 +656,27 @@ module.exports = function () {
         }
       })
     }
+  })
+
+   // CONTATORE TILES
+ 
+   app.get('/GetCounter', function (req, res) {
+    res.type('application/json').status(200).send({
+      d: {
+        icon: 'sap-icon://travel-expense',
+        info: 'Quarter Ends!',
+        infoState: 'Critical',
+        number: 43.333,
+        numberDigits: 1,
+        numberFactor: 'k',
+        numberState: 'Positive',
+        numberUnit: 'EUR',
+        stateArrow: 'Up',
+        subtitle: 'Quarterly overview',
+        title: 'Travel Expenses',
+        count: 100
+      }
+    })
   })
 
   // Parse URL-encoded bodies (as sent by HTML forms)
