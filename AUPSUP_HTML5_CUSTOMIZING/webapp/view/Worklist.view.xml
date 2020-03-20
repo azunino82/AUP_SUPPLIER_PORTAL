@@ -1,0 +1,794 @@
+<mvc:View controllerName="it.alteaup.supplier.portal.customizing.AUPSUP_HTML5_CUSTOMIZING.controller.Worklist" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.uxap"
+	xmlns:layout="sap.ui.layout" xmlns:m="sap.m" xmlns:table="sap.ui.table" xmlns:core="sap.ui.core"
+	xmlns:personal="sap.uxap.sample.SharedBlocks.personal" xmlns:form="sap.ui.layout.form">
+	<m:Shell id="shell" appWidthLimited="false">
+		<m:App id="app">
+			<m:pages>
+				<m:Page id="page">
+					<m:customHeader>
+						<m:Bar>
+							<m:contentLeft>
+								<m:Text text="{userapi>/firstname} {userapi>/lastname}"></m:Text>
+							</m:contentLeft>
+							<m:contentMiddle>
+								<m:Text text="{i18n>title}" class="sapMTitle sapMTitleStyleAuto sapMTitleMaxWidth"></m:Text>
+							</m:contentMiddle>
+						</m:Bar>
+					</m:customHeader>
+					<m:content>
+						<ObjectPageLayout id="ObjectPageLayout" headerContentPinnable="true">
+							<sections>
+								<ObjectPageSection showTitle="false">
+									<subSections>
+										<ObjectPageSubSection >
+											<m:IconTabBar id="idIconTabBarInlineMode" headerMode="Inline" upperCase="true" expanded="{device>/isNoPhone}" select="onTabChange">
+												<m:items>
+													<m:IconTabFilter key="1" text="{i18n>BUYERS}" count="{= ${BuyersJSONModel>/results}.length}">
+														<m:Table id="BuyersTable" items="{BuyersJSONModel>/results}">
+															<m:headerToolbar>
+																<m:OverflowToolbar>
+																	<m:content>
+																		<m:ToolbarSpacer/>
+																		<m:Button id="headerBuyerRefresh" icon="sap-icon://add" press="onAddBuyerRow" type="Transparent"/>
+																	</m:content>
+																</m:OverflowToolbar>
+															</m:headerToolbar>
+															<m:columns>
+																<m:Column id="USERID" minScreenWidth="Desktop" demandPopin="true" width="10em">
+																	<m:Label text="{i18n>USERID}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column id="BU" minScreenWidth="Desktop" demandPopin="true" width="10em">
+																	<m:Label text="{i18n>BU}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column id="SYSID" minScreenWidth="Desktop" demandPopin="true" width="8em">
+																	<m:Label text="{i18n>SYSID}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column id="PURCH_ORG" minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>PURCH_ORG}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column id="PLANTS" minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>PLANTS}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true" hAlign="End" width="5em">
+																	<m:Label class="columnLabelStyle"/>
+																</m:Column>
+															</m:columns>
+															<m:items>
+																<m:ColumnListItem>
+																	<m:cells>
+																		<m:Input value="{BuyersJSONModel>USERID}" enabled="{= ${BuyersJSONModel>USERID} === ''}" maxLength="20"/>
+																		<m:Input value="{BuyersJSONModel>BU}" enabled="{= ${BuyersJSONModel>BU} === ''}" maxLength="20"/>
+																		<m:Input value="{BuyersJSONModel>SYSID}" maxLength="30"/>
+																		<m:Input value="{BuyersJSONModel>PURCH_ORG}" maxLength="255"/>
+																		<m:Input value="{BuyersJSONModel>PLANTS}" maxLength="255"/>
+																		<m:Button icon="sap-icon://delete" press="deleteBuyerRow"/>
+																	</m:cells>
+																</m:ColumnListItem>
+															</m:items>
+														</m:Table>
+														<m:Toolbar>
+															<m:ToolbarSpacer/>
+															<m:Button type="Accept" text="Save" press="onSaveBuyerList"/>
+														</m:Toolbar>
+													</m:IconTabFilter>
+													<m:IconTabFilter key="2" text="UserID - MetadataID" count="{= ${UserIDMetadataIdJSONModel>/results}.length}">
+														<m:Table id="UserIDMetadataIdTable" items="{UserIDMetadataIdJSONModel>/results}">
+															<m:headerToolbar>
+																<m:OverflowToolbar>
+																	<m:content>
+																		<m:ToolbarSpacer/>
+																		<m:Button id="headerUserIDMetadataIdRefresh" icon="sap-icon://add" press="onAddUserIDMetadataIdRow" type="Transparent"/>
+																	</m:content>
+																</m:OverflowToolbar>
+															</m:headerToolbar>
+															<m:columns>
+																<m:Column minScreenWidth="Desktop" demandPopin="true" width="25em">
+																	<m:Label text="{i18n>USERID}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>METAID}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true" hAlign="End" width="5em">
+																	<m:Label class="columnLabelStyle"/>
+																</m:Column>
+															</m:columns>
+															<m:items>
+																<m:ColumnListItem>
+																	<m:cells>
+																		<m:Input value="{UserIDMetadataIdJSONModel>USERID}" enabled="{= ${UserIDMetadataIdJSONModel>USERID} === ''}"/>
+																		<m:Input value="{UserIDMetadataIdJSONModel>METAID}"/>
+																		<m:Button icon="sap-icon://delete" press="deleteUserIDMetadataIdRow"/>
+																	</m:cells>
+																</m:ColumnListItem>
+															</m:items>
+														</m:Table>
+														<m:Toolbar>
+															<m:ToolbarSpacer/>
+															<m:Button type="Accept" text="Save" press="onSaveUserIDMetadataIdList"/>
+														</m:Toolbar>
+													</m:IconTabFilter>
+													<!--<m:IconTabFilter key="3" text="Purchase Organizations" count="{= ${PurchaseOrganizationsJSONModel>/results}.length}">-->
+													<!--	<m:Table id="PurchaseOrganizationsTable" items="{PurchaseOrganizationsJSONModel>/results}">-->
+													<!--		<m:headerToolbar>-->
+													<!--			<m:OverflowToolbar>-->
+													<!--				<m:content>-->
+													<!--					<m:ToolbarSpacer/>-->
+													<!--					<m:Button id="headerPurchaseOrganizationsRefresh" icon="sap-icon://add" press="onAddPurchaseOrganizationsRow" type="Transparent"/>-->
+													<!--				</m:content>-->
+													<!--			</m:OverflowToolbar>-->
+													<!--		</m:headerToolbar>-->
+													<!--		<m:columns>-->
+													<!--			<m:Column minScreenWidth="Desktop" demandPopin="true" width="8em">-->
+													<!--				<m:Label text="{i18n>CODE}" class="columnLabelStyle"/>-->
+													<!--			</m:Column>-->
+													<!--			<m:Column minScreenWidth="Desktop" demandPopin="true" width="8em">-->
+													<!--				<m:Label text="{i18n>SYSID}" class="columnLabelStyle"/>-->
+													<!--			</m:Column>-->
+													<!--			<m:Column minScreenWidth="Desktop" demandPopin="true">-->
+													<!--				<m:Label text="{i18n>DESCR}" class="columnLabelStyle"/>-->
+													<!--			</m:Column>-->
+													<!--			<m:Column minScreenWidth="Desktop" demandPopin="true" hAlign="End" width="5em">-->
+													<!--				<m:Label class="columnLabelStyle"/>-->
+													<!--			</m:Column>-->
+													<!--		</m:columns>-->
+													<!--		<m:items>-->
+													<!--			<m:ColumnListItem>-->
+													<!--				<m:cells>-->
+													<!--					<m:Input value="{PurchaseOrganizationsJSONModel>CODE}" enabled="{= ${PurchaseOrganizationsJSONModel>CODE} === ''}"/>-->
+													<!--					<m:Input value="{PurchaseOrganizationsJSONModel>SYSID}" enabled="{= ${PurchaseOrganizationsJSONModel>SYID} === ''}"/>-->
+													<!--					<m:Input value="{PurchaseOrganizationsJSONModel>DESCRIPTION}"/>-->
+													<!--					<m:Button icon="sap-icon://delete" press="deletePurchaseOrganizationsRow"/>-->
+													<!--				</m:cells>-->
+													<!--			</m:ColumnListItem>-->
+													<!--		</m:items>-->
+													<!--	</m:Table>-->
+													<!--	<m:Toolbar>-->
+													<!--		<m:ToolbarSpacer/>-->
+													<!--		<m:Button type="Accept" text="Save" press="onSavePurchaseOrganizationsList"/>-->
+													<!--	</m:Toolbar>-->
+													<!--</m:IconTabFilter>-->
+													<m:IconTabFilter key="3" text="MetaID - Supplier" count="{= ${MetaIDSupplierJSONModel>/results}.length}">
+														<m:Table id="MetaIDSupplierTable" items="{MetaIDSupplierJSONModel>/results}">
+															<m:headerToolbar>
+																<m:OverflowToolbar>
+																	<m:content>
+																		<m:ToolbarSpacer/>
+																		<m:Button id="headerMetaIDSupplierRefresh" icon="sap-icon://add" press="onAddMetaIDSupplierRow" type="Transparent"/>
+																	</m:content>
+																</m:OverflowToolbar>
+															</m:headerToolbar>
+															<m:columns>
+																<m:Column minScreenWidth="Desktop" demandPopin="true" width="30em">
+																	<m:Label text="{i18n>METAID}" class="columnLabelStyle" wrapping="true"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>LIFNR}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>SYSID}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true" hAlign="End" width="5em">
+																	<m:Label class="columnLabelStyle"/>
+																</m:Column>
+															</m:columns>
+															<m:items>
+																<m:ColumnListItem>
+																	<m:cells>
+																		<m:Input value="{MetaIDSupplierJSONModel>METAID}" enabled="{= ${MetaIDSupplierJSONModel>METAID} === ''}"/>
+																		<m:Input value="{MetaIDSupplierJSONModel>LIFNR}" enabled="{= ${MetaIDSupplierJSONModel>LIFNR} === ''}"/>
+																		<m:Input value="{MetaIDSupplierJSONModel>SYSID}"/>
+																		<m:Button icon="sap-icon://delete" press="deleteMetaIDSupplierRow"/>
+																	</m:cells>
+																</m:ColumnListItem>
+															</m:items>
+														</m:Table>
+														<m:Toolbar>
+															<m:ToolbarSpacer/>
+															<m:Button type="Accept" text="Save" press="onSaveMetaIDSupplierList"/>
+														</m:Toolbar>
+													</m:IconTabFilter>
+													<m:IconTabFilter key="4" text="BU Plants" count="{= ${BUPlantJSONModel>/results}.length}">
+														<m:Table id="BUPlantTable" items="{BUPlantJSONModel>/results}">
+															<m:headerToolbar>
+																<m:OverflowToolbar>
+																	<m:content>
+																		<m:ToolbarSpacer/>
+																		<m:Button id="headerBUPlantRefresh" icon="sap-icon://add" press="onAddBUPlantRow" type="Transparent"/>
+																	</m:content>
+																</m:OverflowToolbar>
+															</m:headerToolbar>
+															<m:columns>
+																<m:Column minScreenWidth="Desktop" demandPopin="true" width="8em">
+																	<m:Label text="{i18n>BU}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true" width="8em">
+																	<m:Label text="{i18n>SYSID}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true" width="8em">
+																	<m:Label text="{i18n>PLANT}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>DESCR}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true" hAlign="End" width="5em">
+																	<m:Label class="columnLabelStyle"/>
+																</m:Column>
+															</m:columns>
+															<m:items>
+																<m:ColumnListItem>
+																	<m:cells>
+																		<m:Input value="{BUPlantJSONModel>BU}" enabled="{= ${BUPlantJSONModel>BU} === ''}"/>
+																		<m:Input value="{BUPlantJSONModel>SYSID}" enabled="{= ${BUPlantJSONModel>SYSID} === ''}"/>
+																		<m:Input value="{BUPlantJSONModel>PLANT}" enabled="{= ${BUPlantJSONModel>PLANT} === ''}"/>
+																		<m:Input value="{BUPlantJSONModel>PLANT_DESCR}"/>
+																		<m:Button icon="sap-icon://delete" press="deleteBUPlantRow"/>
+																	</m:cells>
+																</m:ColumnListItem>
+															</m:items>
+														</m:Table>
+														<m:Toolbar>
+															<m:ToolbarSpacer/>
+															<m:Button type="Accept" text="Save" press="onSaveBUPlantList"/>
+														</m:Toolbar>
+													</m:IconTabFilter>
+													<m:IconTabFilter key="5" text="BU Purchase organizations" count="{= ${BUPurchaseOrgJSONModel>/results}.length}">
+														<m:Table id="BUPurchaseOrgTable" items="{BUPurchaseOrgJSONModel>/results}">
+															<m:headerToolbar>
+																<m:OverflowToolbar>
+																	<m:content>
+																		<m:ToolbarSpacer/>
+																		<m:Button id="headerBUPurchaseOrgRefresh" icon="sap-icon://add" press="onAddBUPurchaseOrgRow" type="Transparent"/>
+																	</m:content>
+																</m:OverflowToolbar>
+															</m:headerToolbar>
+															<m:columns>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>BU}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>SYSID}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>PURCH_ORG}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>PURCH_DESCR}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true" hAlign="End" width="5em">
+																	<m:Label class="columnLabelStyle"/>
+																</m:Column>
+															</m:columns>
+															<m:items>
+																<m:ColumnListItem>
+																	<m:cells>
+																		<m:Input value="{BUPurchaseOrgJSONModel>BU}" enabled="{= ${BUPurchaseOrgJSONModel>BU} === ''}"/>
+																		<m:Input value="{BUPurchaseOrgJSONModel>SYSID}" enabled="{= ${BUPurchaseOrgJSONModel>SYSID} === ''}"/>
+																		<m:Input value="{BUPurchaseOrgJSONModel>PURCH_ORG}" enabled="{= ${BUPurchaseOrgJSONModel>PURCH_ORG} === ''}"/>
+																		<m:Input value="{BUPurchaseOrgJSONModel>PURCH_DESCR}"/>
+																		<m:Button icon="sap-icon://delete" press="deleteBUPurchaseOrgRow"/>
+																	</m:cells>
+																</m:ColumnListItem>
+															</m:items>
+														</m:Table>
+														<m:Toolbar>
+															<m:ToolbarSpacer/>
+															<m:Button type="Accept" text="Save" press="onSaveBUPurchaseOrgList"/>
+														</m:Toolbar>
+													</m:IconTabFilter>
+													<m:IconTabFilter key="6" text="Profili Conferma" count="{= ${ProfiliConfermaJSONModel>/results}.length}">
+														<m:Toolbar>
+															<m:OverflowToolbar>
+																<m:content>
+																	<m:ToolbarSpacer/>
+																	<m:Button id="headerProfiliConfermaRefresh" icon="sap-icon://add" press="onAddProfiliConfermaRow" type="Transparent"/>
+																</m:content>
+															</m:OverflowToolbar>
+														</m:Toolbar>
+														<m:List id="positionsList" items="{ProfiliConfermaJSONModel>/results}" includeItemInSelection="true">
+															<m:CustomListItem>
+																<m:VBox>
+																	<!--<m:Bar>-->
+																	<!--	<m:contentRight>-->
+																	<!--		<m:Button icon="sap-icon://delete" press="deleteProfiliConfermaRow"/>-->
+																	<!--	</m:contentRight>-->
+																	<!--</m:Bar>-->
+																	<form:SimpleForm editable="true" layout="ResponsiveGridLayout" labelSpanXL="12" labelSpanL="12" labelSpanM="12" labelSpanS="12"
+																		adjustLabelSpan="false" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="4" columnsL="4" columnsM="4">
+																		<form:content>
+																			<core:Title text=""/>
+																			<m:Label text="{i18n>SYSID}"/>
+																			<m:Input value="{ProfiliConfermaJSONModel>SYSID}" enabled="{= ${ProfiliConfermaJSONModel>SYSID} === ''}"/>
+																			<m:Label text="{i18n>PROFILO_CONTROLLO}"/>
+																			<m:Input value="{ProfiliConfermaJSONModel>PROFILO_CONTROLLO}" enabled="{= ${ProfiliConfermaJSONModel>PROFILO_CONTROLLO} === ''}"/>
+																			<core:Title text=""/>
+																			<m:Label text="{i18n>CAT_CONFERMA}"/>
+																			<m:Input value="{ProfiliConfermaJSONModel>CAT_CONFERMA}" enabled="{= ${ProfiliConfermaJSONModel>CAT_CONFERMA} === ''}"/>
+																			<m:Label text="{i18n>DESCRIZIONE}"/>
+																			<m:Input value="{ProfiliConfermaJSONModel>DESCRIZIONE}"/>
+																			<core:Title text=""/>
+																			<m:Label text="{i18n>OWNER}"/>
+																			<m:Input value="{ProfiliConfermaJSONModel>OWNER}"/>
+																			<m:Label text="{i18n>TIPO_CONFERMA}"/>
+																			<m:Input value="{ProfiliConfermaJSONModel>TIPO_CONFERMA}"/>
+																			<core:Title text=""/>
+																			<m:Label text="{i18n>MODIFICA_PREZZO}"/>
+																			<m:CheckBox selected="{ProfiliConfermaJSONModel>MODIFICA_PREZZO}"/>
+																			<m:Label text="{i18n>PERC_INFERIORE}"/>
+																			<m:Input value="{ProfiliConfermaJSONModel>PERC_INFERIORE}"/>
+																			<core:Title text=""/>
+																			<m:Label text="{i18n>PERC_SUPERIORE}"/>
+																			<m:Input value="{ProfiliConfermaJSONModel>PERC_SUPERIORE}"/>
+																			<m:Label text="{i18n>PARZIALE_QUANTITA}"/>
+																			<m:CheckBox selected="{ProfiliConfermaJSONModel>PARZIALE_QUANTITA}"/>
+																			<core:Title text=""/>
+																			<m:Label text="{i18n>PERC_INFERIORE_QUANT}"/>
+																			<m:Input value="{ProfiliConfermaJSONModel>PERC_INFERIORE_QUANT}"/>
+																			<m:Label text="{i18n>PERC_SUPERIORE_QUANT}"/>
+																			<m:Input value="{ProfiliConfermaJSONModel>PERC_SUPERIORE_QUANT}"/>
+																			<core:Title text=""/>
+																			<m:Label text="{i18n>TIPO_COND_PREZZO}"/>
+																			<m:Input value="{ProfiliConfermaJSONModel>TIPO_COND_PREZZO}"/>
+																			<m:Label text="{i18n>TIPO_CONSEGNA_INB}"/>
+																			<m:Input value="{ProfiliConfermaJSONModel>TIPO_CONSEGNA_INB}"/>
+																			<core:Title text=""/>
+																			<m:Label text="{i18n>LOTTO_FORNITORE_INB}"/>
+																			<m:CheckBox selected="{ProfiliConfermaJSONModel>LOTTO_FORNITORE_INB}"/>
+																			<m:Label text="{i18n>DATA_SCADENZA_INB}"/>
+																			<m:CheckBox selected="{ProfiliConfermaJSONModel>DATA_SCADENZA_INB}"/>
+																			<core:Title text=""/>
+																			<m:Label text="{i18n>MODIFICA_QUANTITA}"/>
+																			<m:CheckBox selected="{ProfiliConfermaJSONModel>MODIFICA_QUANTITA}"/>
+																			<m:Label text="{i18n>DATA_PRODUZIONE_INB}"/>
+																			<m:CheckBox selected="{ProfiliConfermaJSONModel>DATA_PRODUZIONE_INB}"/>
+																			<core:Title text=""/>
+																			<m:Label text="{i18n>NUMERO_SERIALE_INB}"/>
+																			<m:CheckBox selected="{ProfiliConfermaJSONModel>NUMERO_SERIALE_INB}"/>
+																			<m:Label text="{i18n>CONFERMA_MANDATORY}"/>
+																			<m:CheckBox selected="{ProfiliConfermaJSONModel>CONFERMA_MANDATORY}"/>
+																			<core:Title text=""/>
+																			<m:Label text="{i18n>CONTROLLO_CORSO_APP}"/>
+																			<m:CheckBox selected="{ProfiliConfermaJSONModel>CONTROLLO_CORSO_APP}"/>
+																			<core:Title text=""/>
+																			<m:ToolbarSpacer/>
+																			<m:ToolbarSpacer/>
+																			<m:Button icon="sap-icon://delete" press="deleteProfiliConfermaRow"/>
+																		</form:content>
+																	</form:SimpleForm>
+																</m:VBox>
+															</m:CustomListItem>
+														</m:List>
+														<m:Toolbar>
+															<m:ToolbarSpacer/>
+															<m:Button type="Accept" text="Save" press="onSaveProfiliConfermaList"/>
+														</m:Toolbar>
+													</m:IconTabFilter>
+													<m:IconTabFilter key="7" text="Avvisi Qualità" count="{= ${AvvisiQtaJSONModel>/results}.length}">
+														<m:Table id="AvvisiQtaTable" items="{AvvisiQtaJSONModel>/results}" growingThreshold="200">
+															<m:headerToolbar>
+																<m:OverflowToolbar>
+																	<m:content>
+																		<m:ToolbarSpacer/>
+																		<m:Button id="headerAvvisiQtaRefresh" icon="sap-icon://add" press="onAddAvvisiQtaRow" type="Transparent"/>
+																	</m:content>
+																</m:OverflowToolbar>
+															</m:headerToolbar>
+															<m:columns>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>SYSID}" class="columnLabelStyle" wrapping="true"/>
+																</m:Column>
+																<!--<m:Column minScreenWidth="Desktop" demandPopin="true">-->
+																<!--	<m:Label text="{i18n>BU}" class="columnLabelStyle"/>-->
+																<!--</m:Column>-->
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>TIPO_AVVISO}" class="columnLabelStyle" wrapping="true"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>IN_PROCESS}" class="columnLabelStyle" wrapping="true"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>COMPLETED}" class="columnLabelStyle" wrapping="true"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>DIFETTI}" class="columnLabelStyle" wrapping="true"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>CAUSE}" class="columnLabelStyle" wrapping="true"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>MISURE}" class="columnLabelStyle" wrapping="true"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>INTERVENTI}" class="columnLabelStyle" wrapping="true"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>P_DIFETTI}" class="columnLabelStyle" wrapping="true"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>P_CAUSE}" class="columnLabelStyle" wrapping="true"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>P_MISURE}" class="columnLabelStyle" wrapping="true"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>P_INTERVENTI}" class="columnLabelStyle" wrapping="true"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>TIPO_MSG}" class="columnLabelStyle" wrapping="true"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>APPLICAZIONE}" class="columnLabelStyle" wrapping="true"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true" hAlign="End" width="5em">
+																	<m:Label class="columnLabelStyle"/>
+																</m:Column>
+															</m:columns>
+															<m:items>
+																<m:ColumnListItem>
+																	<m:cells>
+																		<m:Input value="{AvvisiQtaJSONModel>SYSID}" enabled="{= ${AvvisiQtaJSONModel>SYSID} === ''}"/>
+																		<!--<m:Input value="{AvvisiQtaJSONModel>BU}" enabled="{= ${AvvisiQtaJSONModel>BU} === ''}"/>-->
+																		<m:Input value="{AvvisiQtaJSONModel>TIPO_AVVISO}" enabled="{= ${AvvisiQtaJSONModel>TIPO_AVVISO} === ''}"/>
+																		<m:Input value="{AvvisiQtaJSONModel>IN_PROCESS}"/>
+																		<m:Input value="{AvvisiQtaJSONModel>COMPLETED}"/>
+																		<m:Input value="{AvvisiQtaJSONModel>T_DIFETTI}"/>
+																		<m:Input value="{AvvisiQtaJSONModel>T_CAUSE}"/>
+																		<m:Input value="{AvvisiQtaJSONModel>T_MISURE}"/>
+																		<m:Input value="{AvvisiQtaJSONModel>T_INTERVENTI}"/>
+																		<m:Input value="{AvvisiQtaJSONModel>P_DIFETTI}"/>
+																		<m:Input value="{AvvisiQtaJSONModel>P_CAUSE}"/>
+																		<m:Input value="{AvvisiQtaJSONModel>P_MISURE}"/>
+																		<m:Input value="{AvvisiQtaJSONModel>P_INTERVENTI}"/>
+																		<m:Input value="{AvvisiQtaJSONModel>TIPO_MSG}"/>
+																		<m:Input value="{AvvisiQtaJSONModel>APPLICAZIONE}"/>
+																		<m:Button icon="sap-icon://delete" press="deleteAvvisiQtaRow"/>
+																	</m:cells>
+																</m:ColumnListItem>
+															</m:items>
+														</m:Table>
+														<m:Toolbar>
+															<m:ToolbarSpacer/>
+															<m:Button type="Accept" text="Save" press="onSaveAvvisiQtaList"/>
+														</m:Toolbar>
+													</m:IconTabFilter>
+													<m:IconTabFilter key="8" text="Matrice Criticita" count="{= ${MatriceCriticitaJSONModel>/results}.length}">
+														<m:Table id="MatriceCriticitaTable" items="{MatriceCriticitaJSONModel>/results}" growing="true" growingThreshold="200"
+															growingScrollToLoad="false">
+															<m:headerToolbar>
+																<m:OverflowToolbar>
+																	<m:content>
+																		<m:ToolbarSpacer/>
+																		<m:Button id="headerMatriceCriticitaRefresh" icon="sap-icon://add" press="onAddMatriceCriticitaRow" type="Transparent"/>
+																	</m:content>
+																</m:OverflowToolbar>
+															</m:headerToolbar>
+															<m:columns>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>RANGE_PERC}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>SCOSTAMENTO_GG}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>CRITICITA}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>DESCRIZIONE}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true" hAlign="End" width="5em">
+																	<m:Label class="columnLabelStyle"/>
+																</m:Column>
+															</m:columns>
+															<m:items>
+																<m:ColumnListItem>
+																	<m:cells>
+																		<m:Input value="{MatriceCriticitaJSONModel>RANGE_PERC}" enabled="{= ${MatriceCriticitaJSONModel>RANGE_PERC} === null}" type="Number"/>
+																		<m:Input value="{MatriceCriticitaJSONModel>SCOSTAMENTO_GG}" enabled="{= ${MatriceCriticitaJSONModel>SCOSTAMENTO_GG} === null}" type="Number"/>
+																		<m:Input value="{MatriceCriticitaJSONModel>CRITICITA}"/>
+																		<m:Input value="{MatriceCriticitaJSONModel>DESCRIZIONE}"/>
+																		<m:Button icon="sap-icon://delete" press="deleteMatriceCriticitaRow"/>
+																	</m:cells>
+																</m:ColumnListItem>
+															</m:items>
+														</m:Table>
+														<m:Toolbar>
+															<m:ToolbarSpacer/>
+															<m:Button type="Accept" text="Save" press="onSaveMatriceCriticitaList"/>
+														</m:Toolbar>
+													</m:IconTabFilter>
+													<m:IconTabFilter key="9" text="Tipo Ordine" count="{= ${TipoOrdineJSONModel>/results}.length}">
+														<m:Table id="TipoOrdineTable" items="{TipoOrdineJSONModel>/results}" growing="true">
+															<m:headerToolbar>
+																<m:OverflowToolbar>
+																	<m:content>
+																		<m:ToolbarSpacer/>
+																		<m:Button id="headerTipoOrdineRefresh" icon="sap-icon://add" press="onAddTipoOrdineRow" type="Transparent"/>
+																	</m:content>
+																</m:OverflowToolbar>
+															</m:headerToolbar>
+															<m:columns>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>SYSID}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>BSTYP}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>BSART}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>LISTA_ODA}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>LISTA_RESI}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>LISTA_RFQ}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>PLANNING}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>MESSAGE_TYPE}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>APPLICATION}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true" hAlign="End" width="5em">
+																	<m:Label class="columnLabelStyle"/>
+																</m:Column>
+															</m:columns>
+															<m:items>
+																<m:ColumnListItem>
+																	<m:cells>
+																		<m:Input value="{TipoOrdineJSONModel>SYSID}" enabled="{= ${TipoOrdineJSONModel>SYSID} === ''}"/>
+																		<m:Input value="{TipoOrdineJSONModel>BSTYP}" enabled="{= ${TipoOrdineJSONModel>BSTYP} === ''}"/>
+																		<m:Input value="{TipoOrdineJSONModel>BSART}" enabled="{= ${TipoOrdineJSONModel>BSART} === ''}"/>
+																		<m:Input value="{TipoOrdineJSONModel>LISTA_ODA}"/>
+																		<m:Input value="{TipoOrdineJSONModel>LISTA_RESI}"/>
+																		<m:Input value="{TipoOrdineJSONModel>LISTA_RFQ}"/>
+																		<m:Input value="{TipoOrdineJSONModel>PLANNING}"/>
+																		<m:Input value="{TipoOrdineJSONModel>MESSAGE_TYPE}"/>
+																		<m:Input value="{TipoOrdineJSONModel>APPLICATION}"/>
+																		<m:Button icon="sap-icon://delete" press="deleteTipoOrdineRow"/>
+																	</m:cells>
+																</m:ColumnListItem>
+															</m:items>
+														</m:Table>
+														<m:Toolbar>
+															<m:ToolbarSpacer/>
+															<m:Button type="Accept" text="Save" press="onSaveTipoOrdineList"/>
+														</m:Toolbar>
+													</m:IconTabFilter>
+													<m:IconTabFilter key="10" text="Master Notifiche" count="{= ${NotificationMasterJSONModel>/results}.length}">
+														<m:Table id="NotificationMaterTable" items="{NotificationMasterJSONModel>/results}" growing="true">
+															<m:headerToolbar>
+																<m:OverflowToolbar>
+																	<m:content>
+																		<m:ToolbarSpacer/>
+																		<m:Button id="headerNotificationMaterRefresh" icon="sap-icon://add" press="onAssNotificationMaterRow" type="Transparent"/>
+																	</m:content>
+																</m:OverflowToolbar>
+															</m:headerToolbar>
+															<m:columns>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>FLUSSO}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>TIPO_STRUTTURA}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>APPLICAZIONE}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>EVENTO}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>DIREZIONE}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true" hAlign="End" width="5em">
+																	<m:Label class="columnLabelStyle"/>
+																</m:Column>
+															</m:columns>
+															<m:items>
+																<m:ColumnListItem>
+																	<m:cells>
+																		<m:Input value="{NotificationMasterJSONModel>FLUSSO}" enabled="{= ${NotificationMasterJSONModel>FLUSSO} === ''}"/>
+																		<m:Input value="{NotificationMasterJSONModel>TIPO_STRUTTURA}" enabled="{= ${NotificationMasterJSONModel>TIPO_STRUTTURA} === ''}"/>
+																		<m:Input value="{NotificationMasterJSONModel>APPLICAZIONE}" enabled="{= ${NotificationMasterJSONModel>APPLICAZIONE} === ''}"/>
+																		<m:Input value="{NotificationMasterJSONModel>EVENTO}" enabled="{= ${NotificationMasterJSONModel>EVENTO} === ''}"/>
+																		<m:Input value="{NotificationMasterJSONModel>DIREZIONE}" enabled="{= ${NotificationMasterJSONModel>DIREZIONE} === ''}"/>
+																		<m:Button icon="sap-icon://delete" press="deleteNotificationMaterRow"/>
+																	</m:cells>
+																</m:ColumnListItem>
+															</m:items>
+														</m:Table>
+														<m:Toolbar>
+															<m:ToolbarSpacer/>
+															<m:Button type="Accept" text="Save" press="onSaveNotificationMaterList"/>
+														</m:Toolbar>
+													</m:IconTabFilter>
+													<m:IconTabFilter key="11" text="Document Management" count="{= ${DocumentManagementJSONModel>/results}.length}">
+														<m:Table id="DocumentManagementTable" items="{DocumentManagementJSONModel>/results}" growing="true">
+															<m:headerToolbar>
+																<m:OverflowToolbar>
+																	<m:content>
+																		<m:ToolbarSpacer/>
+																		<m:Button id="headerDocumentManagementRefresh" icon="sap-icon://add" press="onAssDocumentManagementRow" type="Transparent"/>
+																	</m:content>
+																</m:OverflowToolbar>
+															</m:headerToolbar>
+															<m:columns>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>SYSID}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>APPLICATION}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>CLASSIFICATION}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>DOC_IN}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>DOC_OUT}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>ARCHIVE_LINK_ACTIVE}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>DMS_ACTIVE}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>DMS_DOC_TYPE_IN}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>DMS_VERSION_IN}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>DMS_DOC_TYPE_OUT}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>DMS_VERSION_OUT}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>DMS_DOC_OBJ}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true" hAlign="End" width="5em">
+																	<m:Label class="columnLabelStyle"/>
+																</m:Column>
+															</m:columns>
+															<m:items>
+																<m:ColumnListItem>
+																	<m:cells>
+																		<m:Input value="{DocumentManagementJSONModel>SYSID}" enabled="{= ${DocumentManagementJSONModel>SYSID} === ''}"/>
+																		<m:Input value="{DocumentManagementJSONModel>APPLICATION}" enabled="{= ${DocumentManagementJSONModel>APPLICATION} === ''}"/>
+																		<m:Input value="{DocumentManagementJSONModel>CLASSIFICATION}" enabled="{= ${DocumentManagementJSONModel>CLASSIFICATION} === ''}"/>
+																		<m:Input value="{DocumentManagementJSONModel>DOC_IN}"/>
+																		<m:Input value="{DocumentManagementJSONModel>DOC_OUT}"/>
+																		<m:Input value="{DocumentManagementJSONModel>ARCHIVE_LINK_ACTIVE}"/>
+																		<m:Input value="{DocumentManagementJSONModel>DMS_ACTIVE}"/>
+																		<m:Input value="{DocumentManagementJSONModel>DMS_DOC_TYPE_IN}"/>
+																		<m:Input value="{DocumentManagementJSONModel>DMS_VERSION_IN}"/>
+																		<m:Input value="{DocumentManagementJSONModel>DMS_DOC_TYPE_OUT}"/>
+																		<m:Input value="{DocumentManagementJSONModel>DMS_VERSION_OUT}"/>
+																		<m:Input value="{DocumentManagementJSONModel>DMS_DOC_OBJ}"/>
+																		<m:Button icon="sap-icon://delete" press="deleteDocumentManagementRow"/>
+																	</m:cells>
+																</m:ColumnListItem>
+															</m:items>
+														</m:Table>
+														<m:Toolbar>
+															<m:ToolbarSpacer/>
+															<m:Button type="Accept" text="Save" press="onSaveDocumentManagementList"/>
+														</m:Toolbar>
+													</m:IconTabFilter>
+													<m:IconTabFilter key="12" text="Gestione Etichette" count="{= ${GestioneEtichetteJSONModel>/results}.length}">
+														<m:Table id="GestioneEtichetteTable" items="{GestioneEtichetteJSONModel>/results}" growing="true">
+															<m:headerToolbar>
+																<m:OverflowToolbar>
+																	<m:content>
+																		<m:ToolbarSpacer/>
+																		<m:Button id="headerGestioneEtichetteRefresh" icon="sap-icon://add" press="onAssGestioneEtichetteRow" type="Transparent"/>
+																	</m:content>
+																</m:OverflowToolbar>
+															</m:headerToolbar>
+															<m:columns>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>SYSID}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>PLANT}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>MATERIALE_IMBALLO}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>TIPO_MSG_HU}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>APPLICAZIONE}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true" hAlign="End" width="5em">
+																	<m:Label class="columnLabelStyle"/>
+																</m:Column>
+															</m:columns>
+															<m:items>
+																<m:ColumnListItem>
+																	<m:cells>
+																		<m:Input value="{GestioneEtichetteJSONModel>SYSID}" enabled="{= ${GestioneEtichetteJSONModel>SYSID} === ''}"/>
+																		<m:Input value="{GestioneEtichetteJSONModel>PLANT}" enabled="{= ${GestioneEtichetteJSONModel>PLANT} === ''}"/>
+																		<m:Input value="{GestioneEtichetteJSONModel>MATERIALE_IMBALLO}"/>
+																		<m:Input value="{GestioneEtichetteJSONModel>TIPO_MSG_HU}"/>
+																		<m:Input value="{GestioneEtichetteJSONModel>APPLICAZIONE}"/>
+																		<m:Button icon="sap-icon://delete" press="deleteGestioneEtichetteRow"/>
+																	</m:cells>
+																</m:ColumnListItem>
+															</m:items>
+														</m:Table>
+														<m:Toolbar>
+															<m:ToolbarSpacer/>
+															<m:Button type="Accept" text="Save" press="onSaveGestioneEtichetteList"/>
+														</m:Toolbar>
+													</m:IconTabFilter>
+													<m:IconTabFilter key="13" text="Destinatari Email" count="{= ${NotificationContactsJSONModel>/results}.length}">
+														<m:Table id="NotificationContactsTable" items="{NotificationContactsJSONModel>/results}" growing="true" growingThreshold="150">
+															<m:headerToolbar>
+																<m:OverflowToolbar>
+																	<m:content>
+																		<m:ToolbarSpacer/>
+																		<m:Button id="headerNotificationContactsRefresh" icon="sap-icon://add" press="onAssNotificationContactsRow" type="Transparent"/>
+																	</m:content>
+																</m:OverflowToolbar>
+															</m:headerToolbar>
+															<m:columns>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>STRUTTURA}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>TIPO_STRUTTURA}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>FLUSSO}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>CONT}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>EMAIL}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true" hAlign="End" width="5em">
+																	<m:Label class="columnLabelStyle"/>
+																</m:Column>
+															</m:columns>
+															<m:items>
+																<m:ColumnListItem>
+																	<m:cells>
+																		<m:Input value="{NotificationContactsJSONModel>STRUTTURA}" enabled="{= ${NotificationContactsJSONModel>STRUTTURA} === ''}"/>
+																		<m:Input value="{NotificationContactsJSONModel>TIPO_STRUTTURA}" enabled="{= ${NotificationContactsJSONModel>TIPO_STRUTTURA} === ''}"/>
+																		<m:Input value="{NotificationContactsJSONModel>FLUSSO}" enabled="{= ${NotificationContactsJSONModel>FLUSSO} === ''}"/>
+																		<m:Input type="Number" value="{NotificationContactsJSONModel>CONT}"/>
+																		<m:Input value="{NotificationContactsJSONModel>EMAIL}"/>
+																		<m:Button icon="sap-icon://delete" press="deleteNotificationContactsRow"/>
+																	</m:cells>
+																</m:ColumnListItem>
+															</m:items>
+														</m:Table>
+														<m:Toolbar>
+															<m:ToolbarSpacer/>
+															<m:Button type="Accept" text="Save" press="onSaveNotificationContactsList"/>
+														</m:Toolbar>
+													</m:IconTabFilter>
+												</m:items>
+											</m:IconTabBar>
+										</ObjectPageSubSection>
+									</subSections>
+								</ObjectPageSection>
+							</sections>
+						</ObjectPageLayout>
+					</m:content>
+				</m:Page>
+			</m:pages>
+		</m:App>
+	</m:Shell>
+</mvc:View>

@@ -1,12 +1,4 @@
 <mvc:View controllerName="it.alteaup.supplier.portal.customizing.AUPSUP_HTML5_CUSTOMIZING.controller.App" xmlns:mvc="sap.ui.core.mvc"
 	displayBlock="true" xmlns="sap.m">
-	<Shell id="shell">
-		<App id="app">
-			<pages>
-				<Page id="page" title="{i18n>title}">
-					<content></content>
-				</Page>
-			</pages>
-		</App>
-	</Shell>
-</mvc:View>
+	<App id="idAppControl"/> 
+</mvc:View> 

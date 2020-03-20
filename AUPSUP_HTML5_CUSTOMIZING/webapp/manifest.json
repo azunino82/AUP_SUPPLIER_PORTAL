@@ -84,21 +84,23 @@
 				"async": true,
 				"viewPath": "it.alteaup.supplier.portal.customizing.AUPSUP_HTML5_CUSTOMIZING.view",
 				"controlAggregation": "pages",
-				"controlId": "app",
+				"controlId": "idAppControl",
 				"clearControlAggregation": false
 			},
-			"routes": [{
-				"name": "RouteApp",
-				"pattern": "RouteApp",
-				"target": ["TargetApp"]
-			}],
+			"routes": [
+				{
+					"pattern": "",
+					"name": "worklist",
+					"greedy": false,
+					"target": [
+						"worklist"
+					]
+				}
+			],
 			"targets": {
-				"TargetApp": {
-					"viewType": "XML",
-					"transition": "slide",
-					"clearControlAggregation": false,
-					"viewId": "App",
-					"viewName": "App"
+				"worklist": {
+					"viewLevel": 1,
+					"viewName": "Worklist"
 				}
 			}
 		}

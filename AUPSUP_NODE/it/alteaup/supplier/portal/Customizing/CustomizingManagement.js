@@ -852,7 +852,7 @@ module.exports = function () {
     var BU = req.query.I_BU !== undefined && req.query.I_BU !== null && req.query.I_BU !== '' ? req.query.I_BU : ''
     var SYSID = req.query.I_SYSID !== undefined && req.query.I_SYSID !== null && req.query.I_SYSID !== '' ? req.query.I_SYSID : ''
     var PLANT = req.query.I_PLANT !== undefined && req.query.I_PLANT !== null && req.query.I_PLANT !== '' ? req.query.I_PLANT : ''
-     if (BU === '' || SYSID === '' || PLANT === '') {
+    if (BU === '' || SYSID === '' || PLANT === '') {
       return res.status(500).send('I_BU and I_SYSID and I_PLANT are Mandatory')
     }
     const sql = 'DELETE FROM \"AUPSUP_DATABASE.data.tables::T_BU_PLANT\" WHERE BU=\'' + BU + '\' AND SYSID = \'' + SYSID + '\'  AND PLANT = \'' + PLANT + '\''
