@@ -23,8 +23,19 @@
 					"semanticObject": "ApproveSchedAgree",
 					"action": "Display",
 					"title": "{{appTitle}}",
-					"icon": "sap-icon://BusinessSuiteInAppSymbols/icon-keep-segment"
+					"icon": "sap-icon://BusinessSuiteInAppSymbols/icon-keep-segment",
+					"indicatorDataSource": {
+						"dataSource": "ORDERS_COUNTER",
+						"path": "/GetCounter?I_TYPE=OrdersToApprove",
+						"refresh": 1000
+					}
 				}
+			}
+		},
+		"dataSources": {
+			"ORDERS_COUNTER": {
+				"uri": "/backend/Utils/UtilsManagement",
+				"type": "JSON"
 			}
 		}
 	},
@@ -50,7 +61,7 @@
 	"sap.ui5": {
 		"config": {
 			"fullWidth": true
-		},			
+		},
 		"flexEnabled": false,
 		"rootView": {
 			"viewName": "it.alteaup.supplier.portal.aprvschdagr.AUPSUP_HTML5_APR_SCDAGR.view.App",
@@ -93,25 +104,22 @@
 				"controlId": "idAppControl",
 				"clearControlAggregation": false
 			},
-			"routes": [
-				{
-					"pattern": "",
-					"name": "worklist",
-					"greedy": false,
-					"target": [
-						"worklist"
-					]
-				},
-				{
-					"name": "detail",
-					"pattern": "detail/{datas}",
-					"titleTarget": "",
-					"greedy": false,
-					"target": [
-						"detail"
-					]
-				}
-			],
+			"routes": [{
+				"pattern": "",
+				"name": "worklist",
+				"greedy": false,
+				"target": [
+					"worklist"
+				]
+			}, {
+				"name": "detail",
+				"pattern": "detail/{datas}",
+				"titleTarget": "",
+				"greedy": false,
+				"target": [
+					"detail"
+				]
+			}],
 			"targets": {
 				"worklist": {
 					"viewLevel": 1,

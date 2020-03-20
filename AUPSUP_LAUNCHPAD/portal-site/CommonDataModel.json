@@ -66,6 +66,10 @@
 					"id": "AUPSUP_HTML5_PURCH_ORDS",
 					"appId": "it.alteaup.supplier.portal.purchords.AUPSUP_HTML5_PURCH_ORDS",
 					"vizId": "PurchaseOrders-Display"
+				}, {
+					"id": "it.alteaup.supplier.portal.customizing.AUPSUP_HTML5_CUSTOMIZING",
+					"appId": "it.alteaup.supplier.portal.customizing.AUPSUP_HTML5_CUSTOMIZING",
+					"vizId": "Customizing-Display"
 				}]
 			}
 		}],
