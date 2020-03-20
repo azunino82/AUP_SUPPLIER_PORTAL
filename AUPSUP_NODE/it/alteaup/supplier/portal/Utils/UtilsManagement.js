@@ -22,20 +22,27 @@ module.exports = function () {
       lastname: req.authInfo.userInfo.familyName,
       userId: req.user.id,
       isSupplier: false,
-      isBuyer: false
+      isBuyer: false,
+      isSupplierD: false,
+      isAdministrator: false,
+      isPlanner: false
+
     }
 
     if (req.authInfo.scopes !== null && req.authInfo.scopes !== undefined && req.authInfo.scopes !== '') {
       req.authInfo.scopes.forEach(element => {
+        console.log('ELEMENT: ' + element)
         if (element.includes('Z_RL_BUYER')) {
           outData.isBuyer = true
         }
-        if (element.includes('Z_RL_SUPPLIER')) {
-          outData.isSupplier = true
-        }
         if (element.includes('Z_RL_SUPPLIER_D')) {
           outData.isSupplierD = true
+        } else {
+          if (element.includes('Z_RL_SUPPLIER')) {
+            outData.isSupplier = true
+          }
         }
+
         if (element.includes('Z_RL_ADMINISTRATOR')) {
           outData.isAdministrator = true
         }
@@ -658,9 +665,9 @@ module.exports = function () {
     }
   })
 
-   // CONTATORE TILES
- 
-   app.get('/GetCounter', function (req, res) {
+  // CONTATORE TILES
+
+  app.get('/GetCounter', function (req, res) {
     res.type('application/json').status(200).send({
       d: {
         icon: 'sap-icon://travel-expense',
