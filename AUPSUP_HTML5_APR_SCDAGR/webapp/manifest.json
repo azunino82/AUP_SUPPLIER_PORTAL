@@ -23,7 +23,6 @@
 					"semanticObject": "ApproveSchedAgree",
 					"action": "Display",
 					"title": "{{appTitle}}",
-					"icon": "sap-icon://BusinessSuiteInAppSymbols/icon-keep-segment",
 					"indicatorDataSource": {
 						"dataSource": "ORDERS_COUNTER",
 						"path": "/GetCounter?I_TYPE=OrdersToApprove",
@@ -34,7 +33,7 @@
 		},
 		"dataSources": {
 			"ORDERS_COUNTER": {
-				"uri": "/backend/Utils/UtilsManagement",
+				"uri": "https://${org}-${space}-aup-supplier-portal-approuter.${default-domain}/backend/Utils/UtilsManagement",
 				"type": "JSON"
 			}
 		}
