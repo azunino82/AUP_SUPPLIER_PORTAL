@@ -511,7 +511,7 @@ sap.ui.define([
 					elem.EBELP = element.EBELP;
 					elem.XBLNR = element.XBLNR;
 					elem.CONF_TYPE = 'A',
-						elem.BSTYP = 'L'; // per piani di consegna
+						elem.BSTYP = element.BSTYP; // per piani di consegna
 					body.confirmType.push(elem);
 				});
 			}
@@ -522,7 +522,7 @@ sap.ui.define([
 					elem.EBELP = element.EBELP;
 					elem.XBLNR = element.XBLNR;
 					elem.CONF_TYPE = 'R',
-						elem.BSTYP = 'L'; // per piani di consegna
+						elem.BSTYP = element.BSTYP; // per piani di consegna
 					body.confirmType.push(elem);
 				});
 			}
@@ -588,7 +588,7 @@ sap.ui.define([
 					elem.XBLNR = ""} else {
 					elem.XBLNR = element.XBLNR};
 					elem.CONF_TYPE = confirmationType,
-					elem.BSTYP = 'L'; // per piani di consegna
+					elem.BSTYP = element.BSTYP; // per piani di consegna
 
 					body.confirmType.push(elem);
 				}

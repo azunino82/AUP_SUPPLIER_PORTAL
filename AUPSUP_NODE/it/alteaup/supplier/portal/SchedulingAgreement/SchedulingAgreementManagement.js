@@ -1057,6 +1057,7 @@ module.exports = function () {
                             var i = 0
                             results.forEach(element => {
                                 element.RADIO_GRP_NAME = i
+                                element.BSTYP = req.query.I_BSTYP
                                 if (element.ISTOCONFIRM === 'X') {
                                     element.ISTOCONFIRM = true
                                     outArr.push(element)
