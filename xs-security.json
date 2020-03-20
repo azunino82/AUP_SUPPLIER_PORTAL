@@ -20,6 +20,12 @@
 	}, {
 		"name": "$XSAPPNAME.Z_RL_PLANNER",
 		"description": "Role Planner uaa"
+	}, {
+		"name": "$XSAPPNAME.Z_RL_SUPPLIER_D",
+		"description": "Role Supplier Display uaa"
+	}, {
+		"name": "$XSAPPNAME.Z_RL_ADMINISTRATOR",
+		"description": "Role Portal Administrator uaa"
 	}],
 	"role-templates": [{
 		"name": "Token_Exchange",
@@ -44,6 +50,18 @@
 		"description": "Role planner on xs-security",
 		"scope-references": [
 			"$XSAPPNAME.Z_RL_PLANNER"
+		]
+	}, {
+		"name": "Role_Supplier_D",
+		"description": "Role supplier display on xs-security",
+		"scope-references": [
+			"$XSAPPNAME.Z_RL_SUPPLIER_D"
+		]
+	}, {
+		"name": "Role_Administrator",
+		"description": "Role Portal Administrator on xs-security",
+		"scope-references": [
+			"$XSAPPNAME.Z_RL_ADMINISTRATOR"
 		]
 	}]
 }
