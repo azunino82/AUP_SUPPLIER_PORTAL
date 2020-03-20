@@ -69,6 +69,10 @@ modules:
           artifacts:
             - './*'
           target-path: resources/AUPSUP_HTML5_PURCH_ORDS
+        - name: AUPSUP_HTML5_CUSTOMIZING
+          artifacts:
+            - './*'
+          target-path: resources/AUPSUP_HTML5_CUSTOMIZING
   - name: AUPSUP_LAUNCHPAD
     type: com.sap.portal.content
     path: AUPSUP_LAUNCHPAD
@@ -180,6 +184,13 @@ modules:
   - name: AUPSUP_HTML5_PURCH_ORDS
     type: html5
     path: AUPSUP_HTML5_PURCH_ORDS
+    build-parameters:
+      builder: grunt
+      supported-platforms: []
+      build-result: dist
+  - name: AUPSUP_HTML5_CUSTOMIZING
+    type: html5
+    path: AUPSUP_HTML5_CUSTOMIZING
     build-parameters:
       builder: grunt
       supported-platforms: []
