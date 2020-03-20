@@ -132,7 +132,7 @@
 												</m:headerToolbar>
 												<m:columns>
 													<m:Column>
-														<m:CheckBox select="onSelectAll"/>
+														<m:CheckBox select="onSelectAll" visible="{= ${VisibilityJSONModel>/isSupplierD} === false}"/>
 													</m:Column>
 													<m:Column id="EBELN" visible="{columnVisibilityModel>/EBELN}" minScreenWidth="Desktop" demandPopin="true">
 														<m:Label text="{i18n>orderNumber}" class="columnLabelStyle" wrapping="true"/>
@@ -213,7 +213,7 @@
 							<footer>
 								<m:Toolbar >
 									<m:ToolbarSpacer/>
-									<m:Button type="Accept" text="{i18n>Confirm}" press="onConfirmPositions"/>
+									<m:Button type="Accept" text="{i18n>Confirm}" press="onConfirmPositions" visible="{= ${VisibilityJSONModel>/isSupplierD} === false}"/>
 								</m:Toolbar>
 							</footer>
 						</ObjectPageLayout>
