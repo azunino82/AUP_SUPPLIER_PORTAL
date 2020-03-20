@@ -179,7 +179,10 @@ sap.ui.define([
 
 					var visibilityRoles = {
 						isBuyer: oData.isBuyer,
-						isSupplier: oData.isSupplier
+						isSupplier: oData.isSupplier,
+						isSupplierD: oData.isSupplierD,
+						isAdministrator: oData.isAdministrator,
+						isPlanner: oData.isPlanner
 					};
 
 					oModel = new JSONModel();
