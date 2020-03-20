@@ -2352,6 +2352,7 @@ sap.ui.define([
 
 
 			}
+			that.onCloseTexts()
 		}
 	});
 

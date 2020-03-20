@@ -56,7 +56,7 @@
 												</m:MultiComboBox>
 											</fb:control>
 										</fb:FilterItem>
-										<fb:FilterItem name="Matnr" label="{i18n>MATNR}" visible="{VisibilityJSONModel>/isBuyer}">
+										<fb:FilterItem name="Matnr" label="{i18n>MATNR}">
 											<fb:control>
 												<m:Input type="Text" value="{filterOrdersJSONModel>/MatnrDesc}" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="handleMatnr" class="sapUiSmallMarginBottom" submit="onSearchOrders"/>
 											</fb:control>
