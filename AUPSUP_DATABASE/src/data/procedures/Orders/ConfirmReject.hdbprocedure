@@ -2,7 +2,7 @@ PROCEDURE "AUPSUP_DATABASE.data.procedures.Orders::ConfirmReject"(
 IN userid VARCHAR(250),
 IN T_CONF_TYPE TABLE (EBELN NVARCHAR(10), EBELP VARCHAR(5), XBLNR NVARCHAR(35), CONF_TYPE NVARCHAR(1), BSTYP NVARCHAR(1)), -- serve per quando conferma da RMO
 IN TIPO_OPERAZIONE NVARCHAR(3), -- QUA o PRZ
-IN NOTE NVARCHAR(500),
+IN I_NOTE NVARCHAR(1000),
 OUT E_RETURN "AUPSUP_DATABASE.data.structures.Orders::ERETURNStructure") 
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER AS 
@@ -13,6 +13,7 @@ DECLARE IT_EKKO_CH "AUPSUP_DATABASE.data.structures.Orders::EKKO_ConfirmOrds";
 DECLARE IT_EKPO_CH "AUPSUP_DATABASE.data.structures.Orders::EKPO_ConfirmOrds";
 DECLARE IT_EKES_CH "AUPSUP_DATABASE.data.structures.Orders::EKES_ConfirmOrds";
 DECLARE V_CURRENT_TIMESTAMP TIMESTAMP; 
+
 
 CREATE LOCAL TEMPORARY TABLE #LIFNR (LIFNR NVARCHAR(10),EBELN NVARCHAR(10),EBELP VARCHAR(5));
 
@@ -117,8 +118,25 @@ IF counter > 0 THEN
                         END IF;
                     ELSE
                         UPDATE "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKKO_EKPO" SET STATUS = 'RF', MODIFY_STATUS_DATE = :V_CURRENT_TIMESTAMP WHERE EBELN = cursorRow.EBELN AND EBELP = cursorRow.EBELP AND CONF_TYPE = :TIPO_OPERAZIONE AND (MODIFY_STATUS_DATE = null OR MODIFY_STATUS_DATE = '') ;				
-                    END IF;              
+                    END IF;   
+
+				/*SEND NOTIFICATIONS*/
+				/*cerco i plant delle posizioni verso le quali inviare le notifiche*/
+				UPSERT #LIFNR SELECT DISTINCT LIFNR,EBELN,EBELP FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKKO_EKPO" WHERE EBELN = cursorRow.EBELN AND EBELP = cursorRow.EBELP AND STATUS = 'RF';
+					                     
                 END FOR;
+
+                /*SEND NOTIFICATIONS*/
+                SELECT COUNT(*) INTO counter FROM #LIFNR;
+                IF (counter>0) THEN
+                    BEGIN
+                        DECLARE CURSOR cursorLIFNR FOR SELECT DISTINCT * FROM #LIFNR;
+                        FOR cursorRow AS cursorLIFNR DO
+                            CALL "AUPSUP_DATABASE.data.procedures.Notifications::InsertNotification" (:userid,'',cursorRow.EBELN,'RMO','CRI','','','IT',cursorRow.LIFNR,'',:I_NOTE);
+                        END FOR;
+                    END;
+                END IF;		
+
             END;
         --END IF;
 

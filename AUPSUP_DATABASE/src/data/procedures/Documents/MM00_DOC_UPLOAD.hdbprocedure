@@ -47,7 +47,7 @@ IF CLASSIFICATION <> '' THEN
 		--BEGIN
 	--		DECLARE CURSOR cursorPLANT FOR SELECT DISTINCT * FROM :IT_WERKS;
 	--	FOR cursorRow AS cursorPLANT DO
-				CALL "AUPSUP_DATABASE.data.procedures.Notifications::InsertNotification" (:userid,'BuyerMaintenance',:I_FILEP,'CONT_MF','UPA','','','IT','',:METAID);
+				CALL "AUPSUP_DATABASE.data.procedures.Notifications::InsertNotification" (:userid,'BuyerMaintenance',:I_FILEP,'CONT_MF','UPA','','','IT','',:METAID,'');
 		--	END FOR;
 	--	END;
 	END IF;
@@ -57,7 +57,7 @@ IF CLASSIFICATION <> '' THEN
 		--DECLARE CURSOR cursorPLANT FOR SELECT DISTINCT * FROM :IT_WERKS;
 	--	SELECT I_OBJKY || I_FILEP INTO I_FILEP FROM DUMMY;
 	--	FOR cursorRow AS cursorPLANT DO
-			CALL "AUPSUP_DATABASE.data.procedures.Notifications::InsertNotification" (:userid,'nonConformita',:I_OBJKY,'NC','UPA',:WERKS,'','IT',:I_LIFNR,:METAID);
+			CALL "AUPSUP_DATABASE.data.procedures.Notifications::InsertNotification" (:userid,'nonConformita',:I_OBJKY,'NC','UPA',:WERKS,'','IT',:I_LIFNR,:METAID,'');
 	--	END FOR;
 	END IF;	
 	

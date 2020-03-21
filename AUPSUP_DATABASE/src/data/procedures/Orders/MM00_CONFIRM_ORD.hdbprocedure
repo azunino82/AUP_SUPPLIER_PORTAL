@@ -110,7 +110,7 @@ SELECT CURRENT_TIMESTAMP INTO V_CURRENT_TIMESTAMP FROM "AUPSUP_DATABASE.data.syn
 				SELECT COUNT(*) INTO counterRow FROM :T_PLANTS;
 				IF (counterRow>0) THEN
 					FOR cursorRow AS cursorPLANT DO
-						CALL "AUPSUP_DATABASE.data.procedures.Notifications::InsertNotification" (:userid,'ApproveSchedAgree',cursorRow.EBELN,'P_CONS','ICO',cursorRow.WERKS,'','IT','','');
+						CALL "AUPSUP_DATABASE.data.procedures.Notifications::InsertNotification" (:userid,'ApproveSchedAgree',cursorRow.EBELN,'P_CONS','ICO',cursorRow.WERKS,'','IT','','','');
 					END FOR;
 					
 				END IF;
@@ -143,7 +143,7 @@ SELECT CURRENT_TIMESTAMP INTO V_CURRENT_TIMESTAMP FROM "AUPSUP_DATABASE.data.syn
     						SELECT COUNT(*) INTO counterRow FROM :T_PLANTS;
     						IF (counterRow>0) THEN
     							FOR cursorRow AS cursorPLANT DO
-    								CALL "AUPSUP_DATABASE.data.procedures.Notifications::InsertNotification" (:userid,'ApproveSchedAgree',cursorRow.EBELN,'P_CONS','ICO',cursorRow.WERKS,'','IT','','');
+    								CALL "AUPSUP_DATABASE.data.procedures.Notifications::InsertNotification" (:userid,'ApproveSchedAgree',cursorRow.EBELN,'P_CONS','ICO',cursorRow.WERKS,'','IT','','','');
     							END FOR;
 	
     						END IF; 
@@ -214,7 +214,7 @@ SELECT CURRENT_TIMESTAMP INTO V_CURRENT_TIMESTAMP FROM "AUPSUP_DATABASE.data.syn
 				SELECT COUNT(*) INTO counterRow FROM :T_PLANTS;
 				IF (counterRow>0) THEN
 					FOR cursorRow AS cursorPLANT DO
-						CALL "AUPSUP_DATABASE.data.procedures.Notifications::InsertNotification" (:userid,'ApproveSchedAgree',cursorRow.EBELN,'P_CONS','ICO',cursorRow.WERKS,'','IT','','');
+						CALL "AUPSUP_DATABASE.data.procedures.Notifications::InsertNotification" (:userid,'ApproveSchedAgree',cursorRow.EBELN,'P_CONS','ICO',cursorRow.WERKS,'','IT','','','');
 					END FOR;
 					
 				END IF; 
@@ -260,7 +260,7 @@ SELECT CURRENT_TIMESTAMP INTO V_CURRENT_TIMESTAMP FROM "AUPSUP_DATABASE.data.syn
     						SELECT COUNT(*) INTO counterRow FROM :T_PLANTS;
     						IF (counterRow>0) THEN
     							FOR cursorRow AS cursorPLANT DO
-    								CALL "AUPSUP_DATABASE.data.procedures.Notifications::InsertNotification" (:userid,'ApproveSchedAgree',cursorRow.EBELN,'P_CONS','ICO',cursorRow.WERKS,'','IT','','');
+    								CALL "AUPSUP_DATABASE.data.procedures.Notifications::InsertNotification" (:userid,'ApproveSchedAgree',cursorRow.EBELN,'P_CONS','ICO',cursorRow.WERKS,'','IT','','','');
     							END FOR;
     						END IF; 
 						
