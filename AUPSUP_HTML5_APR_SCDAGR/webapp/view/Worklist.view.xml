@@ -132,7 +132,7 @@
 												</m:OverflowToolbar>
 											</m:headerToolbar>
 											<m:columns>
-												<m:Column>
+												<m:Column visible="{= ${VisibilityJSONModel>/isBuyer} === true || ${VisibilityJSONModel>/isAdministrator} === true }">
 													<m:CheckBox select="onSelectAll"/>
 												</m:Column>
 												<m:Column id="EBELN" visible="{columnVisibilityModel>/EBELN}" minScreenWidth="Desktop" demandPopin="true" width="6rem">
@@ -190,7 +190,7 @@
 											<m:items>
 												<m:ColumnListItem>
 													<m:cells>
-														<m:CheckBox selected="{SchedAgreeJSONModel>isSelected}" visible="{= ${SchedAgreeJSONModel>CONF_TYPE} === 'PRZ'}"/>
+														<m:CheckBox selected="{SchedAgreeJSONModel>isSelected}"/>
 														<m:Text text="{SchedAgreeJSONModel>EBELN}"/>
 														<m:Text text="{SchedAgreeJSONModel>EBELP}"/>
 														<m:Text text="{SchedAgreeJSONModel>EBTYP}"/>

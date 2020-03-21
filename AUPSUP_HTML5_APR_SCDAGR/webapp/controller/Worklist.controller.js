@@ -103,7 +103,7 @@ sap.ui.define([
 				}
 			}, oTable);*/
 
-			this.getView().setModel(sap.ui.getCore().getModel("userapi"), "userapi");
+			this.getView().setModel(sap.ui.getCore().getModel("VisibilityJSONModel"), "VisibilityJSONModel");
 
 		},
 
@@ -341,18 +341,31 @@ sap.ui.define([
 
 			var body = that.getModel("filterJSONModel").getData();
 			var url = "/backend/SchedulingAgreementManagement/GetConfermeRifiuti";
+			var isBuyer = sap.ui.getCore().getModel("VisibilityJSONModel").getData().isBuyer;
+			var isPlanner = sap.ui.getCore().getModel("VisibilityJSONModel").getData().isPlanner;
 			this.showBusyDialog();
 			that.ajaxPost(url, body, function (oData) {
 				that.hideBusyDialog();
 				if (oData) {
+					var outArr = { "results": { "EkkoEkpo": [], "EketEkes": [] } }
 					if (oData.results.EkkoEkpo) {
 						oData.results.EkkoEkpo.forEach(element => {
 							element.isSelected = false;
+							if (isBuyer && element.CONF_TYPE === 'PRZ')
+								outArr.results.EkkoEkpo.push(element)
+							if (isPlanner && element.CONF_TYPE === 'QUA')
+								outArr.results.EkkoEkpo.push(element)
+						});
+						oData.results.EketEkes.forEach(element => {
+							if (isBuyer && element.CONF_TYPE === 'PRZ')
+								outArr.results.EketEkes.push(element)
+							if (isPlanner && element.CONF_TYPE === 'QUA')
+								outArr.results.EketEkes.push(element)
 						});
 					}
 
 					var oModel = new JSONModel();
-					oModel.setData(oData);
+					oModel.setData(outArr);
 					that.getView().setModel(oModel, "SchedAgreeJSONModel");
 					that.getView().byId("OrderHeadersTable").setModel(oModel);
 				}
@@ -584,11 +597,13 @@ sap.ui.define([
 					var elem = {};
 					elem.EBELN = element.EBELN;
 					elem.EBELP = element.EBELP;
-					if (element.XBLNR === undefined){
-					elem.XBLNR = ""} else {
-					elem.XBLNR = element.XBLNR};
+					if (element.XBLNR === undefined) {
+						elem.XBLNR = ""
+					} else {
+						elem.XBLNR = element.XBLNR
+					};
 					elem.CONF_TYPE = confirmationType,
-					elem.BSTYP = element.BSTYP; // per piani di consegna
+						elem.BSTYP = element.BSTYP; // per piani di consegna
 
 					body.confirmType.push(elem);
 				}
@@ -1226,7 +1241,7 @@ sap.ui.define([
 			//	var oModelData = that.getOwnerComponent().getModel("VariantsModel");
 			//	oModelData.metadataLoaded().then(
 			//		that.onMetadataLoaded.bind(that, oModelData));
-			var columModel = { "EBELN": true, "EBELP": true, "EBTYP": false, "MATNR": true, "TXZ01": true, "LIFNR": true, "NAME1": true, "MENGE_ORIGINAL": false, "MENGE": false, "NETPR_ORIGINAL": true, "NETPR": true, "ZINVALIDITA": true, "ZFINVALIDATA": true, "PEINH_ORIGINAL": true, "PEINH": true, "SCHEDMOD": false};
+			var columModel = { "EBELN": true, "EBELP": true, "EBTYP": false, "MATNR": true, "TXZ01": true, "LIFNR": true, "NAME1": true, "MENGE_ORIGINAL": false, "MENGE": false, "NETPR_ORIGINAL": true, "NETPR": true, "ZINVALIDITA": true, "ZFINVALIDATA": true, "PEINH_ORIGINAL": true, "PEINH": true, "SCHEDMOD": false };
 			var oModel = new JSONModel();
 			oModel.setData(columModel);
 			that.getView().setModel(oModel, "columnVisibilityModel");
