@@ -275,6 +275,57 @@
 															<m:Button type="Accept" text="Save" press="onSaveBUPurchaseOrgList"/>
 														</m:Toolbar>
 													</m:IconTabFilter>
+													<m:IconTabFilter key="14" text="Profili Conferma Header" count="{= ${ProfiliConfermaHeaderJSONModel>/results}.length}">
+														<m:Toolbar>
+															<m:OverflowToolbar>
+																<m:content>
+																	<m:ToolbarSpacer/>
+																	<m:Button id="headerProfiliConfermaHeaderRefresh" icon="sap-icon://add" press="onAddProfiliConfermaHeaderRow" type="Transparent"/>
+																</m:content>
+															</m:OverflowToolbar>
+														</m:Toolbar>
+														<m:List id="positionsListHeader" items="{ProfiliConfermaHeaderJSONModel>/results}" includeItemInSelection="true">
+															<m:CustomListItem>
+																<m:VBox>
+																	<!--<m:Bar>-->
+																	<!--	<m:contentRight>-->
+																	<!--		<m:Button icon="sap-icon://delete" press="deleteProfiliConfermaRow"/>-->
+																	<!--	</m:contentRight>-->
+																	<!--</m:Bar>-->
+																	<form:SimpleForm editable="true" layout="ResponsiveGridLayout" labelSpanXL="12" labelSpanL="12" labelSpanM="12" labelSpanS="12"
+																		adjustLabelSpan="false" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="4" columnsL="4" columnsM="4">
+																		<form:content>
+																			<core:Title text=""/>
+																			<m:Label text="{i18n>SYSID}"/>
+																			<m:Input value="{ProfiliConfermaHeaderJSONModel>SYSID}" enabled="{= ${ProfiliConfermaHeaderJSONModel>SYSID} === ''}"/>
+																			<m:Label text="{i18n>PROFILO_CONTROLLO}"/>
+																			<m:Input value="{ProfiliConfermaHeaderJSONModel>PROFILO_CONTROLLO}" enabled="{= ${ProfiliConfermaHeaderJSONModel>PROFILO_CONTROLLO} === ''}"/>
+																			<core:Title text=""/>
+																			<m:Label text="{i18n>MODIFICA_PREZZO}"/>
+																			<m:CheckBox selected="{ProfiliConfermaHeaderJSONModel>MODIFICA_PREZZO}"/>
+																			<m:Label text="{i18n>PERC_INFERIORE}"/>
+																			<m:Input value="{ProfiliConfermaHeaderJSONModel>PERC_INFERIORE}"/>
+																			<core:Title text=""/>
+																			<m:Label text="{i18n>PERC_SUPERIORE}"/>
+																			<m:Input value="{ProfiliConfermaHeaderJSONModel>PERC_SUPERIORE}"/>
+																			<m:Label text="{i18n>TIPO_COND_PREZZO}"/>
+																			<m:Input value="{ProfiliConfermaHeaderJSONModel>TIPO_COND_PREZZO}"/>
+																			<m:Label text="{i18n>CONFERMA_MANDATORY}"/>
+																			<m:CheckBox selected="{ProfiliConfermaHeaderJSONModel>CONFERMA_MANDATORY}"/>
+																			<core:Title text=""/>
+																			<m:ToolbarSpacer/>
+																			<m:ToolbarSpacer/>
+																			<m:Button icon="sap-icon://delete" press="deleteProfiliConfermaHeaderRow"/>
+																		</form:content>
+																	</form:SimpleForm>
+																</m:VBox>
+															</m:CustomListItem>
+														</m:List>
+														<m:Toolbar>
+															<m:ToolbarSpacer/>
+															<m:Button type="Accept" text="Save" press="onSaveProfiliConfermaHeaderList"/>
+														</m:Toolbar>
+													</m:IconTabFilter>
 													<m:IconTabFilter key="6" text="Profili Conferma" count="{= ${ProfiliConfermaJSONModel>/results}.length}">
 														<m:Toolbar>
 															<m:OverflowToolbar>

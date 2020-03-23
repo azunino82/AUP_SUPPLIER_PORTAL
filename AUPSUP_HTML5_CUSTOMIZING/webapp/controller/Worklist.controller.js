@@ -14,6 +14,7 @@ sap.ui.define([
     var originaBUPlant = [];
     var originaBUPurchaseOrg = [];
     var originalProfiliConferma = [];
+    var originalProfiliConfermaHeader = [];
     var originalAvvisiQta = [];
     var originalMatriceCriticita = [];
     var originalTipoOrdine = [];
@@ -169,6 +170,39 @@ sap.ui.define([
                         $.each(that.getView().getModel("ProfiliConfermaJSONModel").getData().results, function (index, elem) {
                             var s_elem = JSON.stringify(elem);
                             originalProfiliConferma.push(jQuery.parseJSON(s_elem));
+                        });
+
+                    }
+                }
+            });
+
+
+        },
+
+        getProfiliConfHeader: function (fCompletion) {
+
+            var url = "/backend/CustomizingManagement/GetTableData?I_TABLE=T_PROFILI_CONFERMA_HEADER";
+            that.ajaxGet(url, function (oData) {
+                if (oData) {
+                    var oModel = new JSONModel();
+                    if (oData.results) {
+                        $.each(oData.results, function (index, elem) {
+
+                            if (elem.MODIFICA_PREZZO === "X")
+                                elem.MODIFICA_PREZZO = true;
+                            else
+                                elem.MODIFICA_PREZZO = false;
+                            
+                            elem.CONFERMA_MANDATORY = elem.CONFERMA_MANDATORY === "X" ? true : false;
+                            
+                        });
+
+                        oModel.setData(oData);
+                        that.getView().setModel(oModel, "ProfiliConfermaHeaderJSONModel");
+                        originalProfiliConfermaHeader = [];
+                        $.each(that.getView().getModel("ProfiliConfermaHeaderJSONModel").getData().results, function (index, elem) {
+                            var s_elem = JSON.stringify(elem);
+                            originalProfiliConfermaHeader.push(jQuery.parseJSON(s_elem));
                         });
 
                     }
@@ -376,6 +410,19 @@ sap.ui.define([
             that.getView().getModel("BUPurchaseOrgJSONModel").refresh();
         },
 
+        onAddProfiliConfermaHeaderRow: function () {
+            that.getView().getModel("ProfiliConfermaHeaderJSONModel").getData().results.push({
+                "SYSID": "",
+                "PROFILO_CONTROLLO": "",
+                "MODIFICA_PREZZO": false,
+                "PERC_INFERIORE": "",
+                "PERC_SUPERIORE": "",
+                "TIPO_COND_PREZZO": "",
+                "CONFERMA_MANDATORY": false
+            });
+            that.getView().getModel("ProfiliConfermaHeaderJSONModel").refresh();
+        },
+
         onAddProfiliConfermaRow: function () {
             that.getView().getModel("ProfiliConfermaJSONModel").getData().results.push({
                 "SYSID": "",
@@ -560,6 +607,29 @@ sap.ui.define([
                 });
             }
         },
+        onSaveProfiliConfermaHeaderList: function () {
+            if (that.getView().getModel("ProfiliConfermaHeaderJSONModel").getData().results) {
+                var promiseArr = []
+                $.each(that.getView().getModel("ProfiliConfermaHeaderJSONModel").getData().results, function (index, elem) {
+
+                    if (elem.MODIFICA_PREZZO === true)
+                        elem.MODIFICA_PREZZO = "X";
+                    else
+                        elem.MODIFICA_PREZZO = "";
+                    elem.CONFERMA_MANDATORY = elem.CONFERMA_MANDATORY === true ? "X" : "";
+
+                    promiseArr.push(new Promise(function (resolve, reject) {
+                        that.onSaveProfiliConfHeader(elem, function () {
+                            resolve()
+                        })
+                    }))
+                })
+                Promise.all(promiseArr).then(values => {
+                    that.getProfiliConfHeader()
+                });
+            }
+        },
+
         onSaveProfiliConfermaList: function () {
             if (that.getView().getModel("ProfiliConfermaJSONModel").getData().results) {
                 var promiseArr = []
@@ -787,6 +857,15 @@ sap.ui.define([
             })
         },
 
+        onSaveProfiliConfHeader: function (elem, fCompletion) {
+            var url = "/backend/CustomizingManagement/SaveTProfiliConfermaHeader";
+            that.ajaxPost(url, elem, function (oData) {
+                if (oData) {
+                    fCompletion(oData);
+                }
+            })
+        },
+
         onSaveAvvisiQta: function (elem, fCompletion) {
             var url = "/backend/CustomizingManagement/SaveTAvvisiQualita";
             that.ajaxPost(url, elem, function (oData) {
@@ -890,6 +969,14 @@ sap.ui.define([
             that.ajaxDelete(url, function (oData) {
                 if (oData) {
                     that.getBUPurchaseOrg();
+                }
+            })
+        },
+        deleteProfiliConfermaHeader: function (sysid, pofcont) {
+            var url = "/backend/CustomizingManagement/TProfiliConfermaHeader?I_SYSID=" + sysid + "&I_PROFILO_CONTROLLO=" + pofcont
+            that.ajaxDelete(url, function (oData) {
+                if (oData) {
+                    that.getProfiliConfHeader();
                 }
             })
         },
@@ -1005,6 +1092,14 @@ sap.ui.define([
             var selctedRowdata = getTabledata[sessionRow];
             that.deleteProfiliConferma(selctedRowdata.SYSID, selctedRowdata.PROFILO_CONTROLLO, selctedRowdata.CAT_CONFERMA);
         },
+        deleteProfiliConfermaHeaderRow: function (oEvent) {
+            var keys = oEvent.getParameter("id");
+            var splits = keys.split("-");
+            var sessionRow = splits[splits.length - 1];
+            var getTabledata = that.getView().getModel("ProfiliConfermaHeaderJSONModel").getData().results;
+            var selctedRowdata = getTabledata[sessionRow];
+            that.deleteProfiliConfermaHeader(selctedRowdata.SYSID, selctedRowdata.PROFILO_CONTROLLO);
+        },
         deleteAvvisiQtaRow: function (oEvent) {
             var getTabledata = that.getView().getModel("AvvisiQtaJSONModel").getData().results;
             var itemPosition = oEvent.getSource().getParent().getParent().indexOfItem(oEvent.getSource().getParent());
@@ -1096,6 +1191,9 @@ sap.ui.define([
             }
             if (key === "13") {
                 that.getNotificationContacts();
+            }
+            if (key === "14") {
+                that.getProfiliConfHeader();
             }
         },
 
