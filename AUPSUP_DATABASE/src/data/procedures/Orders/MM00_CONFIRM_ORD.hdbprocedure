@@ -105,7 +105,7 @@ SELECT CURRENT_TIMESTAMP INTO V_CURRENT_TIMESTAMP FROM "AUPSUP_DATABASE.data.syn
 				
 				-- invio notifiche
 
-			    /*cerco i plant delle posizioni verso le quali inviare le notifiche */
+			    /*cerco i plant delle posizioni verso le quali inviare le notifiche
 				T_PLANTS = SELECT DISTINCT a.EBELN,a.WERKS FROM "AUPSUP_DATABASE.data.tables::ET_SAG_EKPO" as a INNER JOIN :IT_EKPO_CH as b ON a.EBELN = b.EBELN and a.EBELP = b.EBELP;
 				SELECT COUNT(*) INTO counterRow FROM :T_PLANTS;
 				IF (counterRow>0) THEN
@@ -113,7 +113,7 @@ SELECT CURRENT_TIMESTAMP INTO V_CURRENT_TIMESTAMP FROM "AUPSUP_DATABASE.data.syn
 						CALL "AUPSUP_DATABASE.data.procedures.Notifications::InsertNotification" (:userid,'ApproveSchedAgree',cursorRow.EBELN,'P_CONS','ICO',cursorRow.WERKS,'','IT','','','');
 					END FOR;
 					
-				END IF;
+				END IF; */
 			
 			ELSE
 			
@@ -138,7 +138,7 @@ SELECT CURRENT_TIMESTAMP INTO V_CURRENT_TIMESTAMP FROM "AUPSUP_DATABASE.data.syn
 						    /*salvo per le notifiche*/
     						SELECT DISTINCT EBELN INTO I_EBELN FROM :IT_EKKO;
     						
-    						/* TODO AZ LUVE cerco i plant delle posizioni verso le quali inviare le notifiche*/
+    						/* TODO AZ LUVE cerco i plant delle posizioni verso le quali inviare le notifiche
     						T_PLANTS = SELECT DISTINCT a.EBELN,a.WERKS FROM "AUPSUP_DATABASE.data.tables::ET_PURDOC_EKPO" as a INNER JOIN :IT_EKPO_CH as b ON a.EBELN = b.EBELN and a.EBELP = b.EBELP;
     						SELECT COUNT(*) INTO counterRow FROM :T_PLANTS;
     						IF (counterRow>0) THEN
@@ -146,7 +146,7 @@ SELECT CURRENT_TIMESTAMP INTO V_CURRENT_TIMESTAMP FROM "AUPSUP_DATABASE.data.syn
     								CALL "AUPSUP_DATABASE.data.procedures.Notifications::InsertNotification" (:userid,'ApproveSchedAgree',cursorRow.EBELN,'P_CONS','ICO',cursorRow.WERKS,'','IT','','','');
     							END FOR;
 	
-    						END IF; 
+    						END IF; */
 							
     						
                     		/*cancello tutte le righe precedentemente inserite per pulizia*/
@@ -209,7 +209,7 @@ SELECT CURRENT_TIMESTAMP INTO V_CURRENT_TIMESTAMP FROM "AUPSUP_DATABASE.data.syn
 				
 				-- invio notifiche
 
-			    /* TODO AZ LUVE cerco i plant delle posizioni verso le quali inviare le notifiche */
+			    /* TODO AZ LUVE DA NON FARE PER ORDINI E PIANI cerco i plant delle posizioni verso le quali inviare le notifiche
 				T_PLANTS = SELECT DISTINCT a.EBELN,a.WERKS FROM "AUPSUP_DATABASE.data.tables::ET_PURDOC_EKPO" as a INNER JOIN :IT_EKPO_CH as b ON a.EBELN = b.EBELN and a.EBELP = b.EBELP;
 				SELECT COUNT(*) INTO counterRow FROM :T_PLANTS;
 				IF (counterRow>0) THEN
@@ -217,7 +217,7 @@ SELECT CURRENT_TIMESTAMP INTO V_CURRENT_TIMESTAMP FROM "AUPSUP_DATABASE.data.syn
 						CALL "AUPSUP_DATABASE.data.procedures.Notifications::InsertNotification" (:userid,'ApproveSchedAgree',cursorRow.EBELN,'P_CONS','ICO',cursorRow.WERKS,'','IT','','','');
 					END FOR;
 					
-				END IF; 
+				END IF;  */
 			
 			ELSE
 
@@ -255,14 +255,14 @@ SELECT CURRENT_TIMESTAMP INTO V_CURRENT_TIMESTAMP FROM "AUPSUP_DATABASE.data.syn
 						    /*salvo per le notifiche*/
     						SELECT DISTINCT EBELN INTO I_EBELN FROM :IT_EKKO;
     						
-    						/* TODO AZ LUVE cerco i plant delle posizioni verso le quali inviare le notifiche */
+    						/* TODO AZ LUVE cerco i plant delle posizioni verso le quali inviare le notifiche
     						T_PLANTS = SELECT DISTINCT a.EBELN,a.WERKS FROM "AUPSUP_DATABASE.data.tables::ET_PURDOC_EKPO" as a INNER JOIN :IT_EKPO_CH as b ON a.EBELN = b.EBELN and a.EBELP = b.EBELP;
     						SELECT COUNT(*) INTO counterRow FROM :T_PLANTS;
     						IF (counterRow>0) THEN
     							FOR cursorRow AS cursorPLANT DO
     								CALL "AUPSUP_DATABASE.data.procedures.Notifications::InsertNotification" (:userid,'ApproveSchedAgree',cursorRow.EBELN,'P_CONS','ICO',cursorRow.WERKS,'','IT','','','');
     							END FOR;
-    						END IF; 
+    						END IF;  */
 						
                     		--cancello tutte le righe precedentemente inserite per pulizia
                     		SELECT COUNT(*) into counterRow FROM :IT_EKPO_CH;
