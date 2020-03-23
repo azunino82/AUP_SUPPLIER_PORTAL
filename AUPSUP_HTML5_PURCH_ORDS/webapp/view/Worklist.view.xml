@@ -25,7 +25,7 @@
 												<m:Input value="{filterOrdersJSONModel>/ebeln}" submit="onSearchOrders"/>
 											</fb:control>
 										</fb:FilterItem>
-										<fb:FilterItem name="Metasupplier" label="{i18n>METASUP}" visible="{VisibilityJSONModel>/isBuyer}">
+										<fb:FilterItem name="Metasupplier" label="{i18n>METASUP}" visible="{= ${VisibilityJSONModel>/isBuyer} === true || ${VisibilityJSONModel>/isPlanner} === true || ${VisibilityJSONModel>/isAdministrator} === true }">
 											<fb:control>
 												<m:MultiComboBox selectedKeys="{MetasupplierJSONModel>/METAID}" selectionChange="onChangeMetasupplier"
 													items="{ path: 'MetasupplierJSONModel>/results', sorter: { path: 'METAID' } }" >
