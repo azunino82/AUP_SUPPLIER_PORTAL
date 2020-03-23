@@ -63,7 +63,11 @@ BEGIN
             	    nomeFornitore := '';
             	END IF;
         	END IF;
-        	SELECT :I_MAIL_BODY || ' ' || :I_OBJEC_NUMBER || ' - ' || :nomeFornitore INTO I_MAIL_BODY FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";  
+            IF I_NOTA <> '' THEN
+        	    SELECT :I_MAIL_BODY || ' ' || :I_OBJEC_NUMBER || ' - ' || :nomeFornitore || '\n\n\n Note: ' || :I_NOTA INTO I_MAIL_BODY FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";  
+            ELSE
+                SELECT :I_MAIL_BODY || ' ' || :I_OBJEC_NUMBER || ' - ' || :nomeFornitore INTO I_MAIL_BODY FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";  
+            END IF;
     ELSE
         IF (APPLICAZIONE = 'ODA' and EVENTO = 'ICO') or (APPLICAZIONE = 'CON' and EVENTO = 'ICO') THEN -- sto confermando un ordine
 	    -- cerco il nome del fornitore dell'ordine
@@ -96,7 +100,11 @@ BEGIN
             	    nomeFornitore := '';
             	END IF;
         	END IF;
-        	SELECT :I_MAIL_BODY || ' ' || :I_OBJEC_NUMBER || '\n Fornitore: ' || (SELECT LIFNR FROM "AUPSUP_DATABASE.data.tables::ET_PURDOC_EKKO" WHERE EBELN = :I_OBJEC_NUMBER) || ' - ' || :nomeFornitore INTO I_MAIL_BODY FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";  
+            IF I_NOTA <> '' THEN
+                SELECT :I_MAIL_BODY || ' ' || :I_OBJEC_NUMBER || '\n Fornitore: ' || (SELECT LIFNR FROM "AUPSUP_DATABASE.data.tables::ET_PURDOC_EKKO" WHERE EBELN = :I_OBJEC_NUMBER) || ' - ' || :nomeFornitore || '\n\n\n Note: ' || :I_NOTA INTO I_MAIL_BODY FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";  
+            ELSE
+        	    SELECT :I_MAIL_BODY || ' ' || :I_OBJEC_NUMBER || '\n Fornitore: ' || (SELECT LIFNR FROM "AUPSUP_DATABASE.data.tables::ET_PURDOC_EKKO" WHERE EBELN = :I_OBJEC_NUMBER) || ' - ' || :nomeFornitore INTO I_MAIL_BODY FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";  
+            END IF;
         ELSE
             IF (APPLICAZIONE = 'NC' and EVENTO = 'UPA') THEN -- invio mail per caricamento allegato NC
     	    -- cerco il nome del fornitore dell'ordine
@@ -162,9 +170,19 @@ BEGIN
                     	    nomeFornitore := '';
                     	END IF;
                 	END IF;
-                	SELECT :I_MAIL_BODY || ' ' || :I_OBJEC_NUMBER || '\n Fornitore: ' || :I_LIFNR || ' - ' || :nomeFornitore INTO I_MAIL_BODY FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";  
-                ELSE            
-                    SELECT :I_MAIL_BODY || ' ' || :I_OBJEC_NUMBER INTO I_MAIL_BODY FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
+                    IF I_NOTA <> '' THEN
+                	    SELECT :I_MAIL_BODY || ' ' || :I_OBJEC_NUMBER || '\n Fornitore: ' || :I_LIFNR || ' - ' || :nomeFornitore || '\n\n\n Note: ' || :I_NOTA INTO I_MAIL_BODY FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";  
+                    ELSE
+                        SELECT :I_MAIL_BODY || ' ' || :I_OBJEC_NUMBER || '\n Fornitore: ' || :I_LIFNR || ' - ' || :nomeFornitore INTO I_MAIL_BODY FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";  
+                    END IF;
+                ELSE           
+                    BEGIN
+                        IF I_NOTA <> '' THEN 
+                            SELECT :I_MAIL_BODY || ' ' || :I_OBJEC_NUMBER || '\n\n\n Note: ' || :I_NOTA INTO I_MAIL_BODY FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
+                        ELSE
+                            SELECT :I_MAIL_BODY || ' ' || :I_OBJEC_NUMBER INTO I_MAIL_BODY FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
+                        END IF;
+                    END;
                 END IF;
             END IF;
         END IF;

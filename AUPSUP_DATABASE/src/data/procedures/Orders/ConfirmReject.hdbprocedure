@@ -58,7 +58,7 @@ IF counter > 0 THEN
             END IF;					
 
             BEGIN
-                DECLARE LIST_EBELN NVARCHAR(1000);
+                DECLARE LIST_EBELN NVARCHAR(1000) DEFAULT '';
                 DECLARE CURSOR cursorApproveReject FOR SELECT * FROM :IT_EKPO_CH;
                 FOR cursorRow AS cursorApproveReject DO
                     IF TIPO_OPERAZIONE = 'QUA' THEN
@@ -74,7 +74,8 @@ IF counter > 0 THEN
 				/*cerco i plant delle posizioni verso le quali inviare le notifiche*/
 				UPSERT #LIFNR SELECT DISTINCT LIFNR,EBELN,EBELP,BSTYP FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKKO_EKPO" WHERE EBELN = cursorRow.EBELN AND EBELP = cursorRow.EBELP AND STATUS = 'AP';
 
-                SELECT CONCAT (LIST_EBELN, cursorRow.EBELN) "concat" INTO LIST_EBELN FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";          
+                SELECT CONCAT (CONCAT (LIST_EBELN, cursorRow.EBELN),' ') INTO LIST_EBELN FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";  
+                
                 END FOR;
 
                 /*SEND NOTIFICATIONS*/
@@ -137,7 +138,7 @@ IF counter > 0 THEN
             END IF;					
 
             BEGIN
-                DECLARE LIST_EBELN NVARCHAR(1000);
+                DECLARE LIST_EBELN NVARCHAR(1000) DEFAULT '';
                 DECLARE CURSOR cursorApproveReject FOR SELECT * FROM :IT_EKPO_CH;
                 FOR cursorRow AS cursorApproveReject DO
                     IF TIPO_OPERAZIONE = 'QUA' THEN
@@ -153,8 +154,8 @@ IF counter > 0 THEN
 				/*cerco i plant delle posizioni verso le quali inviare le notifiche*/
 				UPSERT #LIFNR SELECT DISTINCT LIFNR,EBELN,EBELP,BSTYP FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKKO_EKPO" WHERE EBELN = cursorRow.EBELN AND EBELP = cursorRow.EBELP AND STATUS = 'RF';
 
-                SELECT CONCAT (LIST_EBELN, cursorRow.EBELN) "concat" INTO LIST_EBELN FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";  
-
+                SELECT CONCAT (CONCAT (LIST_EBELN, cursorRow.EBELN),' ') INTO LIST_EBELN FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";  
+                
                 END FOR;
 
                 /*SEND NOTIFICATIONS*/
