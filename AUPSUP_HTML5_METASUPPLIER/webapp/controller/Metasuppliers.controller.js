@@ -700,7 +700,7 @@ sap.ui.define([
 		onSearchSupplier: function () {
 			var ekorgs =
 				sap.ui.getCore().byId("EKORG").getSelectedKeys();
-			var url = "/backend/Utils/UtilsManagement/GetVendorList??I_NAME1=" + sap.ui
+			var url = "/backend/Utils/UtilsManagement/GetVendorList?I_NAME1=" + sap.ui
 				.getCore().byId("NAME1").getValue() + "&ISTCE=" + sap.ui.getCore().byId("STCEG").getValue();
 		
 			var body = {

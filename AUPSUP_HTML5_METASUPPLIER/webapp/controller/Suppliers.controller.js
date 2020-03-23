@@ -5,7 +5,7 @@ sap.ui.define([
 	"it/alteaup/supplier/portal/metasupplier/AUPSUP_HTML5_METASUPPLIER/controller/BaseController",
 	"sap/m/MessageBox",
 	"sap/ui/model/json/JSONModel"
-], function (BaseController, MessageBox,JSONModel) {
+], function (BaseController, MessageBox, JSONModel) {
 	"use strict";
 
 	return BaseController.extend("it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER.controller.Suppliers", {
@@ -16,11 +16,11 @@ sap.ui.define([
 				"NAME1": "",
 				"STCEG": "",
 				"EKORG": []
-			};			
+			};
 
 			var oModelFI = new JSONModel();
 			oModelFI.setData(filterJSON);
-			this.getView().setModel(oModelFI, "filterOrdersJSONModel");			
+			this.getView().setModel(oModelFI, "filterOrdersJSONModel");
 
 			that.getOwnerComponent().getRouter().getRoute("RouteSuppliers").attachPatternMatched(that.handleRoutePatternMatched,
 				this);
@@ -54,20 +54,40 @@ sap.ui.define([
 
 		onSearch: function (oEvent) {
 
-			var filters = [];
+			var RagSocialeMetafornitore = this.getView().byId("InputRagioneSociale").getValue();
+			var PivaMetafornitore = this.getView().byId("InputPivaFornitore").getValue();
+			var table = this.getView().byId("idSuppliersTable");
+			var url = "/backend/Utils/UtilsManagement/GetVendorList?I_NAME1=" + RagSocialeMetafornitore + "&I_STCEG=" +
+				PivaMetafornitore;
 
-			var body = 	that.getModel("filterOrdersJSONModel").getData();
+			var body = {
+				"ekorg": []
+			};
+			that.getModel("PurchaseOrganizationJSONModel")
+				.getData().results.forEach(function (ekorg) {
+					body.ekorg.push(ekorg);
+				});
 
-			// AZ RIMUOVERE
-			var jsonModel = new sap.ui.model.json.JSONModel();
-			var arrDistinct = [{"LIFNR":"0090099","NAME1":"test"}];
+			that.showBusyDialog();
+			that.ajaxPost(url, {}, function (oData) {
+				that.hideBusyDialog();
+				if (oData && oData.results) {
+					var jsonModel = new sap.ui.model.json.JSONModel();
+					var arrDistinct = [];
+					oData.results.forEach(function (elem) {
+						var trovato = arrDistinct.find(x => x.LIFNR === elem.LIFNR);
+						if (trovato === undefined) {
+							arrDistinct.push(elem);
+						}
+					});
 
-			jsonModel.setData(arrDistinct);
-			that.getView().byId("idSuppliersTable").setModel(jsonModel, "tableModelSuppliers");
-			var list = that.getView().byId("idSuppliersTable");
-			var binding = list.getBinding("items");
-			binding.filter(filters);
-			// FINE AZ
+					jsonModel.setData(arrDistinct);
+					table.setModel(jsonModel, "tableModelSuppliers");
+					that.getView().setModel(jsonModel, "tableModelSuppliers");
+
+				}
+			});
+
 
 			/*TODO servizio var body = {
 				"ekorg": []
