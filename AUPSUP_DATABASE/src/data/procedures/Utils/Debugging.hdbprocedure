@@ -13,7 +13,7 @@ DECLARE userid VARCHAR(250);
 DECLARE T_CONF_TYPE TABLE (EBELN NVARCHAR(10), EBELP VARCHAR(5), XBLNR NVARCHAR(35), CONF_TYPE NVARCHAR(1), BSTYP NVARCHAR(1)); -- serve per quando conferma da RMO
 DECLARE TIPO_OPERAZIONE NVARCHAR(3);  -- QUA o PRZ
 DECLARE I_NOTE NVARCHAR(1000); 
-
+DECLARE LIST_EBELN NVARCHAR(1000) DEFAULT '';
 DECLARE TIPOLOGIA NVARCHAR(50);
 
 userid := 'azunino@alteanet.it';
@@ -67,7 +67,7 @@ IF counter > 0 THEN
             END IF;					
 
             BEGIN
-                DECLARE LIST_EBELN NVARCHAR(1000) DEFAULT '';
+                DECLARE LIST_OUT NVARCHAR(1000) DEFAULT '';
                 DECLARE CURSOR cursorApproveReject FOR SELECT * FROM :IT_EKPO_CH;
                 FOR cursorRow AS cursorApproveReject DO
                     IF TIPO_OPERAZIONE = 'QUA' THEN
@@ -83,7 +83,7 @@ IF counter > 0 THEN
 				/*cerco i plant delle posizioni verso le quali inviare le notifiche*/
 				UPSERT #LIFNR SELECT DISTINCT LIFNR,EBELN,EBELP,BSTYP FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKKO_EKPO" WHERE EBELN = cursorRow.EBELN AND EBELP = cursorRow.EBELP AND STATUS = 'AP';
 
-                SELECT CONCAT (CONCAT (LIST_EBELN, cursorRow.EBELN),' ') INTO LIST_EBELN FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";          
+              --  SELECT CONCAT (CONCAT (LIST_EBELN, cursorRow.EBELN),' ') INTO LIST_EBELN FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";          
                 END FOR;
 
                 /*SEND NOTIFICATIONS*/
@@ -91,6 +91,8 @@ IF counter > 0 THEN
                 IF (counter>0) THEN
                     BEGIN
                         DECLARE CURSOR cursorLIFNR FOR SELECT DISTINCT * FROM #LIFNR;
+
+                        SELECT DISTINCT STRING_AGG(EBELN , ', ') INTO LIST_EBELN FROM #LIFNR;
 
                         FOR cursorRow AS cursorLIFNR DO
 
@@ -146,7 +148,7 @@ IF counter > 0 THEN
             END IF;					
 
             BEGIN
-                DECLARE LIST_EBELN NVARCHAR(1000) DEFAULT '';
+
                 DECLARE CURSOR cursorApproveReject FOR SELECT * FROM :IT_EKPO_CH;
                 FOR cursorRow AS cursorApproveReject DO
                     IF TIPO_OPERAZIONE = 'QUA' THEN
@@ -162,17 +164,18 @@ IF counter > 0 THEN
 				/*cerco i plant delle posizioni verso le quali inviare le notifiche*/
 				UPSERT #LIFNR SELECT DISTINCT LIFNR,EBELN,EBELP,BSTYP FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKKO_EKPO" WHERE EBELN = cursorRow.EBELN AND EBELP = cursorRow.EBELP AND STATUS = 'RF';
 
-                SELECT CONCAT (CONCAT (LIST_EBELN, cursorRow.EBELN),' ') INTO LIST_EBELN FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";  
+               -- SELECT CONCAT (CONCAT (LIST_EBELN, cursorRow.EBELN),' ') INTO LIST_EBELN FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";  
                
                 END FOR;
 
                 /*SEND NOTIFICATIONS*/
                 SELECT COUNT(*) INTO counter FROM #LIFNR;
                 IF (counter>0) THEN
-                    BEGIN
-
-                        
+                    BEGIN                        
                         DECLARE CURSOR cursorLIFNR FOR SELECT DISTINCT * FROM #LIFNR;
+
+                        SELECT DISTINCT STRING_AGG(EBELN , ', ') INTO LIST_EBELN FROM #LIFNR;
+
                         FOR cursorRow AS cursorLIFNR DO
                             IF cursorRow.BSTYP = 'F' THEN
                                 TIPOLOGIA:='RMO';
