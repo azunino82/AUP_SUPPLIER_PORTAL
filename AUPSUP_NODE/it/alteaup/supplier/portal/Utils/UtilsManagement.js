@@ -563,21 +563,21 @@ module.exports = function () {
       var filter = []
       var userId = req.user.id
 
-      if (body.matnr !== null && body.matnr !== undefined && body.matnr.length > 0) {
-        var oMatnr = []
-        for (var i = 0; i < body.matnr.length; i++) {
-          oMatnr.push({ CODE: body.matnr[i] })
-        }
-        matnr = oMatnr
+      if (body.matnr !== null && body.matnr !== undefined) {
+        // var oMatnr = []
+        // for (var i = 0; i < body.matnr.length; i++) {
+        matnr.push({ CODE: body.matnr })
+        // }
+        // matnr = oMatnr
       }
 
       if (body.maktx !== null && body.maktx !== undefined && body.maktx.length > 0) {
-        var oMaktx = []
+        // var oMaktx = []
         // eslint-disable-next-line no-redeclare
-        for (var i = 0; i < body.maktx.length; i++) {
-          oMaktx.push({ DESCR: body.maktx[i] })
-        }
-        maktx = oMaktx
+        // for (var i = 0; i < body.maktx.length; i++) {
+        maktx.push({ DESCR: body.maktx })
+        // }
+      //  maktx = oMaktx
       }
 
       hdbext.createConnection(req.tenantContainer, (err, client) => {

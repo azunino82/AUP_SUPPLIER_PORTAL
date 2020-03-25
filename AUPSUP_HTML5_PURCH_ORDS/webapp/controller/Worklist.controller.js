@@ -1011,8 +1011,6 @@ sap.ui.define([
 						that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].KSCHL = selectedProfiloConfermaModel.TIPO_COND_PREZZO;
 					}
 
-dsaasda
-
 					if (selectedProfiloConfermaModel !== undefined && selectedProfiloConfermaModel.ZAPPPERINF !== undefined &&
 						selectedProfiloConfermaModel.ZAPPPERINF !== "")
 						that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].QuantTollDown = parseInt(selectedProfiloConfermaModel
