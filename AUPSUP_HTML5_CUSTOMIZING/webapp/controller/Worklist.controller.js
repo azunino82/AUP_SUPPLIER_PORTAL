@@ -162,10 +162,7 @@ sap.ui.define([
                             elem.NUMERO_SERIALE_INB = elem.NUMERO_SERIALE_INB === "X" ? true : false;
                             elem.CONFERMA_MANDATORY = elem.CONFERMA_MANDATORY === "X" ? true : false;
                             elem.CONTROLLO_CORSO_APP = elem.CONTROLLO_CORSO_APP === "X" ? true : false;
-                            elem.ZAPPPERSUP = elem.ZAPPPERSUP === true ? "X" : "";
-                            elem.ZAPPPERINF = elem.ZAPPPERINF === true ? "X" : "";
-                            elem.ZAPPGGSUP = elem.ZAPPGGSUP === true ? "X" : "";
-                            elem.ZAPPGGINF = elem.ZAPPGGINF === true ? "X" : "";
+                            
                         });
 
                         oModel.setData(oData);
@@ -658,10 +655,6 @@ sap.ui.define([
                     elem.NUMERO_SERIALE_INB = elem.NUMERO_SERIALE_INB === true ? "X" : "";
                     elem.CONFERMA_MANDATORY = elem.CONFERMA_MANDATORY === true ? "X" : "";
                     elem.CONTROLLO_CORSO_APP = elem.CONTROLLO_CORSO_APP === true ? "X" : "";
-                    elem.ZAPPPERSUP = elem.ZAPPPERSUP === true ? "X" : "";
-                    elem.ZAPPPERINF = elem.ZAPPPERINF === true ? "X" : "";
-                    elem.ZAPPGGSUP = elem.ZAPPGGSUP === true ? "X" : "";
-                    elem.ZAPPGGINF = elem.ZAPPGGINF === true ? "X" : "";
 
                     promiseArr.push(new Promise(function (resolve, reject) {
                         that.onSaveProfiliConf(elem, function () {
