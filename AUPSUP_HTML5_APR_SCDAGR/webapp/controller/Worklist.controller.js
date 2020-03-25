@@ -343,6 +343,7 @@ sap.ui.define([
 			var url = "/backend/SchedulingAgreementManagement/GetConfermeRifiuti";
 			var isBuyer = sap.ui.getCore().getModel("VisibilityJSONModel").getData().isBuyer;
 			var isPlanner = sap.ui.getCore().getModel("VisibilityJSONModel").getData().isPlanner;
+			var isAdministrator = sap.ui.getCore().getModel("VisibilityJSONModel").getData().isAdministrator;
 			this.showBusyDialog();
 			that.ajaxPost(url, body, function (oData) {
 				that.hideBusyDialog();
@@ -355,11 +356,15 @@ sap.ui.define([
 								outArr.results.EkkoEkpo.push(element)
 							if (isPlanner && element.CONF_TYPE === 'QUA')
 								outArr.results.EkkoEkpo.push(element)
+							if (isAdministrator)
+								outArr.results.EkkoEkpo.push(element)
 						});
 						oData.results.EketEkes.forEach(element => {
 							if (isBuyer && element.CONF_TYPE === 'PRZ')
 								outArr.results.EketEkes.push(element)
 							if (isPlanner && element.CONF_TYPE === 'QUA')
+								outArr.results.EketEkes.push(element)
+							if (isAdministrator)
 								outArr.results.EketEkes.push(element)
 						});
 					}

@@ -24,7 +24,7 @@
 											</layoutData>
 										</Input>
 										<Label text="{i18n>paeseMetafornitore} / {i18n>lingua}" labelFor="paeseMetafornitore"/>
-										<Input id="paeseMetafornitore" type="Text" class="sapUiSmallMarginBottom" placeholder="" maxLength="3"/>
+										<Input id="paeseMetafornitore" type="Text" class="sapUiSmallMarginBottom" placeholder="" maxLength="2"/>
 										<!--<Label text="{i18n>lingua}" labelFor="lingua"/>-->
 										<Input id="lingua" type="Text" class="sapUiSmallMarginBottom" placeholder="" maxLength="1">
 											<layoutData>
