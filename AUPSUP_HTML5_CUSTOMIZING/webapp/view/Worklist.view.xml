@@ -400,17 +400,17 @@
 																			<m:Label text="{i18n>CONTROLLO_CORSO_APP}"/>
 																			<m:CheckBox selected="{ProfiliConfermaJSONModel>CONTROLLO_CORSO_APP}"/>
 																			<core:Title text=""/>
-																			<m:Label text="{i18n>CONTROLLO_CORSO_APP}"/>
-																			<m:CheckBox selected="{ProfiliConfermaJSONModel>ZAPPPERSUP}"/>
+																			<m:Label text="{i18n>ZAPPPERSUP}"/>
+																			<m:Input value="{ProfiliConfermaJSONModel>ZAPPPERSUP}"/>
 																			<core:Title text=""/>
-																			<m:Label text="{i18n>CONTROLLO_CORSO_APP}"/>
-																			<m:CheckBox selected="{ProfiliConfermaJSONModel>ZAPPPERINF}"/>
+																			<m:Label text="{i18n>ZAPPPERINF}"/>
+																			<m:Input value="{ProfiliConfermaJSONModel>ZAPPPERINF}"/>
 																			<core:Title text=""/>
-																			<m:Label text="{i18n>CONTROLLO_CORSO_APP}"/>
-																			<m:CheckBox selected="{ProfiliConfermaJSONModel>ZAPPGGSUP}"/>
+																			<m:Label text="{i18n>ZAPPGGSUP}"/>
+																			<m:Input value="{ProfiliConfermaJSONModel>ZAPPGGSUP}"/>
 																			<core:Title text=""/>
-																			<m:Label text="{i18n>CONTROLLO_CORSO_APP}"/>
-																			<m:CheckBox selected="{ProfiliConfermaJSONModel>ZAPPGGINF}"/>
+																			<m:Label text="{i18n>ZAPPGGINF}"/>
+																			<m:Input value="{ProfiliConfermaJSONModel>ZAPPGGINF}"/>
 																			<core:Title text=""/>
 																			<m:ToolbarSpacer/>
 																			<m:ToolbarSpacer/>
