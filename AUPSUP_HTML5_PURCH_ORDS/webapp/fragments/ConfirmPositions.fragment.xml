@@ -27,14 +27,14 @@
 									<Label text="{i18n>materialDescr}"/>
 									<Text text="{SelectedPositionsJSONModel>TXZ01}" wrapping="false"/>
 									<Label text="{i18n>ZENTRATA}"/>
-									<Text text="{SelectedPositionsJSONModel>ZENTRATA}"/>
+									<Text text="{path : 'SelectedPositionsJSONModel>ZENTRATA', formatter : '.importFormatter'}"/>
 									<core:Title text=""/>
 									<Label text="{i18n>BPRME}"/>
 									<Text text="{SelectedPositionsJSONModel>BPRME}"/>
 									<Label text="{i18n>MENGE_RELEASE}"/>
-									<Text text="{SelectedPositionsJSONModel>MENGE}"/>
+									<Text text="{path : 'SelectedPositionsJSONModel>MENGE', formatter : '.importFormatter'}"/>
 									<Label text="{i18n>KTMNG}"/>
-									<Text text="{SelectedPositionsJSONModel>KTMNG}"/>
+									<Text text="{path : 'SelectedPositionsJSONModel>MENGE', formatter : '.importFormatter'}"/>
 									<!--<Input required="{SelectedPositionsJSONModel>editMode}" value="{SelectedPositionsJSONModel>MENGE}" enabled="{SelectedPositionsJSONModel>editMode}" type="Number"/> -->
 									<core:Title text=""/>
 									<Label text="{i18n>NETPR}"/>

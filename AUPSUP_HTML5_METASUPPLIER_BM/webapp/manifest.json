@@ -16,7 +16,7 @@
 		"crossNavigation": {
 			"inbounds": {
 				"intent1": {
-					"signature": { 
+					"signature": {
 						"parameters": {
 							"mode": {
 								"required": true,
@@ -35,9 +35,8 @@
 			}
 		}
 	},
-
 	"sap.ui": {
-		"fullWidth": true,		
+		"fullWidth": true,
 		"technology": "UI5",
 		"icons": {
 			"icon": "",
@@ -53,12 +52,16 @@
 			"phone": true
 		}
 	},
-
 	"sap.ui5": {
 		"config": {
 			"fullWidth": true
-		},				
+		},
 		"flexEnabled": false,
+		"services": {
+			"ShellUIService": {
+				"factoryName": "sap.ushell.ui5service.ShellUIService"
+			}
+		},
 		"rootView": {
 			"viewName": "it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER_BM.view.App",
 			"type": "XML",
@@ -86,9 +89,11 @@
 			}
 		},
 		"resources": {
-			"css": [{
-				"uri": "css/style.css"
-			}]
+			"css": [
+				{
+					"uri": "css/style.css"
+				}
+			]
 		},
 		"routing": {
 			"config": {
@@ -100,37 +105,43 @@
 				"controlId": "idAppControl",
 				"clearControlAggregation": false
 			},
-			"routes": [{
-				"name": "TargetApp",
-				"pattern": "app",
-				"target": [
-					"TargetApp"
-				]
-			}, {
-				"name": "RouteMetasuppliers",
-				"pattern": "home",
-				"target": [
-					"TargetMetasuppliers"
-				]
-			}, {
-				"name": "RouteSuppliers",
-				"pattern": "suppliers",
-				"target": [
-					"TargetSuppliers"
-				]
-			}, {
-				"name": "RouteCreateMetasuppliers",
-				"pattern": "create/metasuppliers/{suppliers}",
-				"target": [
-					"TargetCreateMetasuppliers"
-				]
-			}, {
-				"name": "RouteMetasupplierContacts",
-				"pattern": "metasuppliers/{metaid}/contacts",
-				"target": [
-					"TargetMetasupplierContacts"
-				]
-			}],
+			"routes": [
+				{
+					"name": "TargetApp",
+					"pattern": "app",
+					"target": [
+						"TargetApp"
+					]
+				},
+				{
+					"name": "RouteMetasuppliers",
+					"pattern": "home",
+					"target": [
+						"TargetMetasuppliers"
+					]
+				},
+				{
+					"name": "RouteSuppliers",
+					"pattern": "suppliers",
+					"target": [
+						"TargetSuppliers"
+					]
+				},
+				{
+					"name": "RouteCreateMetasuppliers",
+					"pattern": "create/metasuppliers/{suppliers}",
+					"target": [
+						"TargetCreateMetasuppliers"
+					]
+				},
+				{
+					"name": "RouteMetasupplierContacts",
+					"pattern": "metasuppliers/{metaid}/contacts",
+					"target": [
+						"TargetMetasupplierContacts"
+					]
+				}
+			],
 			"targets": {
 				"TargetApp": {
 					"viewType": "XML",

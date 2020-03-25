@@ -191,11 +191,11 @@
 															<m:Text text="{OrderJSONModel>MATNR}"/>
 															<m:Text text="{OrderJSONModel>TXZ01}"/>
 															<m:Text text="{OrderJSONModel>IDNLF}"/>
-															<m:Text text="{OrderJSONModel>MENGE}"/>
+															<m:Text text="{path : 'OrderJSONModel>MENGE', formatter : '.importFormatter'}"/>
 															<m:Text text="{OrderJSONModel>MEINS}"/>
 															<m:Text text="{OrderJSONModel>WAERS}"/>
-															<m:Text text="{OrderJSONModel>PRIMO_PERIODO}"/>
-															<m:Text text="{OrderJSONModel>SECONDO_PERIODO}"/>
+															<m:Text text="{path : 'OrderJSONModel>PRIMO_PERIODO', formatter : '.importFormatter'}"/>
+															<m:Text text="{path : 'OrderJSONModel>SECONDO_PERIODO', formatter : '.importFormatter'}"/>
 															<m:Button icon="sap-icon://document-text" press="onGetTexts"/>
 														</m:cells>
 													</m:ColumnListItem>

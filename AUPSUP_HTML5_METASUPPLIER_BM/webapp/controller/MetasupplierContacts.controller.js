@@ -117,8 +117,8 @@ sap.ui.define([
 							});
 
 						}
-						that.getContact();
 					}
+					that.getContact();
 
 				});
 
@@ -215,6 +215,8 @@ sap.ui.define([
 		getContact: function () {
 
 			var url = "/backend/MetasupplierManagement/GetContacts?I_METAID=" + metaid;
+
+			that.getView().byId('ListContains').setModel(null)
 
 			that.ajaxGet(url, function (oDataRes) {
 
@@ -505,7 +507,7 @@ sap.ui.define([
 			dataUpdate.COGNOME = dataUpdateTemp.Cognome;
 			dataUpdate.FAX = dataUpdateTemp.Fax;
 
-			
+
 			var url = "/backend/MetasupplierManagement/UpdateContact?KEY=" + key;
 			that.showBusyDialog();
 			that.ajaxPut(url, dataUpdate, function (oData) {
@@ -517,18 +519,18 @@ sap.ui.define([
 
 
 
-		/*	var oModel = that.getOwnerComponent().getModel();
-			oModel.update("/MetasupplierContactSet(KEY='" + key + "')", dataUpdate, {
-				success: function (oData, oResponse) {
-					sap.m.MessageToast.show(that.getOwnerComponent().getModel("i18n").getResourceBundle().getText(
-						"metasupplierContactUpdated"));
-					that.getContact();
-				},
-				error: function (oError) {
-					sap.m.MessageBox.error(that.getOwnerComponent().getModel("i18n").getResourceBundle().getText(
-						"errorUpdateingMetasupplierContact"));
-				}
-			}); */
+			/*	var oModel = that.getOwnerComponent().getModel();
+				oModel.update("/MetasupplierContactSet(KEY='" + key + "')", dataUpdate, {
+					success: function (oData, oResponse) {
+						sap.m.MessageToast.show(that.getOwnerComponent().getModel("i18n").getResourceBundle().getText(
+							"metasupplierContactUpdated"));
+						that.getContact();
+					},
+					error: function (oError) {
+						sap.m.MessageBox.error(that.getOwnerComponent().getModel("i18n").getResourceBundle().getText(
+							"errorUpdateingMetasupplierContact"));
+					}
+				}); */
 
 		},
 

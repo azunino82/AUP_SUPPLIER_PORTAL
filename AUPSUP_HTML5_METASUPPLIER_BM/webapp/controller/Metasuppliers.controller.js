@@ -33,11 +33,16 @@ sap.ui.define([
 				return;
 			}
 
-			that.getOwnerComponent().getRouter().getRoute("RouteMetasuppliers").attachPatternMatched(that.handleRoutePatternMatched,
-				this);
+			//that.getOwnerComponent().getRouter().getRoute("RouteMetasuppliers").attachPatternMatched(that.handleRoutePatternMatched,
+			//	this);
 			that.getPurchaseOrganizations();
 
 			this.getView().setModel(sap.ui.getCore().getModel("userapi"), "userapi");
+
+		},
+
+		onAfterRendering: function (){
+			that.handleRoutePatternMatched();
 		},
 
 		handleRoutePatternMatched: function (oEvent) {
@@ -119,6 +124,7 @@ sap.ui.define([
 				var jsonModel = new sap.ui.model.json.JSONModel();
 				jsonModel.setData(oDataRes.results);
 				that.getView().setModel(jsonModel, "tableModelMetasuppliers");
+				sap.ui.getCore().setModel(jsonModel, "tableModelMetasuppliers");
 				that.getView().byId("idMetasuppliersTable").getColumns()[8].setVisible(editVisibleBool);
 				that.getView().byId("idMetasuppliersTable").getColumns()[9].setVisible(deleteVisibleBool);
 				that.getView().byId("idMetasuppliersTable").getColumns()[10].setVisible(contactsVisibleBool);
@@ -327,9 +333,9 @@ sap.ui.define([
 		},
 
 		contactsSupplier: function (oEvent) {
+			var oPath = oEvent.getSource().getParent().getBindingContext("tableModelMetasuppliers").sPath;
+			var data = sap.ui.getCore().getModel("tableModelMetasuppliers").getProperty(oPath);
 
-			var path = oEvent.getSource().getParent().getBindingContext("tableModelMetasuppliers");
-			var data = that.byId("idMetasuppliersTable").getModel("tableModelMetasuppliers").getProperty(path.sPath);
 			that.getOwnerComponent().getRouter().navTo("RouteMetasupplierContacts", {
 				metaid: data.METAID
 			});

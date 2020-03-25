@@ -9,7 +9,7 @@ sap.ui.define([
 	var bGlobalBusyDialogIsShown = false;
 
 	return Controller.extend("it.alteaup.supplier.portal.schedulingagreement.AUPSUP_HTML5_SCHEDAGREE.controller.BaseController", {
-			getRouter: function () {
+		getRouter: function () {
 			return sap.ui.core.UIComponent.getRouterFor(this);
 		},
 
@@ -235,15 +235,25 @@ sap.ui.define([
 			});
 
 		},
-		pad_with_zeroes : function (number, length) {
+		pad_with_zeroes: function (number, length) {
 			// aggiunge 000 davanti a striga
 			var my_string = '' + number;
 			while (my_string.length < length) {
 				my_string = '0' + my_string;
 			}
-		
+
 			return my_string;
+
+		},
 		
+		importFormatter: function (sValue) {
+			if (sValue.toString().includes('.000'))
+				return sValue.toString().replace('.000', '')
+			else
+				if (sValue.toString().includes('.00'))
+					return sValue.toString().replace('.00', '')
+				else
+					return sValue
 		}
 
 

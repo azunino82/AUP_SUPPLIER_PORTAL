@@ -25,7 +25,7 @@
 									<!--Testo Breve-->
 									<m:ObjectAttribute title="{i18n>IDNLF}" text="{ path: 'OrderPrositionJSONModel>/IDNLF' }"/>
 									<!--Codice Materiale usato dal fornitore-->
-									<m:ObjectAttribute title="{i18n>MENGE}" text="{ path: 'OrderPrositionJSONModel>/MENGE' }"/>
+									<m:ObjectAttribute title="{i18n>MENGE}" text="{ path: 'OrderPrositionJSONModel>/MENGE', formatter : '.importFormatter'}"/>
 									<!--Quantità-->
 									<m:ObjectAttribute title="{i18n>PEINH}" text="{ path: 'OrderPrositionJSONModel>/PEINH' }"/>
 									<!--Unità di prezzo-->
@@ -82,9 +82,9 @@
 														<m:Text text="{OrderPrositionJSONModel>ETENR}"/>
 														<m:Text text="{ path: 'OrderPrositionJSONModel>EINDT', type: 'it.alteaup.supplier.portal.schedulingagreement.AUPSUP_HTML5_SCHEDAGREE.type.Date' }"/>
 														<m:Text text="{OrderPrositionJSONModel>LPEIN}"/>
-														<m:Text text="{OrderPrositionJSONModel>MENGE}"/>
+														<m:Text text="{path : 'OrderPrositionJSONModel>MENGE', formatter : '.importFormatter'}"/>
 														<!--<m:Text text="{OrderPrositionJSONModel>WEMNG}"/>-->
-														<m:Text text="{OrderPrositionJSONModel>MNG02}"/>
+														<m:Text text="{path : 'OrderPrositionJSONModel>MNG02', formatter : '.importFormatter'}"/>
 													</m:cells>
 												</m:ColumnListItem>
 											</m:items>
@@ -141,7 +141,7 @@
 														<m:Text text="{OrderPrositionJSONModel>ETENS}"/>
 														<m:Text text="{ path: 'OrderPrositionJSONModel>EINDT', type: 'it.alteaup.supplier.portal.schedulingagreement.AUPSUP_HTML5_SCHEDAGREE.type.Date' }"/>
 														<m:Text text="{OrderPrositionJSONModel>LPEIN}"/>
-														<m:Text text="{OrderPrositionJSONModel>MENGE}"/>
+														<m:Text text="{path : 'OrderPrositionJSONModel>MENGE', formatter : '.importFormatter'}"/>														
 														<m:Text text="{OrderPrositionJSONModel>DABMG}"/>
 														<m:Text text="{OrderPrositionJSONModel>ESTKZ}"/>
 													</m:cells>
