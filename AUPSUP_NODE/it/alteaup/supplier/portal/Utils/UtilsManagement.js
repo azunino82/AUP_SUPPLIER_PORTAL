@@ -616,8 +616,8 @@ module.exports = function () {
 
     if (body !== undefined && body !== '' && body !== null) {
       var userid = req.user.id
-      var name1 = req.user.I_NAME1 !== undefined && req.user.I_NAME1 !== '' ? req.user.NAME1 : ''
-      var stceg = req.user.I_STCEG !== undefined && req.user.I_STCEG !== '' ? req.user.I_STCEG : ''
+      var name1 = req.query.I_NAME1 !== undefined && req.query.I_NAME1 !== '' ? req.query.I_NAME1 : ''
+      var stceg = req.query.I_STCEG !== undefined && req.query.I_STCEG !== '' ? req.query.I_STCEG : ''
       var lifnr = []
       var ekorg = []
 
@@ -647,6 +647,7 @@ module.exports = function () {
               console.error('ERROR CONNECTION GetSearchHelp: ' + stringifyObj(_err))
               return res.status(500).send('GetVendorList CONNECTION ERROR: ' + stringifyObj(_err))
             }
+            console.log('name1: ' + name1 + ' stceg: ' + stceg)
             sp(userid, name1, stceg, lifnr, ekorg, (err, parameters, results) => {
               console.log('---->>> CLIENT END <<<<<-----')
               client.close()
