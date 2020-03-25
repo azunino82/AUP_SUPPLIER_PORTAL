@@ -201,9 +201,9 @@ sap.ui.define([
 				return sValue.toString().replace('.000', '')
 			else
 				if (sValue.toString().includes('.00'))
-					return sValue.toString().replace('.00', '') 
+					return sValue.toString().replace('.00', '')
 				else
-					return sValue
+					return sValue.toString().replace('.', ',')
 		}
 
 	});

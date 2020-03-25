@@ -245,7 +245,7 @@ sap.ui.define([
 			return my_string;
 
 		},
-		
+
 		importFormatter: function (sValue) {
 			if (sValue.toString().includes('.000'))
 				return sValue.toString().replace('.000', '')
@@ -253,7 +253,7 @@ sap.ui.define([
 				if (sValue.toString().includes('.00'))
 					return sValue.toString().replace('.00', '')
 				else
-					return sValue
+					return sValue.toString().replace('.', ',')
 		}
 
 
