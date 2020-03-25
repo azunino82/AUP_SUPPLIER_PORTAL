@@ -596,6 +596,15 @@
 																<m:Column minScreenWidth="Desktop" demandPopin="true">
 																	<m:Label text="{i18n>APPLICATION}" class="columnLabelStyle"/>
 																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>TIME_DEPENDENT}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>GG_ESTRAZIONE}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>PROGRESSIVI}" class="columnLabelStyle"/>
+																</m:Column>
 																<m:Column minScreenWidth="Desktop" demandPopin="true" hAlign="End" width="5em">
 																	<m:Label class="columnLabelStyle"/>
 																</m:Column>

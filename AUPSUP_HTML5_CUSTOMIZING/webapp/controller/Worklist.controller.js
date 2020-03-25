@@ -450,10 +450,10 @@ sap.ui.define([
                 "NUMERO_SERIALE_INB": false,
                 "CONFERMA_MANDATORY": false,
                 "CONTROLLO_CORSO_APP": false,
-                "ZAPPPERSUP": false,
-                "ZAPPPERINF": false,
-                "ZAPPGGSUP": false,
-                "ZAPPGGINF": false,
+                "ZAPPPERSUP": "",
+                "ZAPPPERINF": "",
+                "ZAPPGGSUP": "",
+                "ZAPPGGINF": "",
             });
             that.getView().getModel("ProfiliConfermaJSONModel").refresh();
         },
@@ -495,9 +495,9 @@ sap.ui.define([
                 "PLANNING": "",
                 "MESSAGE_TYPE": "",
                 "APPLICATION": "",
-                "TIME_DEPENDENT" : false,
-                "GG_ESTRAZIONE" :null,
-                "PROGRESSIVI": false
+                "TIME_DEPENDENT" : "",
+                "GG_ESTRAZIONE" :"",
+                "PROGRESSIVI": ""
             });
             that.getView().getModel("TipoOrdineJSONModel").refresh();
         },
