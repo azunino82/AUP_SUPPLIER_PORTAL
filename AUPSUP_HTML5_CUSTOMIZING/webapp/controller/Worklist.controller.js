@@ -162,6 +162,10 @@ sap.ui.define([
                             elem.NUMERO_SERIALE_INB = elem.NUMERO_SERIALE_INB === "X" ? true : false;
                             elem.CONFERMA_MANDATORY = elem.CONFERMA_MANDATORY === "X" ? true : false;
                             elem.CONTROLLO_CORSO_APP = elem.CONTROLLO_CORSO_APP === "X" ? true : false;
+                            elem.ZAPPPERSUP = elem.ZAPPPERSUP === true ? "X" : "";
+                            elem.ZAPPPERINF = elem.ZAPPPERINF === true ? "X" : "";
+                            elem.ZAPPGGSUP = elem.ZAPPGGSUP === true ? "X" : "";
+                            elem.ZAPPGGINF = elem.ZAPPGGINF === true ? "X" : "";
                         });
 
                         oModel.setData(oData);
@@ -302,7 +306,7 @@ sap.ui.define([
                     if (oData.results) {
                         oModel.setData(oData);
                         that.getView().setModel(oModel, "DocumentManagementJSONModel");
-                        originalNotificatioMaster = [];
+                        originalDocumentManagement = [];
                         $.each(that.getView().getModel("DocumentManagementJSONModel").getData().results, function (index, elem) {
                             var s_elem = JSON.stringify(elem);
                             originalDocumentManagement.push(jQuery.parseJSON(s_elem));
@@ -445,7 +449,11 @@ sap.ui.define([
                 "DATA_PRODUZIONE_INB": false,
                 "NUMERO_SERIALE_INB": false,
                 "CONFERMA_MANDATORY": false,
-                "CONTROLLO_CORSO_APP": false
+                "CONTROLLO_CORSO_APP": false,
+                "ZAPPPERSUP": false,
+                "ZAPPPERINF": false,
+                "ZAPPGGSUP": false,
+                "ZAPPGGINF": false,
             });
             that.getView().getModel("ProfiliConfermaJSONModel").refresh();
         },
@@ -486,7 +494,10 @@ sap.ui.define([
                 "LISTA_RFQ": "",
                 "PLANNING": "",
                 "MESSAGE_TYPE": "",
-                "APPLICATION": ""
+                "APPLICATION": "",
+                "TIME_DEPENDENT" : false,
+                "GG_ESTRAZIONE" :null,
+                "PROGRESSIVI": false
             });
             that.getView().getModel("TipoOrdineJSONModel").refresh();
         },
@@ -517,7 +528,7 @@ sap.ui.define([
                 "DMS_VERSION_OUT": "",
                 "DMS_DOC_OBJ": ""
             });
-            that.getView().getModel("NotificationMasterJSONModel").refresh();
+            that.getView().getModel("DocumentManagementJSONModel").refresh();
         },
 
         onAssGestioneEtichetteRow: function () {
@@ -647,6 +658,10 @@ sap.ui.define([
                     elem.NUMERO_SERIALE_INB = elem.NUMERO_SERIALE_INB === true ? "X" : "";
                     elem.CONFERMA_MANDATORY = elem.CONFERMA_MANDATORY === true ? "X" : "";
                     elem.CONTROLLO_CORSO_APP = elem.CONTROLLO_CORSO_APP === true ? "X" : "";
+                    elem.ZAPPPERSUP = elem.ZAPPPERSUP === true ? "X" : "";
+                    elem.ZAPPPERINF = elem.ZAPPPERINF === true ? "X" : "";
+                    elem.ZAPPGGSUP = elem.ZAPPGGSUP === true ? "X" : "";
+                    elem.ZAPPGGINF = elem.ZAPPGGINF === true ? "X" : "";
 
                     promiseArr.push(new Promise(function (resolve, reject) {
                         that.onSaveProfiliConf(elem, function () {

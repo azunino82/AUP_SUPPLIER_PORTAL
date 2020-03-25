@@ -400,6 +400,18 @@
 																			<m:Label text="{i18n>CONTROLLO_CORSO_APP}"/>
 																			<m:CheckBox selected="{ProfiliConfermaJSONModel>CONTROLLO_CORSO_APP}"/>
 																			<core:Title text=""/>
+																			<m:Label text="{i18n>CONTROLLO_CORSO_APP}"/>
+																			<m:CheckBox selected="{ProfiliConfermaJSONModel>ZAPPPERSUP}"/>
+																			<core:Title text=""/>
+																			<m:Label text="{i18n>CONTROLLO_CORSO_APP}"/>
+																			<m:CheckBox selected="{ProfiliConfermaJSONModel>ZAPPPERINF}"/>
+																			<core:Title text=""/>
+																			<m:Label text="{i18n>CONTROLLO_CORSO_APP}"/>
+																			<m:CheckBox selected="{ProfiliConfermaJSONModel>ZAPPGGSUP}"/>
+																			<core:Title text=""/>
+																			<m:Label text="{i18n>CONTROLLO_CORSO_APP}"/>
+																			<m:CheckBox selected="{ProfiliConfermaJSONModel>ZAPPGGINF}"/>
+																			<core:Title text=""/>
 																			<m:ToolbarSpacer/>
 																			<m:ToolbarSpacer/>
 																			<m:Button icon="sap-icon://delete" press="deleteProfiliConfermaRow"/>
@@ -600,6 +612,9 @@
 																		<m:Input value="{TipoOrdineJSONModel>PLANNING}"/>
 																		<m:Input value="{TipoOrdineJSONModel>MESSAGE_TYPE}"/>
 																		<m:Input value="{TipoOrdineJSONModel>APPLICATION}"/>
+																		<m:Input value="{TipoOrdineJSONModel>TIME_DEPENDENT}"/>
+																		<m:Input value="{TipoOrdineJSONModel>GG_ESTRAZIONE}"/>
+																		<m:Input value="{TipoOrdineJSONModel>PROGRESSIVI}"/>
 																		<m:Button icon="sap-icon://delete" press="deleteTipoOrdineRow"/>
 																	</m:cells>
 																</m:ColumnListItem>
