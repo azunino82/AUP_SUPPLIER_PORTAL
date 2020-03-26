@@ -43,7 +43,7 @@
 												<m:Input value="{filterOrdersJSONModel>/INCO1}" submit="onSearchOrders"/>
 											</fb:control>
 										</fb:FilterItem>
-										<fb:FilterItem name="Lifnr" label="{i18n>supplier}" visible="{VisibilityJSONModel>/isBuyer}">
+										<fb:FilterItem name="Lifnr" label="{i18n>supplier}" visible="{= ${VisibilityJSONModel>/isBuyer} === true || ${VisibilityJSONModel>/isPlanner} === true || ${VisibilityJSONModel>/isAdministrator} === true }">
 											<fb:control>
 												<m:MultiComboBox selectionChange="onChangeMetalifnr" showSecondaryValues="true"
 													items="{ path: 'lifnrJSONModel>/', sorter: { path: 'LIFNR' } }" >
@@ -57,7 +57,7 @@
 													class="sapUiSmallMarginBottom" submit="onSearchOrders"/>
 											</fb:control>
 										</fb:FilterItem>
-										<fb:FilterItem name="Ekorg" label="{i18n>purchaseOrganization}" visible="{VisibilityJSONModel>/isBuyer}">
+										<fb:FilterItem name="Ekorg" label="{i18n>purchaseOrganization}" visible="{= ${VisibilityJSONModel>/isBuyer} === true || ${VisibilityJSONModel>/isPlanner} === true || ${VisibilityJSONModel>/isAdministrator} === true }">
 											<fb:control>
 												<m:MultiComboBox selectedKeys="{filterOrdersJSONModel>/ekorg}"
 													items="{ path: 'PurchaseOrganizationJSONModel>/results', sorter: { path: 'PURCH_ORG' } }">
@@ -65,7 +65,7 @@
 												</m:MultiComboBox>
 											</fb:control>
 										</fb:FilterItem>
-										<fb:FilterItem name="GrAcq" label="{i18n>EKGRP}" visible="{VisibilityJSONModel>/isBuyer}">
+										<fb:FilterItem name="GrAcq" label="{i18n>EKGRP}" visible="{= ${VisibilityJSONModel>/isBuyer} === true || ${VisibilityJSONModel>/isPlanner} === true || ${VisibilityJSONModel>/isAdministrator} === true }">
 											<fb:control>
 												<m:MultiComboBox selectedKeys="{filterOrdersJSONModel>/ekgrp}" items="{ path: 'PurchaseGroupJSONModel>/results', sorter: { path: 'CODE' } }"
 													showSecondaryValues="true">
@@ -93,7 +93,7 @@
 												<m:Input type="Text"/>
 											</fb:control>
 										</fb:FilterGroupItem>
-										<fb:FilterGroupItem groupName="GBuyer" groupTitle="Buyer" name="B1" label="Suppliers" visible="{VisibilityJSONModel>/isBuyer}">
+										<fb:FilterGroupItem groupName="GBuyer" groupTitle="Buyer" name="B1" label="Suppliers" visible="{= ${VisibilityJSONModel>/isBuyer} === true || ${VisibilityJSONModel>/isPlanner} === true || ${VisibilityJSONModel>/isAdministrator} === true }">
 											<fb:control>
 												<m:MultiComboBox >
 													<m:items>
@@ -104,7 +104,7 @@
 												</m:MultiComboBox>
 											</fb:control>
 										</fb:FilterGroupItem>
-										<fb:FilterGroupItem groupName="GBuyer" groupTitle="Buyer" name="B2" label="Sales Organizations" visible="{VisibilityJSONModel>/isBuyer}">
+										<fb:FilterGroupItem groupName="GBuyer" groupTitle="Buyer" name="B2" label="Sales Organizations" visible="{= ${VisibilityJSONModel>/isBuyer} === true || ${VisibilityJSONModel>/isPlanner} === true || ${VisibilityJSONModel>/isAdministrator} === true }">
 											<fb:control>
 												<m:Input type="Text"/>
 											</fb:control>
