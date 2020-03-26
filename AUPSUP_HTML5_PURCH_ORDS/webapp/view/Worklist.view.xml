@@ -182,7 +182,7 @@
 												<m:items>
 													<m:ColumnListItem type="Navigation" highlight="{path:'OrderJSONModel>Status', formatter:'.formatRowHighlight'}">
 														<m:cells>
-															<m:CheckBox selected="{OrderJSONModel>isSelected}" enabled="{OrderJSONModel>canEditPosition}"/>
+															<m:CheckBox selected="{OrderJSONModel>isSelected}" editable= "{= ${OrderJSONModel>/SKIP_NO_CONFERME} !== true}"/>
 															<m:Text text="{OrderJSONModel>EBELN}"/>
 															<m:Text text="{OrderJSONModel>EBELP}"/>
 															<m:Text text="{OrderJSONModel>LIFNR}"/>
