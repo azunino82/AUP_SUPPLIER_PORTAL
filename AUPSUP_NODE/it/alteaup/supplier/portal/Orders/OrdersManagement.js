@@ -140,18 +140,30 @@ module.exports = function () {
                                 if (OUT_POS_ORDERS !== undefined && OUT_POS_ORDERS !== null && OUT_POS_ORDERS.length > 0) {
                                     for (var i = 0; i < OUT_POS_ORDERS.length; i++) {
                                         var objectCopy = OUT_POS_ORDERS[i]
-                                        if (objectCopy.P1_PROGR_RIC !== null) {
-                                            console.log('LS P1_PROGR_RIC: ' + objectCopy.P1_PROGR_RIC)
-                                            objectCopy.PRIMO_PERIODO = parseFloat(objectCopy.P1_PROGR_RIC) > 0 ? ((parseFloat(objectCopy.P1_PROGR_CONF) / parseFloat(objectCopy.P1_PROGR_RIC)) * 100).toFixed(2) : 0
-                                         } else {
-                                            objectCopy.PRIMO_PERIODO = 0
-                                         }
-                                         if (objectCopy.P2_PROGR_RIC !== null) {
-                                            console.log('LS P1_PROGR_RIC: ' + objectCopy.P2_PROGR_RIC)
-                                            objectCopy.SECONDO_PERIODO = parseFloat(objectCopy.P2_PROGR_RIC) > 0 ? ((parseFloat(objectCopy.P2_PROGR_CONF) / parseFloat(objectCopy.P2_PROGR_RIC)) * 100).toFixed(2) : 0
-                                         } else {
-                                            objectCopy.SECONDO_PERIODO = 0
-                                         }
+                                        console.log('SKIP_NO_CONFERME: ' + objectCopy.SKIP_NO_CONFERME)
+                                        if (objectCopy.SKIP_NO_CONFERME !== null) {
+                                            if (objectCopy.SKIP_NO_CONFERME === 'X') {
+                                                objectCopy.SKIP_NO_CONFERME = true
+                                            }
+                                            objectCopy.PRIMO_PERIODO = 100
+                                        } else {
+                                            if (objectCopy.P1_PROGR_RIC !== null) {
+                                                console.log('LS P1_PROGR_RIC: ' + objectCopy.P1_PROGR_RIC)
+                                                objectCopy.PRIMO_PERIODO = parseFloat(objectCopy.P1_PROGR_RIC) > 0 ? ((parseFloat(objectCopy.P1_PROGR_CONF) / parseFloat(objectCopy.P1_PROGR_RIC)) * 100).toFixed(2) : 0
+                                            } else {
+                                                objectCopy.PRIMO_PERIODO = 0
+                                            }
+                                        }
+                                        if (objectCopy.SKIP_NO_CONFERME !== null) {
+                                            objectCopy.SECONDO_PERIODO = 100
+                                        } else {
+                                            if (objectCopy.P2_PROGR_RIC !== null) {
+                                                console.log('LS P1_PROGR_RIC: ' + objectCopy.P2_PROGR_RIC)
+                                                objectCopy.SECONDO_PERIODO = parseFloat(objectCopy.P2_PROGR_RIC) > 0 ? ((parseFloat(objectCopy.P2_PROGR_CONF) / parseFloat(objectCopy.P2_PROGR_RIC)) * 100).toFixed(2) : 0
+                                            } else {
+                                                objectCopy.SECONDO_PERIODO = 0
+                                            }
+                                        }
                                         objectCopy.POItemSchedulers = {
                                             results: []
                                         }
