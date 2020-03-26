@@ -10,7 +10,7 @@ BEGIN
 DECLARE exist_metaid INTEGER;
 DECLARE metaid VARCHAR(50);
 DECLARE bu NVARCHAR(20);
-DECLARE buyer NVARCHAR(20);
+DECLARE buyer NVARCHAR(250);
 DECLARE purch_org NVARCHAR(255);
 
 /* cerco le purchase org. dell'utente connesso */
