@@ -22,6 +22,7 @@ sap.ui.define([
     var originalDocumentManagement = [];
     var originalGestioneEtichette = [];
     var originalNotificationContacts = [];
+    var originalTexts = [];
 
     return BaseController.extend("it.alteaup.supplier.portal.customizing.AUPSUP_HTML5_CUSTOMIZING.controller.Worklist", {
         onInit: function () {
@@ -353,6 +354,26 @@ sap.ui.define([
             });
         },
 
+        getTexts: function (fCompletion) {
+
+
+            var url = "/backend/CustomizingManagement/GetTableData?I_TABLE=T_TEXTS";
+            that.ajaxGet(url, function (oData) {
+                if (oData) {
+                    var oModel = new JSONModel();
+                    if (oData.results) {
+                        oModel.setData(oData);
+                        that.getView().setModel(oModel, "TextsJSONModel");
+                        originalTexts = [];
+                        $.each(that.getView().getModel("TextsJSONModel").getData().results, function (index, elem) {
+                            var s_elem = JSON.stringify(elem);
+                            originalTexts.push(jQuery.parseJSON(s_elem));
+                        });
+                    }
+                }
+            });
+        },
+
         _completeInit: function (sMode, oData, fCompletion) {
 
             var oModel = new JSONModel();
@@ -548,6 +569,18 @@ sap.ui.define([
                 "EMAIL": ""
             });
             that.getView().getModel("NotificationContactsJSONModel").refresh();
+        },
+
+        onAssTextsRow: function () {
+            that.getView().getModel("TextsJSONModel").getData().results.push({
+                "SYSID": "",
+                "BSTYP": "",
+                "TABLE": "",
+                "ID": "",
+                "DESCRIPTION": "",
+                "COMMENTABLE":""
+            });
+            that.getView().getModel("TextsJSONModel").refresh();
         },
 
         onSaveBuyerList: function () {
@@ -768,6 +801,23 @@ sap.ui.define([
             }
         },
 
+        onSaveTextsList: function () {
+            if (that.getView().getModel("TextsJSONModel").getData().results) {
+                var promiseArr = []
+                $.each(that.getView().getModel("TextsJSONModel").getData().results, function (index, elem) {
+                    promiseArr.push(new Promise(function (resolve, reject) {
+                        that.onSaveTexts(elem, function () {
+                            resolve()
+                        })
+                    }))
+                })
+                Promise.all(promiseArr).then(values => {
+                    that.getTexts()
+                });
+            }
+        },
+
+
         onNotificationMaterList: function () {
             if (that.getView().getModel("NotificationMasterJSONModel").getData().results) {
                 var promiseArr = []
@@ -934,6 +984,15 @@ sap.ui.define([
             })
         },
 
+        onSaveTexts: function (elem, status, fCompletion) {
+            var url = "/backend/CustomizingManagement/SaveTTexts";
+            that.ajaxPost(url, elem, function (oData) {
+                if (oData) {
+                    fCompletion(oData);
+                }
+            })
+        },
+
         deleteBuyer: function (id, bu) {
             var url = "/backend/CustomizingManagement/TBuyers?I_USERID=" + id + "&I_BU=" + bu;
             that.ajaxDelete(url, function (oData) {
@@ -1058,6 +1117,15 @@ sap.ui.define([
                 }
             })
         },
+
+        deleteTexts: function (sysid, bstyp, table, id) {
+            var url = "/backend/CustomizingManagement/TTexts?I_SYSID=" + sysid + "&I_BSTYP=" + bstyp + "&I_TABLE=" + table + "&I_ID=" + id
+            that.ajaxDelete(url, function (oData) {
+                if (oData) {
+                    that.getTexts();
+                }
+            })
+        },
         
         deleteBuyerRow: function (oEvent) {
             var getTabledata = that.getView().getModel("BuyersJSONModel").getData().results;
@@ -1156,6 +1224,14 @@ sap.ui.define([
             var selctedRowdata = getTabledata[itemPosition];
             that.deleteNotificationContacts(selctedRowdata.STRUTTURA, selctedRowdata.TIPO_STRUTTURA, selctedRowdata.FLUSSO, selctedRowdata.CONT);
         },
+
+        deleteTextsRow: function (oEvent) {
+            var getTabledata = that.getView().getModel("TextsJSONModel").getData().results;
+            var itemPosition = oEvent.getSource().getParent().getParent().indexOfItem(oEvent.getSource().getParent());
+            var selctedRowdata = getTabledata[itemPosition];
+            that.deleteTexts(selctedRowdata.SYSID, selctedRowdata.BSTYP, selctedRowdata.TABLE, selctedRowdata.ID);
+        },
+
         onTabChange: function (oEvent) {
             var key = oEvent.getParameters().key;
             if (key === "1") {
@@ -1202,6 +1278,9 @@ sap.ui.define([
             }
             if (key === "14") {
                 that.getProfiliConfHeader();
+            }
+            if (key === "15") {
+                that.getTexts();
             }
         },
 

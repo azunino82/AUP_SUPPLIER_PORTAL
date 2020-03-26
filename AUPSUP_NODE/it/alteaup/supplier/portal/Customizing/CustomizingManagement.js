@@ -701,6 +701,52 @@ module.exports = function () {
     })
   })
 
+  app.post('/SaveTTexts', function (req, res) {
+    const body = req.body
+
+    var sql = 'UPSERT \"AUPSUP_DATABASE.data.tables::T_TEXTS\" VALUES (\'' + body.SYSID + '\',\'' + body.BSTYP + '\',\'' + body.TABLE + '\',\'' + body.ID + '\',\'' + body.DESCRIPTION + '\',\'' + body.COMMENTABLE + '\') WITH PRIMARY KEY'
+    console.log('sql: ' + sql)
+    hdbext.createConnection(req.tenantContainer, function (error, client) {
+      if (error) {
+        console.error('ERROR T_TEXTS :' + stringifyObj(error))
+        return res.status(500).send('T_TEXTS CONNECTION ERROR: ' + stringifyObj(error))
+      }
+      if (client) {
+        async.waterfall([
+
+          function prepare (callback) {
+            client.prepare(sql,
+              function (err, statement) {
+                callback(null, err, statement)
+              })
+          },
+
+          function execute (_err, statement, callback) {
+            statement.exec([], function (execErr, results) {
+              callback(null, execErr, results)
+            })
+          },
+
+          function response (err, results, callback) {
+            if (err) {
+              res.type('application/json').status(500).send({ ERROR: err })
+              return
+            } else {
+              res.type('application/json').status(200).send({ results: 'OK' })
+            }
+            callback()
+          }
+        ], function done (err, parameters, rows) {
+          console.log('---->>> CLIENT END T_TEXS <<<<<-----')
+          client.close()
+          if (err) {
+            return console.error('Done error', err)
+          }
+        })
+      }
+    })
+  })
+
   app.delete('/TBuyers', function (req, res) {
     var userid = req.query.I_USERID !== undefined && req.query.I_USERID !== null && req.query.I_USERID !== '' ? req.query.I_USERID : ''
     var BU = req.query.I_BU !== undefined && req.query.I_BU !== null && req.query.I_BU !== '' ? req.query.I_BU : ''
@@ -1388,6 +1434,57 @@ module.exports = function () {
           }
         ], function done (err, parameters, rows) {
           console.log('---->>> CLIENT END T_AVVISI_QUALITA <<<<<-----')
+          client.close()
+          if (err) {
+            return console.error('Done error', err)
+          }
+        })
+      }
+    })
+  })
+
+  app.delete('/TTexts', function (req, res) {
+    var SYSID = req.query.I_SYSID !== undefined && req.query.I_SYSID !== null && req.query.I_SYSID !== '' ? req.query.I_SYSID : ''
+    var BSTYP = req.query.I_BSTYP !== undefined && req.query.I_BSTYP !== null && req.query.I_BSTYP !== '' ? req.query.I_BSTYP : ''
+    var TABLE = req.query.I_TABLE !== undefined && req.query.I_TABLE !== null && req.query.I_TABLE !== '' ? req.query.I_TABLE : ''
+    var ID = req.query.I_ID !== undefined && req.query.I_ID !== null && req.query.I_ID !== '' ? req.query.I_ID : ''
+    if (SYSID === '' || BSTYP === '' || TABLE === '' || ID === '') {
+      return res.status(500).send('I_SYSID and I_BSTYP AND I_TABLE and I_ID are Mandatory')
+    }
+    const sql = 'DELETE FROM \"AUPSUP_DATABASE.data.tables::T_TEXTS\" WHERE SYSID=\'' + SYSID + '\' AND BSTYP = \'' + BSTYP + '\' AND TABLE = \'' + TABLE + '\' AND ID = \'' + ID + '\''
+
+    hdbext.createConnection(req.tenantContainer, function (error, client) {
+      if (error) {
+        console.error('ERROR :' + stringifyObj(error))
+        return res.status(500).send('GetTableData CONNECTION ERROR: ' + stringifyObj(error))
+      }
+      if (client) {
+        async.waterfall([
+
+          function prepare (callback) {
+            client.prepare(sql,
+              function (err, statement) {
+                callback(null, err, statement)
+              })
+          },
+
+          function execute (_err, statement, callback) {
+            statement.exec([], function (execErr, results) {
+              callback(null, execErr, results)
+            })
+          },
+
+          function response (err, results, callback) {
+            if (err) {
+              res.type('application/json').status(500).send({ ERROR: err })
+              return
+            } else {
+              res.type('application/json').status(200).send({ results: results })
+            }
+            callback()
+          }
+        ], function done (err, parameters, rows) {
+          console.log('---->>> CLIENT END T_TEXTS <<<<<-----')
           client.close()
           if (err) {
             return console.error('Done error', err)

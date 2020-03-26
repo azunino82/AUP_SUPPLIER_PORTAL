@@ -854,6 +854,58 @@
 															<m:Button type="Accept" text="Save" press="onSaveNotificationContactsList"/>
 														</m:Toolbar>
 													</m:IconTabFilter>
+													<m:IconTabFilter key="15" text="Testi" count="{= ${TextsJSONModel>/results}.length}">
+														<m:Table id="TextsJSONModelTable" items="{TextsJSONModel>/results}" growing="true" growingThreshold="150">
+															<m:headerToolbar>
+																<m:OverflowToolbar>
+																	<m:content>
+																		<m:ToolbarSpacer/>
+																		<m:Button id="headerTextsRefresh" icon="sap-icon://add" press="onAssTextsRow" type="Transparent"/>
+																	</m:content>
+																</m:OverflowToolbar>
+															</m:headerToolbar>
+															<m:columns>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>SYSID}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>BSTYP}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>TABLE}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>ID}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>DESCRIPTION}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>COMMENTABLE}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true" hAlign="End" width="5em">
+																	<m:Label class="columnLabelStyle"/>
+																</m:Column>
+															</m:columns>
+															<m:items>
+																<m:ColumnListItem>
+																	<m:cells>
+																		<m:Input value="{TextsJSONModel>SYSID}"/>
+																		<m:Input value="{TextsJSONModel>BSTYP}"/>
+																		<m:Input value="{TextsJSONModel>TABLE}"/>
+																		<m:Input value="{TextsJSONModel>ID}"/>
+																		<m:Input value="{TextsJSONModel>DESCRIPTION}"/>
+																		<m:Input value="{TextsJSONModel>COMMENTABLE}"/>
+																		<m:Button icon="sap-icon://delete" press="deleteTextsRow"/>
+																	</m:cells>
+																</m:ColumnListItem>
+															</m:items>
+														</m:Table>
+														<m:Toolbar>
+															<m:ToolbarSpacer/>
+															<m:Button type="Accept" text="Save" press="onSaveTextsList"/>
+														</m:Toolbar>
+													</m:IconTabFilter>
 												</m:items>
 											</m:IconTabBar>
 										</ObjectPageSubSection>
