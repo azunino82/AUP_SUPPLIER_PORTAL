@@ -30,4 +30,7 @@ module.exports = function (app, server) {
 
   // SERVIZI APP CUSTOMIZING
   app.use('/CustomizingManagement', require('../it/alteaup/supplier/portal/Customizing/CustomizingManagement')())
+
+  // SERVIZI SCHEDULATORE LETTURA ORDINE E PIANI ecc..
+  app.use('/SchedulersManagement', require('../it/alteaup/supplier/portal/Schedulers/SchedulersManagement')())
 }

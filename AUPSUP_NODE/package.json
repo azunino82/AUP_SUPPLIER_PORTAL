@@ -7,8 +7,13 @@
 		"passport": "^0.4.0",
 		"stringify-object": "latest",
 		"body-parser": "latest",
-		"async": "latest",
-		"express-timeout-handler":"latest"
+		"async": "latest",	
+		"express-timeout-handler":"latest",
+		"node-cron":"latest",
+		"express-fileupload":"latest",
+		"cors":"latest",
+		"morgan":"latest",
+		"lodash":"latest"
 	},
 	"description": "my description",
 	"devDependencies": {

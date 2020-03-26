@@ -9,8 +9,14 @@ var express = require('express')
 var passport = require('passport')
 var stringifyObj = require('stringify-object')
 var bodyParser = require('body-parser')
+const cron = require('node-cron')
 
 var app = express()
+
+/*
+cron.schedule('* * * * *', function () {
+  console.log('AZ SCHEDULE: running a task every minute')
+}) */
 
 function mtMiddleware (req, res, next) {
   // Assumes the HDI container was tagged with a tag of the form subdomain:<subdomain> and is bound to the MTAppBackend
