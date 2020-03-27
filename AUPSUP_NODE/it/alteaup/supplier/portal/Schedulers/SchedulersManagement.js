@@ -24,12 +24,11 @@ module.exports = function () {
 
     // READ ORDER FOR JOB
     app.get('/GetNotificationList', function (req, res) {
-      
         hdbext.createConnection(req.tenantContainer, (err, client) => {
             if (err) {
             return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
             } else {
-            hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.SchedulingAgreement::ODAUpdateTask', function (_err, sp) {
+            hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Schedulers::ODAUpdateTask', function (_err, sp) {
                 sp((err, parameters, returns) => {
                 if (err) {
                     console.error('ERROR: ' + err)

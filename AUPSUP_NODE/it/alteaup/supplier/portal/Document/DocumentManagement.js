@@ -8,10 +8,142 @@ var hdbext = require('@sap/hdbext')
 var async = require('async')
 var stringifyObj = require('stringify-object')
 
+const fileUpload = require('express-fileupload')
+const cors = require('cors')
+const bodyParser = require('body-parser')
+const morgan = require('morgan')
+const _ = require('lodash')
+
 module.exports = function () {
     var app = express.Router()
 
-    const bodyParser = require('body-parser')
+    // enable files upload
+    app.use(fileUpload({
+        createParentPath: true
+    }))
+
+    // add other middleware
+    app.use(cors())
+    app.use(bodyParser.json())
+    app.use(bodyParser.urlencoded({ extended: true }))
+    app.use(morgan('dev'))
+
+    app.post('/uploadDocTest', async (req, res) => {
+        try {
+            if (!req.files) {
+                res.send({
+                    status: false,
+                    message: 'No file uploaded'
+                })
+            } else {
+                // Use the name of the input field (i.e. "avatar") to retrieve the uploaded file
+                const avatar = req.files.avatar
+                
+                // Use the mv() method to place the file in upload directory (i.e. "uploads")
+                // avatar.mv('./uploads/' + avatar.name)
+
+                var logMessage = ''
+                var userid = req.user.id
+                var classification = req.query.I_CLASSIFICATION !== undefined && req.query.I_CLASSIFICATION !== null ? req.query.I_CLASSIFICATION : ''
+                var application = req.query.I_APPLICATION !== undefined && req.query.I_APPLICATION !== null ? req.query.I_APPLICATION : ''
+                var fileName = req.query.I_FILE_NAME !== undefined && req.query.I_FILE_NAME !== null ? req.query.I_FILE_NAME : ''
+                var objectCode = req.query.I_OBJECT_CODE !== undefined && req.query.I_OBJECT_CODE !== null ? req.query.I_OBJECT_CODE : ''
+                var data = ''
+                var metaId = req.query.I_METAID !== undefined && req.query.I_METAID !== null ? req.query.I_METAID : ''
+                var werks = req.query.I_WERKS !== undefined && req.query.I_WERKS !== null ? req.query.I_WERKS : ''
+                var lifnr = req.query.I_LIFNR !== undefined && req.query.I_LIFNR !== null ? req.query.I_LIFNR : ''
+        
+                var canPlay = false
+            
+                if (classification != null && classification !== '') {
+                    canPlay = true
+                } else {
+                    canPlay = false
+                    logMessage = logMessage + ' I_CLASSIFICATION, '
+                }
+            
+                if (fileName != null && fileName !== '') {
+                    canPlay = true
+                } else {
+                    canPlay = false
+                    logMessage = logMessage + ' I_FILE_NAME, '
+                }
+            
+                if (objectCode != null && objectCode !== '') {
+                    canPlay = true
+                } else {
+                    canPlay = false
+                    logMessage = logMessage + ' I_OBJECT_CODE, '
+                }
+            
+                if (application != null && application !== '') {
+                    canPlay = true
+                } else {
+                    canPlay = false
+                    logMessage = logMessage + ' I_APPLICATION, '
+                }
+        
+                if (avatar.data !== undefined && avatar.data !== null) {
+                    canPlay = true
+                    data = avatar.data
+                } else {
+                    canPlay = false
+                    logMessage = logMessage + ' FILE, '
+                }
+                console.log('CAN PLAY')
+                if (canPlay) {
+                    hdbext.createConnection(req.tenantContainer, (err, client) => {
+                        if (err) {
+                            return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
+                        } else {
+                            console.log('loadProcedure')
+                            hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Documents::MM00_DOC_UPLOAD', function (_err, sp) {
+                                console.log('sp')
+                                sp(userid, data, fileName, objectCode, classification, application, metaId, werks, lifnr, (err, parameters, O_DOC_NUMBER, O_MESSAGE) => {
+                                if (err) {
+                                    console.error('ERROR: ' + err)
+                                    return res.status(500).send(stringifyObj(err))
+                                } else {
+                                    var out = ''
+                                    var results = ''
+        
+                                    if (O_MESSAGE !== null && O_MESSAGE !== undefined && O_MESSAGE !== '') {
+                                        var message = O_MESSAGE
+                                        if (message != null && message !== '') {
+                                            out = message
+                                            results = {
+                                                message: out
+                                            }
+                                        }
+                                    } else {
+                                        if (O_DOC_NUMBER !== undefined && O_DOC_NUMBER !== null) {
+                                            var docID = O_DOC_NUMBER
+                                            if (docID != null && docID !== '') {
+                                                out = docID
+                                                results = {
+                                                    docId: out
+                                                }
+                                            }
+                                        }
+                                    }
+                                    return res.status(200).send({
+                                        results: results
+                                    })
+                                }
+                                })
+                            })
+                        }
+                    })
+                } else {
+                    return res.status(500).send(stringifyObj(logMessage))
+                }
+            }
+        } catch (err) {
+            res.status(500).send(err)
+        }
+    })
+
+    /* const bodyParser = require('body-parser')
 
     app.use(
         bodyParser.urlencoded({
@@ -19,7 +151,7 @@ module.exports = function () {
         })
     )
 
-    app.use(bodyParser.json())
+    app.use(bodyParser.json()) */
 
     // GET DOCUMENT INFO BY CLASSIFICATION
 
@@ -112,7 +244,7 @@ module.exports = function () {
     app.post('/DocUpload', function (req, res) {
         const body = req.body
 
-        console.log('INPUT BODY ==========> ' + JSON.stringify(body))
+         console.log('INPUT BODY ==========> ' + body.length)
 
         var logMessage = ''
         var userid = req.user.id
@@ -364,11 +496,6 @@ module.exports = function () {
             return res.status(500).send(JSON.stringify("{'Error':'" + logMessage + " mandatory'}"))
         }
     })    
-    // Parse URL-encoded bodies (as sent by HTML forms)
-    // app.use(express.urlencoded());
-
-    // Parse JSON bodies (as sent by API clients)
-    app.use(express.json())
 
     return app
 }
