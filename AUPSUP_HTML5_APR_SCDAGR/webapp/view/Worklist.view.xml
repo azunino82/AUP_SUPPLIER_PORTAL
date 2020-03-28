@@ -194,9 +194,9 @@
 														<m:Text text="{SchedAgreeJSONModel>EBELN}"/>
 														<m:Text text="{SchedAgreeJSONModel>EBELP}"/>
 														<m:Text text="{SchedAgreeJSONModel>EBTYP}"/>
-														<m:Text text="{SchedAgreeJSONModel>MATNR}"/>
+														<m:Text text="{path : 'SchedAgreeJSONModel>MATNR', formatter : '.removeZeroBefore'}"/>
 														<m:Text text="{SchedAgreeJSONModel>TXZ01}"/>
-														<m:Text text="{SchedAgreeJSONModel>LIFNR}"/>
+														<m:Text text="{path : 'SchedAgreeJSONModel>LIFNR', formatter : '.removeZeroBefore'}"/>
 														<m:Text text="{SchedAgreeJSONModel>NAME1}"/>
 														<m:Text text="{path : 'SchedAgreeJSONModel>MENGE_ORIGINAL', formatter : '.importFormatter'}"/>
 														<m:Text text="{path : 'SchedAgreeJSONModel>MENGE', formatter : '.importFormatter'}"/>
