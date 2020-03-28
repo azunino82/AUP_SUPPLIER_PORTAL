@@ -9,57 +9,8 @@ var express = require('express')
 var passport = require('passport')
 var stringifyObj = require('stringify-object')
 var bodyParser = require('body-parser')
-const cron = require('node-cron')
 
 var app = express()
-
-const promiseCallOrderUpdate = () => {
-
-  const dbConfigAccessLUVEQUA = {
-    host: 'zeus.hana.prod.eu-central-1.whitney.dbaas.ondemand.com',
-    port: '29389',
-    driver: 'com.sap.db.jdbc.Driver',
-    url: 'jdbc:sap://zeus.hana.prod.eu-central-1.whitney.dbaas.ondemand.com:29389?encrypt=true&validateCertificate=true&currentschema=QASLUVEECC',
-    schema: 'QASLUVEECC',
-    hdi_user: 'QASLUVEECC_6Q25J1DUMGGG468TLYUAKSLNO_DT',
-    hdi_password: 'Is2XaOCLH5kvXXBibap.dAvksmNA.N4G9mREQ48KONBHVkuUFFy98_Lw7.f7LFZQG3de8.ZyxJaKc1IargfqFQhiQJ6ye_nmmFGZMXH9isChKN445iWL2y.PXDn-QKmw',
-    user: 'QASLUVEECC_6Q25J1DUMGGG468TLYUAKSLNO_RT',
-    password: 'Gy44YijIE1yKRkXJqWdqmM8R2rUbplmNx86Zdsk3WFoDJQyeg55jsGaShOzFszUc-3emwrrCo-reSKBNMEtvHNZpOOMhhQM4w2hp89Ufwj8ItFpSzj4Jbh3_KtTliwP1',
-    certificate: '-----BEGIN CERTIFICATE-----\nMIIDrzCCApegAwIBAgIQCDvgVpBCRrGhdWrJWZHHSjANBgkqhkiG9w0BAQUFADBh\nMQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3\nd3cuZGlnaWNlcnQuY29tMSAwHgYDVQQDExdEaWdpQ2VydCBHbG9iYWwgUm9vdCBD\nQTAeFw0wNjExMTAwMDAwMDBaFw0zMTExMTAwMDAwMDBaMGExCzAJBgNVBAYTAlVT\nMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5j\nb20xIDAeBgNVBAMTF0RpZ2lDZXJ0IEdsb2JhbCBSb290IENBMIIBIjANBgkqhkiG\n9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4jvhEXLeqKTTo1eqUKKPC3eQyaKl7hLOllsB\nCSDMAZOnTjC3U/dDxGkAV53ijSLdhwZAAIEJzs4bg7/fzTtxRuLWZscFs3YnFo97\nnh6Vfe63SKMI2tavegw5BmV/Sl0fvBf4q77uKNd0f3p4mVmFaG5cIzJLv07A6Fpt\n43C/dxC//AH2hdmoRBBYMql1GNXRor5H4idq9Joz+EkIYIvUX7Q6hL+hqkpMfT7P\nT19sdl6gSzeRntwi5m3OFBqOasv+zbMUZBfHWymeMr/y7vrTC0LUq7dBMtoM1O/4\ngdW7jVg/tRvoSSiicNoxBN33shbyTApOB6jtSj1etX+jkMOvJwIDAQABo2MwYTAO\nBgNVHQ8BAf8EBAMCAYYwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQUA95QNVbR\nTLtm8KPiGxvDl7I90VUwHwYDVR0jBBgwFoAUA95QNVbRTLtm8KPiGxvDl7I90VUw\nDQYJKoZIhvcNAQEFBQADggEBAMucN6pIExIK+t1EnE9SsPTfrgT1eXkIoyQY/Esr\nhMAtudXH/vTBH1jLuG2cenTnmCmrEbXjcKChzUyImZOMkXDiqw8cvpOp/2PV5Adg\n06O/nVsJ8dWO41P0jmP6P6fbtGbfYmbW0W5BjfIttep3Sp+dWOIrWcBAI+0tKIJF\nPnlUkiaY4IBIqDfv8NZ5YBberOgOzW6sRBc4L0na4UU+Krk2U886UAb3LujEV0ls\nYSEY1QSteDwsOoBrp+uvFRTp2InBuThs4pFsiv9kuXclVzDAGySj4dzp30d8tbQk\nCAUw7C29C79Fv1C5qfPrmAESrciIxpg0X40KPMbp1ZWVbd4=\n-----END CERTIFICATE-----\n'
-  }
-
-  return new Promise((resolve, reject) => {
-    try {
-      hdbext.createConnection(dbConfigAccessLUVEQUA, (err, client) => {
-        if (err) {
-          console.log('SCHEDULER ERROR: ' + stringifyObj(err))
-          // eslint-disable-next-line prefer-promise-reject-errors
-          reject()
-        } else {
-          hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Schedulers::ODAUpdateTask', function (_err, sp) {
-            sp((err, parameters, returns) => {
-              if (err) {
-                console.error('SCHEDULER ODA LUVE ERROR: ' + err)
-                // eslint-disable-next-line prefer-promise-reject-errors
-                reject()
-              } else {
-                console.log('SCHEDULER ODA LUVE OOOK')
-                resolve()
-              }
-            })
-          })
-        }
-      })
-    } catch (error) {
-      console.log('JOB ODA LUVE ERROR EXCEPT ' + error)
-      // eslint-disable-next-line prefer-promise-reject-errors
-      reject()
-    }
-  })
-}
-
-// ATTIVAZIONE SCHEDULER ODA
-// cron.schedule('15,30,45,59 * * * *', async () => promiseCallOrderUpdate())
 
 function mtMiddleware (req, res, next) {
   // Assumes the HDI container was tagged with a tag of the form subdomain:<subdomain> and is bound to the MTAppBackend
@@ -84,7 +35,7 @@ function mtMiddleware (req, res, next) {
     }
 
     req.tenantContainer = services.hana
-    console.log('req.tenantContainer: ' + stringifyObj(req.tenantContainer))
+  // console.log('req.tenantContainer: ' + stringifyObj(req.tenantContainer))
   } catch (error) {
     console.log('mtMiddleware error: ' + error)
   }
