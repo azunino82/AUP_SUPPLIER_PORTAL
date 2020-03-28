@@ -26,7 +26,7 @@
 						<headerContent>
 							<layout:HorizontalLayout>
 								<m:VBox class="sapUiSmallMargin">
-									<m:ObjectAttribute title="{i18n>MATNR}" text="{ path: 'OrderPrositionJSONModel>/MATNR' }"/>
+									<m:ObjectAttribute title="{i18n>MATNR}" text="{ path: 'OrderPrositionJSONModel>/MATNR', formatter : '.removeZeroBefore' }"/>
 									<!--Materiale-->
 									<m:ObjectAttribute title="{i18n>TXZ01}" text="{ path: 'OrderPrositionJSONModel>/TXZ01' }"/>
 									<!--Testo Breve-->

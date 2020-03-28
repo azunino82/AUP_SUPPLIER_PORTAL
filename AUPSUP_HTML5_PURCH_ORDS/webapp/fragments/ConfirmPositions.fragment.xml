@@ -23,7 +23,7 @@
 								<f:content>
 									<core:Title text="{SelectedPositionsJSONModel>EBELN} - {SelectedPositionsJSONModel>EBELP}"/>
 									<Label text="{i18n>materialCode}"/>
-									<Text text="{SelectedPositionsJSONModel>MATNR}"/>
+									<Text text="{path : 'SelectedPositionsJSONModel>MATNR', formatter : '.removeZeroBefore'}"/>
 									<Label text="{i18n>materialDescr}"/>
 									<Text text="{SelectedPositionsJSONModel>TXZ01}" wrapping="false"/>
 									<Label text="{i18n>ZENTRATA}"/>

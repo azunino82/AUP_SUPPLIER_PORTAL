@@ -185,10 +185,10 @@
 															<m:CheckBox selected="{OrderJSONModel>isSelected}" editable= "{= ${OrderJSONModel>SKIP_NO_CONFERME} !== true}"/>
 															<m:Text text="{OrderJSONModel>EBELN}"/>
 															<m:Text text="{OrderJSONModel>EBELP}"/>
-															<m:Text text="{OrderJSONModel>LIFNR}"/>
+															<m:Text text="{path : 'OrderJSONModel>LIFNR', formatter : '.removeZeroBefore'}"/>
 															<m:Text text="{OrderJSONModel>NAME1}"/>
 															<m:Text text="{OrderJSONModel>WERKS} / {OrderJSONModel>PLANT_DESCR}"/>															
-															<m:Text text="{OrderJSONModel>MATNR}"/>
+															<m:Text text="{path : 'OrderJSONModel>MATNR', formatter : '.removeZeroBefore'}"/>
 															<m:Text text="{OrderJSONModel>TXZ01}"/>
 															<m:Text text="{OrderJSONModel>IDNLF}"/>
 															<m:Text text="{path : 'OrderJSONModel>MENGE', formatter : '.importFormatter'}"/>
