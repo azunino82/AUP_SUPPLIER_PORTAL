@@ -245,7 +245,20 @@ sap.ui.define([
 			});
 
 		},
-
+		
+		removeZeroBefore: function (sValue) {
+			if (sValue !== undefined) {
+				var n = 0
+				for (var i = 0; i < sValue.length; i++) {
+					if (sValue.charAt(i) !== '0') {
+						n = i
+						break
+					}
+				}
+				return sValue.substring(n, sValue.length);
+			}
+			return sValue
+		}
 
 	});
 });

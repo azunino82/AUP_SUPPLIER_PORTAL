@@ -74,7 +74,7 @@
 							<items>
 								<ColumnListItem>
 									<cells>
-										<Text text="{tableModelSuppliers>LIFNR}"/>
+										<Text text="{path : 'tableModelSuppliers>LIFNR', formatter : '.removeZeroBefore'}"/>
 										<Text text="{tableModelSuppliers>NAME1}"/>
 										<Text text="{tableModelSuppliers>EKORG}"/>
 										<Text text="{tableModelSuppliers>STREET}"/>
