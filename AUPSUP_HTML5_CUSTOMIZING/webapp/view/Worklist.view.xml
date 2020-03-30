@@ -1,6 +1,12 @@
-<mvc:View controllerName="it.alteaup.supplier.portal.customizing.AUPSUP_HTML5_CUSTOMIZING.controller.Worklist" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.uxap"
-	xmlns:layout="sap.ui.layout" xmlns:m="sap.m" xmlns:table="sap.ui.table" xmlns:core="sap.ui.core"
-	xmlns:personal="sap.uxap.sample.SharedBlocks.personal" xmlns:form="sap.ui.layout.form">
+<mvc:View controllerName="it.alteaup.supplier.portal.customizing.AUPSUP_HTML5_CUSTOMIZING.controller.Worklist" 
+	xmlns:mvc="sap.ui.core.mvc" 
+	xmlns="sap.uxap" 
+	xmlns:layout="sap.ui.layout" 
+	xmlns:m="sap.m" 
+	xmlns:table="sap.ui.table" 
+	xmlns:core="sap.ui.core" 
+	xmlns:personal="sap.uxap.sample.SharedBlocks.personal" 
+	xmlns:form="sap.ui.layout.form">
 	<m:Shell id="shell" appWidthLimited="false">
 		<m:App id="app">
 			<m:pages>
@@ -292,8 +298,7 @@
 																	<!--		<m:Button icon="sap-icon://delete" press="deleteProfiliConfermaRow"/>-->
 																	<!--	</m:contentRight>-->
 																	<!--</m:Bar>-->
-																	<form:SimpleForm editable="true" layout="ResponsiveGridLayout" labelSpanXL="12" labelSpanL="12" labelSpanM="12" labelSpanS="12"
-																		adjustLabelSpan="false" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="4" columnsL="4" columnsM="4">
+																	<form:SimpleForm editable="true" layout="ResponsiveGridLayout" labelSpanXL="12" labelSpanL="12" labelSpanM="12" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="4" columnsL="4" columnsM="4">
 																		<form:content>
 																			<core:Title text=""/>
 																			<m:Label text="{i18n>SYSID}"/>
@@ -343,8 +348,7 @@
 																	<!--		<m:Button icon="sap-icon://delete" press="deleteProfiliConfermaRow"/>-->
 																	<!--	</m:contentRight>-->
 																	<!--</m:Bar>-->
-																	<form:SimpleForm editable="true" layout="ResponsiveGridLayout" labelSpanXL="12" labelSpanL="12" labelSpanM="12" labelSpanS="12"
-																		adjustLabelSpan="false" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="4" columnsL="4" columnsM="4">
+																	<form:SimpleForm editable="true" layout="ResponsiveGridLayout" labelSpanXL="12" labelSpanL="12" labelSpanM="12" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="4" columnsL="4" columnsM="4">
 																		<form:content>
 																			<core:Title text=""/>
 																			<m:Label text="{i18n>SYSID}"/>
@@ -514,8 +518,7 @@
 														</m:Toolbar>
 													</m:IconTabFilter>
 													<m:IconTabFilter key="8" text="Matrice Criticita" count="{= ${MatriceCriticitaJSONModel>/results}.length}">
-														<m:Table id="MatriceCriticitaTable" items="{MatriceCriticitaJSONModel>/results}" growing="true" growingThreshold="200"
-															growingScrollToLoad="false">
+														<m:Table id="MatriceCriticitaTable" items="{MatriceCriticitaJSONModel>/results}" growing="true" growingThreshold="200" growingScrollToLoad="false">
 															<m:headerToolbar>
 																<m:OverflowToolbar>
 																	<m:content>
@@ -703,6 +706,9 @@
 																	<m:Label text="{i18n>CLASSIFICATION}" class="columnLabelStyle"/>
 																</m:Column>
 																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>PROGRESSIVO}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
 																	<m:Label text="{i18n>DOC_IN}" class="columnLabelStyle"/>
 																</m:Column>
 																<m:Column minScreenWidth="Desktop" demandPopin="true">
@@ -721,10 +727,16 @@
 																	<m:Label text="{i18n>DMS_VERSION_IN}" class="columnLabelStyle"/>
 																</m:Column>
 																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>DMS_STATUS_IN}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
 																	<m:Label text="{i18n>DMS_DOC_TYPE_OUT}" class="columnLabelStyle"/>
 																</m:Column>
 																<m:Column minScreenWidth="Desktop" demandPopin="true">
 																	<m:Label text="{i18n>DMS_VERSION_OUT}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>DMS_STATUS_OUT}" class="columnLabelStyle"/>
 																</m:Column>
 																<m:Column minScreenWidth="Desktop" demandPopin="true">
 																	<m:Label text="{i18n>DMS_DOC_OBJ}" class="columnLabelStyle"/>
@@ -739,14 +751,17 @@
 																		<m:Input value="{DocumentManagementJSONModel>SYSID}" enabled="{= ${DocumentManagementJSONModel>SYSID} === ''}"/>
 																		<m:Input value="{DocumentManagementJSONModel>APPLICATION}" enabled="{= ${DocumentManagementJSONModel>APPLICATION} === ''}"/>
 																		<m:Input value="{DocumentManagementJSONModel>CLASSIFICATION}" enabled="{= ${DocumentManagementJSONModel>CLASSIFICATION} === ''}"/>
+																		<m:Input value="{DocumentManagementJSONModel>PROGRESSIVO}" enabled="{= ${DocumentManagementJSONModel>PROGRESSIVO} === ''}"/>
 																		<m:Input value="{DocumentManagementJSONModel>DOC_IN}"/>
 																		<m:Input value="{DocumentManagementJSONModel>DOC_OUT}"/>
 																		<m:Input value="{DocumentManagementJSONModel>ARCHIVE_LINK_ACTIVE}"/>
 																		<m:Input value="{DocumentManagementJSONModel>DMS_ACTIVE}"/>
 																		<m:Input value="{DocumentManagementJSONModel>DMS_DOC_TYPE_IN}"/>
 																		<m:Input value="{DocumentManagementJSONModel>DMS_VERSION_IN}"/>
+																		<m:Input value="{DocumentManagementJSONModel>DMS_STATUS_IN}"/>
 																		<m:Input value="{DocumentManagementJSONModel>DMS_DOC_TYPE_OUT}"/>
 																		<m:Input value="{DocumentManagementJSONModel>DMS_VERSION_OUT}"/>
+																		<m:Input value="{DocumentManagementJSONModel>DMS_STATUS_OUT}"/>
 																		<m:Input value="{DocumentManagementJSONModel>DMS_DOC_OBJ}"/>
 																		<m:Button icon="sap-icon://delete" press="deleteDocumentManagementRow"/>
 																	</m:cells>
@@ -756,6 +771,54 @@
 														<m:Toolbar>
 															<m:ToolbarSpacer/>
 															<m:Button type="Accept" text="Save" press="onSaveDocumentManagementList"/>
+														</m:Toolbar>
+													</m:IconTabFilter>
+													<m:IconTabFilter key="16" text="Document Management Texts" count="{= ${DocumentManagementTypesJSONModel>/results}.length}">
+														<m:Table id="DocumentManagementTypesTable" items="{DocumentManagementTypesJSONModel>/results}" growing="true">
+															<m:headerToolbar>
+																<m:OverflowToolbar>
+																	<m:content>
+																		<m:ToolbarSpacer/>
+																		<m:Button id="headerDocumentManagementTypesRefresh" icon="sap-icon://add" press="onAssDocumentManagementTypesRow" type="Transparent"/>
+																	</m:content>
+																</m:OverflowToolbar>
+															</m:headerToolbar>
+															<m:columns>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>APPLICATION}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>CLASSIFICATION}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>DMS_DOC_TYPE}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>DMS_DOC_DESCR}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>LANGUAGE}" class="columnLabelStyle"/>
+																</m:Column>																
+																<m:Column minScreenWidth="Desktop" demandPopin="true" hAlign="End" width="5em">
+																	<m:Label class="columnLabelStyle"/>
+																</m:Column>
+															</m:columns>
+															<m:items>
+																<m:ColumnListItem>
+																	<m:cells>
+																		<m:Input value="{DocumentManagementTypesJSONModel>APPLICATION}" enabled="{= ${DocumentManagementTypesJSONModel>APPLICATION} === ''}"/>
+																		<m:Input value="{DocumentManagementTypesJSONModel>CLASSIFICATION}" enabled="{= ${DocumentManagementTypesJSONModel>CLASSIFICATION} === ''}"/>
+																		<m:Input value="{DocumentManagementTypesJSONModel>DMS_DOC_TYPE}" enabled="{= ${DocumentManagementTypesJSONModel>DMS_DOC_TYPE} === ''}"/>
+																		<m:Input value="{DocumentManagementTypesJSONModel>DMS_DOC_TYPE_DESCR}"/>
+																		<m:Input value="{DocumentManagementTypesJSONModel>LANGUAGE}"/>
+																		<m:Button icon="sap-icon://delete" press="deleteDocumentManagementTypesRow"/>
+																	</m:cells>
+																</m:ColumnListItem>
+															</m:items>
+														</m:Table>
+														<m:Toolbar>
+															<m:ToolbarSpacer/>
+															<m:Button type="Accept" text="Save" press="onSaveDocumentManagementTypesList"/>
 														</m:Toolbar>
 													</m:IconTabFilter>
 													<m:IconTabFilter key="12" text="Gestione Etichette" count="{= ${GestioneEtichetteJSONModel>/results}.length}">

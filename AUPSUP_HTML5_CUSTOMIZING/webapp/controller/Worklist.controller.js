@@ -20,6 +20,7 @@ sap.ui.define([
     var originalTipoOrdine = [];
     var originalNotificatioMaster = [];
     var originalDocumentManagement = [];
+    var originalDocumentTypesManagement = [];
     var originalGestioneEtichette = [];
     var originalNotificationContacts = [];
     var originalTexts = [];
@@ -163,7 +164,7 @@ sap.ui.define([
                             elem.NUMERO_SERIALE_INB = elem.NUMERO_SERIALE_INB === "X" ? true : false;
                             elem.CONFERMA_MANDATORY = elem.CONFERMA_MANDATORY === "X" ? true : false;
                             elem.CONTROLLO_CORSO_APP = elem.CONTROLLO_CORSO_APP === "X" ? true : false;
-                            
+
                         });
 
                         oModel.setData(oData);
@@ -194,9 +195,9 @@ sap.ui.define([
                                 elem.MODIFICA_PREZZO = true;
                             else
                                 elem.MODIFICA_PREZZO = false;
-                            
+
                             elem.CONFERMA_MANDATORY = elem.CONFERMA_MANDATORY === "X" ? true : false;
-                            
+
                         });
 
                         oModel.setData(oData);
@@ -308,6 +309,26 @@ sap.ui.define([
                         $.each(that.getView().getModel("DocumentManagementJSONModel").getData().results, function (index, elem) {
                             var s_elem = JSON.stringify(elem);
                             originalDocumentManagement.push(jQuery.parseJSON(s_elem));
+                        });
+                    }
+                }
+            });
+
+        },
+
+        getDocumentManagementTypes: function (fCompletion) {
+
+            var url = "/backend/CustomizingManagement/GetTableData?I_TABLE=T_DOCUMENT_TYPES";
+            that.ajaxGet(url, function (oData) {
+                if (oData) {
+                    var oModel = new JSONModel();
+                    if (oData.results) {
+                        oModel.setData(oData);
+                        that.getView().setModel(oModel, "DocumentManagementTypesJSONModel");
+                        originalDocumentTypesManagement = [];
+                        $.each(that.getView().getModel("DocumentManagementTypesJSONModel").getData().results, function (index, elem) {
+                            var s_elem = JSON.stringify(elem);
+                            originalDocumentTypesManagement.push(jQuery.parseJSON(s_elem));
                         });
                     }
                 }
@@ -513,8 +534,8 @@ sap.ui.define([
                 "PLANNING": "",
                 "MESSAGE_TYPE": "",
                 "APPLICATION": "",
-                "TIME_DEPENDENT" : "",
-                "GG_ESTRAZIONE" :"",
+                "TIME_DEPENDENT": "",
+                "GG_ESTRAZIONE": "",
                 "PROGRESSIVI": ""
             });
             that.getView().getModel("TipoOrdineJSONModel").refresh();
@@ -536,17 +557,32 @@ sap.ui.define([
                 "SYSID": "",
                 "APPLICATION": "",
                 "CLASSIFICATION": "",
+                "PROGRESSIVE": null,
                 "DOC_IN": "",
                 "DOC_OUT": "",
                 "ARCHIVE_LINK_ACTIVE": "",
                 "DMS_ACTIVE": "",
                 "DMS_DOC_TYPE_IN": "",
                 "DMS_VERSION_IN": "",
+                "DMS_STATUS_IN": "",
                 "DMS_DOC_TYPE_OUT": "",
                 "DMS_VERSION_OUT": "",
+                "DMS_STATUS_OUT": "",
                 "DMS_DOC_OBJ": ""
             });
             that.getView().getModel("DocumentManagementJSONModel").refresh();
+        },
+
+        
+        onAssDocumentManagementTypesRow: function () {
+            that.getView().getModel("DocumentManagementTypesJSONModel").getData().results.push({
+                "APPLICATION": "",
+                "CLASSIFICATION": "",
+                "DMS_DOC_TYPE": "",
+                "DMS_DOC_TYPE_DESCR": "",
+                "LANGUAGE": ""
+            });
+            that.getView().getModel("DocumentManagementTypesJSONModel").refresh();
         },
 
         onAssGestioneEtichetteRow: function () {
@@ -578,7 +614,7 @@ sap.ui.define([
                 "TABLE": "",
                 "ID": "",
                 "DESCRIPTION": "",
-                "COMMENTABLE":""
+                "COMMENTABLE": ""
             });
             that.getView().getModel("TextsJSONModel").refresh();
         },
@@ -818,7 +854,7 @@ sap.ui.define([
         },
 
 
-        onNotificationMaterList: function () {
+        onSaveNotificationMaterList: function () {
             if (that.getView().getModel("NotificationMasterJSONModel").getData().results) {
                 var promiseArr = []
                 $.each(that.getView().getModel("NotificationMasterJSONModel").getData().results, function (index, elem) {
@@ -834,7 +870,7 @@ sap.ui.define([
             }
         },
 
-        onDocumentManagementList: function () {
+        onSaveDocumentManagementList: function () {
             if (that.getView().getModel("DocumentManagementJSONModel").getData().results) {
                 var promiseArr = []
                 $.each(that.getView().getModel("DocumentManagementJSONModel").getData().results, function (index, elem) {
@@ -850,7 +886,23 @@ sap.ui.define([
             }
         },
 
-        onGestioneEtichetteList: function () {
+        onSaveDocumentManagementTypesList: function () {
+            if (that.getView().getModel("DocumentManagementTypesJSONModel").getData().results) {
+                var promiseArr = []
+                $.each(that.getView().getModel("DocumentManagementTypesJSONModel").getData().results, function (index, elem) {
+                    promiseArr.push(new Promise(function (resolve, reject) {
+                        that.onSaveDocumentManagementTypes(elem, function () {
+                            resolve()
+                        })
+                    }))
+                })
+                Promise.all(promiseArr).then(values => {
+                    that.getDocumentManagementTypes()
+                });
+            }
+        },
+
+        onSaveGestioneEtichetteList: function () {
             if (that.getView().getModel("GestioneEtichetteJSONModel").getData().results) {
                 var promiseArr = []
                 $.each(that.getView().getModel("GestioneEtichetteJSONModel").getData().results, function (index, elem) {
@@ -961,6 +1013,14 @@ sap.ui.define([
         },
         onSaveDocumentManagement: function (elem, fCompletion) {
             var url = "/backend/CustomizingManagement/SaveTDocumentManagement";
+            that.ajaxPost(url, elem, function (oData) {
+                if (oData) {
+                    fCompletion(oData);
+                }
+            })
+        },
+        onSaveDocumentManagementTypes: function (elem, fCompletion) {
+            var url = "/backend/CustomizingManagement/SaveTDocumentManagementTypes";
             that.ajaxPost(url, elem, function (oData) {
                 if (oData) {
                     fCompletion(oData);
@@ -1091,11 +1151,20 @@ sap.ui.define([
             })
         },
 
-        deleteDocumentManagement: function (sysid, application, classification) {
-            var url = "/backend/CustomizingManagement/TDocumentManagement?I_SYSID=" + sysid + "&I_APPLICATION=" + application + "&I_CLASSIFICATION=" + classification
+        deleteDocumentManagement: function (sysid, application, classification, progressive) {
+            var url = "/backend/CustomizingManagement/TDocumentManagement?I_SYSID=" + sysid + "&I_APPLICATION=" + application + "&I_CLASSIFICATION=" + classification + "&I_PROGRESSIVE=" + progressive
             that.ajaxDelete(url, function (oData) {
                 if (oData) {
                     that.getDocumentManagement();
+                }
+            })
+        },
+
+        deleteDocumentManagementTypes: function (application, classification, docType) {
+            var url = "/backend/CustomizingManagement/TDocumentManagementTypes?I_APPLICATION=" + application + "&I_CLASSIFICATION=" + classification + "&I_DOC_TYPE=" + docType
+            that.ajaxDelete(url, function (oData) {
+                if (oData) {
+                    that.getDocumentManagementTypes();
                 }
             })
         },
@@ -1126,7 +1195,7 @@ sap.ui.define([
                 }
             })
         },
-        
+
         deleteBuyerRow: function (oEvent) {
             var getTabledata = that.getView().getModel("BuyersJSONModel").getData().results;
             var itemPosition = oEvent.getSource().getParent().getParent().indexOfItem(oEvent.getSource().getParent());
@@ -1208,7 +1277,14 @@ sap.ui.define([
             var getTabledata = that.getView().getModel("DocumentManagementJSONModel").getData().results;
             var itemPosition = oEvent.getSource().getParent().getParent().indexOfItem(oEvent.getSource().getParent());
             var selctedRowdata = getTabledata[itemPosition];
-            that.deleteDocumentManagement(selctedRowdata.SYSID, selctedRowdata.APPLICATION, selctedRowdata.CLASSIFICATION);
+            that.deleteDocumentManagement(selctedRowdata.SYSID, selctedRowdata.APPLICATION, selctedRowdata.CLASSIFICATION, selctedRowdata.PROGRESSIVE);
+        },
+
+        deleteDocumentManagementTypesRow: function (oEvent) {
+            var getTabledata = that.getView().getModel("DocumentManagementTypesJSONModel").getData().results;
+            var itemPosition = oEvent.getSource().getParent().getParent().indexOfItem(oEvent.getSource().getParent());
+            var selctedRowdata = getTabledata[itemPosition];
+            that.deleteDocumentManagementTypes(selctedRowdata.APPLICATION, selctedRowdata.CLASSIFICATION, selctedRowdata.DMS_DOC_TYPE);
         },
 
         deleteGestioneEtichetteRow: function (oEvent) {
@@ -1282,6 +1358,9 @@ sap.ui.define([
             if (key === "15") {
                 that.getTexts();
             }
+            if (key === "16") {
+                that.getDocumentManagementTypes();
+            }            
         },
 
         showBusyDialog: function () {
