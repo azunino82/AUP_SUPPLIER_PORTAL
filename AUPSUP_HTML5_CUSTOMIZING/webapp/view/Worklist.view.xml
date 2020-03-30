@@ -751,7 +751,7 @@
 																		<m:Input value="{DocumentManagementJSONModel>SYSID}" enabled="{= ${DocumentManagementJSONModel>SYSID} === ''}"/>
 																		<m:Input value="{DocumentManagementJSONModel>APPLICATION}" enabled="{= ${DocumentManagementJSONModel>APPLICATION} === ''}"/>
 																		<m:Input value="{DocumentManagementJSONModel>CLASSIFICATION}" enabled="{= ${DocumentManagementJSONModel>CLASSIFICATION} === ''}"/>
-																		<m:Input value="{DocumentManagementJSONModel>PROGRESSIVO}" enabled="{= ${DocumentManagementJSONModel>PROGRESSIVO} === ''}"/>
+																		<m:Input value="{DocumentManagementJSONModel>PROGRESSIVE}" enabled="{= ${DocumentManagementJSONModel>PROGRESSIVE} === ''}" type="Number"/>
 																		<m:Input value="{DocumentManagementJSONModel>DOC_IN}"/>
 																		<m:Input value="{DocumentManagementJSONModel>DOC_OUT}"/>
 																		<m:Input value="{DocumentManagementJSONModel>ARCHIVE_LINK_ACTIVE}"/>

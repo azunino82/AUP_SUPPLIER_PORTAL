@@ -557,7 +557,7 @@ sap.ui.define([
                 "SYSID": "",
                 "APPLICATION": "",
                 "CLASSIFICATION": "",
-                "PROGRESSIVE": null,
+                "PROGRESSIVE": "",
                 "DOC_IN": "",
                 "DOC_OUT": "",
                 "ARCHIVE_LINK_ACTIVE": "",
