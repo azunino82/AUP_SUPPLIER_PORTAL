@@ -566,7 +566,53 @@ module.exports = function () {
   app.post('/SaveTDocumentManagement', function (req, res) {
     const body = req.body
 
-    var sql = 'UPSERT \"AUPSUP_DATABASE.data.tables::T_DOCUMENT_MANAGEMENT\" VALUES (\'' + body.SYSID + '\',\'' + body.APPLICATION + '\',\'' + body.CLASSIFICATION + '\',\'' + body.DOC_IN + '\',\'' + body.DOC_OUT + '\',\'' + body.ARCHIVE_LINK_ACTIVE + '\',\'' + body.DMS_ACTIVE + '\',\'' + body.DMS_DOC_TYPE_IN + '\',\'' + body.DMS_VERSION_IN + '\',\'' + body.DMS_DOC_TYPE_OUT + '\',\'' + body.DMS_VERSION_OUT + '\',\'' + body.DMS_DOC_OBJ + '\') WITH PRIMARY KEY'
+    var sql = 'UPSERT \"AUPSUP_DATABASE.data.tables::T_DOCUMENT_MANAGEMENT\" VALUES (\'' + body.SYSID + '\',\'' + body.APPLICATION + '\',\'' + body.CLASSIFICATION + '\',\'' + body.PROGRESSIVE + '\',\'' + body.DOC_IN + '\',\'' + body.DOC_OUT + '\',\'' + body.ARCHIVE_LINK_ACTIVE + '\',\'' + body.DMS_ACTIVE + '\',\'' + body.DMS_DOC_TYPE_IN + '\',\'' + body.DMS_VERSION_IN + '\',\'' + body.DMS_STATUS_IN + '\',\'' + body.DMS_DOC_TYPE_OUT + '\',\'' + body.DMS_VERSION_OUT + '\',\'' + body.DMS_STATUS_OUT + '\',\'' + body.DMS_DOC_OBJ + '\') WITH PRIMARY KEY'
+    console.log('sql: ' + sql)
+    hdbext.createConnection(req.tenantContainer, function (error, client) {
+      if (error) {
+        console.error('ERROR T_DOCUMENT_MANAGEMENT :' + stringifyObj(error))
+        return res.status(500).send('T_DOCUMENT_MANAGEMENT CONNECTION ERROR: ' + stringifyObj(error))
+      }
+      if (client) {
+        async.waterfall([
+
+          function prepare (callback) {
+            client.prepare(sql,
+              function (err, statement) {
+                callback(null, err, statement)
+              })
+          },
+
+          function execute (_err, statement, callback) {
+            statement.exec([], function (execErr, results) {
+              callback(null, execErr, results)
+            })
+          },
+
+          function response (err, results, callback) {
+            if (err) {
+              res.type('application/json').status(500).send({ ERROR: err })
+              return
+            } else {
+              res.type('application/json').status(200).send({ results: 'OK' })
+            }
+            callback()
+          }
+        ], function done (err, parameters, rows) {
+          console.log('---->>> CLIENT END T_BUYERS <<<<<-----')
+          client.close()
+          if (err) {
+            return console.error('Done error', err)
+          }
+        })
+      }
+    })
+  })
+
+  app.post('/SaveTDocumentManagementTypes', function (req, res) {
+    const body = req.body
+
+    var sql = 'UPSERT \"AUPSUP_DATABASE.data.tables::T_DOCUMENT_TYPES\" VALUES (\'' + body.APPLICATION + '\',\'' + body.CLASSIFICATION + '\',\'' + body.PROGRESSIVE + '\',\'' + body.DOC_IN + '\',\'' + body.DOC_OUT + '\',\'' + body.ARCHIVE_LINK_ACTIVE + '\',\'' + body.DMS_ACTIVE + '\',\'' + body.DMS_DOC_TYPE_IN + '\',\'' + body.DMS_VERSION_IN + '\',\'' + body.DMS_STATUS_IN + '\',\'' + body.DMS_DOC_TYPE_OUT + '\',\'' + body.DMS_VERSION_OUT + '\',\'' + body.DMS_STATUS_OUT + '\',\'' + body.DMS_DOC_OBJ + '\') WITH PRIMARY KEY'
     console.log('sql: ' + sql)
     hdbext.createConnection(req.tenantContainer, function (error, client) {
       if (error) {
@@ -1297,10 +1343,11 @@ module.exports = function () {
     var SYSID = req.query.I_SYSID !== undefined && req.query.I_SYSID !== null && req.query.I_SYSID !== '' ? req.query.I_SYSID : ''
     var APPLICATION = req.query.I_APPLICATION !== undefined && req.query.I_APPLICATION !== null && req.query.I_APPLICATION !== '' ? req.query.I_APPLICATION : ''
     var CLASSIFICATION = req.query.I_CLASSIFICATION !== undefined && req.query.I_CLASSIFICATION !== null && req.query.I_CLASSIFICATION !== '' ? req.query.I_CLASSIFICATION : ''
-    if (SYSID === '' || APPLICATION === '' || CLASSIFICATION === '') {
-      return res.status(500).send('I_SYSID and I_APPLICATION AND I_CLASSIFICATION are Mandatory')
+    var PROGRESSIVE = req.query.I_PROGRESSIVE !== undefined && req.query.I_PROGRESSIVE !== null && req.query.I_PROGRESSIVE !== '' ? req.query.I_PROGRESSIVE : ''
+    if (SYSID === '' || APPLICATION === '' || CLASSIFICATION === '' || PROGRESSIVE) {
+      return res.status(500).send('I_SYSID and I_APPLICATION AND I_CLASSIFICATION I_PROGRESSIVE are Mandatory')
     }
-    const sql = 'DELETE FROM \"AUPSUP_DATABASE.data.tables::T_DOCUMENT_MANAGEMENT\" WHERE SYSID=\'' + SYSID + '\' AND APPLICATION = \'' + APPLICATION + '\' AND CLASSIFICATION = \'' + CLASSIFICATION + '\''
+    const sql = 'DELETE FROM \"AUPSUP_DATABASE.data.tables::T_DOCUMENT_MANAGEMENT\" WHERE SYSID=\'' + SYSID + '\' AND APPLICATION = \'' + APPLICATION + '\' AND CLASSIFICATION = \'' + CLASSIFICATION + '\'  AND PROGRESSIVE = \'' + PROGRESSIVE + '\''
 
     hdbext.createConnection(req.tenantContainer, function (error, client) {
       if (error) {
@@ -1334,6 +1381,56 @@ module.exports = function () {
           }
         ], function done (err, parameters, rows) {
           console.log('---->>> CLIENT END T_AVVISI_QUALITA <<<<<-----')
+          client.close()
+          if (err) {
+            return console.error('Done error', err)
+          }
+        })
+      }
+    })
+  })
+
+  app.delete('/TDocumentManagementTypes', function (req, res) {
+    var APPLICATION = req.query.I_APPLICATION !== undefined && req.query.I_APPLICATION !== null && req.query.I_APPLICATION !== '' ? req.query.I_APPLICATION : ''
+    var CLASSIFICATION = req.query.I_CLASSIFICATION !== undefined && req.query.I_CLASSIFICATION !== null && req.query.I_CLASSIFICATION !== '' ? req.query.I_CLASSIFICATION : ''
+    var DOC_TYPE = req.query.I_DOC_TYPE !== undefined && req.query.I_DOC_TYPE !== null && req.query.I_DOC_TYPE !== '' ? req.query.I_DOC_TYPE : ''
+    if (APPLICATION === '' || CLASSIFICATION === '' || DOC_TYPE) {
+      return res.status(500).send('I_APPLICATION I_CLASSIFICATION I_DOC_TYPE are Mandatory')
+    }
+    const sql = 'DELETE FROM \"AUPSUP_DATABASE.data.tables::T_DOCUMENT_TYPES\" WHERE APPLICATION = \'' + APPLICATION + '\' AND CLASSIFICATION = \'' + CLASSIFICATION + '\'  AND DMS_DOC_TYPE = \'' + DOC_TYPE + '\''
+
+    hdbext.createConnection(req.tenantContainer, function (error, client) {
+      if (error) {
+        console.error('ERROR :' + stringifyObj(error))
+        return res.status(500).send('TDocumentManagementTypes CONNECTION ERROR: ' + stringifyObj(error))
+      }
+      if (client) {
+        async.waterfall([
+
+          function prepare (callback) {
+            client.prepare(sql,
+              function (err, statement) {
+                callback(null, err, statement)
+              })
+          },
+
+          function execute (_err, statement, callback) {
+            statement.exec([], function (execErr, results) {
+              callback(null, execErr, results)
+            })
+          },
+
+          function response (err, results, callback) {
+            if (err) {
+              res.type('application/json').status(500).send({ ERROR: err })
+              return
+            } else {
+              res.type('application/json').status(200).send({ results: results })
+            }
+            callback()
+          }
+        ], function done (err, parameters, rows) {
+          console.log('---->>> CLIENT END TDocumentManagementTypes <<<<<-----')
           client.close()
           if (err) {
             return console.error('Done error', err)

@@ -12,7 +12,6 @@ const fileUpload = require('express-fileupload')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
-const _ = require('lodash')
 
 module.exports = function () {
     var app = express.Router()
@@ -404,7 +403,7 @@ module.exports = function () {
     })    
 
     // DOCUMENT DOWNLOAD
-    app.get('/DocDownload   ', function (req, res) {
+    app.get('/DocDownload', function (req, res) {
         var logMessage = ''
         var userId = req.user.id
         var DOKAR = req.query.I_DOKAR !== undefined && req.query.I_DOKAR !== null ? req.query.I_DOKAR : ''
@@ -496,6 +495,53 @@ module.exports = function () {
             return res.status(500).send(JSON.stringify("{'Error':'" + logMessage + " mandatory'}"))
         }
     })    
+
+    app.get('/getDocumentTypes', function (req, res) {
+        var application = req.query.I_APPLICATION !== undefined && req.query.I_APPLICATION !== null ? req.query.I_APPLICATION : ''
+
+        if (application === '') {
+            return res.status(500).send('I_APPLICATION Mandatory')
+        }
+
+        var sql = "SELECT * FROM \"AUPSUP_DATABASE.data.tables::T_DOCUMENT_MANAGEMENT\" AS a INNER JOIN \"AUPSUP_DATABASE.data.tables::T_DOCUMENT_TYPES\" AS b ON a.APPLICATION = b.APPLICATION  WHERE a.APPLICATION = \'" + application + "\'"
+
+        hdbext.createConnection(req.tenantContainer, function (error, client) {
+            if (error) {
+                console.error('---->>> ERROR T_DOCUMENT_MANAGEMENT <<<<<-----')
+            }
+            if (client) {
+                async.waterfall([
+
+                    function prepare (callback) {
+                        client.prepare(sql,
+                            function (err, statement) {
+                                callback(null, err, statement)
+                            })
+                    },
+
+                    function execute (_err, statement, callback) {
+                        statement.exec([], function (execErr, results) {
+                            callback(null, execErr, results)
+                        })
+                    },
+
+                    function response (err, results, callback) {
+                        if (err) {
+                            return res.type('application/json').status(500).send({ ERROR: err })
+                        } else {
+                            return res.status(200).send(results)
+                        }
+                    }
+                ], function done (err, parameters, rows) {
+                    console.log('---->>> CLIENT END T_DOCUMENT_MANAGEMENT <<<<<-----')
+                    client.close()
+                    if (err) {
+                        return console.error('Done error', err)
+                    }
+                })
+            }
+        })        
+    })
 
     return app
 }
