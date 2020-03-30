@@ -2409,7 +2409,7 @@ sap.ui.define([
 					var path = oEvent.getParameter("selectedItem").getBindingContextPath();
 					var pos_model = that.getView().getModel("CustomDocJSONModel").getProperty(path);
 					// Chiamata DOC LIST
-					var url = "/backend/DocumentManagement/DocList?I_CLASSIFICATION=" + pos_model.CLASSIFICATION + "&I_APPLICATION=" + pos_model.APPLICATION + "&I_OBJECT_CODE=" + selctedRowdata.EBELN + selctedRowdata.EBELP;
+					var url = "/backend/DocumentManagement/DocList?I_CLASSIFICATION=" + pos_model.CLASSIFICATION + "&I_APPLICATION=" + pos_model.APPLICATION + "&I_OBJECT_CODE=" + (pos_model.DMS_DOC_OBJ === 'EKKO' ? selctedRowdata.EBELN : pos_model.DMS_DOC_OBJ === 'EKPO' ? selctedRowdata.EBELN + selctedRowdata.EBELP : '');
 				that.showBusyDialog();
 				jQuery.ajax({
 					url: url,
