@@ -741,6 +741,9 @@
 																<m:Column minScreenWidth="Desktop" demandPopin="true">
 																	<m:Label text="{i18n>DMS_DOC_OBJ}" class="columnLabelStyle"/>
 																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>STOR_CAT}" class="columnLabelStyle"/>
+																</m:Column>																
 																<m:Column minScreenWidth="Desktop" demandPopin="true" hAlign="End" width="5em">
 																	<m:Label class="columnLabelStyle"/>
 																</m:Column>
@@ -763,6 +766,7 @@
 																		<m:Input value="{DocumentManagementJSONModel>DMS_VERSION_OUT}"/>
 																		<m:Input value="{DocumentManagementJSONModel>DMS_STATUS_OUT}"/>
 																		<m:Input value="{DocumentManagementJSONModel>DMS_DOC_OBJ}"/>
+																		<m:Input value="{DocumentManagementJSONModel>STOR_CAT}"/>
 																		<m:Button icon="sap-icon://delete" press="deleteDocumentManagementRow"/>
 																	</m:cells>
 																</m:ColumnListItem>
