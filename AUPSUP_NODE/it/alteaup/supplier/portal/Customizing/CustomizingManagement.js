@@ -612,12 +612,12 @@ module.exports = function () {
   app.post('/SaveTDocumentManagementTypes', function (req, res) {
     const body = req.body
 
-    var sql = 'UPSERT \"AUPSUP_DATABASE.data.tables::T_DOCUMENT_TYPES\" VALUES (\'' + body.APPLICATION + '\',\'' + body.CLASSIFICATION + '\',\'' + body.PROGRESSIVE + '\',\'' + body.DOC_IN + '\',\'' + body.DOC_OUT + '\',\'' + body.ARCHIVE_LINK_ACTIVE + '\',\'' + body.DMS_ACTIVE + '\',\'' + body.DMS_DOC_TYPE_IN + '\',\'' + body.DMS_VERSION_IN + '\',\'' + body.DMS_STATUS_IN + '\',\'' + body.DMS_DOC_TYPE_OUT + '\',\'' + body.DMS_VERSION_OUT + '\',\'' + body.DMS_STATUS_OUT + '\',\'' + body.DMS_DOC_OBJ + '\') WITH PRIMARY KEY'
+    var sql = 'UPSERT \"AUPSUP_DATABASE.data.tables::T_DOCUMENT_TYPES\" VALUES (\'' + body.APPLICATION + '\',\'' + body.CLASSIFICATION + '\',\'' + body.DMS_DOC_TYPE + '\',\'' + body.DMS_DOC_TYPE_DESCR + '\',\'' + body.LANGUAGE + '\') WITH PRIMARY KEY'
     console.log('sql: ' + sql)
     hdbext.createConnection(req.tenantContainer, function (error, client) {
       if (error) {
-        console.error('ERROR T_DOCUMENT_MANAGEMENT :' + stringifyObj(error))
-        return res.status(500).send('T_DOCUMENT_MANAGEMENT CONNECTION ERROR: ' + stringifyObj(error))
+        console.error('ERROR T_DOCUMENT_TYPES :' + stringifyObj(error))
+        return res.status(500).send('T_DOCUMENT_TYPES CONNECTION ERROR: ' + stringifyObj(error))
       }
       if (client) {
         async.waterfall([
@@ -1344,7 +1344,7 @@ module.exports = function () {
     var APPLICATION = req.query.I_APPLICATION !== undefined && req.query.I_APPLICATION !== null && req.query.I_APPLICATION !== '' ? req.query.I_APPLICATION : ''
     var CLASSIFICATION = req.query.I_CLASSIFICATION !== undefined && req.query.I_CLASSIFICATION !== null && req.query.I_CLASSIFICATION !== '' ? req.query.I_CLASSIFICATION : ''
     var PROGRESSIVE = req.query.I_PROGRESSIVE !== undefined && req.query.I_PROGRESSIVE !== null && req.query.I_PROGRESSIVE !== '' ? req.query.I_PROGRESSIVE : ''
-    if (SYSID === '' || APPLICATION === '' || CLASSIFICATION === '' || PROGRESSIVE) {
+    if (SYSID === '' || APPLICATION === '' || CLASSIFICATION === '' || PROGRESSIVE === '') {
       return res.status(500).send('I_SYSID and I_APPLICATION AND I_CLASSIFICATION I_PROGRESSIVE are Mandatory')
     }
     const sql = 'DELETE FROM \"AUPSUP_DATABASE.data.tables::T_DOCUMENT_MANAGEMENT\" WHERE SYSID=\'' + SYSID + '\' AND APPLICATION = \'' + APPLICATION + '\' AND CLASSIFICATION = \'' + CLASSIFICATION + '\'  AND PROGRESSIVE = \'' + PROGRESSIVE + '\''
@@ -1394,7 +1394,7 @@ module.exports = function () {
     var APPLICATION = req.query.I_APPLICATION !== undefined && req.query.I_APPLICATION !== null && req.query.I_APPLICATION !== '' ? req.query.I_APPLICATION : ''
     var CLASSIFICATION = req.query.I_CLASSIFICATION !== undefined && req.query.I_CLASSIFICATION !== null && req.query.I_CLASSIFICATION !== '' ? req.query.I_CLASSIFICATION : ''
     var DOC_TYPE = req.query.I_DOC_TYPE !== undefined && req.query.I_DOC_TYPE !== null && req.query.I_DOC_TYPE !== '' ? req.query.I_DOC_TYPE : ''
-    if (APPLICATION === '' || CLASSIFICATION === '' || DOC_TYPE) {
+    if (APPLICATION === '' || CLASSIFICATION === '' || DOC_TYPE === '') {
       return res.status(500).send('I_APPLICATION I_CLASSIFICATION I_DOC_TYPE are Mandatory')
     }
     const sql = 'DELETE FROM \"AUPSUP_DATABASE.data.tables::T_DOCUMENT_TYPES\" WHERE APPLICATION = \'' + APPLICATION + '\' AND CLASSIFICATION = \'' + CLASSIFICATION + '\'  AND DMS_DOC_TYPE = \'' + DOC_TYPE + '\''
