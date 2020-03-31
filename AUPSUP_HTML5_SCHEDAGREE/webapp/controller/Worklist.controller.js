@@ -2353,6 +2353,115 @@ sap.ui.define([
 
 			}
 			that.onCloseTexts()
+		},
+		onItemDownload: function (oEvent) {
+			var path = oEvent.getSource().getParent().getBindingContext("OrderJSONModel");
+            var selctedRowdata = that.byId("OrderHeadersTable").getModel("OrderJSONModel").getProperty(path.sPath);
+			//var getTabledata = that.getView().getModel("OrderJSONModel").getData().results;
+			//var itemPosition = oEvent.getSource().getParent().getParent().indexOfItem(oEvent.getSource().getParent());
+			//var selctedRowdata = getTabledata[itemPosition];
+			// Richiamare servizio estrazione Customizing
+			var url = "/backend/DocumentManagement/getDocumentTypes?I_APPLICATION=ODA";
+
+			that.ajaxGet(url, function (oData) {
+				if (oData) {
+					var oModel = new JSONModel();
+					oModel.setData(oData);
+					var oComponent = that.getOwnerComponent();
+					oComponent.setModel(oModel, "CustomDocJSONModel");
+				// Creare POP UP selezione tipo doc Dowload
+			
+			var fnDoSearch = function (oEvent, bProductSearch) {
+				var aFilters = [],
+					sSearchValue = oEvent.getParameter("value"),
+					itemsBinding = oEvent.getParameter("itemsBinding");
+
+				// create the local filter to apply
+				if (sSearchValue !== undefined && sSearchValue.length > 0) {
+					aFilters.push(new sap.ui.model.Filter((bProductSearch ? "DMS_DOC_TYPE_OUT" : "DMS_DOC_TYPE_DESCR"), sap.ui.model.FilterOperator.Contains,
+						sSearchValue));
+				}
+				// apply the filter to the bound items, and the Select Dialog will update
+				itemsBinding.filter(aFilters, "Application");
+			};
+
+			var oSelectDialog1 = new sap.m.SelectDialog({
+				title: that.getResourceBundle().getText("Title_TypeDoc"),
+				search: fnDoSearch,
+				liveChange: fnDoSearch
+
+			});
+			var oItemTemp
+			var oItemTemplate = new sap.m.StandardListItem({
+				title: "{DMS_DOC_TYPE_DESCR}",
+				description: "{DMS_DOC_TYPE_OUT}"
+			});
+
+			// set model & bind Aggregation
+			oSelectDialog1.setModel(oModel);
+			oSelectDialog1.bindAggregation("items", "/", oItemTemplate);
+
+			// attach close listener
+			oSelectDialog1.attachConfirm(function (oEvent) {
+				var selectedItem = oEvent.getParameter("selectedItem");
+				if (selectedItem) {
+					var path = oEvent.getParameter("selectedItem").getBindingContextPath();
+					var pos_model = that.getView().getModel("CustomDocJSONModel").getProperty(path);
+					// Chiamata DOC LIST
+					var url = "/backend/DocumentManagement/DocList?I_CLASSIFICATION=" + pos_model.CLASSIFICATION + "&I_APPLICATION=" + pos_model.APPLICATION + "&I_OBJECT_CODE=" + (pos_model.DMS_DOC_OBJ === 'EKKO' ? selctedRowdata.EBELN : pos_model.DMS_DOC_OBJ === 'EKPO' ? selctedRowdata.EBELN + selctedRowdata.EBELP : '');
+				that.showBusyDialog();
+				jQuery.ajax({
+					url: url,
+					method: 'GET',
+					async: false,
+					success: function (data) {
+	
+						if (data && data.results && data.results.length > 0) {
+							var totDoc = data.results.length;
+							data.results.forEach(function (elem) {
+								url = "/backend/DocumentManagement/DocDownload?I_DOKAR=" + elem.DOKAR + "&I_DOKNR=" + elem.DOKNR + "&I_DOKTL=" + elem.DOKTL + "&I_DOKVR=" + elem.DOKVR +
+									"&I_LO_INDEX=" + elem.LO_INDEX + "&I_LO_OBJID=" + elem.LO_OBJID + "&I_OBJKY=" + elem.OBJKY + "&I_DOKOB=" + elem.DOKOB;
+								// NB: questa chiamata fetch funziona SOLO su portale non con webide preview
+								fetch(url)
+									.then(resp => resp.blob())
+									.then(blob => {
+										const url = window.URL.createObjectURL(blob);
+										const a = document.createElement('a');
+										a.style.display = 'none';
+										a.href = url;
+										// the filename you want
+										a.download = elem.DESCRIPTION !== undefined && elem.DESCRIPTION !== "" ? elem.DESCRIPTION : "outFile" + elem.EXTENSION;
+										document.body.appendChild(a);
+										a.click();
+										window.URL.revokeObjectURL(url);
+										totDoc--;
+										if (totDoc <= 0) {
+											that.hideBusyDialog();
+										}
+									})
+									.catch(() => console.log("some error during download process"));
+	
+							});
+						} else {
+							that.hideBusyDialog();
+							MessageBox.error(that.getResourceBundle().getText("ERR_file_not_found"));
+						}
+					},
+					error: function (e) {
+						that.hideBusyDialog();
+						MessageBox.error(that.getResourceBundle().getText("ERR_file_not_found"));
+					}
+				});
+
+				}
+
+			});
+			if (oModel.oData.length > 0)
+			oSelectDialog1.open();
+
+				}
+			});
+			
 		}
 	});
 

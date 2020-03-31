@@ -174,7 +174,8 @@
 														<m:Label text="{i18n>SECONDO_PERIODO}" class="columnLabelStyle" wrapping="true"/>
 													</m:Column>
 													<m:Column id="TESTS" minScreenWidth="Desktop" demandPopin="true">
-
+													</m:Column>
+													<m:Column id="DOWNLOAD" minScreenWidth="Desktop" demandPopin="true">
 													</m:Column>
 												</m:columns>
 												<m:items>
@@ -195,6 +196,7 @@
 															<m:Text text="{path : 'OrderJSONModel>PRIMO_PERIODO', formatter : '.importFormatter'}"/>
 															<m:Text text="{path : 'OrderJSONModel>SECONDO_PERIODO', formatter : '.importFormatter'}"/>
 															<m:Button icon="sap-icon://document-text" press="onGetTexts"/>
+															<m:Button icon="sap-icon://download" press="onItemDownload"/>
 														</m:cells>
 													</m:ColumnListItem>
 												</m:items>
