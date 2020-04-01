@@ -210,6 +210,7 @@ sap.ui.define([
 		},
 
 		getUserInfo: function () {
+			var that = this;
 			var url = "/backend/Utils/UtilsManagement/GetUserInfo";
 			this.ajaxGet(url, function (oData) {
 				if (oData) {
@@ -226,7 +227,8 @@ sap.ui.define([
 
 					oModel = new JSONModel();
 					oModel.setData(visibilityRoles);
-					sap.ui.getCore().setModel(oModel, "VisibilityJSONModel");
+					//sap.ui.getCore().setModel(oModel, "VisibilityJSONModel");
+					that.getView().setModel(oModel, "VisibilityJSONModel");
 
 				} else {
 					return null;

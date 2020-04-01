@@ -24,7 +24,7 @@
 											<m:Input value="{filterPlanningJSONModel>/ebeln}"/>
 										</fb:control>
 									</fb:FilterItem>
-									<fb:FilterItem name="Metasupplier" label="{i18n>METASUP}" visible="{VisibilityJSONModel>/isBuyer}">
+									<fb:FilterItem name="Metasupplier" label="{i18n>METASUP}" visible="{= ${VisibilityJSONModel>/isBuyer} === true || ${VisibilityJSONModel>/isPlanner} === true || ${VisibilityJSONModel>/isAdministrator} === true }">
 										<fb:control>
 											<m:MultiComboBox selectedKeys="{MetasupplierJSONModel>/METAID}" selectionChange="onChangeMetasupplier"
 												items="{ path: 'MetasupplierJSONModel>/results', sorter: { path: 'METAID' } }">
@@ -32,7 +32,7 @@
 											</m:MultiComboBox>
 										</fb:control>
 									</fb:FilterItem>
-									<fb:FilterItem name="Lifnr" label="{i18n>supplier}" visible="{VisibilityJSONModel>/isBuyer}">
+									<fb:FilterItem name="Lifnr" label="{i18n>supplier}" visible="{= ${VisibilityJSONModel>/isBuyer} === true || ${VisibilityJSONModel>/isPlanner} === true || ${VisibilityJSONModel>/isAdministrator} === true }">
 										<fb:control>
 											<m:MultiComboBox selectionChange="onChangeMetalifnr" showSecondaryValues="true"
 												items="{ path: 'lifnrJSONModel>/', sorter: { path: 'LIFNR' } }">
