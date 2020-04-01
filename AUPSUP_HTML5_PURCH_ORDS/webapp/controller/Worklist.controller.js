@@ -1521,7 +1521,9 @@ sap.ui.define([
 									$.each(oData.results, function (index, item) {
 										if (item.MSGTY !== undefined && item.MSGTY === 'E')
 											messageError = item.MESSAGE + " \n " + messageError;
-										if (item.MSGTY !== undefined && (item.MSGTY === 'W' || item.MSGTY === 'I'))
+									// Escludo i messaggi di tipo W
+									//  if (item.MSGTY !== undefined && (item.MSGTY === 'W' || item.MSGTY === 'I'))
+										if (item.MSGTY !== undefined && item.MSGTY === 'I')
 											messageWarning = item.MESSAGE + " \n " + messageWarning;
 									});
 									if (messageError !== "" && messageWarning !== "") {
