@@ -87,7 +87,7 @@
 												<ui:Column id="MATNR" width="6rem">
 													<m:Label text="{i18n>MATNR}" class="columnLabelStyle" wrapping="true"/>
 													<ui:template>
-														<m:Text text="{PlanningJSONModel>MATNR}" wrapping="true"/>
+														<m:Text text="{ path: 'PlanningJSONModel>MATNR', formatter : '.removeZeroBefore' }" wrapping="true"/>
 													</ui:template>
 												</ui:Column>
 												<ui:Column id="TXZ01" width="10rem">
