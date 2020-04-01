@@ -478,14 +478,19 @@ module.exports = function () {
                     return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
                 } else {
                 hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Documents::MM00_DOC_DOWNLOAD', function (_err, sp) {
-                    sp(userId, DOKAR, DOKNR, DOKOB, DOKTL, DOKVR, LO_INDEX, LO_OBJID, OBJKY, (err, parameters, results) => {
+                    sp(userId, DOKAR, DOKNR, DOKOB, DOKTL, DOKVR, LO_INDEX, LO_OBJID, OBJKY, (err, parameters, E_DATA) => {
+                        console.log('DOC DOWLOAD LENGTH: ' + E_DATA)
+                    //    console.log('DOC DOWLOAD PARAMETERS: ' + stringifyObj(parameters))
+                      //   console.log('DOC DOWLOAD RESULTS LENGTH: ' + E_DATA[0].B.data.length)
                         if (err) {
                             console.error('ERROR: ' + err)
                             return res.status(500).send(stringifyObj(err))
                         } else {
-                            return res.status(200).send({
-                                results: results
-                            })
+                            if (parameters !== undefined && parameters.T_OUT !== undefined && parameters.T_OUT.length > 0) {
+                                return res.status(200).send(parameters.T_OUT)
+                            } else {
+                                return res.status(500).send(undefined)
+                            }
                         }
                     })
                 })
