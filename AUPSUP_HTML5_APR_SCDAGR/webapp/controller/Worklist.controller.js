@@ -627,6 +627,8 @@ sap.ui.define([
 					if (oData.results && oData.results && oData.results.length > 0) {
 						var message = "";
 						$.each(oData.results, function (index, item) {
+							//Escludo i messaggi di tipo W
+							if (item.MSGTY !== 'W')
 							message = item.MESSAGE + " \n " + message;
 						});
 						if (message !== "") {
