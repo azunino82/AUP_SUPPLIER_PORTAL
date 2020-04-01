@@ -1521,7 +1521,9 @@ sap.ui.define([
 									$.each(oData.results, function (index, item) {
 										if (item.MSGTY !== undefined && item.MSGTY === 'E')
 											messageError = item.MESSAGE + " \n " + messageError;
-										if (item.MSGTY !== undefined && (item.MSGTY === 'W' || item.MSGTY === 'I'))
+										// Escludo i messaggi di tipo W
+										//if (item.MSGTY !== undefined && (item.MSGTY === 'W' || item.MSGTY === 'I'))
+										if (item.MSGTY !== undefined && item.MSGTY === 'I')
 											messageWarning = item.MESSAGE + " \n " + messageWarning;
 									});
 									if (messageError !== "" && messageWarning !== "") {
@@ -1630,12 +1632,12 @@ sap.ui.define([
 				var oPath = r.oBindingContexts.OrderJSONModel.sPath;
 				that.getModel("OrderJSONModel").getProperty(oPath);
 
-				//if (that.getModel("OrderJSONModel").getProperty(oPath).canEditPosition) {
-				if (oEvent.getParameters().selected)
-					that.getModel("OrderJSONModel").getProperty(oPath).isSelected = true;
-				else
-					that.getModel("OrderJSONModel").getProperty(oPath).isSelected = false;
-				//}
+				if (that.getModel("OrderJSONModel").getProperty(oPath).SKIP_NO_CONFERME === null) {
+					if (oEvent.getParameters().selected)
+						that.getModel("OrderJSONModel").getProperty(oPath).isSelected = true;
+					else
+						that.getModel("OrderJSONModel").getProperty(oPath).isSelected = false;
+				}
 			});
 
 			that.getModel("OrderJSONModel").refresh();
