@@ -115,57 +115,58 @@ SELECT CURRENT_TIMESTAMP INTO V_CURRENT_TIMESTAMP FROM "AUPSUP_DATABASE.data.syn
 					
 				END IF; */
 			
-			ELSE
+			/*Modifica Elaborazione complessa 02.03.2020
+			ELSE*/
+		END IF;
 			
-				/*Inviamo a SAP le testate e posizioni che non hanno T_CONFER con flag INVIO AL BUYER per approvazione obbligatorio CONFERMA_MANDATORY = 'X'*/
-				IT_EKPO_CH = SELECT a.* FROM :IT_EKPO as a WHERE (a.UPDKZ IN (SELECT TIPO_CONFERMA FROM "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" WHERE PROFILO_CONTROLLO = a.BSTAE AND CONFERMA_MANDATORY = '') AND a.ZINSCONF = 'X') OR (a.EBELN, a.EBELP) IN (SELECT EBELN, EBELP FROM :T_SKIPAPPBUYER WHERE SKIP = 'X' AND CONF_TYPE = 'QUA');
-          		
-				IT_EKES_CH = SELECT * FROM :IT_EKES as a WHERE (a.EBELN,a.EBELP) IN (SELECT EBELN, EBELP FROM :IT_EKPO_CH) AND a.XBLNR IN (SELECT XBLNR FROM :T_SKIPAPPBUYER WHERE SKIP = 'X' AND CONF_TYPE = 'QUA' AND EBELN = a.EBELN AND EBELP = a.EBELP); 
-                                       
-           		IT_EKKO_CH = SELECT * FROM :IT_EKKO WHERE (EBELN) IN (SELECT EBELN FROM :IT_EKPO_CH);
-
-				/*se non ho dati da inviare non li invio*/
-				SELECT COUNT(*) into counterRow FROM :IT_EKKO_CH;
-				IF (counterRow>0) THEN
-					BEGIN
-						DECLARE CURSOR cursorPLANT FOR SELECT * FROM :T_PLANTS;
-						CALL "AUPSUP_DATABASE.data.virtualProcedures::VIRTUAL_MM00_CONFIRM_ORD"(:IT_EKES_CH,:IT_EKKO_CH,:IT_EKPO_CH,:E_RETURN);
-						--CALL "PORTAL"."VIRTUAL_MM00_CONFIRM_DOC"(:IT_EKES_CH,:IT_EKET_CH,:IT_EKKO_CH,:IT_EKPO_CH,:E_RETURN);
-						
-					    SELECT COUNT(*) INTO counterRow FROM :E_RETURN WHERE MSGTY = 'E';
-						IF (counterRow = 0) THEN
-						
-						    /*salvo per le notifiche*/
-    						SELECT DISTINCT EBELN INTO I_EBELN FROM :IT_EKKO;
-    						
-    						/* TODO AZ LUVE cerco i plant delle posizioni verso le quali inviare le notifiche
-    						T_PLANTS = SELECT DISTINCT a.EBELN,a.WERKS FROM "AUPSUP_DATABASE.data.tables::ET_PURDOC_EKPO" as a INNER JOIN :IT_EKPO_CH as b ON a.EBELN = b.EBELN and a.EBELP = b.EBELP;
-    						SELECT COUNT(*) INTO counterRow FROM :T_PLANTS;
-    						IF (counterRow>0) THEN
-    							FOR cursorRow AS cursorPLANT DO
-    								CALL "AUPSUP_DATABASE.data.procedures.Notifications::InsertNotification" (:userid,'ApproveSchedAgree',cursorRow.EBELN,'P_CONS','ICO',cursorRow.WERKS,'','IT','','','');
-    							END FOR;
-	
-    						END IF; */
+			/*Inviamo a SAP le testate e posizioni che non hanno T_CONFER con flag INVIO AL BUYER per approvazione obbligatorio CONFERMA_MANDATORY = 'X'*/
+			IT_EKPO_CH = SELECT a.* FROM :IT_EKPO as a WHERE (a.UPDKZ IN (SELECT TIPO_CONFERMA FROM "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" WHERE PROFILO_CONTROLLO = a.BSTAE AND CONFERMA_MANDATORY = '') AND a.ZINSCONF = 'X') OR (a.EBELN, a.EBELP) IN (SELECT EBELN, EBELP FROM :T_SKIPAPPBUYER WHERE SKIP = 'X' AND CONF_TYPE = 'QUA');
+         		
+			IT_EKES_CH = SELECT * FROM :IT_EKES as a WHERE (a.EBELN,a.EBELP) IN (SELECT EBELN, EBELP FROM :IT_EKPO_CH) AND a.XBLNR IN (SELECT XBLNR FROM :T_SKIPAPPBUYER WHERE SKIP = 'X' AND CONF_TYPE = 'QUA' AND EBELN = a.EBELN AND EBELP = a.EBELP); 
+                                      
+       		IT_EKKO_CH = SELECT * FROM :IT_EKKO WHERE (EBELN) IN (SELECT EBELN FROM :IT_EKPO_CH);
+			/*se non ho dati da inviare non li invio*/
+			SELECT COUNT(*) into counterRow FROM :IT_EKKO_CH;
+			IF (counterRow>0) THEN
+				BEGIN
+					DECLARE CURSOR cursorPLANT FOR SELECT * FROM :T_PLANTS;
+					CALL "AUPSUP_DATABASE.data.virtualProcedures::VIRTUAL_MM00_CONFIRM_ORD"(:IT_EKES_CH,:IT_EKKO_CH,:IT_EKPO_CH,:E_RETURN);
+					--CALL "PORTAL"."VIRTUAL_MM00_CONFIRM_DOC"(:IT_EKES_CH,:IT_EKET_CH,:IT_EKKO_CH,:IT_EKPO_CH,:E_RETURN);
+					
+				    SELECT COUNT(*) INTO counterRow FROM :E_RETURN WHERE MSGTY = 'E';
+					IF (counterRow = 0) THEN
+					
+					    /*salvo per le notifiche*/
+   						SELECT DISTINCT EBELN INTO I_EBELN FROM :IT_EKKO;
+   						
+   						/* TODO AZ LUVE cerco i plant delle posizioni verso le quali inviare le notifiche
+    					T_PLANTS = SELECT DISTINCT a.EBELN,a.WERKS FROM "AUPSUP_DATABASE.data.tables::ET_PURDOC_EKPO" as a INNER JOIN :IT_EKPO_CH as b ON a.EBELN = b.EBELN and a.EBELP = b.EBELP;
+    					SELECT COUNT(*) INTO counterRow FROM :T_PLANTS;
+    					IF (counterRow>0) THEN
+    						FOR cursorRow AS cursorPLANT DO
+    							CALL "AUPSUP_DATABASE.data.procedures.Notifications::InsertNotification" (:userid,'ApproveSchedAgree',cursorRow.EBELN,'P_CONS','ICO',cursorRow.WERKS,'','IT','','','');
+    						END FOR;
+						END IF; */
 							
     						
-                    		/*cancello tutte le righe precedentemente inserite per pulizia*/
-                    		SELECT COUNT(*) into counterRow FROM :IT_EKPO_CH;
-                    		IF (counterRow>0) THEN
-                    		    DELETE FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" AS table1 WHERE (table1.EBELN,table1.EBELP) IN (SELECT EBELN,EBELP FROM :IT_EKPO_CH);
-                    		END IF;    						
+                   		/*cancello tutte le righe precedentemente inserite per pulizia*/
+                   		SELECT COUNT(*) into counterRow FROM :IT_EKPO_CH;
+                   		IF (counterRow>0) THEN
+                   		    DELETE FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" AS table1 WHERE (table1.EBELN,table1.EBELP) IN (SELECT EBELN,EBELP FROM :IT_EKPO_CH);
+                   		END IF;    						
 						
-						END IF;
+					END IF;
 						
-					END;
-				END IF;
+				END;
+			END IF;
 		
-		END IF;
+		/*Modifica Elaborazione complessa 02.03.2020
+		END IF;*/
 
 		---------------------------------- RIGHE CON MODIFICA PREZZO ------------------------------------------------------
 
 		-- Controllo se il prezzo è sulla profili conferma header o profili conferma normale
-		SELECT COUNT(*) INTO counterRow FROM :IT_EKPO as a WHERE a.UPDKZ IN (SELECT TIPO_CONFERMA FROM "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" WHERE PROFILO_CONTROLLO = a.BSTAE);
+		SELECT COUNT(*) INTO counterRow FROM :IT_EKPO as a WHERE a.UPDKZ IN (SELECT TIPO_CONFERMA FROM "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" WHERE PROFILO_CONTROLLO = a.BSTAE) and a.ZMODPREZZO = 'X';
 		IF counterRow = 0 THEN
 		-- non ho trovato nulla nei profili conferma normale lo cerco nella header
 			IT_EKPO_CH = SELECT a.* FROM :IT_EKPO as a 
@@ -219,63 +220,66 @@ SELECT CURRENT_TIMESTAMP INTO V_CURRENT_TIMESTAMP FROM "AUPSUP_DATABASE.data.syn
 					
 				END IF;  */
 			
-			ELSE
-
-			---------------------------------------- INVIO A SAP  ----------------------------------------------------------------
-			
-				/*Inviamo a SAP le testate e posizioni che non hanno T_CONFER con flag INVIO AL BUYER per approvazione obbligatorio CONFERMA_MANDATORY = 'X'*/
-
-				-- Controllo se il prezzo è sulla profili conferma header o profili conferma normale
-				SELECT COUNT(*) INTO counterRow FROM :IT_EKPO as a WHERE a.UPDKZ IN (SELECT TIPO_CONFERMA FROM "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" WHERE PROFILO_CONTROLLO = a.BSTAE);
-				IF counterRow = 0 THEN
-				-- non ho trovato nulla nei profili conferma normale lo cerco nella header
-					IT_EKPO_CH = SELECT a.* FROM :IT_EKPO as a 
-					INNER JOIN "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA_HEADER" as b
-					ON a.BSTAE = b.PROFILO_CONTROLLO
-					WHERE b.CONFERMA_MANDATORY = '' AND b.MODIFICA_PREZZO = 'X' AND a.ZMODPREZZO = 'X';
-					
-					--WHERE a.BSTAE IN (SELECT TIPO_CONFERMA FROM "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" WHERE PROFILO_CONTROLLO = a.BSTAE AND CONFERMA_MANDATORY = 'X') AND a.ZMODPREZZO = 'X';
-				ELSE 
-					IT_EKPO_CH = SELECT a.* FROM :IT_EKPO as a WHERE (a.UPDKZ IN (SELECT TIPO_CONFERMA FROM "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" WHERE PROFILO_CONTROLLO = a.BSTAE AND CONFERMA_MANDATORY = '') AND a.ZMODPREZZO = 'X');
-				END IF;
-
-				IT_EKKO_CH = SELECT * FROM :IT_EKKO WHERE EBELN IN (SELECT EBELN FROM :IT_EKPO WHERE (EBELN) IN (SELECT EBELN FROM :IT_EKPO_CH));	
-				
-				/*se non ho dati da inviare non li invio*/
-				SELECT COUNT(*) into counterRow FROM :IT_EKKO_CH;
-				IF (counterRow>0) THEN
-					BEGIN
-						DECLARE CURSOR cursorPLANT FOR SELECT * FROM :T_PLANTS;
-						CALL "AUPSUP_DATABASE.data.virtualProcedures::VIRTUAL_MM00_CONFIRM_ORD"(:IT_EKES_CH,:IT_EKKO_CH,:IT_EKPO_CH,:E_RETURN);
-						--CALL "PORTAL"."VIRTUAL_MM00_CONFIRM_DOC"(:IT_EKES_CH,:IT_EKET_CH,:IT_EKKO_CH,:IT_EKPO_CH,:E_RETURN);
-						 
-					    SELECT COUNT(*) INTO counterRow FROM :E_RETURN WHERE MSGTY = 'E';
-						IF (counterRow = 0) THEN
-						
-						    /*salvo per le notifiche*/
-    						SELECT DISTINCT EBELN INTO I_EBELN FROM :IT_EKKO;
-    						
-    						/* TODO AZ LUVE cerco i plant delle posizioni verso le quali inviare le notifiche
-    						T_PLANTS = SELECT DISTINCT a.EBELN,a.WERKS FROM "AUPSUP_DATABASE.data.tables::ET_PURDOC_EKPO" as a INNER JOIN :IT_EKPO_CH as b ON a.EBELN = b.EBELN and a.EBELP = b.EBELP;
-    						SELECT COUNT(*) INTO counterRow FROM :T_PLANTS;
-    						IF (counterRow>0) THEN
-    							FOR cursorRow AS cursorPLANT DO
-    								CALL "AUPSUP_DATABASE.data.procedures.Notifications::InsertNotification" (:userid,'ApproveSchedAgree',cursorRow.EBELN,'P_CONS','ICO',cursorRow.WERKS,'','IT','','','');
-    							END FOR;
-    						END IF;  */
-						
-                    		--cancello tutte le righe precedentemente inserite per pulizia
-                    		SELECT COUNT(*) into counterRow FROM :IT_EKPO_CH;
-                    		IF (counterRow>0) THEN
-                    		    DELETE FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" AS table1 WHERE (table1.EBELN,table1.EBELP) IN (SELECT EBELN,EBELP FROM :IT_EKPO_CH);
-                    		END IF;    						
-						
-						END IF;
-						
-					END;
-				END IF;
-		
+			/*Modifica Elaborazione complessa 02.03.2020
+			ELSE*/
 		END IF;
+
+		---------------------------------------- INVIO A SAP  ----------------------------------------------------------------
+	
+		/*Inviamo a SAP le testate e posizioni che non hanno T_CONFER con flag INVIO AL BUYER per approvazione obbligatorio CONFERMA_MANDATORY = 'X'*/
+
+		-- Controllo se il prezzo è sulla profili conferma header o profili conferma normale
+		SELECT COUNT(*) INTO counterRow FROM :IT_EKPO as a WHERE a.UPDKZ IN (SELECT TIPO_CONFERMA FROM "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" WHERE PROFILO_CONTROLLO = a.BSTAE) and a.ZMODPREZZO = 'X';
+		IF counterRow = 0 THEN
+		-- non ho trovato nulla nei profili conferma normale lo cerco nella header
+			IT_EKPO_CH = SELECT a.* FROM :IT_EKPO as a 
+			INNER JOIN "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA_HEADER" as b
+			ON a.BSTAE = b.PROFILO_CONTROLLO
+			WHERE b.CONFERMA_MANDATORY = '' AND b.MODIFICA_PREZZO = 'X' AND a.ZMODPREZZO = 'X';
+			
+			--WHERE a.BSTAE IN (SELECT TIPO_CONFERMA FROM "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" WHERE PROFILO_CONTROLLO = a.BSTAE AND CONFERMA_MANDATORY = 'X') AND a.ZMODPREZZO = 'X';
+		ELSE 
+			IT_EKPO_CH = SELECT a.* FROM :IT_EKPO as a WHERE (a.UPDKZ IN (SELECT TIPO_CONFERMA FROM "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" WHERE PROFILO_CONTROLLO = a.BSTAE AND CONFERMA_MANDATORY = '') AND a.ZMODPREZZO = 'X');
+		END IF;
+
+		IT_EKKO_CH = SELECT * FROM :IT_EKKO WHERE EBELN IN (SELECT EBELN FROM :IT_EKPO WHERE (EBELN) IN (SELECT EBELN FROM :IT_EKPO_CH));	
+		
+		/*se non ho dati da inviare non li invio*/
+		SELECT COUNT(*) into counterRow FROM :IT_EKKO_CH;
+		IF (counterRow>0) THEN
+			BEGIN
+				DECLARE CURSOR cursorPLANT FOR SELECT * FROM :T_PLANTS;
+				CALL "AUPSUP_DATABASE.data.virtualProcedures::VIRTUAL_MM00_CONFIRM_ORD"(:IT_EKES_CH,:IT_EKKO_CH,:IT_EKPO_CH,:E_RETURN);
+				--CALL "PORTAL"."VIRTUAL_MM00_CONFIRM_DOC"(:IT_EKES_CH,:IT_EKET_CH,:IT_EKKO_CH,:IT_EKPO_CH,:E_RETURN);
+					
+				SELECT COUNT(*) INTO counterRow FROM :E_RETURN WHERE MSGTY = 'E';
+				IF (counterRow = 0) THEN
+				
+					/*salvo per le notifiche*/
+					SELECT DISTINCT EBELN INTO I_EBELN FROM :IT_EKKO;
+					
+					/* TODO AZ LUVE cerco i plant delle posizioni verso le quali inviare le notifiche
+					T_PLANTS = SELECT DISTINCT a.EBELN,a.WERKS FROM "AUPSUP_DATABASE.data.tables::ET_PURDOC_EKPO" as a INNER JOIN :IT_EKPO_CH as b ON a.EBELN = b.EBELN and a.EBELP = b.EBELP;
+					SELECT COUNT(*) INTO counterRow FROM :T_PLANTS;
+					IF (counterRow>0) THEN
+						FOR cursorRow AS cursorPLANT DO
+							CALL "AUPSUP_DATABASE.data.procedures.Notifications::InsertNotification" (:userid,'ApproveSchedAgree',cursorRow.EBELN,'P_CONS','ICO',cursorRow.WERKS,'','IT','','','');
+						END FOR;
+					END IF;  */
+				
+					--cancello tutte le righe precedentemente inserite per pulizia
+					SELECT COUNT(*) into counterRow FROM :IT_EKPO_CH;
+					IF (counterRow>0) THEN
+						DELETE FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" AS table1 WHERE (table1.EBELN,table1.EBELP) IN (SELECT EBELN,EBELP FROM :IT_EKPO_CH);
+					END IF;    						
+				
+				END IF;
+				
+			END;
+		END IF;
+	
+		/*Modifica Elaborazione complessa 02.03.2020
+		END IF;*/
 
 
 	--END IF;
