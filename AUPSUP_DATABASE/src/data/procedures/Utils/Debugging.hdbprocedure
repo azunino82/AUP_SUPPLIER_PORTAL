@@ -129,8 +129,9 @@ SELECT CURRENT_TIMESTAMP INTO V_CURRENT_TIMESTAMP FROM "AUPSUP_DATABASE.data.syn
 					END FOR;
 					
 				END IF; */
-			
-			ELSE
+			/*Modifica Elaborazione complessa 02.03.2020
+			ELSE*/
+			END IF;
 			
 				/*Inviamo a SAP le testate e posizioni che non hanno T_CONFER con flag INVIO AL BUYER per approvazione obbligatorio CONFERMA_MANDATORY = 'X'*/
 				IT_EKPO_CH = SELECT a.* FROM #IT_EKPO as a WHERE (a.UPDKZ IN (SELECT TIPO_CONFERMA FROM "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" WHERE PROFILO_CONTROLLO = a.BSTAE AND CONFERMA_MANDATORY = '') AND a.ZINSCONF = 'X') OR (a.EBELN, a.EBELP) IN (SELECT EBELN, EBELP FROM #T_SKIPAPPBUYER WHERE SKIP = 'X' AND CONF_TYPE = 'QUA');
@@ -174,13 +175,13 @@ SELECT CURRENT_TIMESTAMP INTO V_CURRENT_TIMESTAMP FROM "AUPSUP_DATABASE.data.syn
 						
 					END;
 				END IF;
-		
-		END IF;
+		/*Modifica Elaborazione complessa 02.03.2020
+		END IF;*/
 
 		---------------------------------- RIGHE CON MODIFICA PREZZO ------------------------------------------------------
 
 		-- Controllo se il prezzo è sulla profili conferma header o profili conferma normale
-		SELECT COUNT(*) INTO counterRow FROM #IT_EKPO as a WHERE a.UPDKZ IN (SELECT TIPO_CONFERMA FROM "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" WHERE PROFILO_CONTROLLO = a.BSTAE);
+		SELECT COUNT(*) INTO counterRow FROM #IT_EKPO as a WHERE a.UPDKZ IN (SELECT TIPO_CONFERMA FROM "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" WHERE PROFILO_CONTROLLO = a.BSTAE) and a.ZMODPREZZO = 'X';
 		IF counterRow = 0 THEN
 		-- non ho trovato nulla nei profili conferma normale lo cerco nella header
 			IT_EKPO_CH = SELECT a.* FROM #IT_EKPO as a 
@@ -241,7 +242,7 @@ SELECT CURRENT_TIMESTAMP INTO V_CURRENT_TIMESTAMP FROM "AUPSUP_DATABASE.data.syn
 				/*Inviamo a SAP le testate e posizioni che non hanno T_CONFER con flag INVIO AL BUYER per approvazione obbligatorio CONFERMA_MANDATORY = 'X'*/
 
 				-- Controllo se il prezzo è sulla profili conferma header o profili conferma normale
-				SELECT COUNT(*) INTO counterRow FROM #IT_EKPO as a WHERE a.UPDKZ IN (SELECT TIPO_CONFERMA FROM "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" WHERE PROFILO_CONTROLLO = a.BSTAE);
+				SELECT COUNT(*) INTO counterRow FROM #IT_EKPO as a WHERE a.UPDKZ IN (SELECT TIPO_CONFERMA FROM "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" WHERE PROFILO_CONTROLLO = a.BSTAE) and a.ZMODPREZZO = 'X';
 				IF counterRow = 0 THEN
 				-- non ho trovato nulla nei profili conferma normale lo cerco nella header
 					IT_EKPO_CH = SELECT a.* FROM #IT_EKPO as a 
@@ -251,7 +252,7 @@ SELECT CURRENT_TIMESTAMP INTO V_CURRENT_TIMESTAMP FROM "AUPSUP_DATABASE.data.syn
 					
 					--WHERE a.BSTAE IN (SELECT TIPO_CONFERMA FROM "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" WHERE PROFILO_CONTROLLO = a.BSTAE AND CONFERMA_MANDATORY = 'X') AND a.ZMODPREZZO = 'X';
 				ELSE 
-					IT_EKPO_CH = SELECT a.* FROM #IT_EKPO as a WHERE (a.UPDKZ IN (SELECT TIPO_CONFERMA FROM "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" WHERE PROFILO_CONTROLLO = a.BSTAE AND CONFERMA_MANDATORY = '') AND a.ZMODPREZZO = 'X');
+					IT_EKPO_CH = SELECT a.* FROM #IT_EKPO as a WHERE (a.UPDKZ IN (SELECT TIPO_CONFERMA FROM "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" WHERE PROFILO_CONTROLLO = a.BSTAE AND CONFERMA_MANDATORY = '')) AND a.ZMODPREZZO = 'X';
 				END IF;
 
 				IT_EKKO_CH = SELECT * FROM #IT_EKKO WHERE EBELN IN (SELECT EBELN FROM #IT_EKPO WHERE (EBELN) IN (SELECT EBELN FROM :IT_EKPO_CH));	
