@@ -3,201 +3,300 @@ PROCEDURE "AUPSUP_DATABASE.data.procedures.Utils::Debugging" ()
     SQL SECURITY INVOKER AS  
 BEGIN 
 
-DECLARE counter INT;
+DECLARE userid VARCHAR(250);
+-- IN T_CONF_TYPE TABLE (EBELN NVARCHAR(10), EBELP VARCHAR(5), CONF_TYPE NVARCHAR(1)), -- serve per quando conferma da RMO
+
+
 DECLARE IT_EKKO_CH "AUPSUP_DATABASE.data.structures.Orders::EKKO_ConfirmOrds";
 DECLARE IT_EKPO_CH "AUPSUP_DATABASE.data.structures.Orders::EKPO_ConfirmOrds";
 DECLARE IT_EKES_CH "AUPSUP_DATABASE.data.structures.Orders::EKES_ConfirmOrds";
+
+DECLARE T_SINGLE_EKKO "AUPSUP_DATABASE.data.structures.Orders::EKKO_ConfirmOrds";
+DECLARE T_SINGLE_EKPO "AUPSUP_DATABASE.data.structures.Orders::EKPO_ConfirmOrds";
+DECLARE T_SINGLE_EKES "AUPSUP_DATABASE.data.structures.Orders::EKES_ConfirmOrds";
+
+DECLARE T_PLANTS TABLE (EBELN NVARCHAR(10),WERKS NVARCHAR(4));
+DECLARE I_EBELN NVARCHAR(10);
+DECLARE CURRENT_SYSID NVARCHAR(30);
+DECLARE counterRow INTEGER;
+DECLARE V_BU NVARCHAR(20); 
+DECLARE V_METAID NVARCHAR(50);
+DECLARE T_METAID NVARCHAR(50);
+DECLARE V_STATUS NVARCHAR(2);
 DECLARE V_CURRENT_TIMESTAMP TIMESTAMP; 
 
-DECLARE userid VARCHAR(250);
-DECLARE T_CONF_TYPE TABLE (EBELN NVARCHAR(10), EBELP VARCHAR(5), XBLNR NVARCHAR(35), CONF_TYPE NVARCHAR(1), BSTYP NVARCHAR(1)); -- serve per quando conferma da RMO
-DECLARE TIPO_OPERAZIONE NVARCHAR(3);  -- QUA o PRZ
-DECLARE I_NOTE NVARCHAR(1000); 
-DECLARE LIST_EBELN NVARCHAR(1000) DEFAULT '';
-DECLARE TIPOLOGIA NVARCHAR(50);
+create local temporary table #IT_EKKO LIKE "AUPSUP_DATABASE.data.structures.Orders::EKKO_ConfirmOrds";
+create local temporary table #IT_EKPO LIKE "AUPSUP_DATABASE.data.structures.Orders::EKPO_ConfirmOrds";
+create local temporary table #IT_EKES LIKE "AUPSUP_DATABASE.data.structures.Orders::EKES_ConfirmOrds";
+create local temporary table #T_SKIPAPPBUYER (EBELN NVARCHAR(10), EBELP VARCHAR(5), XBLNR NVARCHAR(35), SKIP NVARCHAR(1), CONF_TYPE NVARCHAR (3));
+
+INSERT INTO #IT_EKKO VALUES ('L','5500000119','0000000488','','','','','','','','','','');
+INSERT INTO #IT_EKPO VALUES ('5500000119','00030','15000.000','ST','38.00','1','PB00','','','ST','1','1','1','1','1','','','','X','X','ZCON');
+INSERT INTO #IT_EKPO VALUES ('5500000119','00020','15000.000','ST','40.00','1','PB00','','','ST','1','1','1','1','1','','','','X','X','ZLUV');
+INSERT INTO #IT_EKPO VALUES ('5500000119','00010','15000.000','ST','45.00','10','PB00','20200522','20200730','ST','1','1','1','1','1','','X','','X','X','ZPP1');
+INSERT INTO #IT_EKES VALUES ('5500000119','00030','AB','20200405','000000','D','1500','0004');
+INSERT INTO #IT_EKES VALUES ('5500000119','00030','AB','20200529','000000','D','1500','0005');
+INSERT INTO #IT_EKES VALUES ('5500000119','00020','AB','20200407','000000','D','1500','0005');
+INSERT INTO #T_SKIPAPPBUYER VALUES ('5500000119','00030','0004','X','QUA');
+INSERT INTO #T_SKIPAPPBUYER VALUES ('5500000119','00030','0005','','QUA');
+INSERT INTO #T_SKIPAPPBUYER VALUES ('5500000119','00020','0005','X','QUA');
 
 userid := 'azunino@alteanet.it';
-TIPO_OPERAZIONE := 'QUA';
-I_NOTE := 'testo nota';
 
-CREATE LOCAL TEMPORARY TABLE #LIFNR (LIFNR NVARCHAR(10),EBELN NVARCHAR(10),EBELP VARCHAR(5), BSTYP NVARCHAR(1));
-CREATE LOCAL TEMPORARY TABLE #T_CONF_TYPE (EBELN NVARCHAR(10), EBELP VARCHAR(5), XBLNR NVARCHAR(35), CONF_TYPE NVARCHAR(1), BSTYP NVARCHAR(1));
+/*PRENDO IL SYD DA PASSARE AL SERVIZIO*/
+SELECT SYSID INTO CURRENT_SYSID FROM "AUPSUP_DATABASE.data.tables::T_BCKND_SYSTEMS";
 
-INSERT INTO #T_CONF_TYPE VALUES ('5500000000','00010','0006','R','L');
-INSERT INTO #T_CONF_TYPE VALUES ('5500000000','00020','0006','R','L');
+SELECT '' as V_BU FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
+SELECT '' as V_METAID FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
+E_RETURN = SELECT null AS EBELN, null AS EBELP, null AS MSGTY, null AS MESSAGE, null AS MSGNO, null AS MSGID FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
+T_PLANTS = SELECT null as EBELN, null as WERKS FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
 
-SELECT CURRENT_TIMESTAMP INTO V_CURRENT_TIMESTAMP FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
+/*ricerca del campo BU se sono fornitore*/
+SELECT COUNT(*) into counterRow FROM "AUPSUP_DATABASE.data.tables::T_USERID_METAID" 
+WHERE USERID = :userid;
 
-SELECT COUNT(*) INTO counter FROM #T_CONF_TYPE;
-IF counter > 0 THEN
-
-    --------------- UTTE LE POSIZIONI DA PPROVARE ---------------------------------
-
-    IT_EKPO_CH = SELECT DISTINCT a.EBELN AS EBELN, a.EBELP AS EBELP, a.MENGE as MENGE, a.MEINS AS MEINS, a.NETPR AS NETPR, a.PEINH AS PEINH, a.KSCHL AS KSCHL, a.ZINVALIDITA AS ZINVALIDITA, a.ZFINVALIDATA AS ZFINVALIDATA, 
-    a.BPRME AS BPRME, a.BPUMZ AS BPUMZ, a.BPUMN AS BPUMN, a.UMREZ AS UMREZ, a.UMREN AS UMREN, a.UPDKZ AS UPDKZ, a.LABNR AS LABNR, a.ZMODPREZZO AS ZMODPREZZO, a.ZMODSCHED AS ZMODSCHED, a.ZINSCONF AS ZINSCONF, 
-    a.ZCONFPARZ AS ZCONFPARZ, a.BSTAE AS BSTAE FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKKO_EKPO" as a 
-    INNER JOIN #T_CONF_TYPE as b 
-    ON a.EBELN = b.EBELN AND a.EBELP = b.EBELP AND a.BSTYP = b.BSTYP 
-    WHERE a.STATUS = 'RC' AND b.CONF_TYPE = 'A' AND a.CONF_TYPE = :TIPO_OPERAZIONE;
-
-    IT_EKES_CH = SELECT a.EBELN AS EBELN, a.EBELP AS EBELP, a.EBTYP AS EBTYP, a.EINDT AS EINDT, a.UZEIT AS UZEIT, a.LPEIN AS LPEIN, a.MENGE AS MENGE, a.XBLNR AS XBLNR 
-    FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" as a 
-    INNER JOIN #T_CONF_TYPE as c
-    ON a.EBELN = c.EBELN AND a.EBELP = c.EBELP 
-    WHERE a.XBLNR = c.XBLNR;
-
-    IT_EKKO_CH = SELECT DISTINCT a.BSTYP, a.EBELN AS EBELN, a.LIFNR AS LIFNR, '' AS ZCUSTOM01, '' AS ZCUSTOM02, '' AS ZCUSTOM03, '' AS ZCUSTOM04, '' AS ZCUSTOM05, 
-    '' AS ZCUSTOM06, '' AS ZCUSTOM07, '' AS ZCUSTOM08, '' AS ZCUSTOM09, '' AS ZCUSTOM10 FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKKO_EKPO" as a 
-    INNER JOIN #T_CONF_TYPE as b 
-    ON a.EBELN = b.EBELN AND a.EBELP = b.EBELP AND a.BSTYP = b.BSTYP 
-    WHERE a.STATUS = 'RC' AND b.CONF_TYPE = 'A' AND a.CONF_TYPE = :TIPO_OPERAZIONE;
-
-    --CALL "AUPSUP_DATABASE.data.procedures.Orders::MM00_CONFIRM_ORD" (:userid,:IT_EKKO_CH,:IT_EKPO_CH,:IT_EKES_CH,:E_RETURN);
-    SELECT COUNT(*) INTO counter FROM :IT_EKPO_CH;
-    IF counter > 0 THEN
-        CALL "AUPSUP_DATABASE.data.virtualProcedures::VIRTUAL_MM00_CONFIRM_ORD"(:IT_EKES_CH,:IT_EKKO_CH,:IT_EKPO_CH,:E_RETURN);
-
-        SELECT COUNT(*) INTO counter FROM :E_RETURN WHERE MSGTY = 'E';
-        IF (counter = 0) THEN
-            SELECT COUNT(*) into counter FROM :IT_EKPO_CH;
-            IF (counter>0) THEN
-                DELETE FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" AS table1 WHERE (table1.EBELN,table1.EBELP) IN (SELECT EBELN,EBELP FROM :IT_EKPO_CH) 
-                AND table1.CONF_TYPE = :TIPO_OPERAZIONE
-                AND (table1.XBLNR) IN (SELECT XBLNR FROM #T_CONF_TYPE);
-            END IF;					
-
-            BEGIN
-                DECLARE LIST_OUT NVARCHAR(1000) DEFAULT '';
-                DECLARE CURSOR cursorApproveReject FOR SELECT * FROM :IT_EKPO_CH;
-                FOR cursorRow AS cursorApproveReject DO
-                    IF TIPO_OPERAZIONE = 'QUA' THEN
-                        SELECT COUNT(*) INTO counter FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" WHERE EBELN = cursorRow.EBELN AND EBELP = cursorRow.EBELP;
-                        IF counter = 0 THEN
-                            UPDATE "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKKO_EKPO" SET STATUS = 'AP', MODIFY_STATUS_DATE = :V_CURRENT_TIMESTAMP WHERE EBELN = cursorRow.EBELN AND EBELP = cursorRow.EBELP AND CONF_TYPE = :TIPO_OPERAZIONE AND (MODIFY_STATUS_DATE = null OR MODIFY_STATUS_DATE = '') ;				
-                        END IF;
-                    ELSE
-                        UPDATE "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKKO_EKPO" SET STATUS = 'AP', MODIFY_STATUS_DATE = :V_CURRENT_TIMESTAMP WHERE EBELN = cursorRow.EBELN AND EBELP = cursorRow.EBELP AND CONF_TYPE = :TIPO_OPERAZIONE AND (MODIFY_STATUS_DATE = null OR MODIFY_STATUS_DATE = '') ;				
-                    END IF;              
-
-				/*SEND NOTIFICATIONS*/
-				/*cerco i plant delle posizioni verso le quali inviare le notifiche*/
-				UPSERT #LIFNR SELECT DISTINCT LIFNR,EBELN,EBELP,BSTYP FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKKO_EKPO" WHERE EBELN = cursorRow.EBELN AND EBELP = cursorRow.EBELP AND STATUS = 'AP';
-
-              --  SELECT CONCAT (CONCAT (LIST_EBELN, cursorRow.EBELN),' ') INTO LIST_EBELN FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";          
-                END FOR;
-
-                /*SEND NOTIFICATIONS*/
-                SELECT COUNT(*) INTO counter FROM #LIFNR;
-                IF (counter>0) THEN
-                    BEGIN
-                        DECLARE CURSOR cursorLIFNR FOR SELECT DISTINCT * FROM #LIFNR;
-
-                        SELECT DISTINCT STRING_AGG(EBELN , ', ') INTO LIST_EBELN FROM #LIFNR;
-
-                        FOR cursorRow AS cursorLIFNR DO
-
-                            IF cursorRow.BSTYP = 'F' THEN
-                                TIPOLOGIA:='RMO';
-                            END IF;
-                            IF cursorRow.BSTYP = 'L' THEN
-                                TIPOLOGIA:='P_CONS';
-                            END IF;                            
-
-                            CALL "AUPSUP_DATABASE.data.procedures.Notifications::InsertNotification" (:userid,'',:LIST_EBELN,:TIPOLOGIA,'CAC','','','IT',cursorRow.LIFNR,'',:I_NOTE);
-                        END FOR;
-                    END;
-                END IF;		
-
-            END;
-        END IF;
-
-    END IF;
-
-    --------------- UTTE LE POSIZIONI DA RIFIUTARE ---------------------------------
-
-    DELETE FROM #LIFNR;
-
-    IT_EKPO_CH = SELECT a.EBELN AS EBELN, a.EBELP AS EBELP, a.MENGE as MENGE, a.MEINS AS MEINS, a.NETPR AS NETPR, a.PEINH AS PEINH, a.KSCHL AS KSCHL, a.ZINVALIDITA AS ZINVALIDITA, a.ZFINVALIDATA AS ZFINVALIDATA, a.BPRME AS BPRME, a.BPUMZ AS BPUMZ, a.BPUMN AS BPUMN, a.UMREZ AS UMREZ, a.UMREN AS UMREN, a.UPDKZ AS UPDKZ, a.LABNR AS LABNR, a.ZMODPREZZO AS ZMODPREZZO, a.ZMODSCHED AS ZMODSCHED, a.ZINSCONF AS ZINSCONF, a.ZCONFPARZ AS ZCONFPARZ, a.BSTAE AS BSTAE FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKKO_EKPO" as a 
-    INNER JOIN #T_CONF_TYPE as b 
-    ON a.EBELN = b.EBELN AND a.EBELP = b.EBELP AND a.BSTYP = b.BSTYP 
-    WHERE a.STATUS = 'RC' AND b.CONF_TYPE = 'R' AND a.CONF_TYPE = :TIPO_OPERAZIONE;
-
-    IT_EKES_CH = SELECT a.EBELN AS EBELN, a.EBELP AS EBELP, a.EBTYP AS EBTYP, a.EINDT AS EINDT, a.UZEIT AS UZEIT, a.LPEIN AS LPEIN, a.MENGE AS MENGE, a.XBLNR AS XBLNR FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" as a 
-    INNER JOIN :IT_EKPO_CH as b 
-    ON a.EBELN = b.EBELN AND a.EBELP = b.EBELP 
-    INNER JOIN #T_CONF_TYPE as c
-    ON a.EBELN = c.EBELN AND a.EBELP = c.EBELP 
-    WHERE a.XBLNR = c.XBLNR;
-
-    IT_EKKO_CH = SELECT a.BSTYP, a.EBELN AS EBELN, a.LIFNR AS LIFNR, '' AS ZCUSTOM01, '' AS ZCUSTOM02, '' AS ZCUSTOM03, '' AS ZCUSTOM04, '' AS ZCUSTOM05, '' AS ZCUSTOM06, '' AS ZCUSTOM07, '' AS ZCUSTOM08, '' AS ZCUSTOM09, '' AS ZCUSTOM10 FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKKO_EKPO" as a 
-    INNER JOIN #T_CONF_TYPE as b 
-    ON a.EBELN = b.EBELN AND a.EBELP = b.EBELP AND a.BSTYP = b.BSTYP 
-    WHERE a.STATUS = 'RC' AND b.CONF_TYPE = 'R' AND a.CONF_TYPE = :TIPO_OPERAZIONE;
-
-    --CALL "AUPSUP_DATABASE.data.procedures.Orders::MM00_CONFIRM_ORD" (:userid,:IT_EKKO_CH,:IT_EKPO_CH,:IT_EKES_CH,:E_RETURN);
-    SELECT COUNT(*) INTO counter FROM :IT_EKPO_CH;
-    IF counter > 0 THEN
-        
-        --SELECT COUNT(*) INTO counter FROM :E_RETURN WHERE MSGTY = 'E';
-        --IF (counter = 0) THEN
-            SELECT COUNT(*) into counter FROM :IT_EKPO_CH;
-            IF (counter>0) THEN
-                DELETE FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" AS table1 WHERE (table1.EBELN,table1.EBELP) IN (SELECT EBELN,EBELP FROM :IT_EKPO_CH) 
-                AND table1.CONF_TYPE = :TIPO_OPERAZIONE
-                AND (table1.XBLNR) IN (SELECT XBLNR FROM #T_CONF_TYPE);
-            END IF;					
-
-            BEGIN
-
-                DECLARE CURSOR cursorApproveReject FOR SELECT * FROM :IT_EKPO_CH;
-                FOR cursorRow AS cursorApproveReject DO
-                    IF TIPO_OPERAZIONE = 'QUA' THEN
-                        SELECT COUNT(*) INTO counter FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" WHERE EBELN = cursorRow.EBELN AND EBELP = cursorRow.EBELP;
-                        IF counter = 0 THEN
-                            UPDATE "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKKO_EKPO" SET STATUS = 'RF', MODIFY_STATUS_DATE = :V_CURRENT_TIMESTAMP WHERE EBELN = cursorRow.EBELN AND EBELP = cursorRow.EBELP AND CONF_TYPE = :TIPO_OPERAZIONE AND (MODIFY_STATUS_DATE = null OR MODIFY_STATUS_DATE = '') ;				
-                        END IF;
-                    ELSE
-                        UPDATE "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKKO_EKPO" SET STATUS = 'RF', MODIFY_STATUS_DATE = :V_CURRENT_TIMESTAMP WHERE EBELN = cursorRow.EBELN AND EBELP = cursorRow.EBELP AND CONF_TYPE = :TIPO_OPERAZIONE AND (MODIFY_STATUS_DATE = null OR MODIFY_STATUS_DATE = '') ;				
-                    END IF;   
-
-				/*SEND NOTIFICATIONS*/
-				/*cerco i plant delle posizioni verso le quali inviare le notifiche*/
-				UPSERT #LIFNR SELECT DISTINCT LIFNR,EBELN,EBELP,BSTYP FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKKO_EKPO" WHERE EBELN = cursorRow.EBELN AND EBELP = cursorRow.EBELP AND STATUS = 'RF';
-
-               -- SELECT CONCAT (CONCAT (LIST_EBELN, cursorRow.EBELN),' ') INTO LIST_EBELN FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";  
-               
-                END FOR;
-
-                /*SEND NOTIFICATIONS*/
-                SELECT COUNT(*) INTO counter FROM #LIFNR;
-                IF (counter>0) THEN
-                    BEGIN                        
-                        DECLARE CURSOR cursorLIFNR FOR SELECT DISTINCT * FROM #LIFNR;
-
-                        SELECT DISTINCT STRING_AGG(EBELN , ', ') INTO LIST_EBELN FROM #LIFNR;
-
-                        FOR cursorRow AS cursorLIFNR DO
-                            IF cursorRow.BSTYP = 'F' THEN
-                                TIPOLOGIA:='RMO';
-                            END IF;
-                            IF cursorRow.BSTYP = 'L' THEN
-                                TIPOLOGIA:='P_CONS';
-                            END IF;   
-
-                            CALL "AUPSUP_DATABASE.data.procedures.Notifications::InsertNotification" (:userid,'',:LIST_EBELN,:TIPOLOGIA,'CRI','','','IT',cursorRow.LIFNR,'',:I_NOTE);
-                        END FOR;
-                    END;
-                END IF;		
-
-            END;
-        --END IF;
-
-    END IF;
-
+IF (counterRow>0) THEN
+	SELECT METAID into V_METAID
+	FROM "AUPSUP_DATABASE.data.tables::T_USERID_METAID" 
+	WHERE USERID = :userid;
+	
+	SELECT BU into V_BU
+	FROM "AUPSUP_DATABASE.data.tables::T_METAID_BU" 
+	WHERE METAID = :V_METAID AND STATO = 'AP';
+	T_METAID := :V_METAID;
 ELSE
-    E_RETURN = SELECT '' AS EBELN,'' AS EBELP,'E' AS MSGTY,'No Conf type found' AS MESSAGE,'' AS MSGNO,'' AS MSGID FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
+	SELECT BU into V_BU
+	FROM  "AUPSUP_DATABASE.data.tables::T_BUYERS"
+	WHERE USERID = :userid;
+	T_METAID := '';
 END IF;
 
-DROP TABLE #LIFNR;
-DROP TABLE #T_CONF_TYPE;
+/*current timestamp*/
+SELECT CURRENT_TIMESTAMP INTO V_CURRENT_TIMESTAMP FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
+-- T_CONFER = SELECT TIPO_CONFERMA as UPDKZ FROM "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" WHERE CONFERMA_MANDATORY = 'X' AND PROFILO_CONTROLLO IN (SELECT  FROM :#IT_EKPO);
+
+/*il fornitore non può approvare o confermare*/
+	--SELECT COUNT(*) INTO counterRow FROM :T_CONF_TYPE;
+	--IF counterRow > 0 AND V_METAID <> '' THEN
+	--	E_RETURN = SELECT null AS EBELN, null AS EBELP, 'E' AS MSGTY, 'SUPPLIER can not confirm or reject data' AS MESSAGE, null AS MSGNO, null AS MSGID FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
+	--ELSE
+
+		------------------- RIGHE CON MODIFICA QUANTITA: ----------------------------- 
+
+		IF V_METAID = '' or V_METAID = NULL then
+			V_METAID := :userid;
+		END IF;
+
+		/*cerco le posizioni che devono essere modificate*/
+		IT_EKPO_CH = SELECT a.* FROM #IT_EKPO as a WHERE a.UPDKZ IN (SELECT TIPO_CONFERMA FROM "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" WHERE PROFILO_CONTROLLO = a.BSTAE AND CONFERMA_MANDATORY = 'X') AND a.ZINSCONF = 'X' AND (a.EBELN, a.EBELP) IN (SELECT EBELN, EBELP FROM #T_SKIPAPPBUYER WHERE SKIP = '' AND CONF_TYPE = 'QUA');
+	
+		IT_EKES_CH = SELECT * FROM #IT_EKES AS a WHERE (a.EBELN,a.EBELP) IN (SELECT EBELN, EBELP FROM :IT_EKPO_CH) AND a.XBLNR IN (SELECT XBLNR FROM #T_SKIPAPPBUYER WHERE SKIP = '' AND CONF_TYPE = 'QUA' AND EBELN = a.EBELN AND EBELP = a.EBELP); 
+		
+		IT_EKKO_CH = SELECT DISTINCT * FROM #IT_EKKO WHERE (EBELN) IN (SELECT EBELN FROM :IT_EKPO_CH);
+
+		SELECT COUNT(*) into counterRow FROM :IT_EKKO_CH;
+		IF (counterRow>0) THEN
+		        DECLARE CURSOR cursorPLANT FOR SELECT * FROM :T_PLANTS;
+				UPSERT "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKKO_EKPO" SELECT :V_BU AS BU,CURRENT_SYSID AS SYSID,b.EBELN AS EBELN,
+						a.EBELP AS EBELP,b.LIFNR AS LIFNR,b.NAME1 AS NAME1,V_METAID AS METAID,b.EKORG AS EKORG,d.WERKS AS WERKS,
+						d.MATNR AS MATNR,d.TXZ01 AS TXZ01,a.MENGE AS MENGE, a.MEINS AS MEINS, d.MENGE AS MENGE_ORIGINAL,a.NETPR AS NETPR,
+						a.PEINH AS PEINH,d.NETPR AS NETPR_ORIGINAL,d.PEINH AS PEINH_ORIGINAL,a.KSCHL AS KSCHL, a.ZINVALIDITA AS ZINVALIDITA,
+						a.ZFINVALIDATA AS ZFINVALIDATA, a.BPRME AS BPRME, a.BPUMZ AS BPUMZ, a.BPUMN AS BPUMN, a.UMREZ AS UMREZ, a.UMREN AS UMREN,
+						 c.EBTYP as EBTYP,a.UPDKZ AS UPDKZ, a.LABNR AS LABNR, d.BSTYP AS BSTYP, :V_CURRENT_TIMESTAMP AS CREATION_DATE,
+						 '' AS MODIFY_STATUS_DATE,'RC' AS STATUS, b.EKGRP as EKGRP, d.BSTAE AS BSTAE, '' AS ZMODPREZZO, a.ZMODSCHED AS ZMODSCHED,
+						  a.ZINSCONF AS ZINSCONF, a.ZCONFPARZ AS ZCONFPARZ, 'QUA' AS CONF_TYPE
+					FROM :IT_EKPO_CH AS a
+					INNER JOIN "AUPSUP_DATABASE.data.tables::ET_SAG_EKKO" AS b ON a.EBELN = b.EBELN
+					INNER JOIN :IT_EKES_CH AS c ON a.EBELN = c.EBELN AND a.EBELP = c.EBELP
+					INNER JOIN "AUPSUP_DATABASE.data.tables::ET_SAG_EKPO" AS d ON a.EBELN = d.EBELN AND a.EBELP = d.EBELP;
+					
+				/*la BU potrebbe non essere singola per metaid. controllare la tabella T_METAID_BU*/
+				UPSERT "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" SELECT :V_BU AS BU,CURRENT_SYSID AS SYSID,a.EBELN AS EBELN,a.EBELP AS EBELP,a.XBLNR AS ETENS,a.EBTYP AS EBTYP,a.EINDT AS EINDT,a.UZEIT AS UZEIT,a.LPEIN AS LPEIN,a.MENGE AS MENGE,a.XBLNR AS XBLNR,/*b.WEMNG*/ '0' AS WEMNG, /*b.MNG02*/ '0' AS MNG02, 'QUA' AS CONF_TYPE 
+					FROM :IT_EKES_CH AS a;
+					-- INNER JOIN :IT_EKET_CH AS b ON a.EBELN = b.EBELN and a.EBELP = b.EBELP AND a.ETENS = b.ETENR;
+				
+				/*Aggiornamento della quantità MENGE sommata per schedulazione*/
+				-- AMA UPDATE "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKKO_EKPO" a SET MENGE = (SELECT SUM(CAST (b.MENGE AS FLOAT)) FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" b WHERE a.EBELN = b.EBELN AND a.EBELP = b.EBELP GROUP BY b.EBELN,b.EBELP);
+				
+				-- invio notifiche
+
+			    /*cerco i plant delle posizioni verso le quali inviare le notifiche
+				T_PLANTS = SELECT DISTINCT a.EBELN,a.WERKS FROM "AUPSUP_DATABASE.data.tables::ET_SAG_EKPO" as a INNER JOIN :IT_EKPO_CH as b ON a.EBELN = b.EBELN and a.EBELP = b.EBELP;
+				SELECT COUNT(*) INTO counterRow FROM :T_PLANTS;
+				IF (counterRow>0) THEN
+					FOR cursorRow AS cursorPLANT DO
+						CALL "AUPSUP_DATABASE.data.procedures.Notifications::InsertNotification" (:userid,'ApproveSchedAgree',cursorRow.EBELN,'P_CONS','ICO',cursorRow.WERKS,'','IT','','','');
+					END FOR;
+					
+				END IF; */
+			
+			ELSE
+			
+				/*Inviamo a SAP le testate e posizioni che non hanno T_CONFER con flag INVIO AL BUYER per approvazione obbligatorio CONFERMA_MANDATORY = 'X'*/
+				IT_EKPO_CH = SELECT a.* FROM #IT_EKPO as a WHERE (a.UPDKZ IN (SELECT TIPO_CONFERMA FROM "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" WHERE PROFILO_CONTROLLO = a.BSTAE AND CONFERMA_MANDATORY = '') AND a.ZINSCONF = 'X') OR (a.EBELN, a.EBELP) IN (SELECT EBELN, EBELP FROM #T_SKIPAPPBUYER WHERE SKIP = 'X' AND CONF_TYPE = 'QUA');
+          		
+				IT_EKES_CH = SELECT * FROM #IT_EKES as a WHERE (a.EBELN,a.EBELP) IN (SELECT EBELN, EBELP FROM :IT_EKPO_CH) AND a.XBLNR IN (SELECT XBLNR FROM #T_SKIPAPPBUYER WHERE SKIP = 'X' AND CONF_TYPE = 'QUA' AND EBELN = a.EBELN AND EBELP = a.EBELP); 
+                                       
+           		IT_EKKO_CH = SELECT * FROM #IT_EKKO WHERE (EBELN) IN (SELECT EBELN FROM :IT_EKPO_CH);
+
+				/*se non ho dati da inviare non li invio*/
+				SELECT COUNT(*) into counterRow FROM :IT_EKKO_CH;
+				IF (counterRow>0) THEN
+					BEGIN
+						DECLARE CURSOR cursorPLANT FOR SELECT * FROM :T_PLANTS;
+						CALL "AUPSUP_DATABASE.data.virtualProcedures::VIRTUAL_MM00_CONFIRM_ORD"(:IT_EKES_CH,:IT_EKKO_CH,:IT_EKPO_CH,:E_RETURN);
+						--CALL "PORTAL"."VIRTUAL_MM00_CONFIRM_DOC"(:IT_EKES_CH,:IT_EKET_CH,:IT_EKKO_CH,:IT_EKPO_CH,:E_RETURN);
+						
+					    SELECT COUNT(*) INTO counterRow FROM :E_RETURN WHERE MSGTY = 'E';
+						IF (counterRow = 0) THEN
+						
+						    /*salvo per le notifiche*/
+    						SELECT DISTINCT EBELN INTO I_EBELN FROM #IT_EKKO;
+    						
+    						/* TODO AZ LUVE cerco i plant delle posizioni verso le quali inviare le notifiche
+    						T_PLANTS = SELECT DISTINCT a.EBELN,a.WERKS FROM "AUPSUP_DATABASE.data.tables::ET_PURDOC_EKPO" as a INNER JOIN :IT_EKPO_CH as b ON a.EBELN = b.EBELN and a.EBELP = b.EBELP;
+    						SELECT COUNT(*) INTO counterRow FROM :T_PLANTS;
+    						IF (counterRow>0) THEN
+    							FOR cursorRow AS cursorPLANT DO
+    								CALL "AUPSUP_DATABASE.data.procedures.Notifications::InsertNotification" (:userid,'ApproveSchedAgree',cursorRow.EBELN,'P_CONS','ICO',cursorRow.WERKS,'','IT','','','');
+    							END FOR;
+	
+    						END IF; */
+							
+    						
+                    		/*cancello tutte le righe precedentemente inserite per pulizia*/
+                    		SELECT COUNT(*) into counterRow FROM :IT_EKPO_CH;
+                    		IF (counterRow>0) THEN
+                    		    DELETE FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" AS table1 WHERE (table1.EBELN,table1.EBELP) IN (SELECT EBELN,EBELP FROM :IT_EKPO_CH);
+                    		END IF;    						
+						
+						END IF;
+						
+					END;
+				END IF;
+		
+		END IF;
+
+		---------------------------------- RIGHE CON MODIFICA PREZZO ------------------------------------------------------
+
+		-- Controllo se il prezzo è sulla profili conferma header o profili conferma normale
+		SELECT COUNT(*) INTO counterRow FROM #IT_EKPO as a WHERE a.UPDKZ IN (SELECT TIPO_CONFERMA FROM "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" WHERE PROFILO_CONTROLLO = a.BSTAE);
+		IF counterRow = 0 THEN
+		-- non ho trovato nulla nei profili conferma normale lo cerco nella header
+			IT_EKPO_CH = SELECT a.* FROM #IT_EKPO as a 
+			INNER JOIN "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA_HEADER" as b
+			ON a.BSTAE = b.PROFILO_CONTROLLO
+			WHERE b.CONFERMA_MANDATORY = 'X' AND b.MODIFICA_PREZZO = 'X' AND a.ZMODPREZZO = 'X';
+			
+			--WHERE a.BSTAE IN (SELECT TIPO_CONFERMA FROM "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" WHERE PROFILO_CONTROLLO = a.BSTAE AND CONFERMA_MANDATORY = 'X') AND a.ZMODPREZZO = 'X';
+		ELSE 
+			/*cerco le posizioni che devono essere modificate*/
+			IT_EKPO_CH = SELECT a.* FROM #IT_EKPO as a WHERE a.UPDKZ IN (SELECT TIPO_CONFERMA FROM "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" WHERE PROFILO_CONTROLLO = a.BSTAE AND CONFERMA_MANDATORY = 'X') AND a.ZMODPREZZO = 'X';
+		END IF;
+
+		IT_EKKO_CH = SELECT * FROM #IT_EKKO WHERE (EBELN) IN (SELECT EBELN FROM :IT_EKPO_CH);
+
+		SELECT COUNT(*) into counterRow FROM :IT_EKKO_CH;
+		IF (counterRow>0) THEN
+
+		---------------------------------------- SALVO SU HANA ----------------------------------------------------------------
+
+		        DECLARE CURSOR cursorPLANT FOR SELECT * FROM :T_PLANTS;
+				UPSERT "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKKO_EKPO" SELECT :V_BU AS BU,CURRENT_SYSID AS SYSID,b.EBELN AS EBELN,a.EBELP AS EBELP,b.LIFNR AS LIFNR,b.NAME1 AS NAME1,V_METAID AS METAID,
+				b.EKORG AS EKORG,d.WERKS AS WERKS,d.MATNR AS MATNR,d.TXZ01 AS TXZ01,a.MENGE AS MENGE, a.MEINS AS MEINS, d.MENGE AS MENGE_ORIGINAL,a.NETPR AS NETPR,a.PEINH AS PEINH,d.NETPR AS NETPR_ORIGINAL,
+				d.PEINH AS PEINH_ORIGINAL,a.KSCHL AS KSCHL, a.ZINVALIDITA AS ZINVALIDITA, a.ZFINVALIDATA AS ZFINVALIDATA, a.BPRME AS BPRME, a.BPUMZ AS BPUMZ, a.BPUMN AS BPUMN, a.UMREZ AS UMREZ, a.UMREN AS UMREN, 
+				--c.EBTYP as EBTYP,
+				'' AS EBTYP,
+				a.UPDKZ AS UPDKZ, a.LABNR AS LABNR, d.BSTYP AS BSTYP, :V_CURRENT_TIMESTAMP AS CREATION_DATE,'' AS MODIFY_STATUS_DATE,'RC' AS STATUS, b.EKGRP as EKGRP, d.BSTAE AS BSTAE, 
+				a.ZMODPREZZO AS ZMODPREZZO, '' AS ZMODSCHED, '' AS ZINSCONF, '' AS ZCONFPARZ, 'PRZ' AS CONF_TYPE
+					FROM :IT_EKPO_CH AS a
+					INNER JOIN "AUPSUP_DATABASE.data.tables::ET_SAG_EKKO" AS b ON a.EBELN = b.EBELN
+					--INNER JOIN :IT_EKES_CH AS c ON a.EBELN = c.EBELN AND a.EBELP = c.EBELP
+					INNER JOIN "AUPSUP_DATABASE.data.tables::ET_SAG_EKPO" AS d ON a.EBELN = d.EBELN AND a.EBELP = d.EBELP;
+					
+				/*la BU potrebbe non essere singola per metaid. controllare la tabella T_METAID_BU*/
+				--UPSERT "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" SELECT :V_BU AS BU,CURRENT_SYSID AS SYSID,a.EBELN AS EBELN,a.EBELP AS EBELP,a.XBLNR AS ETENS,a.EBTYP AS EBTYP,a.EINDT AS EINDT,a.UZEIT AS UZEIT,a.LPEIN AS LPEIN,a.MENGE AS MENGE,a.XBLNR AS XBLNR,/*b.WEMNG*/ '0' AS WEMNG, /*b.MNG02*/ '0' AS MNG02, 'PRZ' AS CONF_TYPE 
+				--	FROM :IT_EKES_CH AS a;
+					-- INNER JOIN :IT_EKET_CH AS b ON a.EBELN = b.EBELN and a.EBELP = b.EBELP AND a.ETENS = b.ETENR;
+				
+				/*Aggiornamento della quantità MENGE sommata per schedulazione*/
+				-- AMA UPDATE "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKKO_EKPO" a SET MENGE = (SELECT SUM(CAST (b.MENGE AS FLOAT)) FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" b WHERE a.EBELN = b.EBELN AND a.EBELP = b.EBELP GROUP BY b.EBELN,b.EBELP);
+				
+				-- invio notifiche
+
+			    /* TODO AZ LUVE DA NON FARE PER ORDINI E PIANI cerco i plant delle posizioni verso le quali inviare le notifiche
+				T_PLANTS = SELECT DISTINCT a.EBELN,a.WERKS FROM "AUPSUP_DATABASE.data.tables::ET_PURDOC_EKPO" as a INNER JOIN :IT_EKPO_CH as b ON a.EBELN = b.EBELN and a.EBELP = b.EBELP;
+				SELECT COUNT(*) INTO counterRow FROM :T_PLANTS;
+				IF (counterRow>0) THEN
+					FOR cursorRow AS cursorPLANT DO
+						CALL "AUPSUP_DATABASE.data.procedures.Notifications::InsertNotification" (:userid,'ApproveSchedAgree',cursorRow.EBELN,'P_CONS','ICO',cursorRow.WERKS,'','IT','','','');
+					END FOR;
+					
+				END IF;  */
+			
+			ELSE
+
+			---------------------------------------- INVIO A SAP  ----------------------------------------------------------------
+			
+				/*Inviamo a SAP le testate e posizioni che non hanno T_CONFER con flag INVIO AL BUYER per approvazione obbligatorio CONFERMA_MANDATORY = 'X'*/
+
+				-- Controllo se il prezzo è sulla profili conferma header o profili conferma normale
+				SELECT COUNT(*) INTO counterRow FROM #IT_EKPO as a WHERE a.UPDKZ IN (SELECT TIPO_CONFERMA FROM "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" WHERE PROFILO_CONTROLLO = a.BSTAE);
+				IF counterRow = 0 THEN
+				-- non ho trovato nulla nei profili conferma normale lo cerco nella header
+					IT_EKPO_CH = SELECT a.* FROM #IT_EKPO as a 
+					INNER JOIN "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA_HEADER" as b
+					ON a.BSTAE = b.PROFILO_CONTROLLO
+					WHERE b.CONFERMA_MANDATORY = '' AND b.MODIFICA_PREZZO = 'X' AND a.ZMODPREZZO = 'X';
+					
+					--WHERE a.BSTAE IN (SELECT TIPO_CONFERMA FROM "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" WHERE PROFILO_CONTROLLO = a.BSTAE AND CONFERMA_MANDATORY = 'X') AND a.ZMODPREZZO = 'X';
+				ELSE 
+					IT_EKPO_CH = SELECT a.* FROM #IT_EKPO as a WHERE (a.UPDKZ IN (SELECT TIPO_CONFERMA FROM "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" WHERE PROFILO_CONTROLLO = a.BSTAE AND CONFERMA_MANDATORY = '') AND a.ZMODPREZZO = 'X');
+				END IF;
+
+				IT_EKKO_CH = SELECT * FROM #IT_EKKO WHERE EBELN IN (SELECT EBELN FROM #IT_EKPO WHERE (EBELN) IN (SELECT EBELN FROM :IT_EKPO_CH));	
+				
+				/*se non ho dati da inviare non li invio*/
+				SELECT COUNT(*) into counterRow FROM :IT_EKKO_CH;
+				IF (counterRow>0) THEN
+					BEGIN
+						DECLARE CURSOR cursorPLANT FOR SELECT * FROM :T_PLANTS;
+						CALL "AUPSUP_DATABASE.data.virtualProcedures::VIRTUAL_MM00_CONFIRM_ORD"(:IT_EKES_CH,:IT_EKKO_CH,:IT_EKPO_CH,:E_RETURN);
+						--CALL "PORTAL"."VIRTUAL_MM00_CONFIRM_DOC"(:IT_EKES_CH,:IT_EKET_CH,:IT_EKKO_CH,:IT_EKPO_CH,:E_RETURN);
+						 
+					    SELECT COUNT(*) INTO counterRow FROM :E_RETURN WHERE MSGTY = 'E';
+						IF (counterRow = 0) THEN
+						
+						    /*salvo per le notifiche*/
+    						SELECT DISTINCT EBELN INTO I_EBELN FROM #IT_EKKO;
+    						
+    						/* TODO AZ LUVE cerco i plant delle posizioni verso le quali inviare le notifiche
+    						T_PLANTS = SELECT DISTINCT a.EBELN,a.WERKS FROM "AUPSUP_DATABASE.data.tables::ET_PURDOC_EKPO" as a INNER JOIN :IT_EKPO_CH as b ON a.EBELN = b.EBELN and a.EBELP = b.EBELP;
+    						SELECT COUNT(*) INTO counterRow FROM :T_PLANTS;
+    						IF (counterRow>0) THEN
+    							FOR cursorRow AS cursorPLANT DO
+    								CALL "AUPSUP_DATABASE.data.procedures.Notifications::InsertNotification" (:userid,'ApproveSchedAgree',cursorRow.EBELN,'P_CONS','ICO',cursorRow.WERKS,'','IT','','','');
+    							END FOR;
+    						END IF;  */
+						
+                    		--cancello tutte le righe precedentemente inserite per pulizia
+                    		SELECT COUNT(*) into counterRow FROM :IT_EKPO_CH;
+                    		IF (counterRow>0) THEN
+                    		    DELETE FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" AS table1 WHERE (table1.EBELN,table1.EBELP) IN (SELECT EBELN,EBELP FROM :IT_EKPO_CH);
+                    		END IF;    						
+						
+						END IF;
+						
+					END;
+				END IF;
+		
+		END IF;
+
+
+	--END IF;
+DROP TABLE #IT_EKKO;
+DROP TABLE #IT_EKPO;
+DROP TABLE #IT_EKES;
+DROP TABLE #T_SKIPAPPBUYER;
+
 END;
