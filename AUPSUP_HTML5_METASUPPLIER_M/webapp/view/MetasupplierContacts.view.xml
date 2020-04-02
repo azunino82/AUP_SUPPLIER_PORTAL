@@ -31,7 +31,7 @@
 					<uxap:ObjectPageSection title="{mysettings>SectionTitle}">
 						<uxap:subSections templateShareable="true">
 							<uxap:ObjectPageSubSection title="">
-								<List items="{mysettings>Subsections}" headerText="" visible="{mysettings>Data}">
+								<List id="ListContains" items="{mysettings>Subsections}" headerText="" visible="{mysettings>Data}">
 									<headerToolbar>
 										<OverflowToolbar>
 											<ToolbarSpacer/>

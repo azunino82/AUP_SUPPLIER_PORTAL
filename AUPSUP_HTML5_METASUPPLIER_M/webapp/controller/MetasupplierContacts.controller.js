@@ -14,7 +14,8 @@ sap.ui.define([
 	return BaseController.extend("it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER_M.controller.MetasupplierContacts", {
 		onInit: function () {
 			that = this;
-
+			template = null;
+			contactType = [];
 			that.getOwnerComponent().getRouter().getRoute("RouteMetasupplierContacts").attachPatternMatched(
 				that.handleRoutePatternMatched,
 				this);
@@ -106,6 +107,7 @@ sap.ui.define([
 					that.getView().byId("contactsPage").setShowNavButton(false);
 
 				var url = "/backend/MetasupplierManagement/GetContactTypes?I_ATTIVO=1";
+				
 				that.ajaxGet(url, function (oDataRes) {
 					if (oDataRes && oDataRes.results && oDataRes.results.length > 0) {
 						//var contactType = [];
@@ -212,9 +214,16 @@ sap.ui.define([
 			})
 		},
 
+		onExit:function(){
+			that.getView().byId('ListContains').setModel(null)
+			that.getView().setModel(null, "mysettings");
+		},
+
 		getContact: function () {
 
 			var url = "/backend/MetasupplierManagement/GetContacts?I_METAID=" + metaid;
+
+			that.getView().byId('ListContains').setModel(null)
 
 			that.ajaxGet(url, function (oDataRes) {
 
@@ -330,6 +339,8 @@ sap.ui.define([
 		},
 
 		buildPage: function () {
+
+			that.getView().setModel(null, "mysettings")
 
 			template = {
 				"settings": {
