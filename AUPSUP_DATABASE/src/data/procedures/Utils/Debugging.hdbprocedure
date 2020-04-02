@@ -235,7 +235,9 @@ SELECT CURRENT_TIMESTAMP INTO V_CURRENT_TIMESTAMP FROM "AUPSUP_DATABASE.data.syn
 					
 				END IF;  */
 			
-			ELSE
+			/*Modifica Elaborazione complessa 02.03.2020
+			ELSE*/
+		END IF;
 
 			---------------------------------------- INVIO A SAP  ----------------------------------------------------------------
 			
@@ -291,7 +293,8 @@ SELECT CURRENT_TIMESTAMP INTO V_CURRENT_TIMESTAMP FROM "AUPSUP_DATABASE.data.syn
 					END;
 				END IF;
 		
-		END IF;
+		/*Modifica Elaborazione complessa 02.03.2020
+		END IF;*/
 
 
 	--END IF;

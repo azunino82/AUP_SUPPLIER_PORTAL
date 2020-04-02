@@ -137,7 +137,7 @@ SELECT CURRENT_TIMESTAMP INTO V_CURRENT_TIMESTAMP FROM "AUPSUP_DATABASE.data.syn
 					IF (counterRow = 0) THEN
 					
 					    /*salvo per le notifiche*/
-   						SELECT DISTINCT EBELN INTO I_EBELN FROM :IT_EKKO;
+   						/*SELECT DISTINCT EBELN INTO I_EBELN FROM :IT_EKKO;
    						
    						/* TODO AZ LUVE cerco i plant delle posizioni verso le quali inviare le notifiche
     					T_PLANTS = SELECT DISTINCT a.EBELN,a.WERKS FROM "AUPSUP_DATABASE.data.tables::ET_PURDOC_EKPO" as a INNER JOIN :IT_EKPO_CH as b ON a.EBELN = b.EBELN and a.EBELP = b.EBELP;
@@ -256,7 +256,7 @@ SELECT CURRENT_TIMESTAMP INTO V_CURRENT_TIMESTAMP FROM "AUPSUP_DATABASE.data.syn
 				IF (counterRow = 0) THEN
 				
 					/*salvo per le notifiche*/
-					SELECT DISTINCT EBELN INTO I_EBELN FROM :IT_EKKO;
+					/*SELECT DISTINCT EBELN INTO I_EBELN FROM :IT_EKKO;
 					
 					/* TODO AZ LUVE cerco i plant delle posizioni verso le quali inviare le notifiche
 					T_PLANTS = SELECT DISTINCT a.EBELN,a.WERKS FROM "AUPSUP_DATABASE.data.tables::ET_PURDOC_EKPO" as a INNER JOIN :IT_EKPO_CH as b ON a.EBELN = b.EBELN and a.EBELP = b.EBELP;
