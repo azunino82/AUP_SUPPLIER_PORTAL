@@ -133,7 +133,7 @@
 													</m:OverflowToolbar>
 												</m:headerToolbar>
 												<m:columns>
-													<m:Column>
+													<m:Column width="3rem">
 														<m:CheckBox select="onSelectAll" visible="{= ${VisibilityJSONModel>/isSupplierD} === false}"/>
 													</m:Column>
 													<m:Column id="EBELN" visible="{columnVisibilityModel>/EBELN}" minScreenWidth="Desktop" demandPopin="true">
