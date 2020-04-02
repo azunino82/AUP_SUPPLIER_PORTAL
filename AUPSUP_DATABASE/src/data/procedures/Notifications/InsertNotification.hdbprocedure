@@ -164,6 +164,7 @@ INSERT INTO "AUPSUP_DATABASE.data.tables::T_LOGS" (SERVICE_NAME,CALLED_METHOD,DA
     				    IF I_APP = 'CONT_MF' and I_EVENT = 'UPA' THEN --se carico un documento devo navigare sull METAID e vedere i suoi documenti caricati
     				         I_OBJEC_NUMBER := METASUPPLIER;
     				    END IF;
+						OBJECT_NUMBER := 'TODO AZ'; -- in caso di multi conferma si scassa perchè è troppo lungo 01/04/2020
     					INSERT INTO "AUPSUP_DATABASE.data.tables::T_NOTIFICATIONS" (CREATOR,OWNER,PRIORITY,NAVIGATIONINTENT,SENSITIVETEXT,SUBTITLE,TEXT,OBJECT_NUMBER,CREATED_AT,STATUS) 
     					values (:userid,cursorRow.USERID,:I_PRIORITY,:I_NAVIGATION_INTENT,:I_SENSITIVE_TEXT,:I_SUBTITLE,:I_TEXT,:I_OBJEC_NUMBER,:I_TIMESTAMP,'O');
     				END FOR;

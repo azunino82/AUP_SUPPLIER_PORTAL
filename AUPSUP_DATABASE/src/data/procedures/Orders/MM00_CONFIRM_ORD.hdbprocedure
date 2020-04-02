@@ -130,6 +130,10 @@ SELECT CURRENT_TIMESTAMP INTO V_CURRENT_TIMESTAMP FROM "AUPSUP_DATABASE.data.syn
 			IF (counterRow>0) THEN
 				BEGIN
 					DECLARE CURSOR cursorPLANT FOR SELECT * FROM :T_PLANTS;
+
+					-- pulisco il flag di modifica prezzo xchè viene gestito dopo
+					IT_EKPO_CH = SELECT EBELN,EBELP,MENGE,MEINS,NETPR,PEINH,KSCHL,ZINVALIDITA,ZFINVALIDATA,BPRME,BPUMZ,BPUMN,UMREZ,UMREN,UPDKZ,LABNR,'' AS ZMODPREZZO,ZMODSCHED,ZINSCONF,ZCONFPARZ,BSTAE FROM :IT_EKPO_CH;
+
 					CALL "AUPSUP_DATABASE.data.virtualProcedures::VIRTUAL_MM00_CONFIRM_ORD"(:IT_EKES_CH,:IT_EKKO_CH,:IT_EKPO_CH,:E_RETURN);
 					--CALL "PORTAL"."VIRTUAL_MM00_CONFIRM_DOC"(:IT_EKES_CH,:IT_EKET_CH,:IT_EKKO_CH,:IT_EKPO_CH,:E_RETURN);
 					
@@ -152,7 +156,7 @@ SELECT CURRENT_TIMESTAMP INTO V_CURRENT_TIMESTAMP FROM "AUPSUP_DATABASE.data.syn
                    		/*cancello tutte le righe precedentemente inserite per pulizia*/
                    		SELECT COUNT(*) into counterRow FROM :IT_EKPO_CH;
                    		IF (counterRow>0) THEN
-                   		    DELETE FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" AS table1 WHERE (table1.EBELN,table1.EBELP) IN (SELECT EBELN,EBELP FROM :IT_EKPO_CH);
+                   		    DELETE FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" AS table1 WHERE (table1.EBELN,table1.EBELP,table1.XBLNR) IN (SELECT EBELN,EBELP,XBLNR FROM :IT_EKES_CH);
                    		END IF;    						
 						
 					END IF;
@@ -270,7 +274,7 @@ SELECT CURRENT_TIMESTAMP INTO V_CURRENT_TIMESTAMP FROM "AUPSUP_DATABASE.data.syn
 					--cancello tutte le righe precedentemente inserite per pulizia
 					SELECT COUNT(*) into counterRow FROM :IT_EKPO_CH;
 					IF (counterRow>0) THEN
-						DELETE FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" AS table1 WHERE (table1.EBELN,table1.EBELP) IN (SELECT EBELN,EBELP FROM :IT_EKPO_CH);
+						DELETE FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" AS table1 WHERE (table1.EBELN,table1.EBELP,table1.XBLNR) IN (SELECT EBELN,EBELP,XBLNR FROM :IT_EKES_CH);
 					END IF;    						
 				
 				END IF;
