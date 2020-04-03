@@ -10,12 +10,6 @@
       "target": "$1",
       "service": "html5-apps-repo-rt",
       "authenticationType": "xsuaa"
-    }, {
-        "source": "^/backend/(.*)$",
-        "target": "$1",
-        "destination": "Orders_Counter",
-        "httpMethods": ["GET", "POST"],
-        "authenticationType": "xsuaa"
     }
   ]
 }

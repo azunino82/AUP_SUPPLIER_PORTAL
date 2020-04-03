@@ -18,14 +18,6 @@
         "entryPath": "/test-resources"
       },
       "description": "SAPUI5 Test Resources"
-    },
-    {
-      "path": "/destination",
-      "target": {
-        "type": "destination",
-        "name": "Orders_Counter"
-      },
-      "description": "Connection to counter orders"
     }
   ],
   "sendWelcomeFileRedirect": true
