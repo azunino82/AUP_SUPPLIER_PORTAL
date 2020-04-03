@@ -145,7 +145,7 @@ module.exports = function () {
                                             if (objectCopy.SKIP_NO_CONFERME === 'X') {
                                                 objectCopy.SKIP_NO_CONFERME = true
                                             }
-                                            objectCopy.PRIMO_PERIODO = 100
+                                            objectCopy.PRIMO_PERIODO = '?'
                                         } else {
                                             if (objectCopy.P1_PROGR_RIC !== null) {
                                                 console.log('LS P1_PROGR_RIC: ' + objectCopy.P1_PROGR_RIC)
@@ -155,7 +155,7 @@ module.exports = function () {
                                             }
                                         }
                                         if (objectCopy.SKIP_NO_CONFERME !== null) {
-                                            objectCopy.SECONDO_PERIODO = 100
+                                            objectCopy.SECONDO_PERIODO = '?'
                                         } else {
                                             if (objectCopy.P2_PROGR_RIC !== null) {
                                                 console.log('LS P1_PROGR_RIC: ' + objectCopy.P2_PROGR_RIC)

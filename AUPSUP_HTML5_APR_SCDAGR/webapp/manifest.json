@@ -25,7 +25,7 @@
 					"title": "{{appTitle}}",
 					"indicatorDataSource": {
 						"dataSource": "ORDERS_COUNTER",
-						"path": "/toHanaDev/GetCounter?I_TYPE=OrdersToApprove",
+						"path": "/Orders_Counter/GetCounter?I_TYPE=OrdersToApprove",
 						"refresh": 1000
 					}
 				}
@@ -33,7 +33,7 @@
 		},
 		"dataSources": {
 			"ORDERS_COUNTER": {
-				"uri": "/toHanaDev",
+				"uri": "/Orders_Counter",
 				"type": "JSON"
 			}
 		}

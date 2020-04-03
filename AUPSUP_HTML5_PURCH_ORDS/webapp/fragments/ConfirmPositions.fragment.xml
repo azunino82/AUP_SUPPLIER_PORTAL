@@ -72,7 +72,7 @@
 										<Text text="{i18n>QTA_CONFERMA}"/>
 									</Column>
 									<Column>
-										<Text text=""/>
+										<Text text="{i18n>FROZEN}"/>
 									</Column>									
 								</columns>
 								<items textAlign="Center">
@@ -82,7 +82,7 @@
 											<Text text="{SelectedPositionsJSONModel>MENGE}"/>
 											<Text text="{SelectedPositionsJSONModel>ETENR}"/>
 											<Text text="{SelectedPositionsJSONModel>QTA_CONFERMATA}"/>
-											<Text text=" {= ${SelectedPositionsJSONModel>ZPERIODO} === '1' ? 'F' : ''}"/>											
+											<Text text=" {= ${SelectedPositionsJSONModel>ZPERIODO} === '1' ? 'X' : ''}"/>											
 										</cells>
 									</ColumnListItem>
 								</items>
