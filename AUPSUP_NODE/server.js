@@ -9,8 +9,11 @@ var express = require('express')
 var passport = require('passport')
 var stringifyObj = require('stringify-object')
 var bodyParser = require('body-parser')
+var cors = require('cors')
 
 var app = express()
+
+app.use(cors())
 
 function mtMiddleware (req, res, next) {
   // Assumes the HDI container was tagged with a tag of the form subdomain:<subdomain> and is bound to the MTAppBackend
