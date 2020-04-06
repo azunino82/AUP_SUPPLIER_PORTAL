@@ -66,7 +66,7 @@ CREATE TABLE tempGlobalB like "AUPSUP_DATABASE.data.structures.Notifications::RE
 /*Valorizzo variabili con i valori fissi*/
 SELECT 'MAIL' INTO IT_OBJ_NAME FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
 SELECT 'X' INTO IT_COMMIT_WORK FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
-SELECT 'portalefornitori@portal.it' INTO IT_SENDER_ADDRESS FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
+SELECT 'portalefornitori@luvegroup.com' INTO IT_SENDER_ADDRESS FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
 SELECT 'INT' INTO IT_SENDER_ADDRESS_TYPE FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
 /*Valorizzo la variabile BODY_NUM (numero di righe mail) a 100 per evitare di conteggiare ogni volta le righe valorizzate*/
 IT_PACKING_LIST_IN = SELECT null as TRANSF_BIN, null as HEAD_START, null as HEAD_NUM, '0' AS BODY_START, '100' AS BODY_NUM, 'RAW' as DOC_TYPE, null as OBJ_NAME, null as OBJ_DESCR, null as OBJ_LANGU, null as DOC_SIZE, null as MESS_TYPE FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
