@@ -515,6 +515,18 @@ sap.ui.define([
 			return foundProfilo;
 		},
 
+		formatDate: function(sDate){
+			var oFromFormat = sap.ui.core.format.DateFormat.getDateTimeInstance({
+				pattern: "yyyyMMdd"
+			});
+			var oDate = oFromFormat.parse(sDate, true);
+			var oToFormat = sap.ui.core.format.DateFormat.getDateTimeInstance({
+				pattern: "dd MMM yyyy"
+			});
+			var sResult = oToFormat.format(oDate);
+			return sResult;
+		},
+
 		onSendDataForQuantity: function (posToReject, posToApprove, sText) {
 			var body = {
 				"confirmType": [],
@@ -528,8 +540,11 @@ sap.ui.define([
 					elem.EBELN = element.EBELN;
 					elem.EBELP = element.EBELP;
 					elem.XBLNR = element.XBLNR;
+					elem.EINDT = element.EKES_EINDT !== undefined ? that.formatDate(element.EKES_EINDT) : element.CREATION_DATE !== undefined ? element.CREATION_DATE : '';
+					elem.LIFNR = element.LIFNR;
+					elem.MATNR = element.MATNR + " - " + element.TXZ01;
 					elem.CONF_TYPE = 'A',
-						elem.BSTYP = element.BSTYP; // per piani di consegna
+					elem.BSTYP = element.BSTYP; // per piani di consegna
 					body.confirmType.push(elem);
 				});
 			}
@@ -539,8 +554,11 @@ sap.ui.define([
 					elem.EBELN = element.EBELN;
 					elem.EBELP = element.EBELP;
 					elem.XBLNR = element.XBLNR;
+					elem.EINDT = element.EKES_EINDT !== undefined ? that.formatDate(element.EKES_EINDT) : element.CREATION_DATE !== undefined ? element.CREATION_DATE : '';
+					elem.LIFNR = element.LIFNR;
+					elem.MATNR = element.MATNR + " - " + element.TXZ01;
 					elem.CONF_TYPE = 'R',
-						elem.BSTYP = element.BSTYP; // per piani di consegna
+					elem.BSTYP = element.BSTYP; // per piani di consegna
 					body.confirmType.push(elem);
 				});
 			}
@@ -602,6 +620,9 @@ sap.ui.define([
 					var elem = {};
 					elem.EBELN = element.EBELN;
 					elem.EBELP = element.EBELP;
+					elem.EINDT = element.CREATION_DATE;
+					elem.LIFNR = element.LIFNR;
+					elem.MATNR = element.MATNR;
 					if (element.XBLNR === undefined) {
 						elem.XBLNR = ""
 					} else {
@@ -980,8 +1001,11 @@ sap.ui.define([
 				that.hideBusyDialog();
 				if (oData && oData.results && oData.results.length > 0) {
 
-					oData.results[0].MATNR = mod.MATNR;
-					oData.results[0].TXZ01 = mod.TXZ01;
+					oData.results.forEach(element => {
+						element.MATNR = mod.MATNR;
+						element.TXZ01 = mod.TXZ01;
+						element.LIFNR = mod.LIFNR;
+					});
 
 					var oModel = new JSONModel();
 					oModel.setData(oData);
