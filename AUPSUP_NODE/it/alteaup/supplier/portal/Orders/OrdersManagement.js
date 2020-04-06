@@ -8,6 +8,7 @@
 var express = require('express')
 var stringifyObj = require('stringify-object')
 var hdbext = require('@sap/hdbext')
+var async = require('async')
 
 module.exports = function () {
     var app = express.Router()
@@ -21,7 +22,7 @@ module.exports = function () {
     )
 
     app.use(bodyParser.json())
-    
+
     // GET PURCHASE ORDS
     app.post('/GetOrders', function (req, res) {
         const body = req.body
@@ -274,114 +275,7 @@ module.exports = function () {
                 }
             })
         }
-    })    
-
-     /* GET PURCHASE ORDERS
-    app.post('/GetOrders', function (req, res) {
-        const body = req.body
-
-        console.log('INPUT BODY ==========> ' + JSON.stringify(body))
-
-        if (body !== undefined && body !== '' && body !== null) {
-            var lifnr = []
-            var ebeln = []
-            var ebelp = []
-            var ekorg = []
-            var ekgrp = []
-            var matnr = []
-            var werks = []
-            var userid = req.user.id
-
-            if (body.lifnr !== null && body.lifnr !== undefined && body.lifnr !== '') {
-                var oLifnr = []
-                for (var i = 0; i < body.lifnr.length; i++) {
-                    oLifnr.push({
-                        ELIFN: body.lifnr[i]
-                    })
-                }
-                lifnr = oLifnr
-            }
-
-            if (body.ebeln !== null && body.ebeln !== undefined && body.ebeln !== '') {
-                ebeln.push({
-                    ebeln: body.ebeln
-                })
-            }
-            if (body.ebelp !== null && body.ebelp !== undefined && body.ebelp !== '') {
-                ebelp.push({
-                    ebelp: body.ebelp
-                })
-            }
-            if (body.ekorg !== null && body.ekorg !== undefined && body.ekorg.length > 0) {
-                var oEkorg = []
-                // eslint-disable-next-line no-redeclare
-                for (var i = 0; i < body.ekorg.length; i++) {
-                    oEkorg.push({
-                        EKORG: body.ekorg[i]
-                    })
-                }
-                ekorg = oEkorg
-            }
-
-            if (body.ekgrp !== null && body.ekgrp !== undefined && body.ekgrp.length > 0) {
-                var oEkgrp = []
-                // eslint-disable-next-line no-redeclare
-                for (var i = 0; i < body.ekgrp.length; i++) {
-                    oEkgrp.push({
-                        EKGRP: body.ekgrp[i]
-                    })
-                }
-                ekgrp = oEkgrp
-            }
-            if (body.matnr !== null && body.matnr !== undefined && body.matnr.length > 0) {
-                var oMatnr = []
-                // eslint-disable-next-line no-redeclare
-                for (var i = 0; i < body.matnr.length; i++) {
-                    oMatnr.push({
-                        MATNR: body.matnr[i]
-                    })
-                }
-                matnr = oMatnr
-            }
-            if (body.werks !== null && body.werks !== undefined && body.werks.length > 0) {
-                var oWerks = []
-                // eslint-disable-next-line no-redeclare
-                for (var i = 0; i < body.werks.length; i++) {
-                    oWerks.push({
-                        EWERK: body.werks[i],
-                        DESCR: ''
-                    })
-                }
-                werks = oWerks
-            }
-
-            hdbext.createConnection(req.tenantContainer, (err, client) => {
-                if (err) {
-                    return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
-                } else {
-                    hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.SchedulingAgreement::MM00_PURDOC_LIST', function (_err, sp) {
-                        if (_err) {
-                            console.log('---->>> CLIENT END ERR MM00_PURDOC_LIST <<<<<-----')
-                        }
-                        sp(userid, 'ODA', 'F', lifnr, ebeln, ekorg, matnr, ekgrp, werks, (err, parameters, ET_EKKO) => {
-                            console.log('---->>> CLIENT END MM00_PURDOC_LIST <<<<<-----')
-                            client.close()
-                            if (err) {
-                                console.error('ERROR: ' + err)
-                                return res.status(500).send(stringifyObj(err))
-                            } else {
-                                return res.status(200).send({
-                                    results: ET_EKKO
-                                })
-                            }
-                        })
-                    })
-                }
-            })
-        }
     })
-
-    */
 
     // CREATE CONFIRM ORD
     app.post('/ConfirmOrders', function (req, res) {
@@ -422,7 +316,7 @@ module.exports = function () {
                     })
                 }
                 confirmTypes = oConfType
-            } */           
+            } */
 
             hdbext.createConnection(req.tenantContainer, (err, client) => {
                 if (err) {
@@ -453,66 +347,276 @@ module.exports = function () {
         }
     })
 
-// APPROVA RIFIUTA IN BASE AL TIPO ORDINE O PIANO CONSEGNA
-app.post('/ConfirmReject', function (req, res) {
-    const body = req.body
-    req.setTimeout(60000)
-    res.setTimeout(60000)
-    console.log('INPUT BODY ==========> ' + JSON.stringify(body))
-    var notaReject = ''
-    var userid = req.user.id
-    var confirmTypes = []
-    var tipoOperazione = ''
+    // APPROVA RIFIUTA IN BASE AL TIPO ORDINE O PIANO CONSEGNA
+    app.post('/ConfirmReject', function (req, res) {
+        const body = req.body
+        req.setTimeout(60000)
+        res.setTimeout(60000)
+        console.log('INPUT BODY ==========> ' + JSON.stringify(body))
+        var notaReject = ''
+        var userid = req.user.id
+        var confirmTypes = []
+        var tipoOperazione = '' // -- QUA o PRZ
 
-    if (body !== undefined && body !== '' && body !== null) {       
-        if (body.notaReject !== null && body.notaReject !== undefined && body.notaReject !== '') {
-            notaReject = body.notaReject
-        }
-         if (body.confirmType !== null && body.confirmType !== undefined && body.confirmType !== '') {
-            var oConfType = []
-            for (var i = 0; i < body.confirmType.length; i++) {
-                oConfType.push({
-                    EBELN: body.confirmType[i].EBELN,
-                    EBELP: body.confirmType[i].EBELP,
-                    XBLNR: body.confirmType[i].XBLNR,
-                    CONF_TYPE: body.confirmType[i].CONF_TYPE,
-                    BSTYP: body.confirmType[i].BSTYP
+        var mailArr = []
+
+        if (body !== undefined && body !== '' && body !== null) {
+            if (body.notaReject !== null && body.notaReject !== undefined && body.notaReject !== '') {
+                notaReject = body.notaReject
+            }
+
+            if (body.tipoOperazione !== null && body.tipoOperazione !== undefined && body.tipoOperazione !== '') {
+                tipoOperazione = body.tipoOperazione
+            }
+
+            if (body.confirmType !== null && body.confirmType !== undefined && body.confirmType !== '') {
+                var oConfType = []
+                for (var i = 0; i < body.confirmType.length; i++) {
+                    oConfType.push({
+                        EBELN: body.confirmType[i].EBELN,
+                        EBELP: body.confirmType[i].EBELP,
+                        XBLNR: body.confirmType[i].XBLNR,
+                        CONF_TYPE: body.confirmType[i].CONF_TYPE,
+                        BSTYP: body.confirmType[i].BSTYP
+                    })
+                }
+                confirmTypes = oConfType
+
+                // generazione per mail price
+                for (var i = 0; i < body.confirmType.length; i++) {
+                    var EVENT = body.confirmType[i].CONF_TYPE === 'A' ? 'CAC' : body.confirmType[i].CONF_TYPE === 'R' ? 'CRI' : ''
+                    var APPLICAZIONE = body.confirmType[i].BSTYP === 'F' ? tipoOperazione === 'PRZ' ? 'RMO_PRZ' : tipoOperazione === 'QUA' ? 'RMO_QUA' : '' : body.confirmType[i].BSTYP === 'L' ? tipoOperazione === 'PRZ' ? 'P_CONS_PRZ' : tipoOperazione === 'QUA' ? 'P_CONS_QUA' : '' : ''
+
+                    var trovato = false
+                    for (let index = 0; index < mailArr.length; index++) {
+                        var element = mailArr[index]
+                        if (element.EBELN === body.confirmType[i].EBELN && element.EBELP === body.confirmType[i].EBELP && element.EVENT === EVENT && element.APPLICAZIONE === APPLICAZIONE && body.confirmType[i].LIFNR === element.LIFNR) {
+                            trovato = true
+                            var trovatoInList = false
+                            for (let j = 0; j < element.LIST_XBLNR.length; j++) {
+                                var el = element.LIST_XBLNR[j]
+                                if (el.XBLNR === body.confirmType[i].XBLNR) {
+                                    trovatoInList = true
+                                    break
+                                }
+                            }
+                            if (!trovatoInList) {
+                                if (element.LIST_XBLNR === undefined) {
+                                    element.LIST_XBLNR = []
+                                }
+                                element.LIST_XBLNR.push({ XBLNR: body.confirmType[i].XBLNR, EINDT: body.confirmType[i].EINDT })
+                            }
+                            break
+                        }
+                    }
+
+                    if (!trovato) {
+                        var listaXBLNR = [{ XBLNR: body.confirmType[i].XBLNR, EINDT: body.confirmType[i].EINDT }]
+                        mailArr.push({
+                            EBELN: body.confirmType[i].EBELN,
+                            EBELP: body.confirmType[i].EBELP,
+                            LIST_XBLNR: listaXBLNR,
+                            BSTYP: body.confirmType[i].BSTYP,
+                            LIFNR: body.confirmType[i].LIFNR,
+                            MATNR: body.confirmType[i].MATNR,
+                            EVENT: EVENT,
+                            APPLICAZIONE: APPLICAZIONE
+                        })
+                    }
+                }
+
+                /* return res.status(200).send({
+                    mailArr: mailArr
+                }) */
+
+                console.log('mailArr ' + stringifyObj(mailArr))
+                hdbext.createConnection(req.tenantContainer, (err, client) => {
+                    if (err) {
+                        console.error('ERROR CONNECTION ConfirmReject:' + stringifyObj(err))
+                        return res.status(500).send('CREATE CONNECTION ERROR ConfirmReject: ' + stringifyObj(err))
+                    } else {
+                        hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Orders::ConfirmReject', function (_err, sp) {
+                            if (_err) {
+                                console.error('ERROR loadProcedure ConfirmReject: ' + stringifyObj(_err))
+                                client.close()
+                                return res.status(500).send(stringifyObj(_err))
+                            }
+                            sp(userid, confirmTypes, tipoOperazione, notaReject, (err, parameters, results) => {
+                                console.log('---->>> CLIENT END ConfirmReject <<<<<-----')
+                                client.close()
+                                if (err) {
+                                    console.error('ERROR ConfirmReject SP: ' + stringifyObj(err))
+                                    return res.status(500).send(stringifyObj(err))
+                                } else {
+                                    var trovatoErrore = false
+                                    if (results && results.length > 0) {
+                                        results.forEach(element => {
+                                            if (element.MSGTY === 'E') {
+                                                trovatoErrore = true
+                                            }
+                                        })
+                                    }
+                                    if (!trovatoErrore) {
+                                        sendMail(req, res, mailArr, notaReject)
+                                    }
+
+                                    return res.status(200).send({
+                                        results: results
+                                    })
+                                }
+                            })
+                        })
+                    }
                 })
             }
-            confirmTypes = oConfType
-        }      
-        if (body.tipoOperazione !== null && body.tipoOperazione !== undefined && body.tipoOperazione !== '') {
-            tipoOperazione = body.tipoOperazione
-        }          
+        }
+    })
 
-        hdbext.createConnection(req.tenantContainer, (err, client) => {
-            if (err) {
-                console.error('ERROR CONNECTION ConfirmReject:' + stringifyObj(err))
-                return res.status(500).send('CREATE CONNECTION ERROR ConfirmReject: ' + stringifyObj(err))
-            } else {
-                hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Orders::ConfirmReject', function (_err, sp) {
-                    if (_err) {
-                        console.error('ERROR loadProcedure ConfirmReject: ' + stringifyObj(_err))
-                        client.close()
-                        return res.status(500).send(stringifyObj(_err))
-                    }
-                    sp(userid, confirmTypes, tipoOperazione, notaReject, (err, parameters, results) => {
-                        console.log('---->>> CLIENT END ConfirmReject <<<<<-----')
-                        client.close()
-                        if (err) {
-                            console.error('ERROR ConfirmReject SP: ' + stringifyObj(err))
-                            return res.status(500).send(stringifyObj(err))
+    function sendMail(req, res, confirms, notaReject) {
+        var lifnrs = '('
+        for (let index = 0; index < confirms.length; index++) {
+            var element = confirms[index]
+            if (lifnrs.indexOf(element.LIFNR) < 0) {
+                lifnrs = lifnrs + '\'' + element.LIFNR + '\','
+            }
+        }
+        lifnrs = lifnrs + ')'
+        lifnrs = lifnrs.replace(',)', ')')
+        console.log('LIFNR ' + lifnrs)
+
+        confirms.forEach(element => {
+            var sql = 'SELECT * FROM \"AUPSUP_DATABASE.data.tables::T_NOTIF_MASTER\" WHERE APPLICAZIONE = \'' + element.APPLICAZIONE + '\' and EVENTO = \'' + element.EVENT + '\''
+            console.log('sql T_NOTIF_MASTER' + sql)
+            hdbext.createConnection(req.tenantContainer, function (error, client) {
+                if (error) {
+                    console.error('ERROR T_NOTIF_MASTER :' + stringifyObj(error))
+                    client.close()
+                 //   return res.status(500).send('T_NOTIF_MASTER CONNECTION 1 ERROR: ' + stringifyObj(error))
+                } else {
+                    client.exec(sql, function (error, results) {
+                        console.log('RESULTS T_NOTIF_MASTER: ' + stringifyObj(results))
+                        if (error) {
+                            console.err('Error during direct statement execution T_NOTIF_MASTER: ' + error)
+                            client.close()
+                         //   return res.status(500).send('T_NOTIF_MASTER CONNECTION 2 ERROR: ' + stringifyObj(error))
                         } else {
-                            return res.status(200).send({
-                                results: results
+                            /* if (results && results[0]) {
+                                 var flusso = results[0].FLUSSO
+                                 var tipoStruttura = results[0].TIPO_STRUTTURA
+                                 var applicazione = results[0].APPLICAZIONE
+                                 var evento = results[0].EVENTO
+                                 var direzione = results[0].DIREZIONE
+                             } */
+
+                            sql = 'SELECT METAID FROM \"AUPSUP_DATABASE.data.tables::T_METAID_FORN\" WHERE LIFNR IN ' + lifnrs
+                            console.log('sql lista metafornitori: ' + sql)
+                            client.exec(sql, function (error, results) {
+                                if (error) {
+                                    console.error('Error during direct statement execution T_METAID_FORN: ' + stringifyObj(error))
+                                    client.close()
+                                  //  return res.status(500).send('T_NOTIF_MASTER T_METAID_FORN 2 ERROR: ' + stringifyObj(error))
+                                } else {
+                                    console.log('RESULTS T_METAID_FORN: ' + stringifyObj(results))
+                                    var listMETAIDS = '('
+                                    for (let index = 0; index < results.length; index++) {
+                                        var elemMETAID = results[index]
+                                        if (listMETAIDS.indexOf(elemMETAID.METAID) < 0) {
+                                            listMETAIDS = listMETAIDS + '\'' + elemMETAID.METAID + '\','
+                                        }
+                                    }
+                                    listMETAIDS = listMETAIDS + ')'
+                                    listMETAIDS = listMETAIDS.replace(',)', ')')
+                                    console.log('listMETAIDS: ' + listMETAIDS)
+                                    // FLUSSO PROC
+                                    sql = 'SELECT MAIL AS RECEIVER,\'U\' as REC_TYPE,null as REC_ID,null as REPLY_DOC,null as REC_DATE,null as PROXY_ID,null as RETRN_CODE,null as EXPRESS,null as COPY,null as BLIND_COPY,null as NO_FORWARD,null as NO_PRINT,null as TO_ANSWER,null as TO_DO_EXPL,null as TO_DO_GRP,null as COM_TYPE,null as LFDNR,null as FAX,null as COUNTRY,null as SPOOL_ID,null as NOTIF_DEL,null as NOTIF_READ,null as NOTIF_NDEL,null as SAP_BODY FROM "AUPSUP_DATABASE.data.tables::T_METASUPPLIER_CONTACTS" WHERE METAID IN ' + listMETAIDS + ' AND TIPOLOGIA = \'02\''
+                                    console.log('sql MAIL: ' + sql)
+                                    client.exec(sql, function (error, results) {
+                                        console.log('LISTA MAIL: ' + stringifyObj(results))
+                                        if (error) {
+                                            console.error('Error during direct statement execution T_METASUPPLIER_CONTACTS: ' + error)
+                                            client.close()
+                                          //  return res.status(500).send('T_NOTIF_MASTER T_METASUPPLIER_CONTACTS ERROR: ' + stringifyObj(error))
+                                        } else {
+                                            var emailList = results
+                                            sql = 'SELECT (SELECT TEXT FROM \"AUPSUP_DATABASE.data.tables::T_NOTIF_TEXT\" WHERE TEXT_TYPE = \'MAIL_BODY\' AND' +
+                                                ' EVENT = \'' + element.EVENT + '\' AND APP = \'' + element.APPLICAZIONE + '\') AS BODY, (SELECT TEXT FROM \"AUPSUP_DATABASE.data.tables::T_NOTIF_TEXT\" WHERE ' +
+                                                'TEXT_TYPE = \'MAIL_SUBJ\' AND EVENT = \'' + element.EVENT + '\' AND APP = \'' + element.APPLICAZIONE + '\') AS SUBJ FROM \"AUPSUP_DATABASE.data.synonyms::DUMMY\"'
+                                            console.log('sql T_NOTIF_TEXT: ' + sql)
+                                            client.exec(sql, function (error, results) {
+                                                console.log('RESULTS T_NOTIF_TEXT: ' + stringifyObj(results))
+                                                if (error) {
+                                                    console.error('Error during direct statement execution T_NOTIF_TEXT: ' + error)
+                                                    client.close()
+                                                  //  return res.status(500).send('T_NOTIF_TEXT ERROR: ' + stringifyObj(error))
+                                                } else {
+                                                    if (results && results.length > 0) {
+                                                        var subject = results[0].SUBJ
+                                                        var body = results[0].BODY
+                                                        var bodyLines = []
+                                                        if (body !== undefined) {
+                                                            body = body.replace('EBELN', element.EBELN)
+                                                            body = body.replace('EBELP', element.EBELP)
+                                                            body = body.replace('MATNR', element.MATNR)
+                                                            bodyLines.push({ LINE: body })
+                                                        }
+
+                                                        // SPAZIO VUOTO
+                                                        bodyLines.push({ LINE: '' })
+
+                                                        if (element.LIST_XBLNR !== undefined) {
+                                                            element.LIST_XBLNR.forEach(single => {
+                                                                if (single.XBLNR !== undefined && single.XBLNR !== '' && single.EINDT !== undefined && single.EINDT !== '')
+                                                                    bodyLines.push({ LINE: 'Data ' + single.EINDT + ' Schedulazione: ' + single.XBLNR })
+                                                            })
+                                                        }
+
+                                                        var sql = 'SELECT * FROM \"AUPSUP_DATABASE.data.tables::T_NOTIF_PORTAL_LINKS\" WHERE APP = \'' + element.APPLICAZIONE + '\' and EVENT = \'' + element.EVENT + '\''
+                                                        console.log('sql T_NOTIF_PORTAL_LINKS' + sql)
+                                                        client.exec(sql, function (error, results) {
+                                                            if (error) {
+                                                                console.error('Error during direct statement execution T_NOTIF_PORTAL_LINKS: ' + stringifyObj(error))
+                                                                client.close()
+                                                              //  return res.status(500).send('T_NOTIF_PORTAL_LINKS ERROR: ' + stringifyObj(error))
+                                                            } else {
+                                                                if (results && results[0]) {
+                                                                    // SPAZIO VUOTO
+                                                                    bodyLines.push({ LINE: '' })
+                                                                    var link = results[0].LINK
+                                                                    link = link.replace('EBELN', element.EBELN)
+                                                                    link = link.replace('EBELP', element.EBELP)
+                                                                    bodyLines.push({ LINE: link })
+                                                                }
+                                                            }
+
+                                                            if (notaReject !== undefined && notaReject !== '') {
+                                                                bodyLines.push({ LINE: '' })
+                                                                bodyLines.push({ NOTA: notaReject })
+                                                            }
+
+                                                            hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Utils::SendMail', function (_err, sp) {
+                                                                sp(req.user.id, subject, bodyLines, emailList, (err) => {
+                                                                    if (err) {
+                                                                        console.error('ERROR: ' + stringifyObj(err))
+                                                                        return res.status(500).send(stringifyObj(err))
+                                                                    } else {
+                                                                        return res.status(200).send('OK')
+                                                                    }
+                                                                })
+                                                            })
+                                                        })
+                                                    }
+                                                }
+                                            })
+                                        }
+                                    })
+                                }
                             })
                         }
                     })
-                })
-            }
+                }
+            })
         })
     }
-})    
 
     // Parse URL-encoded bodies (as sent by HTML forms)
     // app.use(express.urlencoded());
