@@ -17,6 +17,8 @@ module.exports = function () {
   })
 
   app.get('/GetUserInfo', function (req, res) {
+    console.log('USERINFO: ' + stringifyObj(req.authInfo.userInfo))
+    console.log('IDENTITY ZONE: ' + stringifyObj(req.authInfo.identityZone))
     var outData = {
       firstname: req.authInfo.userInfo.givenName,
       lastname: req.authInfo.userInfo.familyName,

@@ -8,7 +8,6 @@
 var express = require('express')
 var stringifyObj = require('stringify-object')
 var hdbext = require('@sap/hdbext')
-var async = require('async')
 
 module.exports = function () {
     var app = express.Router()
@@ -404,14 +403,14 @@ module.exports = function () {
                                 if (element.LIST_XBLNR === undefined) {
                                     element.LIST_XBLNR = []
                                 }
-                                element.LIST_XBLNR.push({ XBLNR: body.confirmType[i].XBLNR, EINDT: body.confirmType[i].EINDT })
+                                element.LIST_XBLNR.push({ XBLNR: body.confirmType[i].XBLNR, EINDT: body.confirmType[i].EINDT, MENGE: body.confirmType[i].MENGE })
                             }
                             break
                         }
                     }
 
                     if (!trovato) {
-                        var listaXBLNR = [{ XBLNR: body.confirmType[i].XBLNR, EINDT: body.confirmType[i].EINDT }]
+                        var listaXBLNR = [{ XBLNR: body.confirmType[i].XBLNR, EINDT: body.confirmType[i].EINDT, MENGE: body.confirmType[i].MENGE }]
                         mailArr.push({
                             EBELN: body.confirmType[i].EBELN,
                             EBELP: body.confirmType[i].EBELP,
@@ -419,8 +418,14 @@ module.exports = function () {
                             BSTYP: body.confirmType[i].BSTYP,
                             LIFNR: body.confirmType[i].LIFNR,
                             MATNR: body.confirmType[i].MATNR,
+                            NETPR: body.confirmType[i].NETPR,
+                            PEINH: body.confirmType[i].PEINH,
+                            MENGE: body.confirmType[i].MENGE,
+                            ZINVALIDITA: body.confirmType[i].ZINVALIDITA,
+                            ZFINVALIDATA: body.confirmType[i].ZFINVALIDATA,
                             EVENT: EVENT,
-                            APPLICAZIONE: APPLICAZIONE
+                            APPLICAZIONE: APPLICAZIONE,
+                            CONF_TYPE: body.confirmType[i].CONF_TYPE
                         })
                     }
                 }
@@ -472,7 +477,7 @@ module.exports = function () {
         }
     })
 
-    function sendMail(req, res, confirms, notaReject) {
+    function sendMail (req, res, confirms, notaReject) {
         var lifnrs = '('
         for (let index = 0; index < confirms.length; index++) {
             var element = confirms[index]
@@ -491,14 +496,14 @@ module.exports = function () {
                 if (error) {
                     console.error('ERROR T_NOTIF_MASTER :' + stringifyObj(error))
                     client.close()
-                 //   return res.status(500).send('T_NOTIF_MASTER CONNECTION 1 ERROR: ' + stringifyObj(error))
+                    //   return res.status(500).send('T_NOTIF_MASTER CONNECTION 1 ERROR: ' + stringifyObj(error))
                 } else {
                     client.exec(sql, function (error, results) {
                         console.log('RESULTS T_NOTIF_MASTER: ' + stringifyObj(results))
                         if (error) {
                             console.err('Error during direct statement execution T_NOTIF_MASTER: ' + error)
                             client.close()
-                         //   return res.status(500).send('T_NOTIF_MASTER CONNECTION 2 ERROR: ' + stringifyObj(error))
+                            //   return res.status(500).send('T_NOTIF_MASTER CONNECTION 2 ERROR: ' + stringifyObj(error))
                         } else {
                             /* if (results && results[0]) {
                                  var flusso = results[0].FLUSSO
@@ -514,7 +519,7 @@ module.exports = function () {
                                 if (error) {
                                     console.error('Error during direct statement execution T_METAID_FORN: ' + stringifyObj(error))
                                     client.close()
-                                  //  return res.status(500).send('T_NOTIF_MASTER T_METAID_FORN 2 ERROR: ' + stringifyObj(error))
+                                    //  return res.status(500).send('T_NOTIF_MASTER T_METAID_FORN 2 ERROR: ' + stringifyObj(error))
                                 } else {
                                     console.log('RESULTS T_METAID_FORN: ' + stringifyObj(results))
                                     var listMETAIDS = '('
@@ -535,7 +540,7 @@ module.exports = function () {
                                         if (error) {
                                             console.error('Error during direct statement execution T_METASUPPLIER_CONTACTS: ' + error)
                                             client.close()
-                                          //  return res.status(500).send('T_NOTIF_MASTER T_METASUPPLIER_CONTACTS ERROR: ' + stringifyObj(error))
+                                            //  return res.status(500).send('T_NOTIF_MASTER T_METASUPPLIER_CONTACTS ERROR: ' + stringifyObj(error))
                                         } else {
                                             var emailList = results
                                             sql = 'SELECT (SELECT TEXT FROM \"AUPSUP_DATABASE.data.tables::T_NOTIF_TEXT\" WHERE TEXT_TYPE = \'MAIL_BODY\' AND' +
@@ -547,7 +552,7 @@ module.exports = function () {
                                                 if (error) {
                                                     console.error('Error during direct statement execution T_NOTIF_TEXT: ' + error)
                                                     client.close()
-                                                  //  return res.status(500).send('T_NOTIF_TEXT ERROR: ' + stringifyObj(error))
+                                                    //  return res.status(500).send('T_NOTIF_TEXT ERROR: ' + stringifyObj(error))
                                                 } else {
                                                     if (results && results.length > 0) {
                                                         var subject = results[0].SUBJ
@@ -560,14 +565,18 @@ module.exports = function () {
                                                             bodyLines.push({ LINE: body })
                                                         }
 
-                                                        // SPAZIO VUOTO
-                                                        bodyLines.push({ LINE: '' })
-
                                                         if (element.LIST_XBLNR !== undefined) {
+                                                            // SPAZIO VUOTO
+                                                            bodyLines.push({ LINE: '' })
                                                             element.LIST_XBLNR.forEach(single => {
-                                                                if (single.XBLNR !== undefined && single.XBLNR !== '' && single.EINDT !== undefined && single.EINDT !== '')
-                                                                    bodyLines.push({ LINE: 'Data ' + single.EINDT + ' Schedulazione: ' + single.XBLNR })
+                                                                if (single.XBLNR !== undefined && single.XBLNR !== '' && single.EINDT !== undefined && single.EINDT !== '') { bodyLines.push({ LINE: 'Data ' + single.EINDT + ' Schedulazione: ' + single.XBLNR + ' Quantita: ' + single.MENGE }) }
                                                             })
+                                                        }
+
+                                                        if (element.APPLICAZIONE.indexOf('PRZ') > 0) {
+                                                            var line = 'Prezzo ' + element.NETPR + ' Unità di Prezzo ' + element.PEINH
+                                                            if (element.BSTYP === 'L') { line = line + ' Inizio Validità: ' + element.ZINVALIDITA + ' Fine Validità: ' + element.ZFINVALIDATA }
+                                                            bodyLines.push({ LINE: line })
                                                         }
 
                                                         var sql = 'SELECT * FROM \"AUPSUP_DATABASE.data.tables::T_NOTIF_PORTAL_LINKS\" WHERE APP = \'' + element.APPLICAZIONE + '\' and EVENT = \'' + element.EVENT + '\''
@@ -576,7 +585,7 @@ module.exports = function () {
                                                             if (error) {
                                                                 console.error('Error during direct statement execution T_NOTIF_PORTAL_LINKS: ' + stringifyObj(error))
                                                                 client.close()
-                                                              //  return res.status(500).send('T_NOTIF_PORTAL_LINKS ERROR: ' + stringifyObj(error))
+                                                                //  return res.status(500).send('T_NOTIF_PORTAL_LINKS ERROR: ' + stringifyObj(error))
                                                             } else {
                                                                 if (results && results[0]) {
                                                                     // SPAZIO VUOTO
@@ -588,9 +597,9 @@ module.exports = function () {
                                                                 }
                                                             }
 
-                                                            if (notaReject !== undefined && notaReject !== '') {
+                                                            if (notaReject !== undefined && notaReject !== '' && element.CONF_TYPE === 'R') {
                                                                 bodyLines.push({ LINE: '' })
-                                                                bodyLines.push({ NOTA: notaReject })
+                                                                bodyLines.push({ LINE: 'Note: ' + notaReject })
                                                             }
 
                                                             hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Utils::SendMail', function (_err, sp) {

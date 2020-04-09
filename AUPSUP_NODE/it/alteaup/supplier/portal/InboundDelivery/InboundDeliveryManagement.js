@@ -55,7 +55,7 @@ module.exports = function () {
         if (body.vbeln !== null && body.vbeln !== undefined && body.vbeln.length > 0) {
             var oVbeln = []
             for (var i = 0; i < body.vbeln.length; i++) {
-                oVbeln.push({ LIFNR: body.vbeln[i] })
+                oVbeln.push({ VBELN: body.vbeln[i] })
             }
             vbeln = oVbeln
         }      
@@ -63,7 +63,7 @@ module.exports = function () {
             var oVerur = []
             // eslint-disable-next-line no-redeclare
             for (var i = 0; i < body.verur.length; i++) {
-                oVerur.push({ LIFNR: body.verur[i] })
+                oVerur.push({ VERUR: body.verur[i] })
             }
             verur = oVerur
         }        
@@ -71,7 +71,7 @@ module.exports = function () {
             var oVgbel = []
             // eslint-disable-next-line no-redeclare
             for (var i = 0; i < body.vgbel.length; i++) {
-                oVgbel.push({ LIFNR: body.vgbel[i] })
+                oVgbel.push({ VGBEL: body.vgbel[i] })
             }
             vgbel = oVgbel
         }
@@ -79,7 +79,7 @@ module.exports = function () {
             var oExdiv = []
             // eslint-disable-next-line no-redeclare
             for (var i = 0; i < body.exdiv.length; i++) {
-                oExdiv.push({ LIFNR: body.exdiv[i] })
+                oExdiv.push({ EXIDV: body.exdiv[i] })
             }
             exdiv = oExdiv
         }        
@@ -189,7 +189,7 @@ module.exports = function () {
             if (err) {
             return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
             } else {
-            hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.InboundDelivery::MM00_INB_DLV_LIST', function (_err, sp) {
+            hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.InboundDelivery::MM00_INB_DLV_DOC_LIST', function (_err, sp) {
                 sp(userid, lifnr, ebeln, ekorg, matnr, werks, dateFrom, dateTo, (err, parameters, results) => {
                 if (err) {
                     console.error('ERROR: ' + err)
