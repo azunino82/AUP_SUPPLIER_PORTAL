@@ -113,11 +113,11 @@
 									<Column>
 										<Text text="{i18n>confirmationType}"/>
 									</Column>
-									<!--è possibile cancellare la schedulazione solo se Confirmation type è pieno-->
-									<Column hAlign="End" visible="{= ${SelectedPositionsJSONModel>profiliConferma}.length > 0">
+									<Column hAlign="End">
 										<Text text=""/>
 									</Column>
-									<Column hAlign="End">
+									<!--è possibile cancellare la schedulazione solo se Confirmation type è pieno-->
+									<Column hAlign="End" visible="{= ${SelectedPositionsJSONModel>profiliConferma}.length > 0">
 										<Text text=""/>
 									</Column>
 								</columns>
