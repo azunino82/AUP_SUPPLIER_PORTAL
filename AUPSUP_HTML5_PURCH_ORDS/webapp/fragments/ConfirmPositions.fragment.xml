@@ -112,6 +112,9 @@
 									<Column>
 										<Text text="{i18n>confirmationType}"/>
 									</Column>
+									<Column hAlign="End">
+										<Text text=""/>
+									</Column>									
 									<!--è possibile cancellare la schedulazione solo se Confirmation type è pieno-->
 									<Column hAlign="End" visible="{= ${SelectedPositionsJSONModel>profiliConferma}.length > 0">
 										<Text text=""/>
@@ -127,6 +130,7 @@
 											</ComboBox>
 											<!-- <Text text="{SelectedPositionsJSONModel>ETENR}" /> -->
 											<Text text="{SelectedPositionsJSONModel>EBTYP}"/>
+											<Button icon="sap-icon://add" press="onAddSchedulation" visible="{= ${SelectedPositionsJSONModel>SYSID} === undefined}"/>
 											<Button icon="sap-icon://delete" press="onDeleteSchedulation" visible="{= ${SelectedPositionsJSONModel>SYSID} === undefined}"/>
 										</cells>
 									</ColumnListItem>
