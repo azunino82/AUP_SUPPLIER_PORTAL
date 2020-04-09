@@ -27,14 +27,14 @@
 									<Label text="{i18n>materialDescr}"/>
 									<Text text="{SelectedPositionsJSONModel>TXZ01}" wrapping="false"/>
 									<Label text="{i18n>ZENTRATA}"/>
-									<Text text="{path : 'SelectedPositionsJSONModel>ZENTRATA', formatter : '.importFormatter'}"/>									
+									<Text text="{path : 'SelectedPositionsJSONModel>ZENTRATA', formatter : '.importFormatter'}"/>
 									<core:Title text=""/>
 									<Label text="{i18n>BPRME}"/>
-									<Text text="{SelectedPositionsJSONModel>BPRME}"/> 	
+									<Text text="{SelectedPositionsJSONModel>BPRME}"/>
 									<Label text="{i18n>MENGE_RELEASE}"/>
 									<Text text="{path : 'SelectedPositionsJSONModel>MENGE', formatter : '.importFormatter'}"/>
 									<Label text="{i18n>KTMNG}"/>
-									<Text text="{path : 'SelectedPositionsJSONModel>KTMNG', formatter : '.importFormatter'}"/>									
+									<Text text="{path : 'SelectedPositionsJSONModel>KTMNG', formatter : '.importFormatter'}"/>
 									<!--<Input required="{SelectedPositionsJSONModel>editMode}" value="{SelectedPositionsJSONModel>MENGE}" enabled="{SelectedPositionsJSONModel>editMode}" type="Number"/> -->
 									<core:Title text=""/>
 									<Label text="{i18n>NETPR}"/>
@@ -73,7 +73,7 @@
 									</Column>
 									<Column>
 										<Text text="{i18n>FROZEN}"/>
-									</Column>									
+									</Column>
 								</columns>
 								<items textAlign="Center">
 									<ColumnListItem highlight="{path:'SelectedPositionsJSONModel>STATUS', formatter:'.onSetSchedulationStatus'}">
@@ -81,9 +81,9 @@
 											<Text text="{ path: 'SelectedPositionsJSONModel>EINDT', type: 'it.alteaup.supplier.portal.schedulingagreement.AUPSUP_HTML5_SCHEDAGREE.type.Date' }"/>
 											<Text text="{SelectedPositionsJSONModel>MENGE}"/>
 											<Text text="{SelectedPositionsJSONModel>ETENR}"/>
-											<Text text="{path : 'SelectedPositionsJSONModel>QTA_CONFERMATA', formatter : '.importFormatter'}"/>											
-											
-											<Text text=" {= ${SelectedPositionsJSONModel>ZPERIODO} === '1' ? 'X' : ''}"/>											
+											<Text text="{path : 'SelectedPositionsJSONModel>QTA_CONFERMATA', formatter : '.importFormatter'}"/>
+
+											<Text text=" {= ${SelectedPositionsJSONModel>ZPERIODO} === '1' ? 'X' : ''}"/>
 										</cells>
 									</ColumnListItem>
 								</items>
@@ -117,6 +117,9 @@
 									<Column hAlign="End" visible="{= ${SelectedPositionsJSONModel>profiliConferma}.length > 0">
 										<Text text=""/>
 									</Column>
+									<Column hAlign="End">
+										<Text text=""/>
+									</Column>
 								</columns>
 								<items textAlign="Center">
 									<ColumnListItem visible="{= ${SelectedPositionsJSONModel>SYSID} === undefined}">
@@ -128,6 +131,7 @@
 											</ComboBox>
 											<!-- <Text text="{SelectedPositionsJSONModel>ETENR}" /> -->
 											<Text text="{SelectedPositionsJSONModel>EBTYP}"/>
+											<Button icon="sap-icon://add" press="onAddSchedulation" visible="{= ${SelectedPositionsJSONModel>SYSID} === undefined}"/>
 											<Button icon="sap-icon://delete" press="onDeleteSchedulation" visible="{= ${SelectedPositionsJSONModel>SYSID} === undefined}"/>
 										</cells>
 									</ColumnListItem>

@@ -20,88 +20,7 @@ sap.ui.define([
 			that = this;
 			that.getRouter().getRoute("detail").attachPatternMatched(that._onObjectMatched, that);
 
-			// if (!this._oResponsivePopover) {
-
-			// 	var oModelFilters = new JSONModel();
-			// 	oModelFilters.setData({
-			// 		"element": ""
-			// 	});
-			// 	// this.getView().setModel(oModelFilters, "filterElementJSONModel");
-
-			// 	this._oResponsivePopover = sap.ui.xmlfragment("it.alteaup.supplier.portal.schedulingagreement.fragments.FilterSorter", this);
-			// 	this._oResponsivePopover.setModel(oModelFilters, "filterElementJSONModel");
-			// }
-			// var oTable = this.getView().byId("ShedulersTable");
-			// oTable.addEventDelegate({
-			// 	onAfterRendering: function () {
-			// 		var oHeader = this.$().find('.sapMListTblHeaderCell'); //Get hold of table header elements
-			// 		for (var i = 0; i < oHeader.length; i++) {
-			// 			var oID = oHeader[i].id;
-			// 			that.onClick(oID, i + 1);
-			// 		}
-			// 	}
-			// }, oTable);
 		},
-
-		// onClick: function (oID) {
-		// 	$('#' + oID).click(function (oEvent) { //Attach Table Header Element Event
-		// 		var oTarget = oEvent.currentTarget; //Get hold of Header Element
-		// 		var oView = that.getView();
-		// 		var res = oTarget.id.split("--");
-		// 		res = res[1];
-
-		// 		oView.getModel("OrderPrositionJSONModel").setProperty("/bindingValue", res); //Save the key value to property
-		// 		that._oResponsivePopover.openBy(oTarget);
-		// 	});
-		//},
-
-		// onChange: function (oEvent) {
-		// 	var oValue = oEvent.getParameter("value");
-		// 	var oMultipleValues = oValue.split(",");
-		// 	var oTable = this.getView().byId("ShedulersTable");
-		// 	var oBindingPath = this.getView().getModel("OrderPrositionJSONModel").getProperty("/bindingValue"); //Get Hold of Model Key value that was saved
-		// 	var aFilters = [];
-		// 	for (var i = 0; i < oMultipleValues.length; i++) {
-		// 		var oFilter = new Filter(oBindingPath, "Contains", oMultipleValues[i]);
-		// 		aFilters.push(oFilter);
-		// 	}
-		// 	var oItems = oTable.getBinding("items");
-		// 	oItems.filter(aFilters, "Application");
-
-		// 	this._oResponsivePopover.setModel(new JSONModel({
-		// 		"element": ""
-		// 	}), "filterElementJSONModel");
-		// 	this.getView().byId("headerFilterButton").setVisible(true);
-
-		// 	this._oResponsivePopover.close();
-		// },
-
-		// onAscending: function () {
-		// 	var oTable = this.getView().byId("ShedulersTable");
-		// 	var oItems = oTable.getBinding("items");
-		// 	var oBindingPath = this.getView().getModel("OrderPrositionJSONModel").getProperty("/bindingValue");
-		// 	var oSorter = new Sorter(oBindingPath);
-		// 	oItems.sort(oSorter);
-		// 	this._oResponsivePopover.close();
-		// },
-
-		// onDescending: function () {
-		// 	var oTable = this.getView().byId("ShedulersTable");
-		// 	var oItems = oTable.getBinding("items");
-		// 	var oBindingPath = this.getView().getModel("OrderPrositionJSONModel").getProperty("/bindingValue");
-		// 	var oSorter = new Sorter(oBindingPath, true);
-		// 	oItems.sort(oSorter);
-		// 	this._oResponsivePopover.close();
-		// },
-
-		// onClearFilter: function () {
-		// 	var oTable = this.getView().byId("ShedulersTable");
-		// 	var aFilters = [];
-		// 	var oItems = oTable.getBinding("items");
-		// 	oItems.filter(aFilters, "Application");
-
-		// 	this.getView().byId("headerFilterButton").setVisible(false);
-		// },
 
 		_onObjectMatched: function (oControlEvent) {
 
@@ -109,7 +28,8 @@ sap.ui.define([
 			var sObjectId = oControlEvent.getParameter("arguments").datas;
 
 			var datas = JSON.parse(sObjectId);
-
+			datas = JSON.parse(datas)
+			
 			that.loadObject(datas, function (oData) {
 				that.hideBusyDialog();
 				if (oData === null || oData === undefined) {} else {
@@ -127,8 +47,7 @@ sap.ui.define([
 		},
 
 		loadObject: function (sObjectId, fCompletion) {
-			var url = "/backend/SchedulingAgreementManagement/GetPianoConfermaDetail?I_EBELN=" +
-			sObjectId.orderId + "&I_EBELP=" + sObjectId.posNumber;;
+			var url = "/backend/SchedulingAgreementManagement/GetPianoConfermaDetail?I_EBELN=" + sObjectId.orderId + "&I_EBELP=" + sObjectId.posNumber;
 			that.ajaxGet(url, function (oData) {
 				if (oData === null || oData === undefined) {
 					if (fCompletion !== undefined) {

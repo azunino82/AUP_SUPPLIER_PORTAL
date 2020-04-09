@@ -69,8 +69,8 @@ sap.ui.define([
 
 					}),
 				]).then(function (values) {
-					that.getRouter().navTo("object", {
-						orderID: startupParams.objectId[0]
+					that.getRouter().navTo("detail", {
+						datas: JSON.stringify(startupParams.objectId[0])
 					}, true);
 
 				});
@@ -1707,7 +1707,7 @@ sap.ui.define([
 		onControllDateOK: function (mod) {
 			var err = "";
 			var today = new Date();
-			if (mod.TimeDependent === true){
+			if (mod.TimeDependent === true) {
 				var ordine = mod.EBELN + "-" + mod.EBELP;
 				if (mod.ZINVALIDITA === undefined || mod.ZINVALIDITA === "" || mod.ZINVALIDITA === null) {
 					err = err + "\n" + that.getResourceBundle().getText("ERR_Price_DateB", ordine);
@@ -2358,7 +2358,7 @@ sap.ui.define([
 		},
 		onItemDownload: function (oEvent) {
 			var path = oEvent.getSource().getParent().getBindingContext("OrderJSONModel");
-            var selctedRowdata = that.byId("OrderHeadersTable").getModel("OrderJSONModel").getProperty(path.sPath);
+			var selctedRowdata = that.byId("OrderHeadersTable").getModel("OrderJSONModel").getProperty(path.sPath);
 			//var getTabledata = that.getView().getModel("OrderJSONModel").getData().results;
 			//var itemPosition = oEvent.getSource().getParent().getParent().indexOfItem(oEvent.getSource().getParent());
 			//var selctedRowdata = getTabledata[itemPosition];
@@ -2371,99 +2371,121 @@ sap.ui.define([
 					oModel.setData(oData);
 					var oComponent = that.getOwnerComponent();
 					oComponent.setModel(oModel, "CustomDocJSONModel");
-				// Creare POP UP selezione tipo doc Dowload
-			
-			var fnDoSearch = function (oEvent, bProductSearch) {
-				var aFilters = [],
-					sSearchValue = oEvent.getParameter("value"),
-					itemsBinding = oEvent.getParameter("itemsBinding");
+					// Creare POP UP selezione tipo doc Dowload
 
-				// create the local filter to apply
-				if (sSearchValue !== undefined && sSearchValue.length > 0) {
-					aFilters.push(new sap.ui.model.Filter((bProductSearch ? "DMS_DOC_TYPE_OUT" : "DMS_DOC_TYPE_DESCR"), sap.ui.model.FilterOperator.Contains,
-						sSearchValue));
-				}
-				// apply the filter to the bound items, and the Select Dialog will update
-				itemsBinding.filter(aFilters, "Application");
-			};
+					var fnDoSearch = function (oEvent, bProductSearch) {
+						var aFilters = [],
+							sSearchValue = oEvent.getParameter("value"),
+							itemsBinding = oEvent.getParameter("itemsBinding");
 
-			var oSelectDialog1 = new sap.m.SelectDialog({
-				title: that.getResourceBundle().getText("Title_TypeDoc"),
-				search: fnDoSearch,
-				liveChange: fnDoSearch
-
-			});
-			var oItemTemp
-			var oItemTemplate = new sap.m.StandardListItem({
-				title: "{DMS_DOC_TYPE_DESCR}",
-				description: "{DMS_DOC_TYPE_OUT}"
-			});
-
-			// set model & bind Aggregation
-			oSelectDialog1.setModel(oModel);
-			oSelectDialog1.bindAggregation("items", "/", oItemTemplate);
-
-			// attach close listener
-			oSelectDialog1.attachConfirm(function (oEvent) {
-				var selectedItem = oEvent.getParameter("selectedItem");
-				if (selectedItem) {
-					var path = oEvent.getParameter("selectedItem").getBindingContextPath();
-					var pos_model = that.getView().getModel("CustomDocJSONModel").getProperty(path);
-					// Chiamata DOC LIST
-					var url = "/backend/DocumentManagement/DocList?I_CLASSIFICATION=" + pos_model.CLASSIFICATION + "&I_APPLICATION=" + pos_model.APPLICATION + "&I_OBJECT_CODE=" + (pos_model.DMS_DOC_OBJ === 'EKKO' ? selctedRowdata.EBELN : pos_model.DMS_DOC_OBJ === 'EKPO' ? selctedRowdata.EBELN + selctedRowdata.EBELP : '');
-				that.showBusyDialog();
-				jQuery.ajax({
-					url: url,
-					method: 'GET',
-					async: false,
-					success: function (data) {
-	
-						if (data && data.results && data.results.length > 0) {
-							var totDoc = data.results.length;
-							data.results.forEach(function (elem) {
-								url = "/backend/DocumentManagement/DocDownload?I_DOKAR=" + elem.DOKAR + "&I_DOKNR=" + elem.DOKNR + "&I_DOKTL=" + elem.DOKTL + "&I_DOKVR=" + elem.DOKVR +
-									"&I_LO_INDEX=" + elem.LO_INDEX + "&I_LO_OBJID=" + elem.LO_OBJID + "&I_OBJKY=" + elem.OBJKY + "&I_DOKOB=" + elem.DOKOB;
-								// NB: questa chiamata fetch funziona SOLO su portale non con webide preview
-								fetch(url)
-									.then(resp => resp.blob())
-									.then(blob => {
-										const url = window.URL.createObjectURL(blob);
-										const a = document.createElement('a');
-										a.style.display = 'none';
-										a.href = url;
-										// the filename you want
-										a.download = elem.DESCRIPTION !== undefined && elem.DESCRIPTION !== "" ? elem.DESCRIPTION : "outFile" + elem.EXTENSION;
-										document.body.appendChild(a);
-										a.click();
-										window.URL.revokeObjectURL(url);
-										totDoc--;
-										if (totDoc <= 0) {
-											that.hideBusyDialog();
-										}
-									})
-									.catch(() => console.log("some error during download process"));
-	
-							});
-						} else {
-							that.hideBusyDialog();
-							MessageBox.error(that.getResourceBundle().getText("ERR_file_not_found"));
+						// create the local filter to apply
+						if (sSearchValue !== undefined && sSearchValue.length > 0) {
+							aFilters.push(new sap.ui.model.Filter((bProductSearch ? "DMS_DOC_TYPE_OUT" : "DMS_DOC_TYPE_DESCR"), sap.ui.model.FilterOperator.Contains,
+								sSearchValue));
 						}
-					},
-					error: function (e) {
-						that.hideBusyDialog();
-						MessageBox.error(that.getResourceBundle().getText("ERR_file_not_found"));
-					}
-				});
+						// apply the filter to the bound items, and the Select Dialog will update
+						itemsBinding.filter(aFilters, "Application");
+					};
+
+					var oSelectDialog1 = new sap.m.SelectDialog({
+						title: that.getResourceBundle().getText("Title_TypeDoc"),
+						search: fnDoSearch,
+						liveChange: fnDoSearch
+
+					});
+					var oItemTemp
+					var oItemTemplate = new sap.m.StandardListItem({
+						title: "{DMS_DOC_TYPE_DESCR}",
+						description: "{DMS_DOC_TYPE_OUT}"
+					});
+
+					// set model & bind Aggregation
+					oSelectDialog1.setModel(oModel);
+					oSelectDialog1.bindAggregation("items", "/", oItemTemplate);
+
+					// attach close listener
+					oSelectDialog1.attachConfirm(function (oEvent) {
+						var selectedItem = oEvent.getParameter("selectedItem");
+						if (selectedItem) {
+							var path = oEvent.getParameter("selectedItem").getBindingContextPath();
+							var pos_model = that.getView().getModel("CustomDocJSONModel").getProperty(path);
+							// Chiamata DOC LIST
+							var url = "/backend/DocumentManagement/DocList?I_CLASSIFICATION=" + pos_model.CLASSIFICATION + "&I_APPLICATION=" + pos_model.APPLICATION + "&I_OBJECT_CODE=" + (pos_model.DMS_DOC_OBJ === 'EKKO' ? selctedRowdata.EBELN : pos_model.DMS_DOC_OBJ === 'EKPO' ? selctedRowdata.EBELN + selctedRowdata.EBELP : '');
+							that.showBusyDialog();
+							jQuery.ajax({
+								url: url,
+								method: 'GET',
+								async: false,
+								success: function (data) {
+
+									if (data && data.results && data.results.length > 0) {
+										var totDoc = data.results.length;
+										data.results.forEach(function (elem) {
+											url = "/backend/DocumentManagement/DocDownload?I_DOKAR=" + elem.DOKAR + "&I_DOKNR=" + elem.DOKNR + "&I_DOKTL=" + elem.DOKTL + "&I_DOKVR=" + elem.DOKVR +
+												"&I_LO_INDEX=" + elem.LO_INDEX + "&I_LO_OBJID=" + elem.LO_OBJID + "&I_OBJKY=" + elem.OBJKY + "&I_DOKOB=" + elem.DOKOB;
+											// NB: questa chiamata fetch funziona SOLO su portale non con webide preview
+											fetch(url)
+												.then(resp => resp.blob())
+												.then(blob => {
+													const url = window.URL.createObjectURL(blob);
+													const a = document.createElement('a');
+													a.style.display = 'none';
+													a.href = url;
+													// the filename you want
+													a.download = elem.DESCRIPTION !== undefined && elem.DESCRIPTION !== "" ? elem.DESCRIPTION : "outFile" + elem.EXTENSION;
+													document.body.appendChild(a);
+													a.click();
+													window.URL.revokeObjectURL(url);
+													totDoc--;
+													if (totDoc <= 0) {
+														that.hideBusyDialog();
+													}
+												})
+												.catch(() => console.log("some error during download process"));
+
+										});
+									} else {
+										that.hideBusyDialog();
+										MessageBox.error(that.getResourceBundle().getText("ERR_file_not_found"));
+									}
+								},
+								error: function (e) {
+									that.hideBusyDialog();
+									MessageBox.error(that.getResourceBundle().getText("ERR_file_not_found"));
+								}
+							});
+
+						}
+
+					});
+					if (oModel.oData.length > 0)
+						oSelectDialog1.open();
 
 				}
-
 			});
-			if (oModel.oData.length > 0)
-			oSelectDialog1.open();
 
-				}
-			});
-			
+		},
+
+		onAddSchedulation: function (oEvent) {
+			var oPath = oEvent.getSource().getParent().getParent().getBindingContext("SelectedPositionsJSONModel").sPath;
+			var mod = that.getModel("SelectedPositionsJSONModel").getProperty(oPath);
+			var keys = oEvent.getParameter("id");
+			var splits = keys.split("-");
+			var rowNumber = splits[splits.length - 1];
+			var selectedRow = mod.POItemSchedulers.results[rowNumber];
+			mod.POItemSchedulers.results.push({
+				'EINDT': selectedRow.EINDT,
+				'MENGE': selectedRow.MENGE,
+				'ETENR': selectedRow.ETENR,
+				'EBTYP': selectedRow.EBTYP,
+				'ETENRenabled': selectedRow.ETENRenabled,
+				'ETENRS': selectedRow.ETENRS
+			})
+
+			mod.POItemSchedulers.results.sort(that.sortJSONArrayByProperty('ETENR'))
+			that.getView().getModel("SelectedPositionsJSONModel").refresh()
+
+
 		}
 	});
 

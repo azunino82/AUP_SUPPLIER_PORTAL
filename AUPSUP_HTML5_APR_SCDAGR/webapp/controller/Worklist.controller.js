@@ -515,7 +515,7 @@ sap.ui.define([
 			return foundProfilo;
 		},
 
-		formatDate: function(sDate){
+		formatDate: function (sDate) {
 			var oFromFormat = sap.ui.core.format.DateFormat.getDateTimeInstance({
 				pattern: "yyyyMMdd"
 			});
@@ -542,8 +542,9 @@ sap.ui.define([
 					elem.XBLNR = element.XBLNR;
 					elem.EINDT = element.EKES_EINDT !== undefined ? that.formatDate(element.EKES_EINDT) : element.CREATION_DATE !== undefined ? element.CREATION_DATE : '';
 					elem.LIFNR = element.LIFNR;
-					elem.MATNR = element.MATNR + " - " + element.TXZ01;
-					elem.CONF_TYPE = 'A',
+					elem.MATNR = that.removeZeroBefore(element.MATNR) + " - " + element.TXZ01;
+					elem.MENGE = that.importFormatter(element.EKES_MENGE);
+					elem.CONF_TYPE = 'A';
 					elem.BSTYP = element.BSTYP; // per piani di consegna
 					body.confirmType.push(elem);
 				});
@@ -556,8 +557,9 @@ sap.ui.define([
 					elem.XBLNR = element.XBLNR;
 					elem.EINDT = element.EKES_EINDT !== undefined ? that.formatDate(element.EKES_EINDT) : element.CREATION_DATE !== undefined ? element.CREATION_DATE : '';
 					elem.LIFNR = element.LIFNR;
-					elem.MATNR = element.MATNR + " - " + element.TXZ01;
-					elem.CONF_TYPE = 'R',
+					elem.MATNR = that.removeZeroBefore(element.MATNR) + " - " + element.TXZ01;
+					elem.CONF_TYPE = 'R';
+					elem.MENGE = that.importFormatter(element.EKES_MENGE);
 					elem.BSTYP = element.BSTYP; // per piani di consegna
 					body.confirmType.push(elem);
 				});
@@ -622,14 +624,19 @@ sap.ui.define([
 					elem.EBELP = element.EBELP;
 					elem.EINDT = element.CREATION_DATE;
 					elem.LIFNR = element.LIFNR;
-					elem.MATNR = element.MATNR;
+					elem.MATNR = that.removeZeroBefore(element.MATNR) + " - " + element.TXZ01;
+					elem.NETPR = that.importFormatter(element.NETPR);
+					elem.MENGE = that.importFormatter(element.MENGE);
+					elem.PEINH = that.importFormatter(element.PEINH);
+					elem.ZINVALIDITA = element.ZINVALIDITA !== undefined ? that.formatDate(element.ZINVALIDITA) : ''
+					elem.ZFINVALIDATA = element.ZFINVALIDATA !== undefined ? that.formatDate(element.ZFINVALIDATA) : ''
 					if (element.XBLNR === undefined) {
 						elem.XBLNR = ""
 					} else {
 						elem.XBLNR = element.XBLNR
 					};
-					elem.CONF_TYPE = confirmationType,
-						elem.BSTYP = element.BSTYP; // per piani di consegna
+					elem.CONF_TYPE = confirmationType;
+					elem.BSTYP = element.BSTYP; // per piani di consegna
 
 					body.confirmType.push(elem);
 				}
@@ -650,7 +657,7 @@ sap.ui.define([
 						$.each(oData.results, function (index, item) {
 							//Escludo i messaggi di tipo W
 							if (item.MSGTY !== 'W')
-							message = item.MESSAGE + " \n " + message;
+								message = item.MESSAGE + " \n " + message;
 						});
 						if (message !== "") {
 							MessageBox.show(message, {

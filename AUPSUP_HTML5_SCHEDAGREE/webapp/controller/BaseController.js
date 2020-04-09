@@ -268,6 +268,17 @@ sap.ui.define([
 				return sValue.substring(n, sValue.length);
 			}
 			return sValue
+		},
+
+		sortJSONArrayByProperty: function (property) {
+			return function (a, b) {
+				if (a[property] > b[property])
+					return 1;
+				else if (a[property] < b[property])
+					return -1;
+
+				return 0;
+			}
 		}
 
 
