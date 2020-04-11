@@ -394,7 +394,7 @@ module.exports = function () {
                             var trovatoInList = false
                             for (let j = 0; j < element.LIST_XBLNR.length; j++) {
                                 var el = element.LIST_XBLNR[j]
-                                if (el.XBLNR === body.confirmType[i].XBLNR) {
+                                if (el.XBLNR === body.confirmType[i].XBLNR && el.COUNTER === body.confirmType[i].COUNTER) {
                                     trovatoInList = true
                                     break
                                 }
@@ -403,14 +403,14 @@ module.exports = function () {
                                 if (element.LIST_XBLNR === undefined) {
                                     element.LIST_XBLNR = []
                                 }
-                                element.LIST_XBLNR.push({ XBLNR: body.confirmType[i].XBLNR, EINDT: body.confirmType[i].EINDT, MENGE: body.confirmType[i].MENGE })
+                                element.LIST_XBLNR.push({ XBLNR: body.confirmType[i].XBLNR, EINDT: body.confirmType[i].EINDT, MENGE: body.confirmType[i].MENGE, COUNTER: body.confirmType[i].COUNTER })
                             }
                             break
                         }
                     }
 
                     if (!trovato) {
-                        var listaXBLNR = [{ XBLNR: body.confirmType[i].XBLNR, EINDT: body.confirmType[i].EINDT, MENGE: body.confirmType[i].MENGE }]
+                        var listaXBLNR = [{ XBLNR: body.confirmType[i].XBLNR, EINDT: body.confirmType[i].EINDT, MENGE: body.confirmType[i].MENGE, COUNTER: body.confirmType[i].COUNTER }]
                         mailArr.push({
                             EBELN: body.confirmType[i].EBELN,
                             EBELP: body.confirmType[i].EBELP,
@@ -477,7 +477,7 @@ module.exports = function () {
         }
     })
 
-    function sendMail (req, res, confirms, notaReject) {
+    function sendMail(req, res, confirms, notaReject) {
         var lifnrs = '('
         for (let index = 0; index < confirms.length; index++) {
             var element = confirms[index]
