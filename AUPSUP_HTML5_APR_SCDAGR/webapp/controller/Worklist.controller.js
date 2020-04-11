@@ -347,7 +347,7 @@ sap.ui.define([
 			this.showBusyDialog();
 			that.ajaxPost(url, body, function (oData) {
 				that.hideBusyDialog();
-				if (oData) {
+				if (oData && oData.results) {
 					var outArr = { "results": { "EkkoEkpo": [], "EketEkes": [] } }
 					if (oData.results.EkkoEkpo) {
 						oData.results.EkkoEkpo.forEach(element => {
@@ -373,6 +373,9 @@ sap.ui.define([
 					oModel.setData(outArr);
 					that.getView().setModel(oModel, "SchedAgreeJSONModel");
 					that.getView().byId("OrderHeadersTable").setModel(oModel);
+				}else{
+					that.getView().byId("OrderHeadersTable").setModel(null);
+					that.getView().byId("OrderHeadersTable").refresh();
 				}
 			})
 		},
@@ -528,6 +531,7 @@ sap.ui.define([
 		},
 
 		onSendDataForQuantity: function (posToReject, posToApprove, sText) {
+			var counter = 0;
 			var body = {
 				"confirmType": [],
 				"notaReject": sText,
@@ -546,6 +550,7 @@ sap.ui.define([
 					elem.MENGE = that.importFormatter(element.EKES_MENGE);
 					elem.CONF_TYPE = 'A';
 					elem.BSTYP = element.BSTYP; // per piani di consegna
+					elem.COUNTER = counter++;
 					body.confirmType.push(elem);
 				});
 			}
@@ -561,6 +566,7 @@ sap.ui.define([
 					elem.CONF_TYPE = 'R';
 					elem.MENGE = that.importFormatter(element.EKES_MENGE);
 					elem.BSTYP = element.BSTYP; // per piani di consegna
+					elem.COUNTER = counter++;
 					body.confirmType.push(elem);
 				});
 			}
@@ -609,7 +615,7 @@ sap.ui.define([
 		},
 
 		onSendData: function (confirmationType, notaReject) {
-
+			var counter = 0;
 			var body = {
 				"confirmType": [],
 				"notaReject": notaReject,
@@ -637,7 +643,7 @@ sap.ui.define([
 					};
 					elem.CONF_TYPE = confirmationType;
 					elem.BSTYP = element.BSTYP; // per piani di consegna
-
+					elem.COUNTER = counter++;
 					body.confirmType.push(elem);
 				}
 			});
