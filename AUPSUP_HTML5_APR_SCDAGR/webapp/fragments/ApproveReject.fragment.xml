@@ -1,46 +1,71 @@
-<Dialog xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" xmlns:u="sap.ui.unified" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
-	xmlns:table="sap.ui.table" xmlns:smartFilterBar="sap.ui.comp.smartfilterbar" xmlns:smartTable="sap.ui.comp.smarttable" contentWidth="100%"
-	contentHeight="100%" title="{i18n>positionConfirmation}">
+<Dialog xmlns:f="sap.ui.layout.form" 
+	xmlns:core="sap.ui.core" 
+	xmlns:u="sap.ui.unified" 
+	xmlns:mvc="sap.ui.core.mvc" 
+	xmlns="sap.m" 
+	xmlns:table="sap.ui.table" 
+	xmlns:smartFilterBar="sap.ui.comp.smartfilterbar" 
+	xmlns:smartTable="sap.ui.comp.smarttable" contentWidth="100%" contentHeight="100%" title="{i18n>positionConfirmation}">
 	<NavContainer id="navCon">
 		<Page id="p1">
 			<content>
 				<Table width="auto" items="{ path: 'SchedAgrToApproveRejectJSONModel>/results' }">
 					<headerToolbar>
 						<OverflowToolbar>
-							<Title text="{i18n>confirmations} : {SchedAgrToApproveRejectJSONModel>/results/0/EBELN} / {SchedAgrToApproveRejectJSONModel>/results/0/EBELP} {i18n>MATNR} : {SchedAgrToApproveRejectJSONModel>/results/0/MATNR} - {SchedAgrToApproveRejectJSONModel>/results/0/TXZ01}" level="H2"/>
+							<Title text="{i18n>confirmations} : {SchedAgrToApproveRejectJSONModel>/results/0/EBELN} / {SchedAgrToApproveRejectJSONModel>/results/0/EBELP} {i18n>MATNR} : {path : 'SchedAgrToApproveRejectJSONModel>/results/0/MATNR', formatter : '.removeZeroBefore'} - {SchedAgrToApproveRejectJSONModel>/results/0/TXZ01}" level="H2"/>
 							<ToolbarSpacer/>
 							<Button icon="sap-icon://legend" press="onLegend" tooltip="{i18n>Legend}" visible="false"/>
 						</OverflowToolbar>
 					</headerToolbar>
 					<columns>
-						<Column><Text text="{i18n>dataConferma}"/></Column>
-						<Column><Text text="{i18n>quantitaConferma}"/></Column>
-						<Column><Text text="{i18n>ETENR}"/></Column>
-						<Column><Text text="{i18n>EBTYP}"/></Column>
-						<Column><Text text="{i18n>dataRichiesta}"/></Column>
-						<Column><Text text="{i18n>quantitaRichiesta}"/></Column>
-						<Column><Text text="{i18n>deltaGG}"/></Column>
-						<Column><Text text="{i18n>deltaQuantita}"/></Column>
-						<Column><Text text="{i18n>approva}"/></Column>
-						<Column><Text text="{i18n>rifiuta}"/></Column>
-						<Column><Text text="{i18n>advice}"/></Column>						
+						<Column>
+							<Text text="{i18n>dataConferma}"/>
+						</Column>
+						<Column>
+							<Text text="{i18n>quantitaConferma}"/>
+						</Column>
+						<Column>
+							<Text text="{i18n>ETENR}"/>
+						</Column>
+						<Column>
+							<Text text="{i18n>EBTYP}"/>
+						</Column>
+						<Column>
+							<Text text="{i18n>dataRichiesta}"/>
+						</Column>
+						<Column>
+							<Text text="{i18n>quantitaRichiesta}"/>
+						</Column>
+						<Column>
+							<Text text="{i18n>deltaGG}"/>
+						</Column>
+						<Column>
+							<Text text="{i18n>deltaQuantita}"/>
+						</Column>
+						<Column>
+							<Text text="{i18n>approva}"/>
+						</Column>
+						<Column>
+							<Text text="{i18n>rifiuta}"/>
+						</Column>
+						<Column>
+							<Text text="{i18n>advice}"/>
+						</Column>
 					</columns>
 					<items textAlign="Center">
 						<ColumnListItem highlight="{path:'SchedAgrToApproveRejectJSONModel>STATUS', formatter:'.onSetSchedulationStatus'}">
 							<cells>
 								<Text text="{ path: 'SchedAgrToApproveRejectJSONModel>EKES_EINDT', type: 'it.alteaup.supplier.portal.aprvschdagr.AUPSUP_HTML5_APR_SCDAGR.type.Date' }"/>
-								<Text text="{SchedAgrToApproveRejectJSONModel>EKES_MENGE}"/>
+								<Text text="{ path : 'SchedAgrToApproveRejectJSONModel>EKES_MENGE', formatter : '.importFormatter'}"/>
 								<Text text="{SchedAgrToApproveRejectJSONModel>XBLNR}"/>
 								<Text text="{SchedAgrToApproveRejectJSONModel>EBTYP}"/>
 								<Text text="{ path: 'SchedAgrToApproveRejectJSONModel>EKET_EINDT', type: 'it.alteaup.supplier.portal.aprvschdagr.AUPSUP_HTML5_APR_SCDAGR.type.Date' }"/>
-								<Text text="{SchedAgrToApproveRejectJSONModel>EKET_MENGE}"/>
+								<Text text="{ path : 'SchedAgrToApproveRejectJSONModel>EKET_MENGE', formatter : '.importFormatter'}"/>
 								<Text text="{SchedAgrToApproveRejectJSONModel>DELTA_GG}"/>
-								<Text text="{SchedAgrToApproveRejectJSONModel>DELTA_QUANT}"/>
-								<RadioButton groupName="{SchedAgrToApproveRejectJSONModel>RADIO_GRP_NAME}" selected="{SchedAgrToApproveRejectJSONModel>APPROVE}"
-									visible="{SchedAgrToApproveRejectJSONModel>ISTOCONFIRM}"></RadioButton>
-								<RadioButton groupName="{SchedAgrToApproveRejectJSONModel>RADIO_GRP_NAME}" selected="{SchedAgrToApproveRejectJSONModel>REJECT}"
-									visible="{SchedAgrToApproveRejectJSONModel>ISTOCONFIRM}"></RadioButton>
-								<Text text="{i18n>advice_msg}" visible = "{= ${SchedAgrToApproveRejectJSONModel>DELTA_QUANT} !== '0.000'}"/>			
+								<Text text="{ path : 'SchedAgrToApproveRejectJSONModel>DELTA_QUANT', formatter : '.importFormatter'}"/>
+								<RadioButton groupName="{SchedAgrToApproveRejectJSONModel>RADIO_GRP_NAME}" selected="{SchedAgrToApproveRejectJSONModel>APPROVE}" visible="{SchedAgrToApproveRejectJSONModel>ISTOCONFIRM}"></RadioButton>
+								<RadioButton groupName="{SchedAgrToApproveRejectJSONModel>RADIO_GRP_NAME}" selected="{SchedAgrToApproveRejectJSONModel>REJECT}" visible="{SchedAgrToApproveRejectJSONModel>ISTOCONFIRM}"></RadioButton>
+								<Text text="{i18n>advice_msg}" visible = "{= ${SchedAgrToApproveRejectJSONModel>DELTA_QUANT} !== '0.000'}"/>
 							</cells>
 						</ColumnListItem>
 					</items>

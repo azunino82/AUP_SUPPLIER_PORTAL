@@ -339,12 +339,12 @@ sap.ui.define([
 
 		onSearchOrders: function () {
 
-			var body = that.getModel("filterJSONModel").getData();
 			var url = "/backend/SchedulingAgreementManagement/GetConfermeRifiuti";
+			var body = that.getModel("filterJSONModel").getData();
 			var isBuyer = sap.ui.getCore().getModel("VisibilityJSONModel").getData().isBuyer;
 			var isPlanner = sap.ui.getCore().getModel("VisibilityJSONModel").getData().isPlanner;
 			var isAdministrator = sap.ui.getCore().getModel("VisibilityJSONModel").getData().isAdministrator;
-			this.showBusyDialog();
+			that.showBusyDialog();
 			that.ajaxPost(url, body, function (oData) {
 				that.hideBusyDialog();
 				if (oData && oData.results) {
@@ -373,9 +373,9 @@ sap.ui.define([
 					oModel.setData(outArr);
 					that.getView().setModel(oModel, "SchedAgreeJSONModel");
 					that.getView().byId("OrderHeadersTable").setModel(oModel);
-				}else{
+				} else {
 					that.getView().byId("OrderHeadersTable").setModel(null);
-					that.getView().byId("OrderHeadersTable").refresh();
+					//that.getView().byId("OrderHeadersTable").refresh();
 				}
 			})
 		},
@@ -531,7 +531,7 @@ sap.ui.define([
 		},
 
 		onSendDataForQuantity: function (posToReject, posToApprove, sText) {
-			var counter = 0;
+			//	var counter = 0;
 			var body = {
 				"confirmType": [],
 				"notaReject": sText,
@@ -550,7 +550,7 @@ sap.ui.define([
 					elem.MENGE = that.importFormatter(element.EKES_MENGE);
 					elem.CONF_TYPE = 'A';
 					elem.BSTYP = element.BSTYP; // per piani di consegna
-					elem.COUNTER = counter++;
+					elem.COUNTER = element.COUNTER;
 					body.confirmType.push(elem);
 				});
 			}
@@ -566,7 +566,7 @@ sap.ui.define([
 					elem.CONF_TYPE = 'R';
 					elem.MENGE = that.importFormatter(element.EKES_MENGE);
 					elem.BSTYP = element.BSTYP; // per piani di consegna
-					elem.COUNTER = counter++;
+					elem.COUNTER = element.COUNTER;
 					body.confirmType.push(elem);
 				});
 			}
@@ -591,7 +591,7 @@ sap.ui.define([
 								onClose: function () {
 									// aggiorno la lista
 									that.onCloseApproveRejectFragment(true);
-									that.onSearchOrders();
+									//that.onSearchOrders();
 								} // default
 
 							});
@@ -603,7 +603,7 @@ sap.ui.define([
 							onClose: function () {
 								// aggiorno la lista
 								that.onCloseApproveRejectFragment(true);
-								that.onSearchOrders();
+								//that.onSearchOrders();
 							} // default
 
 						});
@@ -1041,8 +1041,9 @@ sap.ui.define([
 				this.approveRejectFragment.close();
 				this.approveRejectFragment.destroy();
 				this.approveRejectFragment = undefined;
-				if (makeRefresh === true)
+				if (makeRefresh === true) {
 					that.onSearchOrders();
+				}
 			}
 		},
 		onSetSchedulationStatus: function (oValue) {
