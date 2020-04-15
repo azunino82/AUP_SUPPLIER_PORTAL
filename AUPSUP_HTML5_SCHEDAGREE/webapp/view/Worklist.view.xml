@@ -117,7 +117,7 @@
 								<ObjectPageSection showTitle="false">
 									<subSections>
 										<ObjectPageSubSection >
-											<m:Table id="OrderHeadersTable" items="{ path: 'OrderJSONModel>/results', sorter: { path: 'PRIMO_PERIODO', ascending: true }}" itemPress="onRowSelectionChange" growing="true" growingThreshold="500" growingScrollToLoad="false">
+											<m:Table id="OrderHeadersTable" items="{ path: 'OrderJSONModel>/results', sorter: { path: 'PRIMO_PERIODO', ascending: true }}" itemPress="onRowSelectionChange" growing="true" growingThreshold="50" growingScrollToLoad="false">
 												<m:headerToolbar>
 													<m:OverflowToolbar>
 														<m:content>
@@ -179,7 +179,7 @@
 													</m:Column>
 												</m:columns>
 												<m:items>
-													<m:ColumnListItem type="Navigation" highlight="{path:'OrderJSONModel>Status', formatter:'.formatRowHighlight'}">
+													<m:ColumnListItem type="Navigation" highlight="{path:'OrderJSONModel>Status'}">
 														<m:cells>
 															<m:CheckBox selected="{OrderJSONModel>isSelected}" editable= "{= ${OrderJSONModel>SKIP_NO_CONFERME} !== true}"/>
 															<m:Text text="{OrderJSONModel>EBELN}"/>

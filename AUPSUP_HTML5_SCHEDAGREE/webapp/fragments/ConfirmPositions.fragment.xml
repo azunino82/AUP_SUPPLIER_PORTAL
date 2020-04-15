@@ -79,7 +79,7 @@
 									<ColumnListItem highlight="{path:'SelectedPositionsJSONModel>STATUS', formatter:'.onSetSchedulationStatus'}">
 										<cells>
 											<Text text="{ path: 'SelectedPositionsJSONModel>EINDT', type: 'it.alteaup.supplier.portal.schedulingagreement.AUPSUP_HTML5_SCHEDAGREE.type.Date' }"/>
-											<Text text="{SelectedPositionsJSONModel>MENGE}"/>
+											<Text text="{path : 'SelectedPositionsJSONModel>MENGE', formatter : '.importFormatter'}"/>
 											<Text text="{SelectedPositionsJSONModel>ETENR}"/>
 											<Text text="{path : 'SelectedPositionsJSONModel>QTA_CONFERMATA', formatter : '.importFormatter'}"/>
 

@@ -28,8 +28,12 @@ sap.ui.define([
 			var sObjectId = oControlEvent.getParameter("arguments").datas;
 
 			var datas = JSON.parse(sObjectId);
-			datas = JSON.parse(datas)
 			
+			try{
+				datas = JSON.parse(datas)
+			}catch(e){
+
+			}
 			that.loadObject(datas, function (oData) {
 				that.hideBusyDialog();
 				if (oData === null || oData === undefined) {} else {

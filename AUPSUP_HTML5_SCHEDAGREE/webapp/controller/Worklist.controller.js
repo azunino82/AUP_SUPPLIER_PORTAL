@@ -255,8 +255,11 @@ sap.ui.define([
 						if (NETPR != undefined && NETPR != "" && PEINH != undefined && PEINH != "") {
 							PEINH = parseFloat(PEINH);
 							NETPR = parseFloat(NETPR);
-							var prezzoOriginale = NETPR / PEINH;
-							oData.results[i].OriginalPrice = prezzoOriginale;
+							//var prezzoOriginale = NETPR / PEINH;
+							//oData.results[i].OriginalPrice = prezzoOriginale;
+							oData.results[i].RapportoPrezzoUnita = NETPR / PEINH;
+							oData.results[i].OriginalPrice = NETPR;
+							oData.results[i].OriginalPriceUnit = PEINH;							
 						}
 					}
 					var oModel = new JSONModel();
@@ -1475,9 +1478,13 @@ sap.ui.define([
 								// TODO FARE logiche save
 								singleEkpoModel.ZINVALIDITA = row.ZINVALIDITA;
 								singleEkpoModel.ZFINVALIDATA = row.ZFINVALIDATA;
+
+
+								
 								//Verifico che il campo testo sia valorizzato
-								var nuovoPrezzoPosizione = row.NETPR / row.PEINH;
-								if (nuovoPrezzoPosizione !== row.OriginalPrice)
+								var nuovoPrezzoPosizione = row.NETPR
+								var nuovaUnitaPrezzo = row.PEINH;
+								if (nuovoPrezzoPosizione !== row.OriginalPrice || nuovaUnitaPrezzo !== row.OriginalPriceUnit)
 									singleEkpoModel.ZMODPREZZO = row.editPrice !== undefined && row.editPrice === true ? 'X' : '';
 								else
 									singleEkpoModel.ZMODPREZZO = '';
@@ -1733,7 +1740,7 @@ sap.ui.define([
 			// controllo che il prezzo modificato sia all'interno delle percentuali di scostamento se ci sono
 			if (mod.PricePercDOWN !== undefined && mod.PricePercDOWN !== null) {
 				// TODO OriginalPrice valorizzato solo quando si inserisce una schedulazione e non quello originale!. spostare la valorizzazione
-				if (mod.OriginalPrice !== undefined) {
+				if (mod.RapportoPrezzoUnita !== undefined) {
 
 					var PEINH = mod.PEINH;
 					var NETPR = mod.NETPR;
@@ -1741,10 +1748,10 @@ sap.ui.define([
 						PEINH = parseFloat(PEINH);
 						NETPR = parseFloat(NETPR);
 						var nuovoPrezzoPosizione = NETPR / PEINH;
-						var differenzaPrezzo = nuovoPrezzoPosizione - mod.OriginalPrice;
+						var differenzaPrezzo = nuovoPrezzoPosizione - mod.RapportoPrezzoUnita;
 						if (differenzaPrezzo > 0) {
 							// differenza positiva
-							var percScostamentoUP = (differenzaPrezzo / mod.OriginalPrice) * 100;
+							var percScostamentoUP = (differenzaPrezzo / mod.RapportoPrezzoUnita) * 100;
 							if (percScostamentoUP > mod.PricePercUP) {
 								var ordine = mod.EBELN + "-" + mod.EBELP;
 								err = err + "\n" + that.getResourceBundle().getText("ERR_Price_Perc_Up", ordine);
@@ -1757,7 +1764,7 @@ sap.ui.define([
 						}
 						if (differenzaPrezzo < 0) {
 							// differenza positiva
-							var percScostamentoDown = ((differenzaPrezzo * -1) / mod.OriginalPrice) * 100;
+							var percScostamentoDown = ((differenzaPrezzo * -1) / mod.RapportoPrezzoUnita) * 100;
 							var ordine = mod.EBELN + "-" + mod.EBELP;
 							if (percScostamentoDown > mod.PricePercDOWN) {
 								err = err + "\n" + that.getResourceBundle().getText("ERR_Price_Perc_Down", ordine);
