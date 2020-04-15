@@ -169,7 +169,7 @@
 													</m:Column>
 												</m:columns>
 												<m:items>
-													<m:ColumnListItem type="Navigation" highlight="{path:'InboundDelJSONModel>Status', formatter:'.formatRowHighlight'}">
+													<m:ColumnListItem type="Navigation" highlight="{path:'InboundDelJSONModel>Status'}">
 														<m:cells>
 															<m:Text text="{InboundDelJSONModel>EBELN}"/>
 															<m:Text text="{InboundDelJSONModel>EBELP}"/>
