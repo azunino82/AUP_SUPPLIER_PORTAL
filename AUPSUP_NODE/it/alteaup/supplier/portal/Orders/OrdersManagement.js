@@ -376,7 +376,8 @@ module.exports = function () {
                         EBELP: body.confirmType[i].EBELP,
                         XBLNR: body.confirmType[i].XBLNR,
                         CONF_TYPE: body.confirmType[i].CONF_TYPE,
-                        BSTYP: body.confirmType[i].BSTYP
+                        BSTYP: body.confirmType[i].BSTYP,
+                        COUNTER: body.confirmType[i].COUNTER
                     })
                 }
                 confirmTypes = oConfType
@@ -606,9 +607,9 @@ module.exports = function () {
                                                                 sp(req.user.id, subject, bodyLines, emailList, (err) => {
                                                                     if (err) {
                                                                         console.error('ERROR: ' + stringifyObj(err))
-                                                                        return res.status(500).send(stringifyObj(err))
+                                                                       // return res.status(500).send(stringifyObj(err))
                                                                     } else {
-                                                                        return res.status(200).send('OK')
+                                                                       // return res.status(200).send('OK')
                                                                     }
                                                                 })
                                                             })
