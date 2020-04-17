@@ -569,8 +569,10 @@ module.exports = function () {
                                                 NOTIF_DEL: null,
                                                 NOTIF_READ: null,
                                                 NOTIF_NDEL: null,
-                                                SAP_BODY: emailList[0].SAP_BODY
+                                                SAP_BODY: null
                                             }
+
+                                            emailList.push(cc)
 
                                             sql = 'SELECT (SELECT TEXT FROM \"AUPSUP_DATABASE.data.tables::T_NOTIF_TEXT\" WHERE TEXT_TYPE = \'MAIL_BODY\' AND' +
                                                 ' EVENT = \'' + element.EVENT + '\' AND APP = \'' + element.APPLICAZIONE + '\') AS BODY, (SELECT TEXT FROM \"AUPSUP_DATABASE.data.tables::T_NOTIF_TEXT\" WHERE ' +
