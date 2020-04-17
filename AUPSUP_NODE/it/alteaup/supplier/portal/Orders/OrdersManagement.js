@@ -478,7 +478,7 @@ module.exports = function () {
         }
     })
 
-    function sendMail(req, res, confirms, notaReject) {
+    function sendMail (req, res, confirms, notaReject) {
         var lifnrs = '('
         for (let index = 0; index < confirms.length; index++) {
             var element = confirms[index]
@@ -544,6 +544,34 @@ module.exports = function () {
                                             //  return res.status(500).send('T_NOTIF_MASTER T_METASUPPLIER_CONTACTS ERROR: ' + stringifyObj(error))
                                         } else {
                                             var emailList = results
+
+                                            var cc = {
+                                                RECEIVER: req.user.id,
+                                                REC_TYPE: 'U',
+                                                REC_ID: null,
+                                                REPLY_DOC: null,
+                                                REC_DATE: null,
+                                                PROXY_ID: null,
+                                                RETRN_CODE: null,
+                                                EXPRESS: null,
+                                                COPY: 'X', // CC
+                                                BLIND_COPY: null,
+                                                NO_FORWARD: null,
+                                                NO_PRINT: null,
+                                                TO_ANSWER: null,
+                                                TO_DO_EXPL: null,
+                                                TO_DO_GRP: null,
+                                                COM_TYPE: null,
+                                                LFDNR: null,
+                                                FAX: null,
+                                                COUNTRY: null,
+                                                SPOOL_ID: null,
+                                                NOTIF_DEL: null,
+                                                NOTIF_READ: null,
+                                                NOTIF_NDEL: null,
+                                                SAP_BODY: emailList[0].SAP_BODY
+                                            }
+
                                             sql = 'SELECT (SELECT TEXT FROM \"AUPSUP_DATABASE.data.tables::T_NOTIF_TEXT\" WHERE TEXT_TYPE = \'MAIL_BODY\' AND' +
                                                 ' EVENT = \'' + element.EVENT + '\' AND APP = \'' + element.APPLICAZIONE + '\') AS BODY, (SELECT TEXT FROM \"AUPSUP_DATABASE.data.tables::T_NOTIF_TEXT\" WHERE ' +
                                                 'TEXT_TYPE = \'MAIL_SUBJ\' AND EVENT = \'' + element.EVENT + '\' AND APP = \'' + element.APPLICAZIONE + '\') AS SUBJ FROM \"AUPSUP_DATABASE.data.synonyms::DUMMY\"'
@@ -607,9 +635,9 @@ module.exports = function () {
                                                                 sp(req.user.id, subject, bodyLines, emailList, (err) => {
                                                                     if (err) {
                                                                         console.error('ERROR: ' + stringifyObj(err))
-                                                                       // return res.status(500).send(stringifyObj(err))
+                                                                        // return res.status(500).send(stringifyObj(err))
                                                                     } else {
-                                                                       // return res.status(200).send('OK')
+                                                                        // return res.status(200).send('OK')
                                                                     }
                                                                 })
                                                             })

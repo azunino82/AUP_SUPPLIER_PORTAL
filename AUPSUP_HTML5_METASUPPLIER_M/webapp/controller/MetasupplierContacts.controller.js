@@ -14,8 +14,7 @@ sap.ui.define([
 	return BaseController.extend("it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER_M.controller.MetasupplierContacts", {
 		onInit: function () {
 			that = this;
-			template = null;
-			contactType = [];
+
 			that.getOwnerComponent().getRouter().getRoute("RouteMetasupplierContacts").attachPatternMatched(
 				that.handleRoutePatternMatched,
 				this);
@@ -27,6 +26,9 @@ sap.ui.define([
 
 		handleRoutePatternMatched: function (oEvent) {
 
+			template = null;
+			contactType = [];
+			
 			metaid = oEvent.getParameter("arguments").metaid;
 			var user = "";
 

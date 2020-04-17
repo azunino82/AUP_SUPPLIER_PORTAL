@@ -26,6 +26,8 @@ sap.ui.define([
 
 		handleRoutePatternMatched: function (oEvent) {
 
+			template = null;
+			contactType = [];
 			metaid = oEvent.getParameter("arguments").metaid;
 			var user = "";
 

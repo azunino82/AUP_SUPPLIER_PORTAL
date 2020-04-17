@@ -26,6 +26,9 @@ sap.ui.define([
 
 		handleRoutePatternMatched: function (oEvent) {
 
+			template = null;
+			contactType = [];
+			
 			metaid = oEvent.getParameter("arguments").metaid;
 
 			var url = "/backend/MetasupplierManagement/GetMetasupplier?I_METAID=" + metaid;
