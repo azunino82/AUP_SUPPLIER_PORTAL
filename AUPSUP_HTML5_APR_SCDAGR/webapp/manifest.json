@@ -22,23 +22,11 @@
 					},
 					"semanticObject": "ApproveSchedAgree",
 					"action": "Display",
-					"title": "{{appTitle}}",
-					"indicatorDataSource": {
-						"dataSource": "ORDERS_COUNTER",
-						"path": "/GetCounter?I_TYPE=OrdersToApprove",
-						"refresh": 1000
-					}
+					"title": "{{appTitle}}"
 				}
-			}
-		},
-		"dataSources": {
-			"ORDERS_COUNTER": {
-				"uri": "/Orders_Counter",
-				"type": "JSON"
 			}
 		}
 	},
-
 	"sap.ui": {
 		"fullWidth": true,
 		"technology": "UI5",
@@ -56,7 +44,6 @@
 			"phone": true
 		}
 	},
-
 	"sap.ui5": {
 		"config": {
 			"fullWidth": true
@@ -89,9 +76,11 @@
 			}
 		},
 		"resources": {
-			"css": [{
-				"uri": "css/style.css"
-			}]
+			"css": [
+				{
+					"uri": "css/style.css"
+				}
+			]
 		},
 		"routing": {
 			"config": {
@@ -103,22 +92,25 @@
 				"controlId": "idAppControl",
 				"clearControlAggregation": false
 			},
-			"routes": [{
-				"pattern": "",
-				"name": "worklist",
-				"greedy": false,
-				"target": [
-					"worklist"
-				]
-			}, {
-				"name": "detail",
-				"pattern": "detail/{datas}",
-				"titleTarget": "",
-				"greedy": false,
-				"target": [
-					"detail"
-				]
-			}],
+			"routes": [
+				{
+					"pattern": "",
+					"name": "worklist",
+					"greedy": false,
+					"target": [
+						"worklist"
+					]
+				},
+				{
+					"name": "detail",
+					"pattern": "detail/{datas}",
+					"titleTarget": "",
+					"greedy": false,
+					"target": [
+						"detail"
+					]
+				}
+			],
 			"targets": {
 				"worklist": {
 					"viewLevel": 1,
