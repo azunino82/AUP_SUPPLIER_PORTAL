@@ -237,9 +237,9 @@ resources:
     type: org.cloudfoundry.managed-service
   - name: hdi_AUPSUP_DATABASE
     parameters:
-      service-name: devalteaups4
+      service-name: luveprodecc
       config:
-        schema: devalteaups4
+        schema: luveprodecc
     properties:
       hdi-master-container: '${service-name}'
     type: com.sap.xs.hdi-container  
