@@ -15,7 +15,6 @@ modules:
       - name: portal_resources_AUP_SUPPLIER_PORTAL
       - name: SaasRegistry
       - name: uaa_AUP_SUPPLIER_PORTAL
-      - name: AUPPortalTheme
     properties:
       SAP_JWT_TRUST_ACL:
         - clientid: '*'
@@ -238,15 +237,9 @@ resources:
     type: org.cloudfoundry.managed-service
   - name: hdi_AUPSUP_DATABASE
     parameters:
-      service-name: devalteaups4
+      service-name: luveprodecc
       config:
-        schema: devalteaups4
+        schema: luveprodecc
     properties:
       hdi-master-container: '${service-name}'
     type: com.sap.xs.hdi-container
-# UI Theme Designer
-  - name: AUPPortalTheme
-    parameters:
-      service: theming
-      service-plan: standard
-    type: org.cloudfoundry.managed-service    
