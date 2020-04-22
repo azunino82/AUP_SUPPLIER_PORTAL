@@ -227,8 +227,8 @@ resources:
           onSubscription: 'https://${org}-${space}-aup-supplier-portal-approuter.${default-domain}/callback/v1.0/tenants/{tenantId}'
           getDependencies: 'https://${org}-${space}-aup-supplier-portal-approuter.${default-domain}/callback/v1.0/dependencies'
         category: ePaas
-        description: Supplier Portal
-        displayName: Altea Supplier Portal
+        description: Supplier Portal Prd
+        displayName: Altea Supplier Portal PRODUCTION
     type: org.cloudfoundry.managed-service    
   - name: hdi_AUPSUP_DATABASE
     parameters:

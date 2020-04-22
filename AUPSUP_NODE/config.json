@@ -1,10 +1,10 @@
 {
-    "appId": "AUP_SUPPLIER_PORTAL!t34981",
+    "appId": "AUP_SUPPLIER_PORTAL!t43907",
     "appUrls": {
         "getDependencies": "https://alteaUpSupplierPortalPROD-prod-aup-supplier-portal-approuter.cfapps.eu10.hana.ondemand.com/callback/v1.0/dependencies",
         "onSubscription": "https://alteaUpSupplierPortalPROD-prod-aup-supplier-portal-approuter.cfapps.eu10.hana.ondemand.com/callback/v1.0/tenants/{tenantId}"
     },
     "category": "ePaas",
-    "description": "Supplier Portal",
-    "displayName": "Altea Supplier Portal"
+    "description": "Supplier Portal Prod",
+    "displayName": "Altea Supplier Portal Prod"
 }
