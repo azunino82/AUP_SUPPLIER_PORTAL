@@ -227,14 +227,14 @@ resources:
           onSubscription: 'https://${org}-${space}-aup-supplier-portal-approuter.${default-domain}/callback/v1.0/tenants/{tenantId}'
           getDependencies: 'https://${org}-${space}-aup-supplier-portal-approuter.${default-domain}/callback/v1.0/dependencies'
         category: ePaas
-        description: Supplier Portal Prd
-        displayName: Altea Supplier Portal PRODUCTION
+        description: PRODUCTION ENV.
+        displayName: Altea Supplier Portal
     type: org.cloudfoundry.managed-service    
   - name: hdi_AUPSUP_DATABASE
     parameters:
-      service-name: luveprdecc
+      service-name: prdluveecc
       config:
-        schema: luveprdecc
+        schema: prdluveecc
     properties:
       hdi-master-container: '${service-name}'
     type: com.sap.xs.hdi-container
