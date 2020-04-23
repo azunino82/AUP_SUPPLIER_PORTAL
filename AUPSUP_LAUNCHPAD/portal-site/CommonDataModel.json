@@ -36,7 +36,7 @@
 					"vizId": "AppSemantic-Display"
 				}, {
 					"id": "AUPSUP_HTML5_SEARCH_HU",
-					"appId": "it.alteaup.supplier.portal.searchHU.AUPSUP_HTML5_SEARCH_HU",
+					"appId": "it.aupsup.searchHU.AUPSUP_HTML5_SEARCH_HU",
 					"vizId": "SearchHU-Display"
 				}, {
 					"id": "AUPSUP_HTML5_NONCONFORMITA",

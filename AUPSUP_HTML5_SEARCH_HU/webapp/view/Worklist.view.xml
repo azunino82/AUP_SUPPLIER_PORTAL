@@ -1,4 +1,4 @@
-<mvc:View controllerName="it.alteaup.supplier.portal.searchHU.AUPSUP_HTML5_SEARCH_HU.controller.Worklist" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.uxap"
+<mvc:View controllerName="it.aupsup.searchHU.AUPSUP_HTML5_SEARCH_HU.controller.Worklist" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.uxap"
 	xmlns:layout="sap.ui.layout" xmlns:m="sap.m" xmlns:table="sap.ui.table" xmlns:core="sap.ui.core" xmlns:fb="sap.ui.comp.filterbar"
 	xmlns:personal="sap.uxap.sample.SharedBlocks.personal" xmlns:form="sap.ui.layout.form" xmlns:smartTable="sap.ui.comp.smarttable"
 	xmlns:smartFilterBar="sap.ui.comp.smartfilterbar" xmlns:v="sap.ui.comp.variants">
