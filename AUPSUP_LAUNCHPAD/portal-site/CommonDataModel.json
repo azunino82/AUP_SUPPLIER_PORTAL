@@ -20,61 +20,55 @@
 		"groups": [{
 			"_version": "3.0.0",
 			"identification": {
-				"id": "procurement",
+				"id": "defaultGroupId",
 				"title": "{{title}}",
 				"entityType": "group",
-				"i18n": "i18n/procurement.properties"
-			},
-			"payload": {
-				"viz": [{
-					"id": "AUPSUP_HTML5_SCHEDAGREE",
-					"appId": "it.alteaup.supplier.portal.schedulingagreement.AUPSUP_HTML5_SCHEDAGREE",
-					"vizId": "SchedulingAgreement-Display"
-				}, {
-					"id": "iAUPSUP_HTML5_APR_SCDAGR",
-					"appId": "it.alteaup.supplier.portal.aprvschdagr.AUPSUP_HTML5_APR_SCDAGR",
-					"vizId": "ApproveSchedAgree-Display"
-				}, {
-					"id": "AUPSUP_HTML5_METASUPPLIER_BM",
-					"appId": "it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER_BM",
-					"vizId": "MetasupplierBM-Display"
-				}, {
-					"id": "AUPSUP_HTML5_PURCH_ORDS",
-					"appId": "it.alteaup.supplier.portal.purchords.AUPSUP_HTML5_PURCH_ORDS",
-					"vizId": "PurchaseOrders-Display"
-				}, {
-					"id": "AUPSUP_HTML5_METASUPPLIER",
-					"appId": "it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER",
-					"vizId": "AppSemantic-Display"
-				}]
-			}
-		}, {
-			"_version": "3.0.0",
-			"identification": {
-				"id": "planning",
-				"title": "{{title}}",
-				"entityType": "group",
-				"i18n": "i18n/planning.properties"
+				"i18n": "i18n/defaultGroupId.properties"
 			},
 			"payload": {
 				"viz": [{
 					"id": "AUPSUP_HTML5_PLANNING",
-					"appId": "it.alteaup.supplier.portal.planning.AUPSUP_HTML5_PLANNING",
+					"appId": "it.aupsup.planning",
 					"vizId": "PlanningDisplay-Display"
-				}]
-			}
-		}, {
-			"_version": "3.0.0",
-			"identification": {
-				"id": "administration",
-				"title": "{{title}}",
-				"entityType": "group",
-				"i18n": "i18n/administration.properties"
-			},
-			"payload": {
-				"viz": [{
+				}, {
+					"id": "AUPSUP_HTML5_METASUPPLIER",
+					"appId": "it.aupsup.metasupplier",
+					"vizId": "AppSemantic-Display"
+				}, {
+					"id": "AUPSUP_HTML5_SEARCH_HU",
+					"appId": "it.aupsup.searchHU",
+					"vizId": "SearchHU-Display"
+				}, {
+					"id": "AUPSUP_HTML5_NONCONFORMITA",
+					"appId": "it.aupsup.nonConformita",
+					"vizId": "NonConformita-Display"
+				}, {
+					"id": "AUPSUP_HTML5_INBOUNDDELIV",
+					"appId": "it.aupsup.inboundDelivery",
+					"vizId": "InboundDelivery-Display"
+				}, {
+					"id": "AUPSUP_HTML5_SCHEDAGREE",
+					"appId": "it.aupsup.schedulingagreement",
+					"vizId": "SchedulingAgreement-Display"
+				}, {
+					"id": "AUPSUP_HTML5_APR_SCDAGR",
+					"appId": "it.aupsup.aprvschdagr",
+					"vizId": "ApproveSchedAgree-Display"
+				}, {
+					"id": "AUPSUP_HTML5_METASUPPLIER_M",
+					"appId": "it.aupsup.metasupplier_M",
+					"vizId": "MetasupplierM-Display"
+				}, {
+					"id": "AUPSUP_HTML5_METASUPPLIER_BM",
+					"appId": "it.aupsup.metasupplier_BM",
+					"vizId": "MetasupplierBM-Display"
+				}, {
+					"id": "AUPSUP_HTML5_PURCH_ORDS",
+					"appId": "it.aupsup.purchords",
+					"vizId": "PurchaseOrders-Display"
+				}, {
 					"id": "AUPSUP_HTML5_CUSTOMIZING",
-					"appId": "it.alteaup.supplier.portal.customizing.AUPSUP_HTML5_CUSTOMIZING",
+					"appId": "it.aupsup.customizing",
 					"vizId": "Customizing-Display"
 				}]
 			}
@@ -103,7 +97,7 @@
 						}
 					}
 				},
-				"groupsOrder": ["procurement", "planning", "administration"],
+				"groupsOrder": ["defaultGroupId"],
 				"sap.cloud.portal": {
 					"config": {
 						"theme.id": "sap_fiori_3",

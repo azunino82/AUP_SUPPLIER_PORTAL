@@ -7,7 +7,7 @@ sap.ui.define([
 
 	Opa5.extendConfig({
 		arrangements: new Startup(),
-		viewNamespace: "it.alteaup.supplier.portal.purchords.AUPSUP_HTML5_PURCH_ORDS.view.",
+		viewNamespace: "it.aupsup.purchords.view.",
 		autoWait: true
 	});
 });

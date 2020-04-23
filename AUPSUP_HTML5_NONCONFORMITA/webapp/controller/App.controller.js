@@ -3,7 +3,7 @@ sap.ui.define([
 ], function (Controller) {
 	"use strict";
 
-	return Controller.extend("it.alteaup.supplier.portal.nonConformita.AUPSUP_HTML5_NONCONFORMITA.controller.App", {
+	return Controller.extend("it.aupsup.nonConformita.controller.App", {
 		onInit: function () {
 
 		}

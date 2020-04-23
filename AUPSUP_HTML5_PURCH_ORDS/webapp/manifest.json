@@ -1,7 +1,7 @@
 {
 	"_version": "1.12.0",
 	"sap.app": {
-		"id": "it.alteaup.supplier.portal.purchords.AUPSUP_HTML5_PURCH_ORDS",
+		"id": "it.aupsup.purchords",
 		"type": "application",
 		"i18n": "i18n/i18n.properties",
 		"applicationVersion": {
@@ -51,7 +51,7 @@
 		},
 		"flexEnabled": false,
 		"rootView": {
-			"viewName": "it.alteaup.supplier.portal.purchords.AUPSUP_HTML5_PURCH_ORDS.view.App",
+			"viewName": "it.aupsup.purchords.view.App",
 			"type": "XML",
 			"async": true,
 			"id": "App"
@@ -72,7 +72,7 @@
 			"i18n": {
 				"type": "sap.ui.model.resource.ResourceModel",
 				"settings": {
-					"bundleName": "it.alteaup.supplier.portal.purchords.AUPSUP_HTML5_PURCH_ORDS.i18n.i18n"
+					"bundleName": "it.aupsup.purchords.i18n.i18n"
 				}
 			}
 		},
@@ -88,7 +88,7 @@
 				"routerClass": "sap.m.routing.Router",
 				"viewType": "XML",
 				"async": true,
-				"viewPath": "it.alteaup.supplier.portal.purchords.AUPSUP_HTML5_PURCH_ORDS.view",
+				"viewPath": "it.aupsup.purchords.view",
 				"controlAggregation": "pages",
 				"controlId": "idAppControl",
 				"clearControlAggregation": false

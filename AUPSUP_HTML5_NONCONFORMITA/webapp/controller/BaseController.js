@@ -8,7 +8,7 @@ sap.ui.define([
 	var oGlobalBusyDialog = new sap.m.BusyDialog();
 	var bGlobalBusyDialogIsShown = false;
 
-	return Controller.extend("it.alteaup.supplier.portal.nonConformita.AUPSUP_HTML5_NONCONFORMITA.controller.BaseController", {
+	return Controller.extend("it.aupsup.nonConformita.controller.BaseController", {
 		getRouter: function () {
 			return sap.ui.core.UIComponent.getRouterFor(this);
 		},

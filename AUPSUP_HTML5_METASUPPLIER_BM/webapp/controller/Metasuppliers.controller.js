@@ -1,6 +1,6 @@
 var that;
 sap.ui.define([
-	"it/alteaup/supplier/portal/metasupplier/AUPSUP_HTML5_METASUPPLIER_BM/controller/BaseController",
+	"it/aupsup/metasupplier_BM/controller/BaseController",
 	"sap/ui/model/json/JSONModel",
 	"sap/m/MessageBox",
 	"sap/m/MessageToast",
@@ -10,7 +10,7 @@ sap.ui.define([
 ], function (BaseController, JSONModel, MessageBox, MessageToast, Export, ExportTypeCSV, Sorter) {
 	"use strict";
 
-	return BaseController.extend("it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER_BM.controller.Metasuppliers", {
+	return BaseController.extend("it.aupsup.metasupplier_BM.controller.Metasuppliers", {
 		onInit: function () {
 			that = this;
 
@@ -283,7 +283,7 @@ sap.ui.define([
 
 				if (!that.oModMetaSupFragment) {
 					that.oModMetaSupFragment = sap.ui.xmlfragment(
-						"it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER_BM.fragments.ModMetasupplier", that);
+						"it.aupsup.metasupplier_BM.fragments.ModMetasupplier", that);
 					that.getView().addDependent(that.oModMetaSupFragment);
 				}
 				that.getBuyerBu();

@@ -8,7 +8,7 @@ sap.ui.define([
 	var oGlobalBusyDialog = new sap.m.BusyDialog();
 	var bGlobalBusyDialogIsShown = false;
 
-	return Controller.extend("it.alteaup.supplier.portal.schedulingagreement.AUPSUP_HTML5_SCHEDAGREE.controller.BaseController", {
+	return Controller.extend("it.aupsup.schedulingagreement.controller.BaseController", {
 		getRouter: function () {
 			return sap.ui.core.UIComponent.getRouterFor(this);
 		},

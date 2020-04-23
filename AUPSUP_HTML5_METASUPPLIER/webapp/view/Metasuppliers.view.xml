@@ -1,4 +1,4 @@
-<mvc:View controllerName="it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER.controller.Metasuppliers" xmlns:mvc="sap.ui.core.mvc"
+<mvc:View controllerName="it.aupsup.metasupplier.controller.Metasuppliers" xmlns:mvc="sap.ui.core.mvc"
 	displayBlock="true" xmlns="sap.m" xmlns:u="sap.ui.unified" xmlns:core="sap.ui.core" xmlns:fb="sap.ui.comp.filterbar">
 	<Shell id="shell" appWidthLimited="false">
 		<App id="app">

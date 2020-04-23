@@ -1,11 +1,11 @@
 sap.ui.define([
 	"sap/ui/core/UIComponent",
 	"sap/ui/Device",
-	"it/alteaup/supplier/portal/customizing/AUPSUP_HTML5_CUSTOMIZING/model/models"
+	"it/aupsup/customizing/model/models"
 ], function (UIComponent, Device, models) {
 	"use strict";
 
-	return UIComponent.extend("it.alteaup.supplier.portal.customizing.AUPSUP_HTML5_CUSTOMIZING.Component", {
+	return UIComponent.extend("it.aupsup.customizing.Component", {
 
 		metadata: {
 			manifest: "json"

@@ -1,7 +1,7 @@
 {
 	"_version": "1.12.0",
 	"sap.app": {
-		"id": "it.alteaup.supplier.portal.customizing.AUPSUP_HTML5_CUSTOMIZING",
+		"id": "it.aupsup.customizing",
 		"type": "application",
 		"i18n": "i18n/i18n.properties",
 		"applicationVersion": {
@@ -47,7 +47,7 @@
 	"sap.ui5": {
 		"flexEnabled": false,
 		"rootView": {
-			"viewName": "it.alteaup.supplier.portal.customizing.AUPSUP_HTML5_CUSTOMIZING.view.App",
+			"viewName": "it.aupsup.customizing.view.App",
 			"type": "XML",
 			"async": true,
 			"id": "App"
@@ -68,7 +68,7 @@
 			"i18n": {
 				"type": "sap.ui.model.resource.ResourceModel",
 				"settings": {
-					"bundleName": "it.alteaup.supplier.portal.customizing.AUPSUP_HTML5_CUSTOMIZING.i18n.i18n"
+					"bundleName": "it.aupsup.customizing.i18n.i18n"
 				}
 			}
 		},
@@ -82,7 +82,7 @@
 				"routerClass": "sap.m.routing.Router",
 				"viewType": "XML",
 				"async": true,
-				"viewPath": "it.alteaup.supplier.portal.customizing.AUPSUP_HTML5_CUSTOMIZING.view",
+				"viewPath": "it.aupsup.customizing.view",
 				"controlAggregation": "pages",
 				"controlId": "idAppControl",
 				"clearControlAggregation": false
@@ -104,6 +104,6 @@
 		}
 	},
 	"sap.platform.cf": {
-		"oAuthScope": ["$XSAPPNAME.Z_RL_ADMINISTRATOR"]
+		"oAuthScopes": ["$XSAPPNAME.Z_RL_ADMINISTRATOR"]
 	}
 }

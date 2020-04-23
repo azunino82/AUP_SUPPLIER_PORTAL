@@ -5,7 +5,7 @@ sap.ui.getCore().attachInit(function () {
 	"use strict";
 
 	sap.ui.require([
-		"it/alteaup/supplier/portal/schedulingagreement/AUPSUP_HTML5_SCHEDAGREE/test/unit/AllTests"
+		"it/aupsup/schedulingagreement/test/unit/AllTests"
 	], function () {
 		QUnit.start();
 	});

@@ -1,5 +1,5 @@
 sap.ui.define([
-    "it/alteaup/supplier/portal/customizing/AUPSUP_HTML5_CUSTOMIZING/controller/BaseController",
+    "it/aupsup/customizing/controller/BaseController",
     "sap/ui/model/json/JSONModel",
     "sap/m/MessageBox"
 ], function (BaseController, JSONModel, MessageBox) {
@@ -25,7 +25,7 @@ sap.ui.define([
     var originalNotificationContacts = [];
     var originalTexts = [];
 
-    return BaseController.extend("it.alteaup.supplier.portal.customizing.AUPSUP_HTML5_CUSTOMIZING.controller.Worklist", {
+    return BaseController.extend("it.aupsup.customizing.controller.Worklist", {
         onInit: function () {
             that = this;
             that.getCurrentSYSID()

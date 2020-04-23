@@ -1,5 +1,5 @@
 sap.ui.define([
-	"it/alteaup/supplier/portal/schedulingagreement/AUPSUP_HTML5_SCHEDAGREE/controller/BaseController",
+	"it/aupsup/schedulingagreement/controller/BaseController",
 	"sap/ui/model/json/JSONModel",
 	"sap/m/MessageBox",
 	"sap/ui/model/Filter",
@@ -9,7 +9,7 @@ sap.ui.define([
 
 	var that = undefined;
 
-	return BaseController.extend("it.alteaup.supplier.portal.schedulingagreement.AUPSUP_HTML5_SCHEDAGREE.controller.OrderPositionDetail", {
+	return BaseController.extend("it.aupsup.schedulingagreement.controller.OrderPositionDetail", {
 
 		/**
 		 * Called when a controller is instantiated and its View controls (if available) are already created.

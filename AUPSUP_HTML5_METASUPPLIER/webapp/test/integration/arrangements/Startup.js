@@ -3,7 +3,7 @@ sap.ui.define([
 ], function (Opa5) {
 	"use strict";
 
-	return Opa5.extend("it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER.test.integration.arrangements.Startup", {
+	return Opa5.extend("it.aupsup.metasupplier.test.integration.arrangements.Startup", {
 
 		iStartMyApp: function (oOptionsParameter) {
 			var oOptions = oOptionsParameter || {};
@@ -14,7 +14,7 @@ sap.ui.define([
 			// start the app UI component
 			this.iStartMyUIComponent({
 				componentConfig: {
-					name: "it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER",
+					name: "it.aupsup.metasupplier",
 					async: true
 				},
 				hash: oOptions.hash,

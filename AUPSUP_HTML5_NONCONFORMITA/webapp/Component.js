@@ -1,11 +1,11 @@
 sap.ui.define([
 	"sap/ui/core/UIComponent",
 	"sap/ui/Device",
-	"it/alteaup/supplier/portal/nonConformita/AUPSUP_HTML5_NONCONFORMITA/model/models"
+	"it/aupsup/nonConformita/model/models"
 ], function (UIComponent, Device, models) {
 	"use strict";
 
-	return UIComponent.extend("it.alteaup.supplier.portal.nonConformita.AUPSUP_HTML5_NONCONFORMITA.Component", {
+	return UIComponent.extend("it.aupsup.nonConformita.Component", {
 
 		metadata: {
 			manifest: "json"

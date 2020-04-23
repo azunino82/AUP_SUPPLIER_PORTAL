@@ -1,5 +1,5 @@
 sap.ui.define([
-	"it/alteaup/supplier/portal/searchHU/AUPSUP_HTML5_SEARCH_HU/controller/BaseController",
+	"it/aupsup/searchHU/controller/BaseController",
 	"sap/ui/model/json/JSONModel",
 	"sap/m/MessageBox",
 	"sap/m/MessageToast",
@@ -13,7 +13,7 @@ sap.ui.define([
 	"use strict";
 	var that;
 
-	return BaseController.extend("it.alteaup.supplier.portal.searchHU.AUPSUP_HTML5_SEARCH_HU.controller.Worklist", {
+	return BaseController.extend("it.aupsup.searchHU.controller.Worklist", {
 
 		onInit: function () {
 			that = this;
@@ -120,7 +120,7 @@ sap.ui.define([
 		handleMatnr: function () {
 
 			if (!that.oSearchMatnrDialog) {
-				that.oSearchMatnrDialog = sap.ui.xmlfragment("it.alteaup.supplier.portal.searchHU.AUPSUP_HTML5_SEARCH_HU.fragments.SearchMatnr", that);
+				that.oSearchMatnrDialog = sap.ui.xmlfragment("it.aupsup.searchHU.fragments.SearchMatnr", that);
 				that.getView().addDependent(that.oSearchMatnrDialog);
 			}
 			that.oSearchMatnrDialog.open();

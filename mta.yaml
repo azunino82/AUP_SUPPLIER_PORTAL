@@ -13,7 +13,7 @@ modules:
     requires:
       - name: AUP_SUPPLIER_PORTAL_html5_repo_runtime
       - name: portal_resources_AUP_SUPPLIER_PORTAL
-      - name: SaasRegistry      
+      - name: SaasRegistry
       - name: uaa_AUP_SUPPLIER_PORTAL
     properties:
       SAP_JWT_TRUST_ACL:
@@ -85,7 +85,7 @@ modules:
       - name: uaa_AUP_SUPPLIER_PORTAL
       - name: AUP_SUPPLIER_PORTAL_html5_repo_host
       - name: AUP_SUPPLIER_PORTAL_ui_deployer
-      - name: SaasRegistry      
+      - name: SaasRegistry
     properties:
       TENANT_HOST_PATTERN: '^(.*)-${space}-aup-supplier-portal-approuter.cfapps.eu10.hana.ondemand.com'
   - name: AUPSUP_HTML5_METASUPPLIER
@@ -115,8 +115,8 @@ modules:
       memory: 256M
     requires:
       - name: uaa_AUP_SUPPLIER_PORTAL
+      - name: SaasRegistry
       - name: hdi_AUPSUP_DATABASE
-      - name: SaasRegistry      
     properties:
       NODE_TLS_REJECT_UNAUTHORIZED: 0
       INCOMING_CONNECTION_TIMEOUT: 0
@@ -229,7 +229,7 @@ resources:
         category: ePaas
         description: PRODUCTION ENV.
         displayName: Altea Supplier Portal
-    type: org.cloudfoundry.managed-service    
+    type: org.cloudfoundry.managed-service
   - name: hdi_AUPSUP_DATABASE
     parameters:
       service-name: prdluveecc
@@ -237,4 +237,4 @@ resources:
         schema: prdluveecc
     properties:
       hdi-master-container: '${service-name}'
-    type: com.sap.xs.hdi-container  
+    type: com.sap.xs.hdi-container

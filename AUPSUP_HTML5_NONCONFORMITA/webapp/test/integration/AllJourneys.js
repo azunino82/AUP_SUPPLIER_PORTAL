@@ -7,7 +7,7 @@ sap.ui.define([
 
 	Opa5.extendConfig({
 		arrangements: new Startup(),
-		viewNamespace: "it.alteaup.supplier.portal.nonConformita.AUPSUP_HTML5_NONCONFORMITA.view.",
+		viewNamespace: "it.aupsup.nonConformita.view.",
 		autoWait: true
 	});
 });

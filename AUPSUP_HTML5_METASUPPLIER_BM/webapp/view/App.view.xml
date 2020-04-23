@@ -1,4 +1,4 @@
-<mvc:View controllerName="it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER_BM.controller.App" xmlns:mvc="sap.ui.core.mvc"
+<mvc:View controllerName="it.aupsup.metasupplier_BM.controller.App" xmlns:mvc="sap.ui.core.mvc"
 	displayBlock="true" xmlns="sap.m">
 	<App id="idAppControl"/> 
 </mvc:View> 

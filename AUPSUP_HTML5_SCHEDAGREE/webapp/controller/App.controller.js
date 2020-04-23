@@ -3,7 +3,7 @@ sap.ui.define([
 ], function (Controller) {
 	"use strict";
 
-	return Controller.extend("it.alteaup.supplier.portal.schedulingagreement.AUPSUP_HTML5_SCHEDAGREE.controller.App", {
+	return Controller.extend("it.aupsup.schedulingagreement.controller.App", {
 		onInit: function () {
   
 		}

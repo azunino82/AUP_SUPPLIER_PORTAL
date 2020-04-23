@@ -5,7 +5,7 @@ sap.ui.getCore().attachInit(function () {
 	"use strict";
 
 	sap.ui.require([
-		"it/alteaup/supplier/portal/planning/AUPSUP_HTML5_PLANNING/test/integration/AllJourneys"
+		"it/aupsup/planning/test/integration/AllJourneys"
 	], function () {
 		QUnit.start();
 	});

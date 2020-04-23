@@ -7,7 +7,7 @@ sap.ui.define([
 
 	Opa5.extendConfig({
 		arrangements: new Startup(),
-		viewNamespace: "it.alteaup.supplier.portal.schedulingagreement.AUPSUP_HTML5_SCHEDAGREE.view.",
+		viewNamespace: "it.aupsup.schedulingagreement.view.",
 		autoWait: true
 	});
 });

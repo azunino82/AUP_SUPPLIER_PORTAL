@@ -1,4 +1,4 @@
-<mvc:View controllerName="it.alteaup.supplier.portal.customizing.AUPSUP_HTML5_CUSTOMIZING.controller.Worklist" 
+<mvc:View controllerName="it.aupsup.customizing.controller.Worklist" 
 	xmlns:mvc="sap.ui.core.mvc" 
 	xmlns="sap.uxap" 
 	xmlns:layout="sap.ui.layout" 

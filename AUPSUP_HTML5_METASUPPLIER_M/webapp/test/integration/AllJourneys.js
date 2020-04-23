@@ -7,7 +7,7 @@ sap.ui.define([
 
 	Opa5.extendConfig({
 		arrangements: new Startup(),
-		viewNamespace: "it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER_M.view.",
+		viewNamespace: "it.aupsup.metasupplier_M.view.",
 		autoWait: true
 	});
 });

@@ -1,20 +1,20 @@
 sap.ui.define([
-	"it/alteaup/supplier/portal/schedulingagreement/AUPSUP_HTML5_SCHEDAGREE/controller/BaseController",
+	"it/aupsup/schedulingagreement/controller/BaseController",
 	"sap/ui/model/Filter",
 	"sap/ui/model/FilterOperator",
 	"sap/ui/model/json/JSONModel",
 	"sap/m/MessageBox",
 	"sap/m/MessageToast",
 	"sap/ui/model/Sorter",
-	"it/alteaup/supplier/portal/schedulingagreement/AUPSUP_HTML5_SCHEDAGREE/js/Date",
-	"it/alteaup/supplier/portal/schedulingagreement/AUPSUP_HTML5_SCHEDAGREE/js/formatter",
+	"it/aupsup/schedulingagreement/js/Date",
+	"it/aupsup/schedulingagreement/js/formatter",
 	"sap/ui/core/util/Export",
 	"sap/ui/core/util/ExportTypeCSV",
 	"sap/m/Dialog"
 ], function (BaseController, Filter, FilterOperator, JSONModel, MessageBox, MessageToast, Sorter, DateF, Formatter, Export, ExportTypeCSV, Dialog) {
 	"use strict";
 	var that;
-	return BaseController.extend("it.alteaup.supplier.portal.schedulingagreement.AUPSUP_HTML5_SCHEDAGREE.controller.Worklist", {
+	return BaseController.extend("it.aupsup.schedulingagreement.controller.Worklist", {
 
 		/**
 		 * Called when a controller is instantiated and its View controls (if available) are already created.
@@ -114,7 +114,7 @@ sap.ui.define([
 					});
 					// this.getView().setModel(oModelFilters, "filterElementJSONModel");
 
-					this._oResponsivePopover = sap.ui.xmlfragment("it.alteaup.supplier.portal.schedulingagreement.AUPSUP_HTML5_SCHEDAGREE.fragments.FilterSorter", this);
+					this._oResponsivePopover = sap.ui.xmlfragment("it.aupsup.schedulingagreement.fragments.FilterSorter", this);
 					this._oResponsivePopover.setModel(oModelFilters, "filterElementJSONModel");
 				}
 				var oTable = this.getView().byId("OrderHeadersTable");
@@ -387,7 +387,7 @@ sap.ui.define([
 		handleSupplier: function () {
 
 			if (!that.oSearchSupplierDialog) {
-				that.oSearchSupplierDialog = sap.ui.xmlfragment("it.alteaup.supplier.portal.schedulingagreement.AUPSUP_HTML5_SCHEDAGREE.fragments.SearchSupplier", that);
+				that.oSearchSupplierDialog = sap.ui.xmlfragment("it.aupsup.schedulingagreement.fragments.SearchSupplier", that);
 				that.getView().addDependent(that.oSearchSupplierDialog);
 			}
 			that.oSearchSupplierDialog.open();
@@ -515,7 +515,7 @@ sap.ui.define([
 		handleMatnr: function () {
 
 			if (!that.oSearchMatnrDialog) {
-				that.oSearchMatnrDialog = sap.ui.xmlfragment("it.alteaup.supplier.portal.schedulingagreement.AUPSUP_HTML5_SCHEDAGREE.fragments.SearchMatnr", that);
+				that.oSearchMatnrDialog = sap.ui.xmlfragment("it.aupsup.schedulingagreement.fragments.SearchMatnr", that);
 				that.getView().addDependent(that.oSearchMatnrDialog);
 			}
 			that.oSearchMatnrDialog.open();
@@ -836,7 +836,7 @@ sap.ui.define([
 
 			if (!that.oConfirmPositionsFragment) {
 				that.oConfirmPositionsFragment = sap.ui.xmlfragment(
-					"it.alteaup.supplier.portal.schedulingagreement.AUPSUP_HTML5_SCHEDAGREE.fragments.ConfirmPositions",
+					"it.aupsup.schedulingagreement.fragments.ConfirmPositions",
 					this);
 				that.getView().addDependent(that.oConfirmPositionsFragment);
 			}
@@ -2073,7 +2073,7 @@ sap.ui.define([
 			// create popover
 			if (!this._oPopover) {
 				new sap.ui.core.Fragment.load({
-					name: "it.alteaup.supplier.portal.schedulingagreement.AUPSUP_HTML5_SCHEDAGREE.fragments.ColorStatus",
+					name: "it.aupsup.schedulingagreement.fragments.ColorStatus",
 					controller: that
 				}).then(function (pPopover) {
 					that._oPopover = pPopover;
@@ -2268,7 +2268,7 @@ sap.ui.define([
 					oComponent.setModel(oModel, "TextsJSONModel");
 
 					if (!that.oSearchTextsDialog) {
-						that.oSearchTextsDialog = sap.ui.xmlfragment("it.alteaup.supplier.portal.schedulingagreement.AUPSUP_HTML5_SCHEDAGREE.fragments.Texts", that);
+						that.oSearchTextsDialog = sap.ui.xmlfragment("it.aupsup.schedulingagreement.fragments.Texts", that);
 						that.getView().addDependent(that.oSearchTextsDialog);
 					}
 					that.oSearchTextsDialog.open();
