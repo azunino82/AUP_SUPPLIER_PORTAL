@@ -3,7 +3,7 @@ sap.ui.define([
 ], function (Controller) {
 	"use strict";
 
-	return Controller.extend("it.aupsup.searchHU.AUPSUP_HTML5_SEARCH_HU.controller.App", {
+	return Controller.extend("it.aupsup.searchHU.controller.App", {
 		onInit: function () {
 
 		}

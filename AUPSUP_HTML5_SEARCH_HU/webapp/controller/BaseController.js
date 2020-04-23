@@ -8,7 +8,7 @@ sap.ui.define([
 	var oGlobalBusyDialog = new sap.m.BusyDialog();
 	var bGlobalBusyDialogIsShown = false;
 
-	return Controller.extend("it.aupsup.searchHU.AUPSUP_HTML5_SEARCH_HU.controller.BaseController", {
+	return Controller.extend("it.aupsup.searchHU.controller.BaseController", {
 		getRouter: function () {
 			return sap.ui.core.UIComponent.getRouterFor(this);
 		},
