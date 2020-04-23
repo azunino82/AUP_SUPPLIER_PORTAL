@@ -4,7 +4,7 @@ sap.ui.define([
 ], function (SimpleType, ValidateException) {
 	"use strict";
 
-	return SimpleType.extend("it.alteaup.supplier.portal.purchords.AUPSUP_HTML5_PURCH_ORDS.type.Date", {
+	return SimpleType.extend("it.aupsup.purchords.type.Date", {
 
 		formatValue: function (sDate) {
 

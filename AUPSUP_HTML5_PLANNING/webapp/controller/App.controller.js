@@ -3,7 +3,7 @@ sap.ui.define([
 ], function (Controller) {
 	"use strict";
 
-	return Controller.extend("it.alteaup.supplier.portal.planning.AUPSUP_HTML5_PLANNING.controller.App", {
+	return Controller.extend("it.aupsup.planning.controller.App", {
 		onInit: function () {
 
 		}

@@ -1,7 +1,7 @@
 /*global QUnit*/
 
 sap.ui.define([
-	"it/alteaup/supplier/portal/aprvschdagr/AUPSUP_HTML5_APR_SCDAGR/controller/App.controller"
+	"it/aupsup/aprvschdagr/controller/App.controller"
 ], function (Controller) {
 	"use strict";
 

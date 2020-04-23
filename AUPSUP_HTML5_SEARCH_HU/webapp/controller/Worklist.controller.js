@@ -1,5 +1,5 @@
 sap.ui.define([
-	"it/alteaup/supplier/portal/searchHU/AUPSUP_HTML5_SEARCH_HU/controller/BaseController",
+	"it/aupsup/searchHU/controller/BaseController",
 	"sap/ui/model/json/JSONModel",
 	"sap/m/MessageBox",
 	"sap/m/MessageToast",

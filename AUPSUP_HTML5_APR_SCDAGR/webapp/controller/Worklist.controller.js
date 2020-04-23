@@ -1,5 +1,5 @@
 sap.ui.define([
-	"it/alteaup/supplier/portal/aprvschdagr/AUPSUP_HTML5_APR_SCDAGR/controller/BaseController",
+	"it/aupsup/aprvschdagr/controller/BaseController",
 	"sap/ui/model/json/JSONModel",
 	"sap/m/MessageBox",
 	"sap/m/MessageToast",
@@ -8,8 +8,8 @@ sap.ui.define([
 	"sap/ui/model/FilterOperator",
 	"sap/ui/core/util/Export",
 	"sap/ui/core/util/ExportTypeCSV",
-	"it/alteaup/supplier/portal/aprvschdagr/AUPSUP_HTML5_APR_SCDAGR/js/Date",
-	"it/alteaup/supplier/portal/aprvschdagr/AUPSUP_HTML5_APR_SCDAGR/js/formatter",
+	"it/aupsup/aprvschdagr/js/Date",
+	"it/aupsup/aprvschdagr/js/formatter",
 	"sap/m/Button",
 	"sap/m/Dialog",
 	"sap/m/Label",
@@ -20,7 +20,7 @@ sap.ui.define([
 	"use strict";
 	var that = undefined;
 	var ButtonType = Library.ButtonType;
-	return BaseController.extend("it.alteaup.supplier.portal.aprvschdagr.AUPSUP_HTML5_APR_SCDAGR.controller.Worklist", {
+	return BaseController.extend("it.aupsup.aprvschdagr.controller.Worklist", {
 
 		onInit: function () {
 			that = this;
@@ -88,7 +88,7 @@ sap.ui.define([
 				oModelFilters.setData({
 					"element": ""
 				});
-				this._oResponsivePopover = sap.ui.xmlfragment("it.alteaup.supplier.portal.aprvschdagr.AUPSUP_HTML5_APR_SCDAGR.fragments.FilterSorter", this);
+				this._oResponsivePopover = sap.ui.xmlfragment("it.aupsup.aprvschdagr.fragments.FilterSorter", this);
 				this._oResponsivePopover.setModel(oModelFilters, "filterJSONModel");
 			}
 
@@ -235,7 +235,7 @@ sap.ui.define([
 		handleSupplier: function () {
 
 			if (!that.oSearchSupplierDialog) {
-				that.oSearchSupplierDialog = sap.ui.xmlfragment("it.alteaup.supplier.portal.aprvschdagr.AUPSUP_HTML5_APR_SCDAGR.fragments.SearchSupplier", that);
+				that.oSearchSupplierDialog = sap.ui.xmlfragment("it.aupsup.aprvschdagr.fragments.SearchSupplier", that);
 				that.getView().addDependent(that.oSearchSupplierDialog);
 			}
 			that.oSearchSupplierDialog.open();
@@ -811,7 +811,7 @@ sap.ui.define([
 		handleMatnr: function () {
 
 			if (!that.oSearchMatnrDialog) {
-				that.oSearchMatnrDialog = sap.ui.xmlfragment("it.alteaup.supplier.portal.aprvschdagr.AUPSUP_HTML5_APR_SCDAGR.fragments.SearchMatnr", that);
+				that.oSearchMatnrDialog = sap.ui.xmlfragment("it.aupsup.aprvschdagr.fragments.SearchMatnr", that);
 				that.getView().addDependent(that.oSearchMatnrDialog);
 			}
 			that.oSearchMatnrDialog.open();
@@ -1025,7 +1025,7 @@ sap.ui.define([
 					that.getView().setModel(oModel, "SchedAgrToApproveRejectJSONModel");
 
 					if (!that.approveRejectFragment) {
-						that.approveRejectFragment = sap.ui.xmlfragment("it.alteaup.supplier.portal.aprvschdagr.AUPSUP_HTML5_APR_SCDAGR.fragments.ApproveReject", that);
+						that.approveRejectFragment = sap.ui.xmlfragment("it.aupsup.aprvschdagr.fragments.ApproveReject", that);
 						that.getView().addDependent(that.approveRejectFragment);
 					}
 
@@ -1064,7 +1064,7 @@ sap.ui.define([
 			// create popover
 			if (!this._oPopover) {
 				new sap.ui.core.Fragment.load({
-					name: "it.alteaup.supplier.portal.aprvschdagr.AUPSUP_HTML5_APR_SCDAGR.fragments.ColorStatus",
+					name: "it.aupsup.aprvschdagr.fragments.ColorStatus",
 					controller: that
 				}).then(function (pPopover) {
 					that._oPopover = pPopover;

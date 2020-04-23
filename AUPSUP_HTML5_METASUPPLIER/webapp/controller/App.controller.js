@@ -1,10 +1,10 @@
 sap.ui.define([
-	"it/alteaup/supplier/portal/metasupplier/AUPSUP_HTML5_METASUPPLIER/controller/BaseController",
+	"it/aupsup/metasupplier/controller/BaseController",
 	"sap/ui/model/json/JSONModel"
 ], function (Controller,JSONModel) {
 	"use strict";
 	var that;
-	return Controller.extend("it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER.controller.App", {
+	return Controller.extend("it.aupsup.metasupplier.controller.App", {
 
 		onInit: function () {
 			that = this;

@@ -55,11 +55,11 @@
 					<items textAlign="Center">
 						<ColumnListItem highlight="{path:'SchedAgrToApproveRejectJSONModel>STATUS', formatter:'.onSetSchedulationStatus'}">
 							<cells>
-								<Text text="{ path: 'SchedAgrToApproveRejectJSONModel>EKES_EINDT', type: 'it.alteaup.supplier.portal.aprvschdagr.AUPSUP_HTML5_APR_SCDAGR.type.Date' }"/>
+								<Text text="{ path: 'SchedAgrToApproveRejectJSONModel>EKES_EINDT', type: 'it.aupsup.aprvschdagr.type.Date' }"/>
 								<Text text="{ path : 'SchedAgrToApproveRejectJSONModel>EKES_MENGE', formatter : '.importFormatter'}"/>
 								<Text text="{SchedAgrToApproveRejectJSONModel>XBLNR}"/>
 								<Text text="{SchedAgrToApproveRejectJSONModel>EBTYP}"/>
-								<Text text="{ path: 'SchedAgrToApproveRejectJSONModel>EKET_EINDT', type: 'it.alteaup.supplier.portal.aprvschdagr.AUPSUP_HTML5_APR_SCDAGR.type.Date' }"/>
+								<Text text="{ path: 'SchedAgrToApproveRejectJSONModel>EKET_EINDT', type: 'it.aupsup.aprvschdagr.type.Date' }"/>
 								<Text text="{ path : 'SchedAgrToApproveRejectJSONModel>EKET_MENGE', formatter : '.importFormatter'}"/>
 								<Text text="{SchedAgrToApproveRejectJSONModel>DELTA_GG}"/>
 								<Text text="{ path : 'SchedAgrToApproveRejectJSONModel>DELTA_QUANT', formatter : '.importFormatter'}"/>

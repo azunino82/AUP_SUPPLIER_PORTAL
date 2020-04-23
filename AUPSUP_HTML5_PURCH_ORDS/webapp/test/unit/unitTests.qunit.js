@@ -5,7 +5,7 @@ sap.ui.getCore().attachInit(function () {
 	"use strict";
 
 	sap.ui.require([
-		"it/alteaup/supplier/portal/purchords/AUPSUP_HTML5_PURCH_ORDS/test/unit/AllTests"
+		"it/aupsup/purchords/test/unit/AllTests"
 	], function () {
 		QUnit.start();
 	});

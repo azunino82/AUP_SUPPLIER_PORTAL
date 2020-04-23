@@ -2,12 +2,12 @@ var that;
 var selectedSuppliers = "";
 
 sap.ui.define([
-	"it/alteaup/supplier/portal/metasupplier/AUPSUP_HTML5_METASUPPLIER/controller/BaseController",
+	"it/aupsup/metasupplier/controller/BaseController",
 	"sap/m/MessageBox"
 ], function (BaseController, MessageBox) {
 	"use strict";
 
-	return BaseController.extend("it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER.controller.CreateMetasupplier", {
+	return BaseController.extend("it.aupsup.metasupplier.controller.CreateMetasupplier", {
 		onInit: function () {
 			that = this;
 			that.getRouter().getRoute("RouteCreateMetasuppliers").attachPatternMatched(that.handleRoutePatternMatched, that);

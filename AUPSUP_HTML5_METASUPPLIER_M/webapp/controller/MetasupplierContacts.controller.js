@@ -4,14 +4,14 @@ var oDialogContact;
 var contactType = [];
 var template;
 sap.ui.define([
-	"it/alteaup/supplier/portal/metasupplier/AUPSUP_HTML5_METASUPPLIER_M/controller/BaseController",
+	"it/aupsup/metasupplier_M/controller/BaseController",
 	"sap/m/MessageBox",
 	"sap/m/MessageToast",
 	"sap/ui/model/json/JSONModel"
 ], function (BaseController, MessageBox, MessageToast, JSONModel) {
 	"use strict";
 
-	return BaseController.extend("it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER_M.controller.MetasupplierContacts", {
+	return BaseController.extend("it.aupsup.metasupplier_M.controller.MetasupplierContacts", {
 		onInit: function () {
 			that = this;
 
@@ -405,7 +405,7 @@ sap.ui.define([
 
 			if (!oDialogContact) {
 				// create dialog via fragment factory
-				oDialogContact = sap.ui.xmlfragment(this.getView().getId(), "it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER_M.fragments.CreateContact", this);
+				oDialogContact = sap.ui.xmlfragment(this.getView().getId(), "it.aupsup.metasupplier_M.fragments.CreateContact", this);
 
 			}
 
@@ -596,7 +596,7 @@ sap.ui.define([
 				var documentModel = sap.ui.getCore().getModel("DocumentManagementJSONModel").getData();
 				if (documentModel !== undefined && documentModel.DOC_IN === 'X') {
 					var oObjectPageLayout = that.getView().byId("ObjectPageLayoutId");
-					var sPath = "it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER_M.fragments.Attachments";
+					var sPath = "it.aupsup.metasupplier_M.fragments.Attachments";
 					var oFormFragment = sap.ui.xmlfragment(this.getView().getId(), sPath, this);
 					oObjectPageLayout.addSection(oFormFragment);
 					that.getView().byId("uploadDocBtn").setVisible(true);
@@ -639,7 +639,7 @@ sap.ui.define([
 					var documentModel = sap.ui.getCore().getModel("DocumentManagementJSONModel") !== undefined && sap.ui.getCore().getModel("DocumentManagementJSONModel").getData() !== undefined ? sap.ui.getCore().getModel("DocumentManagementJSONModel").getData() : undefined;
 					if (documentModel !== undefined && documentModel.DOC_IN === 'X') {
 						var oObjectPageLayout = that.getView().byId("ObjectPageLayoutId");
-						var sPath = "it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER_M.fragments.Attachments";
+						var sPath = "it.aupsup.metasupplier_M.fragments.Attachments";
 						var oFormFragment = sap.ui.xmlfragment(that.getView().getId(), sPath, that);
 						oObjectPageLayout.addSection(oFormFragment);
 						that.getView().byId("uploadDocBtn").setVisible(true);

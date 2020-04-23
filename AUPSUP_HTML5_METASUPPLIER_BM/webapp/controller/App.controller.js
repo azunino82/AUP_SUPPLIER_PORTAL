@@ -1,9 +1,9 @@
 sap.ui.define([
-	"it/alteaup/supplier/portal/metasupplier/AUPSUP_HTML5_METASUPPLIER_BM/controller/BaseController",
+	"it/aupsup/metasupplier_BM/controller/BaseController",
 ], function (BaseController) {
 	"use strict";
 	var that
-	return BaseController.extend("it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER_BM.controller.App", {
+	return BaseController.extend("it.aupsup.metasupplier_BM.controller.App", {
 
 		onInit: function () {
 			that = this;

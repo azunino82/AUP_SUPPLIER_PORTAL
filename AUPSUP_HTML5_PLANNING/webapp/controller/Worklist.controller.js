@@ -1,5 +1,5 @@
 sap.ui.define([
-	"it/alteaup/supplier/portal/planning/AUPSUP_HTML5_PLANNING/controller/BaseController",
+	"it/aupsup/planning/controller/BaseController",
 	"sap/ui/model/json/JSONModel",
 	"sap/m/MessageBox",
 	"sap/m/MessageToast",
@@ -17,7 +17,7 @@ sap.ui.define([
 		date.setDate(date.getDate() + days);
 		return date;
 	};
-	return BaseController.extend("it.alteaup.supplier.portal.planning.AUPSUP_HTML5_PLANNING.controller.Worklist", {
+	return BaseController.extend("it.aupsup.planning.controller.Worklist", {
 		onInit: function () {
 			that = this;
 
@@ -41,7 +41,7 @@ sap.ui.define([
 				oModelFilters.setData({
 					"element": ""
 				});
-				this._oResponsivePopover = sap.ui.xmlfragment("it.alteaup.supplier.portal.planning.AUPSUP_HTML5_PLANNING.fragments.FilterSorter", this);
+				this._oResponsivePopover = sap.ui.xmlfragment("it.aupsup.planning.fragments.FilterSorter", this);
 				this._oResponsivePopover.setModel(oModelFilters, "filterPlanningJSONModel");
 			}
 
@@ -253,7 +253,7 @@ sap.ui.define([
 
 		handleMatnr: function () {
 			if (!that.oSearchMatnrDialog) {
-				that.oSearchMatnrDialog = sap.ui.xmlfragment("it.alteaup.supplier.portal.planning.AUPSUP_HTML5_PLANNING.fragments.SearchMatnr", that);
+				that.oSearchMatnrDialog = sap.ui.xmlfragment("it.aupsup.planning.fragments.SearchMatnr", that);
 				that.getView().addDependent(that.oSearchMatnrDialog);
 			}
 			that.oSearchMatnrDialog.open();

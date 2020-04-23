@@ -1,6 +1,6 @@
-jQuery.sap.require("it.alteaup.supplier.portal.nonConformita.AUPSUP_HTML5_NONCONFORMITA.js.formatter");
+jQuery.sap.require("it.aupsup.nonConformita.js.formatter");
 sap.ui.define([
-	"it/alteaup/supplier/portal/nonConformita/AUPSUP_HTML5_NONCONFORMITA/controller/BaseController",
+	"it/aupsup/nonConformita/controller/BaseController",
 	"sap/ui/model/json/JSONModel",
 	"sap/m/MessageBox",
 	"sap/m/MessageToast",
@@ -11,7 +11,7 @@ sap.ui.define([
 	"use strict";
 	var that;
 	var myPDFViewer;
-	return BaseController.extend("it.alteaup.supplier.portal.nonConformita.AUPSUP_HTML5_NONCONFORMITA.controller.Worklist", {
+	return BaseController.extend("it.aupsup.nonConformita.controller.Worklist", {
 		onInit: function () {
 			that = this;
 
@@ -264,7 +264,7 @@ sap.ui.define([
 		handleMatnr: function () {
 
 			if (!that.oSearchMatnrDialog) {
-				that.oSearchMatnrDialog = sap.ui.xmlfragment("it.alteaup.supplier.portal.nonConformita.AUPSUP_HTML5_NONCONFORMITA.fragments.SearchMatnr", that);
+				that.oSearchMatnrDialog = sap.ui.xmlfragment("it.aupsup.nonConformita.fragments.SearchMatnr", that);
 				that.getView().addDependent(that.oSearchMatnrDialog);
 			}
 			that.oSearchMatnrDialog.open();
@@ -412,7 +412,7 @@ sap.ui.define([
 						oModelD.setData(oDataD);
 						that.getView().setModel(oModelD, "DetailJSONModel");
 						if (!that.oDetailsFragment) {
-							that.oDetailsFragment = sap.ui.xmlfragment("it.alteaup.supplier.portal.nonConformita.AUPSUP_HTML5_NONCONFORMITA.fragments.Detail", that)
+							that.oDetailsFragment = sap.ui.xmlfragment("it.aupsup.nonConformita.fragments.Detail", that)
 							that.getView().addDependent(that.oDetailsFragment);
 						}
 

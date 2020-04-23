@@ -1,16 +1,16 @@
 sap.ui.define([
-	"it/alteaup/supplier/portal/purchords/AUPSUP_HTML5_PURCH_ORDS/controller/BaseController",
+	"it/aupsup/purchords/controller/BaseController",
 	"sap/ui/model/json/JSONModel",
 	"sap/m/MessageBox",
 	"sap/ui/model/Filter",
 	"sap/ui/model/Sorter",
-	"it/alteaup/supplier/portal/purchords/AUPSUP_HTML5_PURCH_ORDS/js/Date",
+	"it/aupsup/purchords/js/Date",
 ], function (BaseController, JSONModel, MessageBox, Filter, Sorter,Datef) {
 	"use strict";
 
 	var that = undefined;
 
-	return BaseController.extend("it.alteaup.supplier.portal.purchords.AUPSUP_HTML5_PURCH_ORDS.controller.OrderPositionDetail", {
+	return BaseController.extend("it.aupsup.purchords.controller.OrderPositionDetail", {
 
 		/**
 		 * Called when a controller is instantiated and its View controls (if available) are already created.

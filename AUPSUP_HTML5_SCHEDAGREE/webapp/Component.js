@@ -1,11 +1,11 @@
 	sap.ui.define([
 	"sap/ui/core/UIComponent",
 	"sap/ui/Device",
-	"it/alteaup/supplier/portal/schedulingagreement/AUPSUP_HTML5_SCHEDAGREE/model/models"
+	"it/aupsup/schedulingagreement/model/models"
 ], function (UIComponent, Device, models) {
 	"use strict";
 
-	return UIComponent.extend("it.alteaup.supplier.portal.schedulingagreement.AUPSUP_HTML5_SCHEDAGREE.Component", {
+	return UIComponent.extend("it.aupsup.schedulingagreement.Component", {
 
 		metadata: {
 			manifest: "json"

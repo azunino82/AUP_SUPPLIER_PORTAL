@@ -1,7 +1,7 @@
 {
 	"_version": "1.12.0",
 	"sap.app": {
-		"id": "it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER",
+		"id": "it.aupsup.metasupplier",
 		"type": "application",
 		"i18n": "i18n/i18n.properties",
 		"applicationVersion": {
@@ -58,7 +58,7 @@
 		},		
 		"flexEnabled": false,
 		"rootView": {
-			"viewName": "it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER.view.App",
+			"viewName": "it.aupsup.metasupplier.view.App",
 			"type": "XML",
 			"async": true,
 			"id": "App"
@@ -83,7 +83,7 @@
 			"i18n": {
 				"type": "sap.ui.model.resource.ResourceModel",
 				"settings": {
-					"bundleName": "it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER.i18n.i18n"
+					"bundleName": "it.aupsup.metasupplier.i18n.i18n"
 				}
 			}
 		},
@@ -97,7 +97,7 @@
 				"routerClass": "sap.m.routing.Router",
 				"viewType": "XML",
 				"async": true,
-				"viewPath": "it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER.view",
+				"viewPath": "it.aupsup.metasupplier.view",
 				"controlAggregation": "pages",
 				"controlId": "idAppControl",
 				"clearControlAggregation": false

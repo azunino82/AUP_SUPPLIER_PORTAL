@@ -1,7 +1,7 @@
 /*global QUnit*/
 
 sap.ui.define([
-	"it/alteaup/supplier/portal/metasupplier/AUPSUP_HTML5_METASUPPLIER/controller/View1.controller"
+	"it/aupsup/metasupplier/controller/View1.controller"
 ], function (Controller) {
 	"use strict";
 

@@ -2,13 +2,13 @@ var that;
 var oDialog;
 
 sap.ui.define([
-	"it/alteaup/supplier/portal/metasupplier/AUPSUP_HTML5_METASUPPLIER/controller/BaseController",
+	"it/aupsup/metasupplier/controller/BaseController",
 	"sap/m/MessageBox",
 	"sap/ui/model/json/JSONModel"
 ], function (BaseController, MessageBox, JSONModel) {
 	"use strict";
 
-	return BaseController.extend("it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER.controller.Suppliers", {
+	return BaseController.extend("it.aupsup.metasupplier.controller.Suppliers", {
 		onInit: function () {
 			that = this;
 
@@ -136,7 +136,7 @@ sap.ui.define([
 
 				if (!oDialog) {
 					// create dialog via fragment factory
-					oDialog = sap.ui.xmlfragment(this.getView().getId(), "it.alteaup.supplier.portal.metasupplier.AUPSUP_HTML5_METASUPPLIER.fragments.ChooseDefaultSupplier", this);
+					oDialog = sap.ui.xmlfragment(this.getView().getId(), "it.aupsup.metasupplier.fragments.ChooseDefaultSupplier", this);
 
 				}
 

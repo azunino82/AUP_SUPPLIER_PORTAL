@@ -1,13 +1,13 @@
 sap.ui.define([
-	"it/alteaup/supplier/portal/inboundDelivery/AUPSUP_HTML5_INBOUNDDELIV/controller/BaseController",
+	"it/aupsup/inboundDelivery/controller/BaseController",
 	"sap/ui/model/Filter",
 	"sap/ui/model/FilterOperator",
 	"sap/ui/model/json/JSONModel",
 	"sap/m/MessageBox",
 	"sap/m/MessageToast",
 	"sap/ui/model/Sorter",
-	"it/alteaup/supplier/portal/inboundDelivery/AUPSUP_HTML5_INBOUNDDELIV/js/Date",
-	"it/alteaup/supplier/portal/inboundDelivery/AUPSUP_HTML5_INBOUNDDELIV/js/formatter",
+	"it/aupsup/inboundDelivery/js/Date",
+	"it/aupsup/inboundDelivery/js/formatter",
 	"sap/ui/core/util/Export",
 	"sap/ui/core/util/ExportTypeCSV",
 	"sap/m/PDFViewer"
@@ -25,7 +25,7 @@ sap.ui.define([
 		date.setDate(date.getDate() - days);
 		return date;
 	};
-	return BaseController.extend("it.alteaup.supplier.portal.inboundDelivery.AUPSUP_HTML5_INBOUNDDELIV.controller.Worklist", {
+	return BaseController.extend("it.aupsup.inboundDelivery.controller.Worklist", {
 
 		/**
 		 * Called when a controller is instantiated and its View controls (if available) are already created.
@@ -100,7 +100,7 @@ sap.ui.define([
 						"element": ""
 					});
 
-					this._oResponsivePopover = sap.ui.xmlfragment("it.alteaup.supplier.portal.inboundDelivery.AUPSUP_HTML5_INBOUNDDELIV.fragments.FilterSorter", this);
+					this._oResponsivePopover = sap.ui.xmlfragment("it.aupsup.inboundDelivery.fragments.FilterSorter", this);
 					this._oResponsivePopover.setModel(oModelFilters, "filterInboundDelivJSONModel");
 				}
 				var oTable = this.getView().byId("InboundDelivHeadersTable");
@@ -374,7 +374,7 @@ sap.ui.define([
 		handleSupplier: function () {
 
 			if (!that.oSearchSupplierDialog) {
-				that.oSearchSupplierDialog = sap.ui.xmlfragment("it.alteaup.supplier.portal.inboundDelivery.AUPSUP_HTML5_INBOUNDDELIV.fragments.SearchSupplier", that);
+				that.oSearchSupplierDialog = sap.ui.xmlfragment("it.aupsup.inboundDelivery.fragments.SearchSupplier", that);
 				that.getView().addDependent(that.oSearchSupplierDialog);
 			}
 			that.oSearchSupplierDialog.open();
@@ -504,7 +504,7 @@ sap.ui.define([
 		handleMatnr: function () {
 
 			if (!that.oSearchMatnrDialog) {
-				that.oSearchMatnrDialog = sap.ui.xmlfragment("it.alteaup.supplier.portal.inboundDelivery.AUPSUP_HTML5_INBOUNDDELIV.SearchMatnr", that);
+				that.oSearchMatnrDialog = sap.ui.xmlfragment("it.aupsup.inboundDelivery.SearchMatnr", that);
 				that.getView().addDependent(that.oSearchMatnrDialog);
 			}
 			that.oSearchMatnrDialog.open();
@@ -641,7 +641,7 @@ sap.ui.define([
 				"SelectedPositionsJSONModel");
 
 			if (!that.oConfirmPositionsFragment) {
-				that.oConfirmPositionsFragment = sap.ui.xmlfragment("it.alteaup.supplier.portal.inboundDelivery.AUPSUP_HTML5_INBOUNDDELIV.fragments.ConfirmPositions", this);
+				that.oConfirmPositionsFragment = sap.ui.xmlfragment("it.aupsup.inboundDelivery.fragments.ConfirmPositions", this);
 				that.getView().addDependent(that.oConfirmPositionsFragment);
 			}
 
@@ -988,7 +988,7 @@ sap.ui.define([
 															oModel.setData(oData);
 															that.getView().setModel(oModel, "HUToPrintJSONModel");
 															if (!that.oPrintHUDialog) {
-																that.oPrintHUDialog = sap.ui.xmlfragment("it.alteaup.supplier.portal.inboundDelivery.AUPSUP_HTML5_INBOUNDDELIV.fragments.PrintHU",
+																that.oPrintHUDialog = sap.ui.xmlfragment("it.aupsup.inboundDelivery.fragments.PrintHU",
 																	that);
 																that.getView().addDependent(that.oPrintHUDialog);
 															}

@@ -1,7 +1,7 @@
 /*global QUnit*/
 
 sap.ui.define([
-	"it/alteaup/supplier/portal/schedulingagreement/AUPSUP_HTML5_SCHEDAGREE/controller/App.controller"
+	"it/aupsup/schedulingagreement/controller/App.controller"
 ], function (Controller) {
 	"use strict";
 

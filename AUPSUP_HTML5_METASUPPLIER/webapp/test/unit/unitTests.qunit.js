@@ -5,7 +5,7 @@ sap.ui.getCore().attachInit(function () {
 	"use strict";
 
 	sap.ui.require([
-		"it/alteaup/supplier/portal/metasupplier/AUPSUP_HTML5_METASUPPLIER/test/unit/AllTests"
+		"it/aupsup/metasupplier/test/unit/AllTests"
 	], function () {
 		QUnit.start();
 	});

@@ -1,7 +1,7 @@
 sap.ui.define([
 	"sap/ui/core/UIComponent",
 	"sap/ui/Device",
-	"it/alteaup/supplier/portal/searchHU/AUPSUP_HTML5_SEARCH_HU/model/models"
+	"it/aupsup/searchHU/model/models"
 ], function (UIComponent, Device, models) {
 	"use strict";
 
