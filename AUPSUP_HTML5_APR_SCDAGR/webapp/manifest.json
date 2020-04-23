@@ -22,7 +22,8 @@
 					},
 					"semanticObject": "ApproveSchedAgree",
 					"action": "Display",
-					"title": "{{appTitle}}"
+					"title": "{{appTitle}}",
+					"icon": "sap-icon://validate"
 				}
 			}
 		}
@@ -76,11 +77,9 @@
 			}
 		},
 		"resources": {
-			"css": [
-				{
-					"uri": "css/style.css"
-				}
-			]
+			"css": [{
+				"uri": "css/style.css"
+			}]
 		},
 		"routing": {
 			"config": {
@@ -92,25 +91,22 @@
 				"controlId": "idAppControl",
 				"clearControlAggregation": false
 			},
-			"routes": [
-				{
-					"pattern": "",
-					"name": "worklist",
-					"greedy": false,
-					"target": [
-						"worklist"
-					]
-				},
-				{
-					"name": "detail",
-					"pattern": "detail/{datas}",
-					"titleTarget": "",
-					"greedy": false,
-					"target": [
-						"detail"
-					]
-				}
-			],
+			"routes": [{
+				"pattern": "",
+				"name": "worklist",
+				"greedy": false,
+				"target": [
+					"worklist"
+				]
+			}, {
+				"name": "detail",
+				"pattern": "detail/{datas}",
+				"titleTarget": "",
+				"greedy": false,
+				"target": [
+					"detail"
+				]
+			}],
 			"targets": {
 				"worklist": {
 					"viewLevel": 1,
