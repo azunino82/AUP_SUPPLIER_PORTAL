@@ -67,21 +67,9 @@
 					"appId": "it.aupsup.purchords",
 					"vizId": "PurchaseOrders-Display"
 				}, {
-					"id": "it.aupsup.customizing",
+					"id": "AUPSUP_HTML5_CUSTOMIZING",
 					"appId": "it.aupsup.customizing",
 					"vizId": "Customizing-Display"
-				}, {
-					"id": "com.TEST.TEST-11-1587652922060",
-					"appId": "com.TEST.TEST",
-					"vizId": "Test-Display"
-				}, {
-					"id": "TEST_MODIF.TEST_MODIF",
-					"appId": "TEST_MODIF.TEST_MODIF",
-					"vizId": "TestModif-Display"
-				}, {
-					"id": "TEST_LONG",
-					"appId": "it.alteaup.supplier.portal.testlonglonglonglong.TEST_LONG",
-					"vizId": "TestModifLong-Display"
 				}]
 			}
 		}],
