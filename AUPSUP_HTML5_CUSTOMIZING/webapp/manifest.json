@@ -87,16 +87,14 @@
 				"controlId": "idAppControl",
 				"clearControlAggregation": false
 			},
-			"routes": [
-				{
-					"pattern": "",
-					"name": "worklist",
-					"greedy": false,
-					"target": [
-						"worklist"
-					]
-				}
-			],
+			"routes": [{
+				"pattern": "",
+				"name": "worklist",
+				"greedy": false,
+				"target": [
+					"worklist"
+				]
+			}],
 			"targets": {
 				"worklist": {
 					"viewLevel": 1,
@@ -104,5 +102,8 @@
 				}
 			}
 		}
+	},
+	"sap.platform.cf": {
+		"oAuthScope": ["$XSAPPNAME.Z_RL_ADMINISTRATOR"]
 	}
 }
