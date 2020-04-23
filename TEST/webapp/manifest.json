@@ -1,7 +1,7 @@
 {
 	"_version": "1.12.0",
 	"sap.app": {
-		"id": "it.alteaup.supplier.portal.customizing.AUPSUP_HTML5_CUSTOMIZING",
+		"id": "com.TEST.TEST",
 		"type": "application",
 		"i18n": "i18n/i18n.properties",
 		"applicationVersion": {
@@ -20,14 +20,14 @@
 						"parameters": {},
 						"additionalParameters": "allowed"
 					},
-					"semanticObject": "Customizing",
+					"semanticObject": "Test",
 					"action": "Display",
-					"title": "{{appTitle}}",
-					"icon": "sap-icon://SAP-icons-TNT/application-service"
+					"title": "{{appTitle}}"
 				}
 			}
 		}
 	},
+
 	"sap.ui": {
 		"technology": "UI5",
 		"icons": {
@@ -44,13 +44,14 @@
 			"phone": true
 		}
 	},
+
 	"sap.ui5": {
 		"flexEnabled": false,
 		"rootView": {
-			"viewName": "it.alteaup.supplier.portal.customizing.AUPSUP_HTML5_CUSTOMIZING.view.App",
+			"viewName": "com.TEST.TEST.view.View1",
 			"type": "XML",
 			"async": true,
-			"id": "App"
+			"id": "View1"
 		},
 		"dependencies": {
 			"minUI5Version": "1.65.6",
@@ -68,7 +69,7 @@
 			"i18n": {
 				"type": "sap.ui.model.resource.ResourceModel",
 				"settings": {
-					"bundleName": "it.alteaup.supplier.portal.customizing.AUPSUP_HTML5_CUSTOMIZING.i18n.i18n"
+					"bundleName": "com.TEST.TEST.i18n.i18n"
 				}
 			}
 		},
@@ -82,28 +83,25 @@
 				"routerClass": "sap.m.routing.Router",
 				"viewType": "XML",
 				"async": true,
-				"viewPath": "it.alteaup.supplier.portal.customizing.AUPSUP_HTML5_CUSTOMIZING.view",
+				"viewPath": "com.TEST.TEST.view",
 				"controlAggregation": "pages",
-				"controlId": "idAppControl",
+				"controlId": "app",
 				"clearControlAggregation": false
 			},
 			"routes": [{
-				"pattern": "",
-				"name": "worklist",
-				"greedy": false,
-				"target": [
-					"worklist"
-				]
+				"name": "RouteView1",
+				"pattern": "RouteView1",
+				"target": ["TargetView1"]
 			}],
 			"targets": {
-				"worklist": {
-					"viewLevel": 1,
-					"viewName": "Worklist"
+				"TargetView1": {
+					"viewType": "XML",
+					"transition": "slide",
+					"clearControlAggregation": false,
+					"viewId": "View1",
+					"viewName": "View1"
 				}
 			}
 		}
-	},
-	"sap.platform.cf": {
-		"oAuthScopes": ["$XSAPPNAME.Z_RL_ADMINISTRATOR"]
 	}
 }

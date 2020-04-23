@@ -70,6 +70,18 @@
 					"id": "it.alteaup.supplier.portal.customizing.AUPSUP_HTML5_CUSTOMIZING",
 					"appId": "it.alteaup.supplier.portal.customizing.AUPSUP_HTML5_CUSTOMIZING",
 					"vizId": "Customizing-Display"
+				}, {
+					"id": "com.TEST.TEST-11-1587652922060",
+					"appId": "com.TEST.TEST",
+					"vizId": "Test-Display"
+				}, {
+					"id": "TEST_MODIF.TEST_MODIF",
+					"appId": "TEST_MODIF.TEST_MODIF",
+					"vizId": "TestModif-Display"
+				}, {
+					"id": "TEST_LONG",
+					"appId": "it.alteaup.supplier.portal.testlonglonglonglong.TEST_LONG",
+					"vizId": "TestModifLong-Display"
 				}]
 			}
 		}],

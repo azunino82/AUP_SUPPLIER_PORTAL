@@ -73,6 +73,18 @@ modules:
           artifacts:
             - './*'
           target-path: resources/AUPSUP_HTML5_CUSTOMIZING
+        - name: TEST
+          artifacts:
+            - './*'
+          target-path: resources/TEST
+        - name: TEST_MODIF
+          artifacts:
+            - './*'
+          target-path: resources/TEST_MODIF
+        - name: TEST_LONG
+          artifacts:
+            - './*'
+          target-path: resources/TEST_LONG
   - name: AUPSUP_LAUNCHPAD
     type: com.sap.portal.content
     path: AUPSUP_LAUNCHPAD
@@ -191,6 +203,27 @@ modules:
   - name: AUPSUP_HTML5_CUSTOMIZING
     type: html5
     path: AUPSUP_HTML5_CUSTOMIZING
+    build-parameters:
+      builder: grunt
+      supported-platforms: []
+      build-result: dist
+  - name: TEST
+    type: html5
+    path: TEST
+    build-parameters:
+      builder: grunt
+      supported-platforms: []
+      build-result: dist
+  - name: TEST_MODIF
+    type: html5
+    path: TEST_MODIF
+    build-parameters:
+      builder: grunt
+      supported-platforms: []
+      build-result: dist
+  - name: TEST_LONG
+    type: html5
+    path: TEST_LONG
     build-parameters:
       builder: grunt
       supported-platforms: []

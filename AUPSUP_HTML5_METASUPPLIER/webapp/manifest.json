@@ -170,5 +170,8 @@
 				}
 			}
 		}
+	},
+	"sap.platform.cf": {
+		"oAuthScopes": ["$XSAPPNAME.Z_RL_ADMINISTRATOR","$XSAPPNAME.Z_RL_BUYER"]
 	}
 }
