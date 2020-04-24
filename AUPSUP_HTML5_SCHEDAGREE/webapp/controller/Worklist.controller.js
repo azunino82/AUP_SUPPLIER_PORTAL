@@ -259,7 +259,7 @@ sap.ui.define([
 							//oData.results[i].OriginalPrice = prezzoOriginale;
 							oData.results[i].RapportoPrezzoUnita = NETPR / PEINH;
 							oData.results[i].OriginalPrice = NETPR;
-							oData.results[i].OriginalPriceUnit = PEINH;							
+							oData.results[i].OriginalPriceUnit = PEINH;
 						}
 					}
 					var oModel = new JSONModel();
@@ -1480,7 +1480,7 @@ sap.ui.define([
 								singleEkpoModel.ZFINVALIDATA = row.ZFINVALIDATA;
 
 
-								
+
 								//Verifico che il campo testo sia valorizzato
 								var nuovoPrezzoPosizione = row.NETPR
 								var nuovaUnitaPrezzo = row.PEINH;
@@ -1844,12 +1844,12 @@ sap.ui.define([
 				mod.POItemSchedulers.results.forEach(conferma => {
 					var trovato = false
 					arrConfermeAggregate.forEach(element => {
-						if(element.ETENR === conferma.ETENR){
-							trovato=true
-							element.MENGE = parseFloat(conferma.MENGE) + parseFloat(element.MENGE) 
+						if (element.ETENR === conferma.ETENR) {
+							trovato = true
+							element.MENGE = parseFloat(conferma.MENGE) + parseFloat(element.MENGE)
 						}
 					});
-					if(!trovato){
+					if (!trovato) {
 						var elem = JSON.parse(JSON.stringify(conferma))
 						arrConfermeAggregate.push(elem)
 					}
@@ -2132,17 +2132,17 @@ sap.ui.define([
 			var footer = new sap.m.Bar({
 				contentLeft: [],
 				contentMiddle: [new sap.m.Button({
-					text: "Cancel",
-					press: function () {
-						that.onCancelPersonalization();
-					}
-				}),
-				new sap.m.Button({
 					text: that.getResourceBundle().getText("Comfirm"),
 					press: function () {
 						that.onSavePersonalization();
 					}
+				}), new sap.m.Button({
+					text: "Cancel",
+					press: function () {
+						that.onCancelPersonalization();
+					}
 				})
+
 				]
 
 			});
