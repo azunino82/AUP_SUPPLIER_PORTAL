@@ -197,16 +197,18 @@ sap.ui.define([
 		},
 
 		importFormatter: function (sValue) {
-			if (sValue.toString().includes('.000'))
-				return sValue.toString().replace('.000', '')
-			else
-				if (sValue.toString().includes('.00'))
-					return sValue.toString().replace('.00', '')
+			if (sValue !== null && sValue !== undefined) {
+				if (sValue.toString().includes('.000'))
+					return sValue.toString().replace('.000', '')
 				else
-					return sValue.toString().replace('.', ',')
+					if (sValue.toString().includes('.00'))
+						return sValue.toString().replace('.00', '')
+					else
+						return sValue.toString().replace('.', ',')
+			}
 		},
 
-		
+
 		removeZeroBefore: function (sValue) {
 			if (sValue !== undefined) {
 				var n = 0

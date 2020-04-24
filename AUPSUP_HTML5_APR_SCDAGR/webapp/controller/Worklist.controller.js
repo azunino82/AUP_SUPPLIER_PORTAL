@@ -1197,17 +1197,17 @@ sap.ui.define([
 			var footer = new sap.m.Bar({
 				contentLeft: [],
 				contentMiddle: [new sap.m.Button({
-					text: "Cancel",
-					press: function () {
-						that.onCancelPersonalization();
-					}
-				}),
-				new sap.m.Button({
 					text: that.getResourceBundle().getText("Comfirm"),
 					press: function () {
 						that.onSavePersonalization();
 					}
+				}), new sap.m.Button({
+					text: "Cancel",
+					press: function () {
+						that.onCancelPersonalization();
+					}
 				})
+
 				]
 
 			});
