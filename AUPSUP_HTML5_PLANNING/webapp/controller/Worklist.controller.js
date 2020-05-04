@@ -445,28 +445,11 @@ sap.ui.define([
 		onPressOrder: function (oEvent) {
 			var order = oEvent.getSource().getText();
 			order = order.split(" ");
+			var pos = order[1];			
 			order = order[0];
-			// get a handle on the global XAppNav service
-			var oCrossAppNavigator = sap.ushell.Container.getService("CrossApplicationNavigation");
-			oCrossAppNavigator.isIntentSupported(["PurchaseOrders-Display"])
-				.done(function (aResponses) {
 
-				})
-				.fail(function () {
-					new sap.m.MessageToast("Provide corresponding intent to navigate");
-				});
-			// generate the Hash to display a employee Id
-			var hash = (oCrossAppNavigator && oCrossAppNavigator.hrefForExternal({
-				target: {
-					semanticObject: "PurchaseOrders",
-					action: "Display"
-				},
-				params: {
-					"objectId": order
-				}
-			})) || "";
 			//Generate a  URL for the second application
-			var url = window.location.href.split('#')[0] + hash;
+			var url = "/cp.portal/site?#PurchaseOrders-Display?objectId={\"orderId\":\""+order+"\",\"posNumber\":\""+pos+"\"}";
 			//Navigate to second app
 			sap.m.URLHelper.redirect(url, true);
 		},
