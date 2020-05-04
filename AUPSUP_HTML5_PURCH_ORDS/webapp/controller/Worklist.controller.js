@@ -69,10 +69,10 @@ sap.ui.define([
 
 					}),
 				]).then(function (values) {
-					that.getRouter().navTo("object", {
-						datas: JSON.stringify(startupParams.objectId[0])
-					}, true);
-
+					var oRouter = sap.ui.core.UIComponent.getRouterFor(that);
+					oRouter.navTo("detail", {
+						datas: startupParams.objectId[0]
+					});
 				});
 
 			} else {
