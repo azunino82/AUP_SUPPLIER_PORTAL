@@ -249,8 +249,20 @@ sap.ui.define([
 				return sValue.substring(n, sValue.length);
 			}
 			return sValue
-		}
+		},
 
+		
+		importFormatter: function (sValue) {
+			if (sValue !== null && sValue !== undefined) {
+				if (sValue.toString().includes('.000'))
+					return sValue.toString().replace('.000', '')
+				else
+					if (sValue.toString().includes('.00'))
+						return sValue.toString().replace('.00', '')
+					else
+						return sValue.toString().replace('.', ',')
+			}
+		}
 
 	});
 });

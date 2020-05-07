@@ -6,8 +6,10 @@ sap.ui.define([
 	"sap/m/MessageToast",
 	"sap/ui/core/util/Export",
 	"sap/ui/core/util/ExportTypeCSV",
-	"sap/ui/model/Sorter"
-], function (BaseController, JSONModel, MessageBox, MessageToast, Export, ExportTypeCSV, Sorter) {
+	"sap/ui/model/Sorter",
+	"sap/ui/model/Filter",
+	"sap/ui/model/FilterOperator",
+], function (BaseController, JSONModel, MessageBox, MessageToast, Export, ExportTypeCSV, Sorter, Filter, FilterOperator) {
 	"use strict";
 
 	return BaseController.extend("it.aupsup.metasupplier.controller.Metasuppliers", {
@@ -38,6 +40,79 @@ sap.ui.define([
 			that.getPurchaseOrganizations();
 
 			this.getView().setModel(sap.ui.getCore().getModel("userapi"), "userapi");
+
+			if (!this._oResponsivePopover) {
+
+				var oModelFilters = new JSONModel();
+				oModelFilters.setData({
+					"element": ""
+				});
+				// this.getView().setModel(oModelFilters, "filterElementJSONModel");
+
+				this._oResponsivePopover = sap.ui.xmlfragment("it.aupsup.metasupplier.fragments.FilterSorter", this);
+				this._oResponsivePopover.setModel(oModelFilters, "filterElementJSONModel");
+			}
+			var oTable = this.getView().byId("idMetasuppliersTable");
+			oTable.addEventDelegate({
+				onAfterRendering: function () {
+					var oHeader = this.$().find('.sapMListTblHeaderCell'); //Get hold of table header elements
+					for (var i = 0; i < oHeader.length; i++) {
+						var oID = oHeader[i].id;
+						if (oID !== '__column0') // prima colonna con checkbox
+							that.onClick(oID, i + 1);
+					}
+				}
+			}, oTable);
+		},
+		onClick: function (oID) {
+			$('#' + oID).click(function (oEvent) { //Attach Table Header Element Event
+				var oTarget = oEvent.currentTarget; //Get hold of Header Element
+				var oView = that.getView();
+				var res = oTarget.id.split("--");
+				res = res[2];
+
+				oView.getModel("tableModelMetasuppliers").setProperty("/bindingValue", res); //Save the key value to property
+				that._oResponsivePopover.openBy(oTarget);
+			});
+		},
+
+		onChange: function (oEvent) {
+			var oValue = oEvent.getParameter("value");
+			var oMultipleValues = oValue.split(",");
+			var oTable = this.getView().byId("idMetasuppliersTable");
+			var oBindingPath = this.getView().getModel("tableModelMetasuppliers").getProperty("/bindingValue"); //Get Hold of Model Key value that was saved
+			var aFilters = [];
+			for (var i = 0; i < oMultipleValues.length; i++) {
+				var oFilter = new Filter(oBindingPath, "Contains", oMultipleValues[i]);
+				aFilters.push(oFilter);
+			}
+			var oItems = oTable.getBinding("items");
+			oItems.filter(aFilters, "Application");
+
+			this._oResponsivePopover.setModel(new JSONModel({
+				"element": ""
+			}), "filterElementJSONModel");
+			this.getView().byId("headerFilterButton").setVisible(true);
+
+			this._oResponsivePopover.close();
+		},
+
+		onAscending: function () {
+			var oTable = this.getView().byId("idMetasuppliersTable");
+			var oItems = oTable.getBinding("items");
+			var oBindingPath = this.getView().getModel("tableModelMetasuppliers").getProperty("/bindingValue");
+			var oSorter = new Sorter(oBindingPath);
+			oItems.sort(oSorter);
+			this._oResponsivePopover.close();
+		},
+
+		onDescending: function () {
+			var oTable = this.getView().byId("idMetasuppliersTable");
+			var oItems = oTable.getBinding("items");
+			var oBindingPath = this.getView().getModel("tableModelMetasuppliers").getProperty("/bindingValue");
+			var oSorter = new Sorter(oBindingPath, true);
+			oItems.sort(oSorter);
+			this._oResponsivePopover.close();
 		},
 
 		handleRoutePatternMatched: function (oEvent) {
@@ -333,6 +408,16 @@ sap.ui.define([
 			that.getOwnerComponent().getRouter().navTo("RouteMetasupplierContacts", {
 				metaid: data.METAID
 			});
+		},
+
+
+		onClearFilter: function () {
+			var oTable = this.getView().byId("idMetasuppliersTable");
+			var aFilters = [];
+			var oItems = oTable.getBinding("items");
+			oItems.filter(aFilters, "Application");
+
+			this.getView().byId("headerFilterButton").setVisible(false);
 		},
 
 		onClearFilters: function () {
@@ -702,7 +787,7 @@ sap.ui.define([
 				sap.ui.getCore().byId("EKORG").getSelectedKeys();
 			var url = "/backend/Utils/UtilsManagement/GetVendorList?I_NAME1=" + sap.ui
 				.getCore().byId("NAME1").getValue() + "&ISTCE=" + sap.ui.getCore().byId("STCEG").getValue();
-		
+
 			var body = {
 				"ekorg": []
 			};
@@ -742,7 +827,7 @@ sap.ui.define([
 					jsonModelLf.setData(oData);
 					that.getView().setModel(jsonModelLf, "tableModelSuppliers");
 				}
-			});						
+			});
 
 
 		},

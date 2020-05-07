@@ -1,0 +1,16 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:l="sap.ui.layout">
+	<ResponsivePopover title="Filter options" placement="Bottom" afterOpen="onOpen">
+		<content>
+			<l:HorizontalLayout>
+				<l:VerticalLayout class="sapUiContentPadding">
+					<Label text="Filter:"/>
+					<Input width="90%" change="onChange" value="{filterElementJSONModel>/element}"/>
+				</l:VerticalLayout>
+				<l:VerticalLayout class="sapUiContentPadding">
+					<Button icon="sap-icon://sort-ascending" press="onAscending" type="Transparent"/>
+					<Button icon="sap-icon://sort-descending" press="onDescending" type="Transparent"/>
+				</l:VerticalLayout>
+			</l:HorizontalLayout>
+		</content>
+	</ResponsivePopover>
+</core:FragmentDefinition>

@@ -49,6 +49,7 @@
 								<Toolbar>
 									<Title text="" level="H2"/>
 									<ToolbarSpacer/>
+									<Button visible="false" id="headerFilterButton" tooltip="{i18n>clearFilter}" icon="sap-icon://clear-filter" press="onClearFilter" type="Transparent"/>									
 									<Button icon="sap-icon://add" press="handleCreateSupplierPressed" id="createButton" text="{i18n>createSupplier}"/>
 									<Button icon="sap-icon://excel-attachment" press="onExport" tooltip="{i18n>Export_Excel}"/>
 									<!--<Button tooltip="View Sort Settings" icon="sap-icon://sort" press="handleSortButtonPressed" text="{i18n>sort}"/>-->
@@ -58,28 +59,28 @@
 								<!--<Column demandPopin="true" width="12em">-->
 								<!--	<Text text="{i18n>LIFNR}"/>-->
 								<!--</Column>-->
-								<Column demandPopin="true">
+								<Column demandPopin="true" id="RAG_SOCIALE">
 									<Text text="{i18n>ragSocialeMetafornitore}"/>
 								</Column>
-								<Column minScreenWidth="Desktop" demandPopin="true">
+								<Column minScreenWidth="Desktop" demandPopin="true" id="INDIRIZZO">
 									<Text text="{i18n>indirizzo}"/>
 								</Column>
-								<Column minScreenWidth="Desktop" demandPopin="true">
+								<Column minScreenWidth="Desktop" demandPopin="true" id="N_CIVICO">
 									<Text text="{i18n>nCivico}"/>
 								</Column>
-								<Column minScreenWidth="Desktop" demandPopin="true">
+								<Column minScreenWidth="Desktop" demandPopin="true" id="PAESE">
 									<Text text="{i18n>paeseMetafornitore}"/>
 								</Column>
-								<Column minScreenWidth="Desktop" demandPopin="true">
+								<Column minScreenWidth="Desktop" demandPopin="true" id="LINGUA">
 									<Text text="{i18n>lingua}"/>
 								</Column>
-								<Column minScreenWidth="Desktop" demandPopin="true">
+								<Column minScreenWidth="Desktop" demandPopin="true" id="PIVA">
 									<Text text="{i18n>pivaMetafornitore}"/>
 								</Column>
-								<Column minScreenWidth="Desktop" demandPopin="true">
+								<Column minScreenWidth="Desktop" demandPopin="true" id="STATO_FORNITORE">
 									<Text text="{i18n>statoMetafornitore}"/>
 								</Column>
-								<Column minScreenWidth="Desktop" demandPopin="true">
+								<Column minScreenWidth="Desktop" demandPopin="true" id="BU">
 									<Text text="{i18n>BU}"/>
 								</Column>							
 								<Column minScreenWidth="Desktop" demandPopin="true" hAlign="End"></Column>
