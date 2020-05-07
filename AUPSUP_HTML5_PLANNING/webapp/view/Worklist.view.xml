@@ -123,7 +123,7 @@
 												<ui:Column id="ZQUANTITA" width="6rem">
 													<m:Label text="{i18n>ZQUANTITA}" class="columnLabelStyle" wrapping="true"/>
 													<ui:template>
-														<m:Text text="{PlanningJSONModel>ZQUANTITA}" wrapping="true"/>
+														<m:Text text="{path : 'PlanningJSONModel>ZQUANTITA', formatter : '.importFormatter'}" wrapping="true"/>
 													</ui:template>
 												</ui:Column>
 												<ui:Column id="EBELN" width="10rem">
@@ -173,62 +173,62 @@
 												<ui:Column id="PREGRESSO" width="6rem">
 													<m:Label text="{i18n>it_pregresso}" class="columnLabelStyle" wrapping="true"/>
 													<ui:template>
-														<m:Text text="{PlanningJSONModel>PREGRESSO}" wrapping="true"/>
+														<m:Text text="{path : 'PlanningJSONModel>PREGRESSO', formatter : '.importFormatter'}" wrapping="true"/>
 													</ui:template>
 												</ui:Column>
 												<!--SCROLLED -->
 												<ui:Column id="SOMMA_WK1" width="12rem">
 													<m:Label text="{headersDateJSONModel>/wk1}" class="columnLabelStyle" wrapping="false"/>
 													<ui:template>
-														<m:Text text="{PlanningJSONModel>SOMMA_WK1}" wrapping="false"/>
+														<m:Text text="{path : 'PlanningJSONModel>SOMMA_WK1', formatter : '.importFormatter'}" wrapping="false"/>
 													</ui:template>
 												</ui:Column>
 												<ui:Column id="SOMMA_WK2" width="12rem">
 													<m:Label text="{headersDateJSONModel>/wk2}" class="columnLabelStyle" wrapping="false"/>
 													<ui:template>
-														<m:Text text="{PlanningJSONModel>SOMMA_WK2}" wrapping="true"/>
+														<m:Text text="{path : 'PlanningJSONModel>SOMMA_WK2', formatter : '.importFormatter'}" wrapping="false"/>
 													</ui:template>
 												</ui:Column>
 												<ui:Column id="SOMMA_WK3" width="12rem">
 													<m:Label text="{headersDateJSONModel>/wk3}" class="columnLabelStyle" wrapping="false"/>
 													<ui:template>
-														<m:Text text="{PlanningJSONModel>SOMMA_WK3}" wrapping="true"/>
+														<m:Text text="{path : 'PlanningJSONModel>SOMMA_WK3', formatter : '.importFormatter'}" wrapping="false"/>
 													</ui:template>
 												</ui:Column>
 												<ui:Column id="SOMMA_WK4" width="12rem">
 													<m:Label text="{headersDateJSONModel>/wk4}" class="columnLabelStyle" wrapping="false"/>
 													<ui:template>
-														<m:Text text="{PlanningJSONModel>SOMMA_WK4}" wrapping="true"/>
+														<m:Text text="{path : 'PlanningJSONModel>SOMMA_WK4', formatter : '.importFormatter'}" wrapping="false"/>
 													</ui:template>
 												</ui:Column>
 												<ui:Column id="SOMMA_MN1" width="12rem">
 													<m:Label text="{headersDateJSONModel>/mn1}" class="columnLabelStyle" wrapping="false"/>
 													<ui:template>
-														<m:Text text="{PlanningJSONModel>SOMMA_MN1}" wrapping="true"/>
+														<m:Text text="{path : 'PlanningJSONModel>SOMMA_MN1', formatter : '.importFormatter'}" wrapping="false"/>
 													</ui:template>
 												</ui:Column>
 												<ui:Column id="SOMMA_MN2" width="12rem">
 													<m:Label text="{headersDateJSONModel>/mn2}" class="columnLabelStyle" wrapping="false"/>
 													<ui:template>
-														<m:Text text="{PlanningJSONModel>SOMMA_MN2}" wrapping="true"/>
+														<m:Text text="{path : 'PlanningJSONModel>SOMMA_MN2', formatter : '.importFormatter'}" wrapping="false"/>
 													</ui:template>
 												</ui:Column>
 												<ui:Column id="SOMMA_MN3" width="12rem">
 													<m:Label text="{headersDateJSONModel>/mn3}" class="columnLabelStyle" wrapping="false"/>
 													<ui:template>
-														<m:Text text="{PlanningJSONModel>SOMMA_MN3}" wrapping="true"/>
+														<m:Text text="{path : 'PlanningJSONModel>SOMMA_MN3', formatter : '.importFormatter'}" wrapping="false"/>
 													</ui:template>
 												</ui:Column>
 												<ui:Column id="SOMMA_MN4" width="12rem">
 													<m:Label text="{headersDateJSONModel>/mn4}" class="columnLabelStyle" wrapping="false"/>
 													<ui:template>
-														<m:Text text="{PlanningJSONModel>SOMMA_MN4}" wrapping="true"/>
+														<m:Text text="{path : 'PlanningJSONModel>SOMMA_MN4', formatter : '.importFormatter'}" wrapping="false"/>
 													</ui:template>
 												</ui:Column>
 												<ui:Column id="SOMMA_MN5" width="12rem">
 													<m:Label text="{headersDateJSONModel>/mn5}" class="columnLabelStyle" wrapping="false"/>
 													<ui:template>
-														<m:Text text="{PlanningJSONModel>SOMMA_MN5}" wrapping="true"/>
+														<m:Text text="{path : 'PlanningJSONModel>SOMMA_MN5', formatter : '.importFormatter'}" wrapping="false"/>
 													</ui:template>
 												</ui:Column>
 											</ui:columns>

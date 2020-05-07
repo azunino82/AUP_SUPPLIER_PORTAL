@@ -92,7 +92,7 @@ sap.ui.define([
 				this._oResponsivePopover.setModel(oModelFilters, "filterJSONModel");
 			}
 
-			/*var oTable = this.getView().byId("OrderHeadersTable");
+			var oTable = this.getView().byId("OrderHeadersTable");
 			oTable.addEventDelegate({
 				onAfterRendering: function () {
 					var oHeader = this.$().find('.sapMListTblHeaderCell'); //Get hold of table header elements
@@ -101,7 +101,7 @@ sap.ui.define([
 						that.onClick(oID);
 					}
 				}
-			}, oTable);*/
+			}, oTable);
 
 			this.getView().setModel(sap.ui.getCore().getModel("VisibilityJSONModel"), "VisibilityJSONModel");
 
@@ -121,7 +121,7 @@ sap.ui.define([
 			});
 		},
 
-		/*onClick: function (oID) {
+		onClick: function (oID) {
 			$('#' + oID).click(function (oEvent) { //Attach Table Header Element Event
 				var oTarget = oEvent.currentTarget; //Get hold of Header Element
 				var oView = that.getView();
@@ -134,7 +134,7 @@ sap.ui.define([
 				oView.getModel("SchedAgreeJSONModel").setProperty("/bindingValue", res); //Save the key value to property
 				that._oResponsivePopover.openBy(oTarget);
 			});
-		},*/
+		},
 
 		onChange: function (oEvent) {
 			var oValue = oEvent.getParameter("value");

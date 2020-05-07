@@ -149,7 +149,7 @@ sap.ui.define([
 			});
 		},
 
-		/* onChange: function (oEvent) {
+		 onChange: function (oEvent) {
 			var oValue = oEvent.getParameter("value");
 			var oMultipleValues = oValue.split(",");
 			var oTable = this.getView().byId("OrderHeadersTable");
@@ -168,7 +168,7 @@ sap.ui.define([
 			this.getView().byId("headerFilterButton").setVisible(true);
 
 			this._oResponsivePopover.close();
-		}, */
+		}, 
 
 		onAscending: function () {
 			var oTable = this.getView().byId("OrderHeadersTable");
@@ -1972,7 +1972,7 @@ sap.ui.define([
 			}
 		},
 
-		onChange: function (oEvent) {
+		/* onChange: function (oEvent) {
 			var oPath = oEvent.getSource().getParent().getParent().getBindingContext("SelectedPositionsJSONModel").sPath;
 			var mod = that.getModel("SelectedPositionsJSONModel").getProperty(oPath);
 			mod.POItemSchedulers.results.forEach(function (modSelect) {
@@ -1982,7 +1982,7 @@ sap.ui.define([
 					that.getSchedulationsStatus(mod, modSelect.EBTYP);
 				}
 			});
-		},
+		}, */
 
 		getSchedulationsStatus: function (mod, ebtyp) {
 			/*var new_ekes = [];
