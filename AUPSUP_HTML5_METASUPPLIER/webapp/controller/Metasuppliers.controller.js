@@ -105,7 +105,7 @@ sap.ui.define([
 				that.getOwnerComponent().setModel(jsonModel, "titleJSONModel");
 			}
 
-			var url = "/backend/MetasupplierManagement/GetMetasupplier?I_ATTIVO=1";
+			var url = "/backend/MetasupplierManagement/GetMetasupplier";
 			this.showBusyDialog();
 			that.ajaxGet(url, function (oDataRes) {
 				that.hideBusyDialog();

@@ -443,13 +443,22 @@ sap.ui.define([
 		},
 
 		onPressOrder: function (oEvent) {
-			var order = oEvent.getSource().getText();
-			order = order.split(" ");
-			var pos = order[1];			
-			order = order[0];
+			var oPath = oEvent.getSource().getParent().getBindingContext("PlanningJSONModel").sPath;
+			var mod = that.getModel("PlanningJSONModel").getProperty(oPath)
+
+			var order = mod.EBELN;
+			var pos = mod.EBELP;		
+			var BSTYP = mod.BSTYP;
 
 			//Generate a  URL for the second application
-			var url = "/cp.portal/site?#PurchaseOrders-Display?objectId={\"orderId\":\""+order+"\",\"posNumber\":\""+pos+"\"}";
+			
+			var url = '';
+			if(BSTYP === 'F')
+			url = "/cp.portal/site?#PurchaseOrders-Display?objectId={\"orderId\":\""+order+"\",\"posNumber\":\""+pos+"\"}";
+
+			if(BSTYP === 'L')
+			url = "/cp.portal/site?#SchedulingAgreement-Display?objectId={\"orderId\":\""+order+"\",\"posNumber\":\""+pos+"\"}";
+
 			//Navigate to second app
 			sap.m.URLHelper.redirect(url, true);
 		},

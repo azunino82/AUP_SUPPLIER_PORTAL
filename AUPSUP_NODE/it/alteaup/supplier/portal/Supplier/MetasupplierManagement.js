@@ -27,14 +27,14 @@ module.exports = function () {
         var metaID = req.query.I_METAID
         var sql = ''
 
-        if (metasupplierStatus === undefined && metaID === undefined) {
-            return res.status(500).send('I_METAID or I_ATTIVO mandatory')
-        }
-
         if (metaID !== undefined) {
             sql = "SELECT * FROM \"AUPSUP_DATABASE.data.tables::T_METASUPPLIER_DATA\" WHERE METAID = \'" + metaID + "\'"
         } else {
-            sql = 'SELECT * FROM "AUPSUP_DATABASE.data.tables::T_METASUPPLIER_DATA" WHERE ATTIVO = ' + parseInt(metasupplierStatus)
+            if (metasupplierStatus !== undefined) {
+             sql = 'SELECT * FROM "AUPSUP_DATABASE.data.tables::T_METASUPPLIER_DATA" WHERE ATTIVO = ' + parseInt(metasupplierStatus)
+            } else {
+                sql = 'SELECT * FROM "AUPSUP_DATABASE.data.tables::T_METASUPPLIER_DATA"'
+            }
         }
 
         hdbext.createConnection(req.tenantContainer, function (error, client) {
