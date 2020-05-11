@@ -131,8 +131,10 @@ sap.ui.define([
 				//	var oTable = oView.byId("OrderHeadersTable");
 				//	var oModel = oTable.getModel().getProperty("/results"); //Get Hold of Table Model Values
 				//	var oKeys = Object.keys(oModel[0]); //Get Hold of Model Keys to filter the value
-				oView.getModel("SchedAgreeJSONModel").setProperty("/bindingValue", res); //Save the key value to property
-				that._oResponsivePopover.openBy(oTarget);
+				if (res !== undefined) {
+					oView.getModel("SchedAgreeJSONModel").setProperty("/bindingValue", res); //Save the key value to property
+					that._oResponsivePopover.openBy(oTarget);
+				}
 			});
 		},
 

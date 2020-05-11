@@ -267,6 +267,8 @@ sap.ui.define([
 			var oModelMT = new JSONModel();
 			oModelMT.setData(body);
 			this.getView().setModel(oModelMT, "MatnrSearchJSONModel");
+			this.getView().getModel("MatnrJSONModel").setData(null);
+			
 		},
 
 		onCloseSearchMatnr: function () {

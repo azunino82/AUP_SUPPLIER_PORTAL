@@ -143,13 +143,14 @@ sap.ui.define([
 				var oView = that.getView();
 				var res = oTarget.id.split("--");
 				res = res[1];
-
-				oView.getModel("OrderJSONModel").setProperty("/bindingValue", res); //Save the key value to property
-				that._oResponsivePopover.openBy(oTarget);
+				if (res !== undefined) {
+					oView.getModel("OrderJSONModel").setProperty("/bindingValue", res); //Save the key value to property
+					that._oResponsivePopover.openBy(oTarget);
+				}
 			});
 		},
 
-		 onChange: function (oEvent) {
+		onChange: function (oEvent) {
 			var oValue = oEvent.getParameter("value");
 			var oMultipleValues = oValue.split(",");
 			var oTable = this.getView().byId("OrderHeadersTable");
@@ -168,7 +169,7 @@ sap.ui.define([
 			this.getView().byId("headerFilterButton").setVisible(true);
 
 			this._oResponsivePopover.close();
-		}, 
+		},
 
 		onAscending: function () {
 			var oTable = this.getView().byId("OrderHeadersTable");
@@ -1484,7 +1485,7 @@ sap.ui.define([
 								//Verifico che il campo testo sia valorizzato
 								var nuovoPrezzoPosizione = row.NETPR
 								var nuovaUnitaPrezzo = row.PEINH;
-								if (nuovoPrezzoPosizione !== row.OriginalPrice || nuovaUnitaPrezzo !== row.OriginalPriceUnit)
+								if (parseFloat(nuovoPrezzoPosizione) !== parseFloat(row.OriginalPrice) || parseFloat(nuovaUnitaPrezzo) !== parseFloat(row.OriginalPriceUnit))
 									singleEkpoModel.ZMODPREZZO = row.editPrice !== undefined && row.editPrice === true ? 'X' : '';
 								else
 									singleEkpoModel.ZMODPREZZO = '';

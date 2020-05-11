@@ -114,7 +114,7 @@
 													<m:Label text="{i18n>EBELP}" class="columnLabelStyle" wrapping="true"/>
 												</m:Column>
 												<m:Column minScreenWidth="Desktop" demandPopin="true">
-													<m:Label text="{i18n>ETENR}" class="columnLabelStyle" wrapping="true"/>
+													<m:Label text="{i18n>NUMINTCONF}" class="columnLabelStyle" wrapping="true"/>
 												</m:Column>
 												<m:Column minScreenWidth="Desktop" demandPopin="true">
 													<m:Label text="{i18n>EINDT}" class="columnLabelStyle" wrapping="true"/>

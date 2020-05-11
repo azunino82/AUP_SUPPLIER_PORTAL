@@ -83,7 +83,7 @@ module.exports = function () {
             return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
             } else {
             hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Planning::MM00_PLANNING_DOC_LIST', function (_err, sp) {
-                sp(userid, ekorg, werks, ekgrp, matnr, ebeln, lifnr, 'MATNR', (err, parameters, results) => {
+                sp(userid, ekorg, werks, ekgrp, matnr, ebeln, lifnr, 'I', (err, parameters, results) => {
                 if (err) {
                     console.error('ERROR: ' + err)
                     return res.status(500).send(stringifyObj(err))

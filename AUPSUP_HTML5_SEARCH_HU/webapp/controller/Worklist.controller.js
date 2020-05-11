@@ -17,10 +17,10 @@ sap.ui.define([
 
 		onInit: function () {
 			that = this;
-		//	that.onGetOdataColumns();
+			//	that.onGetOdataColumns();
 			that.getUserInfo();
 			that.getMetasupplier();
-		//	that.onGetMyVariants();
+			//	that.onGetMyVariants();
 
 			var filterHu = {
 				"vbeln": [],
@@ -38,10 +38,87 @@ sap.ui.define([
 			var oModelHu = new JSONModel();
 			oModelHu.setData(filterHu);
 			this.getView().setModel(oModelHu, "filterHUJSONModel");
-			
-			this.getView().setModel(sap.ui.getCore().getModel("userapi"), "userapi");			
+
+			this.getView().setModel(sap.ui.getCore().getModel("userapi"), "userapi");
+
+
+			if (!this._oResponsivePopover) {
+
+				var oModelFilters = new JSONModel();
+				oModelFilters.setData({
+					"element": ""
+				});
+				// this.getView().setModel(oModelFilters, "filterElementJSONModel");
+
+				this._oResponsivePopover = sap.ui.xmlfragment("it.aupsup.searchHU.fragments.FilterSorter", this);
+				this._oResponsivePopover.setModel(oModelFilters, "filterElementJSONModel");
+			}
+			var oTable = this.getView().byId("HUHeadersTable");
+			oTable.addEventDelegate({
+				onAfterRendering: function () {
+					var oHeader = this.$().find('.sapMListTblHeaderCell'); //Get hold of table header elements
+					for (var i = 0; i < oHeader.length; i++) {
+						var oID = oHeader[i].id;
+						if (oID !== '__column0') // prima colonna con checkbox
+							that.onClick(oID, i + 1);
+					}
+				}
+			}, oTable);			
 
 		},
+
+		onClick: function (oID) {
+			$('#' + oID).click(function (oEvent) { //Attach Table Header Element Event
+				var oTarget = oEvent.currentTarget; //Get hold of Header Element
+				var oView = that.getView();
+				var res = oTarget.id.split("--");
+				res = res[1];
+				if (res !== undefined) {
+					oView.getModel("HUJSONModel").setProperty("/bindingValue", res); //Save the key value to property
+					that._oResponsivePopover.openBy(oTarget);
+				}
+			});
+		},
+
+		onChange: function (oEvent) {
+			var oValue = oEvent.getParameter("value");
+			var oMultipleValues = oValue.split(",");
+			var oTable = this.getView().byId("HUHeadersTable");
+			var oBindingPath = this.getView().getModel("HUJSONModel").getProperty("/bindingValue"); //Get Hold of Model Key value that was saved
+			var aFilters = [];
+			for (var i = 0; i < oMultipleValues.length; i++) {
+				var oFilter = new Filter(oBindingPath, "Contains", oMultipleValues[i]);
+				aFilters.push(oFilter);
+			}
+			var oItems = oTable.getBinding("items");
+			oItems.filter(aFilters, "Application");
+
+			this._oResponsivePopover.setModel(new JSONModel({
+				"element": ""
+			}), "filterElementJSONModel");
+			this.getView().byId("headerFilterButton").setVisible(true);
+
+			this._oResponsivePopover.close();
+		},
+
+		onAscending: function () {
+			var oTable = this.getView().byId("HUHeadersTable");
+			var oItems = oTable.getBinding("items");
+			var oBindingPath = this.getView().getModel("HUJSONModel").getProperty("/bindingValue");
+			var oSorter = new Sorter(oBindingPath);
+			oItems.sort(oSorter);
+			this._oResponsivePopover.close();
+		},
+
+		onDescending: function () {
+			var oTable = this.getView().byId("HUHeadersTable");
+			var oItems = oTable.getBinding("items");
+			var oBindingPath = this.getView().getModel("HUJSONModel").getProperty("/bindingValue");
+			var oSorter = new Sorter(oBindingPath, true);
+			oItems.sort(oSorter);
+			this._oResponsivePopover.close();
+		},
+
 		/*Valorizzo MatchCode Metasupplier*/
 		getMetasupplier: function () {
 			var url = "/backend/Utils/UtilsManagement/GetMetasupplierList";
@@ -148,7 +225,7 @@ sap.ui.define([
 			var url = "/backend/Utils/UtilsManagement/SearchMaterial";
 			var body = this.getView().getModel("MatnrSearchJSONModel").getData();
 			this.showBusyDialog();
-			that.ajaxPost(url, body, function (oData) { 
+			that.ajaxPost(url, body, function (oData) {
 				that.hideBusyDialog();
 				if (oData) {
 					var oModel = new JSONModel();
@@ -157,7 +234,7 @@ sap.ui.define([
 				}
 			})
 		},
-		
+
 		onConfirmMatnr: function () {
 			var oTable = sap.ui.getCore().byId("idMatnrTable");
 			var aIndices = oTable.indexOfItem(oTable.getSelectedItem());
@@ -240,7 +317,7 @@ sap.ui.define([
 				body.dateTo = year + month + day;
 			}
 			this.showBusyDialog();
-			that.ajaxPost(url, body, function (oData) { 
+			that.ajaxPost(url, body, function (oData) {
 				that.hideBusyDialog();
 				if (oData) {
 					var oModel = new JSONModel();
@@ -248,7 +325,7 @@ sap.ui.define([
 					that.getView().setModel(oModel, "HUJSONModel");
 					that.getView().byId("HUHeadersTable").setModel(oModel);
 				}
-			})			
+			})
 
 		},
 
@@ -256,10 +333,9 @@ sap.ui.define([
 			var getTabledata = that.getView().getModel("HUJSONModel").getData().results;
 			var itemPosition = oEvent.getSource().getParent().getParent().indexOfItem(oEvent.getSource().getParent());
 			var selctedRowdata = getTabledata[itemPosition];
-			//MessageToast.show("TODO Print " + selctedRowdata.EXIDV);
+			//MessageToast.show("TODO Print " + selctedRowdata.EXIDV); 
 
-			var url = "/SupplierPortal_InboundDelivery/xsOdata/GetHUPDF.xsjs?I_USERID=" + that.getCurrentUserId() +
-				"&I_EXIDV=" + selctedRowdata.EXIDV;
+			var url = "/backend/InboundDeliveryManagement/GetHUPDF" + "?I_EXIDV=" + selctedRowdata.EXIDV;
 
 			that._pdfViewer = new PDFViewer();
 			that._pdfViewer.setShowDownloadButton(false);
@@ -361,24 +437,24 @@ sap.ui.define([
 
 			oModelData.read("/Variants?$filter=(USERID eq '" + that.getCurrentUserId() +
 				"' and APPLICATION eq 'SEARCH_HU' and TABLE_NAME eq 'WORKLIST')", {
-					success: function (oData, oResponse) {
-						if (oData && oData.results) {
-							var oModel = new JSONModel();
-							oModel.setData({
-								VariantSet: oData.results
-							});
-							sap.ui.getCore().setModel(oModel, "variantsJSONModel");
+				success: function (oData, oResponse) {
+					if (oData && oData.results) {
+						var oModel = new JSONModel();
+						oModel.setData({
+							VariantSet: oData.results
+						});
+						sap.ui.getCore().setModel(oModel, "variantsJSONModel");
 
-							var oModelSelection = new JSONModel();
-							oModelSelection.setDefaultBindingMode(sap.ui.model.BindingMode.OneWay);
-							sap.ui.getCore().setModel(oModelSelection, "selection");
-
-						}
-					},
-					error: function (err) {
+						var oModelSelection = new JSONModel();
+						oModelSelection.setDefaultBindingMode(sap.ui.model.BindingMode.OneWay);
+						sap.ui.getCore().setModel(oModelSelection, "selection");
 
 					}
-				});
+				},
+				error: function (err) {
+
+				}
+			});
 		},
 		onGetOdataColumns: function () {
 			var oModelData = that.getOwnerComponent().getModel("VariantsModel");
@@ -421,7 +497,7 @@ sap.ui.define([
 				save.VAR_NAME = modelData.VAR_NAME;
 				$.extend(modelData, save);
 				sap.ui.getCore().byId("idPunter1").byId("app").getModel().refresh();
-				oDataModel.update("VariantSet('" + save.VAR_KEY + "')", save, null, function (oData, response) {}, function (err) {
+				oDataModel.update("VariantSet('" + save.VAR_KEY + "')", save, null, function (oData, response) { }, function (err) {
 					alert("Service Failed");
 				});
 
@@ -598,17 +674,17 @@ sap.ui.define([
 			var footer = new sap.m.Bar({
 				contentLeft: [],
 				contentMiddle: [new sap.m.Button({
-						text: "Cancel",
-						press: function () {
-							that.onCancelPersonalization();
-						}
-					}),
-					new sap.m.Button({
-						text: that.getResourceBundle().getText("Comfirm"),
-						press: function () {
-							that.onSavePersonalization();
-						}
-					})
+					text: "Cancel",
+					press: function () {
+						that.onCancelPersonalization();
+					}
+				}),
+				new sap.m.Button({
+					text: that.getResourceBundle().getText("Comfirm"),
+					press: function () {
+						that.onSavePersonalization();
+					}
+				})
 				]
 
 			});

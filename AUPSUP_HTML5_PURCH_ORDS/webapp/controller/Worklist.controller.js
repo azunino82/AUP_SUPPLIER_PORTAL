@@ -143,9 +143,10 @@ sap.ui.define([
 				var oView = that.getView();
 				var res = oTarget.id.split("--");
 				res = res[1];
-
-				oView.getModel("OrderJSONModel").setProperty("/bindingValue", res); //Save the key value to property
-				that._oResponsivePopover.openBy(oTarget);
+				if (res !== undefined) {
+					oView.getModel("OrderJSONModel").setProperty("/bindingValue", res); //Save the key value to property
+					that._oResponsivePopover.openBy(oTarget);
+				}
 			});
 		},
 
@@ -1308,6 +1309,7 @@ sap.ui.define([
 										var singleEkesModel = {};
 										singleEkesModel.EBELN = row.EBELN;
 										singleEkesModel.EBELP = row.EBELP;
+										singleEkesModel.COUNTER = row.POItemSchedulers.results[j].COUNTER;
 
 										if (row.POItemSchedulers.results[j].EBTYP !== undefined) {
 											singleEkesModel.EBTYP = row.POItemSchedulers.results[j].EBTYP;
@@ -1440,7 +1442,8 @@ sap.ui.define([
 														"EBELP": row.EBELP,
 														"XBLNR": singleEkesModel.XBLNR,
 														"SKIP": skip,
-														"CONF_TYPE": "QUA"
+														"CONF_TYPE": "QUA",
+														"COUNTER": singleEkesModel.COUNTER
 													})
 
 													break
@@ -1481,7 +1484,7 @@ sap.ui.define([
 
 								var nuovoPrezzoPosizione = row.NETPR
 								var nuovaUnitaPrezzo = row.PEINH;
-								if (nuovoPrezzoPosizione !== row.OriginalPrice || nuovaUnitaPrezzo !== row.OriginalPriceUnit)
+								if (parseFloat(nuovoPrezzoPosizione) !== parseFloat(row.OriginalPrice) || parseFloat(nuovaUnitaPrezzo) !== parseFloat(row.OriginalPriceUnit))
 									singleEkpoModel.ZMODPREZZO = row.editPrice !== undefined && row.editPrice === true ? 'X' : '';
 								else
 									singleEkpoModel.ZMODPREZZO = '';
@@ -1838,8 +1841,24 @@ sap.ui.define([
 
 			if (mod.QuantPercDOWN !== undefined && mod.QuantPercUP !== undefined) {
 
-				// per ogni conferma 
+				// Aggregazione delle quantita splittate
+				var arrConfermeAggregate = []
 				mod.POItemSchedulers.results.forEach(conferma => {
+					var trovato = false
+					arrConfermeAggregate.forEach(element => {
+						if (element.ETENR === conferma.ETENR) {
+							trovato = true
+							element.MENGE = parseFloat(conferma.MENGE) + parseFloat(element.MENGE)
+						}
+					});
+					if (!trovato) {
+						var elem = JSON.parse(JSON.stringify(conferma))
+						arrConfermeAggregate.push(elem)
+					}
+				});
+
+				// per ogni conferma 
+				arrConfermeAggregate.forEach(conferma => {
 					if (mod.SchedulationsStatus && mod.SchedulationsStatus.length > 0 && conferma.SYSID === undefined) {
 						mod.SchedulationsStatus.forEach(schedulazione => {
 							var mengeSomma = 0
@@ -1996,6 +2015,7 @@ sap.ui.define([
 				if (oData) {
 					mod.SchedulationsStatus = oData.results;
 					var arrETENR = [];
+					var counter = 0;
 					for (var index = 0; index < mod.SchedulationsStatus.length; index++) {
 						var element = mod.SchedulationsStatus[index];
 
@@ -2018,13 +2038,14 @@ sap.ui.define([
 								"MENGE": deltaMenge,
 								"ETENR": element.ETENR,
 								"EBTYP": ebtyp,
-								"ETENRenabled": false
+								"ETENRenabled": false,
+								"COUNTER": counter++
 							};
 							if (mod !== undefined && mod.POItemSchedulers.results !== undefined) {
 								// se nelle consegne hp già inserito una riga ETENR non la ri-aggiungo
 								var trovato = false
 								mod.POItemSchedulers.results.forEach(el => {
-									if (element.ETENR === el.ETENR)
+									if (element.ETENR === el.ETENR && element.COUNTER === el.COUNTER)
 										trovato = true
 								});
 								if (!trovato)
@@ -2479,6 +2500,15 @@ sap.ui.define([
 			var keys = oEvent.getParameter("id");
 			var splits = keys.split("-");
 			var rowNumber = splits[splits.length - 1];
+
+			var lastCounter = 0
+			if (mod.POItemSchedulers.results && mod.POItemSchedulers.results.length > 0) {
+				mod.POItemSchedulers.results.forEach(element => {
+					if (parseInt(element.COUNTER) > lastCounter)
+						lastCounter = parseInt(element.COUNTER)
+				});
+			}
+
 			var selectedRow = mod.POItemSchedulers.results[rowNumber];
 			mod.POItemSchedulers.results.push({
 				'EINDT': selectedRow.EINDT,
@@ -2486,7 +2516,8 @@ sap.ui.define([
 				'ETENR': selectedRow.ETENR,
 				'EBTYP': selectedRow.EBTYP,
 				'ETENRenabled': selectedRow.ETENRenabled,
-				'ETENRS': selectedRow.ETENRS
+				'ETENRS': selectedRow.ETENRS,
+				'COUNTER': ++lastCounter
 			})
 
 			mod.POItemSchedulers.results.sort(that.sortJSONArrayByProperty('ETENR'))
