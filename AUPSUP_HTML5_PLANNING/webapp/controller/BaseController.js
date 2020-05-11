@@ -238,7 +238,7 @@ sap.ui.define([
 		},
 		
 		removeZeroBefore: function (sValue) {
-			if (sValue !== undefined) {
+			if (sValue !== undefined && sValue !== null) {
 				var n = 0
 				for (var i = 0; i < sValue.length; i++) {
 					if (sValue.charAt(i) !== '0') {

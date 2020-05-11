@@ -110,7 +110,7 @@
 													</m:OverflowToolbar>
 												</m:headerToolbar>
 												<m:columns>
-													<m:Column id="SYSID" minScreenWidth="Desktop" demandPopin="true" visible="{columnVisibilityModel>/SYSID}">
+													<m:Column id="SYSID" minScreenWidth="Desktop" demandPopin="true" visible="false">
 														<m:Label text="{i18n>SYSID}" class="columnLabelStyle" wrapping="true"/>
 													</m:Column>
 													<m:Column id="VENUM" minScreenWidth="Desktop" demandPopin="true" visible="{columnVisibilityModel>/VENUM}">

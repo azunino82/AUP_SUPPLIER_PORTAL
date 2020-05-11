@@ -110,12 +110,8 @@ module.exports = function () {
                     console.error('ERROR: ' + err)
                     return res.status(500).send(stringifyObj(err))
                 } else {
-                    var outArr = []
-                    results.forEach(element => {
-                        outArr.push(element)
-                    })
                     return res.status(200).send({
-                        results: outArr
+                        results: results
                     })
                 }
                 })
@@ -280,25 +276,27 @@ module.exports = function () {
     // CREATE SCHEDULATIONS
 
     app.get('/GetHUPDF', function (req, res) {
-
         var userid = req.user.id
         var exidv = req.query.I_EXIDV
+
+        console.log('INPUT exidv ==========> ' + JSON.stringify(exidv))
                     
         hdbext.createConnection(req.tenantContainer, (err, client) => {
             if (err) {
-            return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
+                return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
             } else {
-            hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.InboundDelivery::MM00_INB_DLV_GET_PRINT', function (_err, sp) {
-                sp(userid, exidv, (err, parameters, results) => {
-                if (err) {
-                    console.error('ERROR: ' + err)
-                    return res.status(500).send(stringifyObj(err))
-                } else {
-                    // TODO CONTENT TYPE PDF
-                    return res.status(200).send(results.STREAM)                    
-                }
+                hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.InboundDelivery::MM00_INB_DLV_GET_PRINT', function (_err, sp) {
+                    sp(userid, exidv, (err, parameters, results) => {
+                        if (err) {
+                            console.error('ERROR: ' + err)
+                            return res.status(500).send(stringifyObj(err))
+                        } else {
+                            // TODO CONTENT TYPE PDF
+                            console.log('INPUT exidv ==========> ' + JSON.stringify(results))
+                            return res.status(200).send(results)                    
+                        }
+                    })
                 })
-            })
             }
         })
     })   
