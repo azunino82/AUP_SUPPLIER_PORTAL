@@ -28,7 +28,8 @@ sap.ui.define([
 
 			var filterOrd = {
 				"ekorg": [],
-				"lifnr": []
+				"lifnr": [],
+				"langu": that.getLanguage()
 			};
 
 			var oModelFI = new JSONModel();
@@ -59,9 +60,9 @@ sap.ui.define([
 					}
 				}
 			}, oTable);
-			
+
 			this.getView().setModel(sap.ui.getCore().getModel("userapi"), "userapi");
-			
+
 		},
 
 		getPurchaseOrganizations: function () {
@@ -86,7 +87,7 @@ sap.ui.define([
 
 		getPurchaseGroup: function () {
 			var url = "/backend/Utils/UtilsManagement/GetPurchaseDoc";
-			that.ajaxPost(url, {}, function (oData) { 
+			that.ajaxPost(url, {}, function (oData) {
 				if (oData) {
 					var oModel = new JSONModel();
 					oModel.setData(oData);
@@ -268,7 +269,7 @@ sap.ui.define([
 			oModelMT.setData(body);
 			this.getView().setModel(oModelMT, "MatnrSearchJSONModel");
 			this.getView().getModel("MatnrJSONModel").setData(null);
-			
+
 		},
 
 		onCloseSearchMatnr: function () {
@@ -283,7 +284,7 @@ sap.ui.define([
 			var url = "/backend/Utils/UtilsManagement/SearchMaterial";
 			var body = this.getView().getModel("MatnrSearchJSONModel").getData();
 			this.showBusyDialog();
-			that.ajaxPost(url, body, function (oData) { 
+			that.ajaxPost(url, body, function (oData) {
 				that.hideBusyDialog();
 				if (oData) {
 					var oModel = new JSONModel();
@@ -325,7 +326,7 @@ sap.ui.define([
 			var body = that.getModel("filterPlanningJSONModel").getData();
 
 			this.showBusyDialog();
-			that.ajaxPost(url, body, function (oData) { 
+			that.ajaxPost(url, body, function (oData) {
 				that.hideBusyDialog();
 				if (oData) {
 					var oModel = new JSONModel();
@@ -449,17 +450,17 @@ sap.ui.define([
 			var mod = that.getModel("PlanningJSONModel").getProperty(oPath)
 
 			var order = mod.EBELN;
-			var pos = mod.EBELP;		
+			var pos = mod.EBELP;
 			var BSTYP = mod.BSTYP;
 
 			//Generate a  URL for the second application
-			
-			var url = '';
-			if(BSTYP === 'F')
-			url = "/cp.portal/site?#PurchaseOrders-Display?objectId={\"orderId\":\""+order+"\",\"posNumber\":\""+pos+"\"}";
 
-			if(BSTYP === 'L')
-			url = "/cp.portal/site?#SchedulingAgreement-Display?objectId={\"orderId\":\""+order+"\",\"posNumber\":\""+pos+"\"}";
+			var url = '';
+			if (BSTYP === 'F')
+				url = "/cp.portal/site?#PurchaseOrders-Display?objectId={\"orderId\":\"" + order + "\",\"posNumber\":\"" + pos + "\"}";
+
+			if (BSTYP === 'L')
+				url = "/cp.portal/site?#SchedulingAgreement-Display?objectId={\"orderId\":\"" + order + "\",\"posNumber\":\"" + pos + "\"}";
 
 			//Navigate to second app
 			sap.m.URLHelper.redirect(url, true);
@@ -527,9 +528,9 @@ sap.ui.define([
 						content: "{KTPNR}"
 					}
 				}, {
-					name: that.getResourceBundle().getText("EBELN"),
+					name: that.getResourceBundle().getText("EBELN") + ' - ' + that.getResourceBundle().getText("EBELP"),
 					template: {
-						content: "{EBELN}"
+						content: "{EBELN} - {EBELP}"
 					}
 				}, {
 					name: that.getResourceBundle().getText("TYPE"),

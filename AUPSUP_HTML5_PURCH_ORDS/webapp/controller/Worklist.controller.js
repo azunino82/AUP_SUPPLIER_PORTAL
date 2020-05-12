@@ -530,7 +530,7 @@ sap.ui.define([
 			var oModelMT = new JSONModel();
 			oModelMT.setData(body);
 			this.getView().setModel(oModelMT, "MatnrSearchJSONModel");
-
+			this.getView().getModel("MatnrJSONModel").setData(null);
 			// var selectedMatnr = that.getModel("filterOrdersJSONModel").getData().matnr;
 			// var matnr = that.getModel("MatnrJSONModel");
 			// if (matnr !== undefined && matnr.getData() && matnr.getData().results) {
@@ -2222,7 +2222,7 @@ sap.ui.define([
 			//	var oModelData = that.getOwnerComponent().getModel("VariantsModel");
 			//	oModelData.metadataLoaded().then(
 			//		that.onMetadataLoaded.bind(that, oModelData));
-			var columModel = { "EBELN": true, "EBELP": true, "LIFNR": true, "NAME1": true, "MATNR": true, "TXZ01": true, "IDNLF": true, "MENGE": true, "MEINS": true, "WAERS": true, "PRIMO_PERIODO": false, "SECONDO_PERIODO": false };
+			var columModel = { "EBELN": true, "EBELP": true, "LIFNR": true, "NAME1": true, "MATNR": true, "TXZ01": true, "IDNLF": true, "MENGE": true, "MEINS": true, "WAERS": true, "PRIMO_PERIODO": true, "SECONDO_PERIODO": false };
 			var oModel = new JSONModel();
 			oModel.setData(columModel);
 			that.getView().setModel(oModel, "columnVisibilityModel");

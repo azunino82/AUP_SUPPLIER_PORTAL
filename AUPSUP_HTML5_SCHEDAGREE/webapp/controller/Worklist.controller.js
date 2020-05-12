@@ -530,7 +530,7 @@ sap.ui.define([
 			var oModelMT = new JSONModel();
 			oModelMT.setData(body);
 			this.getView().setModel(oModelMT, "MatnrSearchJSONModel");
-
+			this.getView().getModel("MatnrJSONModel").setData(null);
 			// var selectedMatnr = that.getModel("filterOrdersJSONModel").getData().matnr;
 			// var matnr = that.getModel("MatnrJSONModel");
 			// if (matnr !== undefined && matnr.getData() && matnr.getData().results) {
