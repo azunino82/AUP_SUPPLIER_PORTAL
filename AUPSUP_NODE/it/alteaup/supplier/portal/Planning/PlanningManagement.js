@@ -33,6 +33,7 @@ module.exports = function () {
         var ekgrp = []
         var matnr = []
         var lifnr = []
+        var langu = ''
         var userid = req.user.id
         
         if (body.ekorg !== null && body.ekorg !== undefined && body.ekorg.length > 0) {
@@ -77,13 +78,16 @@ module.exports = function () {
         if (body.ebeln !== null && body.ebeln !== undefined && body.ebeln !== '') {
             ebeln = body.ebeln
         }
+        if (body.langu !== null && body.langu !== undefined && body.langu !== '') {
+            langu = body.langu
+        }
 
         hdbext.createConnection(req.tenantContainer, (err, client) => {
             if (err) {
             return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
             } else {
             hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Planning::MM00_PLANNING_DOC_LIST', function (_err, sp) {
-                sp(userid, ekorg, werks, ekgrp, matnr, ebeln, lifnr, 'I', (err, parameters, results) => {
+                sp(userid, ekorg, werks, ekgrp, matnr, ebeln, lifnr, langu, (err, parameters, results) => {
                 if (err) {
                     console.error('ERROR: ' + err)
                     return res.status(500).send(stringifyObj(err))

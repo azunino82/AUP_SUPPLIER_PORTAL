@@ -236,7 +236,7 @@ sap.ui.define([
 			});
 
 		},
-		
+
 		removeZeroBefore: function (sValue) {
 			if (sValue !== undefined && sValue !== null) {
 				var n = 0
@@ -251,7 +251,7 @@ sap.ui.define([
 			return sValue
 		},
 
-		
+
 		importFormatter: function (sValue) {
 			if (sValue !== null && sValue !== undefined) {
 				if (sValue.toString().includes('.000'))
@@ -262,6 +262,19 @@ sap.ui.define([
 					else
 						return sValue.toString().replace('.', ',')
 			}
+		},
+
+		getLanguage: function () {
+			if (sap.ui.getCore().getConfiguration().getLanguage() !== undefined && sap.ui.getCore().getConfiguration().getLanguage() === 'it') {
+				return 'I';
+			}
+			if (sap.ui.getCore().getConfiguration().getLanguage() !== undefined && sap.ui.getCore().getConfiguration().getLanguage() === 'en') {
+				return 'E';
+			}
+			if (sap.ui.getCore().getConfiguration().getLanguage() !== undefined && sap.ui.getCore().getConfiguration().getLanguage() === 'de') {
+				return 'D';
+			}
+			return 'E'
 		}
 
 	});
