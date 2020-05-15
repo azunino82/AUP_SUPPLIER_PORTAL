@@ -2253,9 +2253,12 @@ sap.ui.define([
 			var oPath = oEvent.getSource().getParent().getBindingContext("OrderJSONModel").sPath;
 			var selectedRowdata = that.getModel("OrderJSONModel").getProperty(oPath);
 
+			var currentSYSID = sap.ui.getCore().getModel("sysIdJSONModel") !== undefined && sap.ui.getCore().getModel(
+				"sysIdJSONModel").getData() !==
+				undefined ? sap.ui.getCore().getModel("sysIdJSONModel").getData().SYSID : "";
 
 			that.showBusyDialog()
-			var url = "/backend/Utils/UtilsManagement/GetDocumentTexts?I_EBELN=" + selectedRowdata.EBELN + "&I_BSTYP=" + selectedRowdata.BSTYP + "&I_EBELP=" + selectedRowdata.EBELP
+			var url = "/backend/Utils/UtilsManagement/GetDocumentTexts?I_EBELN=" + selectedRowdata.EBELN + "&I_BSTYP=" + selectedRowdata.BSTYP + "&I_EBELP=" + selectedRowdata.EBELP + "&I_SYSID=" + currentSYSID
 
 			that.ajaxGet(url, function (oData) {
 				that.hideBusyDialog()
@@ -2297,12 +2300,13 @@ sap.ui.define([
 		onSaveTexts: function (oEvent) {
 			var oComponent = that.getOwnerComponent();
 			var oModel = oComponent.getModel("TextsJSONModel").getData();
-			if (oModel && oModel.header_texts && oModel.header_texts.results && oModel.header_texts.results.length > 0) {
-				var body = {}
 
-				var currentSYSID = sap.ui.getCore().getModel("sysIdJSONModel") !== undefined && sap.ui.getCore().getModel(
-					"sysIdJSONModel").getData() !==
-					undefined ? sap.ui.getCore().getModel("sysIdJSONModel").getData().SYSID : "";
+			var currentSYSID = sap.ui.getCore().getModel("sysIdJSONModel") !== undefined && sap.ui.getCore().getModel(
+				"sysIdJSONModel").getData() !==
+				undefined ? sap.ui.getCore().getModel("sysIdJSONModel").getData().SYSID : "";
+
+			var body = {}
+			if (oModel && oModel.header_texts && oModel.header_texts.results && oModel.header_texts.results.length > 0) {
 
 				var numberOfConfirmable = 0
 				if (oModel.header_texts && oModel.header_texts.results.length > 0) {
@@ -2320,7 +2324,7 @@ sap.ui.define([
 								body.SYSID = currentSYSID,
 									body.EBELN = oModel.EBELN,
 									body.EBELP = oModel.EBELP,
-									body.BSTYP = 'L',
+									body.BSTYP = 'F',
 									body.TABLE = 'EKKO',
 									body.ID = element.ID,
 									body.COMMENT = element.COMMENT
@@ -2340,50 +2344,51 @@ sap.ui.define([
 						});
 					}
 				}
+			}
 
-				var numberOfConfirmablePos = 0
-				if (oModel.pos_texts && oModel.pos_texts.results.length > 0) {
+			var numberOfConfirmablePos = 0
+			if (oModel.pos_texts && oModel.pos_texts.results.length > 0) {
+				oModel.pos_texts.results.forEach(element => {
+					if (element.COMMENTABLE) {
+						numberOfConfirmablePos++
+					}
+				})
+
+				if (numberOfConfirmablePos > 0) {
+					var numberOfConfirmsPos = 0
 					oModel.pos_texts.results.forEach(element => {
 						if (element.COMMENTABLE) {
-							numberOfConfirmablePos++
+							body.SYSID = currentSYSID,
+								body.EBELN = oModel.EBELN,
+								body.EBELP = oModel.EBELP,
+								body.BSTYP = 'F',
+								body.TABLE = 'EKPO',
+								body.ID = element.ID,
+								body.COMMENT = element.COMMENT
 						}
-					})
 
-					if (numberOfConfirmablePos > 0) {
-						var numberOfConfirmsPos = 0
-						oModel.pos_texts.results.forEach(element => {
-							if (element.COMMENTABLE) {
-								body.SYSID = currentSYSID,
-									body.EBELN = oModel.EBELN,
-									body.EBELP = oModel.EBELP,
-									body.BSTYP = 'L',
-									body.TABLE = 'EKPO',
-									body.ID = element.ID,
-									body.COMMENT = element.COMMENT
-							}
-
-							var url = "/backend/Utils/UtilsManagement/SaveDocumentTexts";
-							that.ajaxPost(url, body, function (oData) {
-								if (oData) {
-									numberOfConfirmsPos++
-									if (numberOfConfirmablePos === numberOfConfirmsPos) {
-										//MessageBox.success("Data correctly saved");
-										that.onCloseTexts()
-									}
+						var url = "/backend/Utils/UtilsManagement/SaveDocumentTexts";
+						that.ajaxPost(url, body, function (oData) {
+							if (oData) {
+								numberOfConfirmsPos++
+								if (numberOfConfirmablePos === numberOfConfirmsPos) {
+									//MessageBox.success("Data correctly saved");
+									that.onCloseTexts()
 								}
-							})
+							}
+						})
 
-						});
-					}
+					});
 				}
-
-				if (numberOfConfirmable === 0 && numberOfConfirmablePos === 0) {
-					that.onCloseTexts()
-				}
-
 			}
+
+			if (numberOfConfirmable === 0 && numberOfConfirmablePos === 0) {
+				that.onCloseTexts()
+			}
+
 			that.onCloseTexts()
 		},
+
 		onItemDownload: function (oEvent) {
 			var path = oEvent.getSource().getParent().getBindingContext("OrderJSONModel");
 			var selctedRowdata = that.byId("OrderHeadersTable").getModel("OrderJSONModel").getProperty(path.sPath);

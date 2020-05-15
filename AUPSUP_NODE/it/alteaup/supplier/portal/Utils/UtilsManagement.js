@@ -411,29 +411,162 @@ module.exports = function () {
               if (err) {
                 return res.status(500).send(stringifyObj(err))
               } else {
-                // eslint-disable-next-line camelcase
-                if (t_header !== undefined && t_header.length > 0) {
-                  t_header.forEach(element => {
-                    if (element.COMMENTABLE === 'X') {
-                      element.COMMENTABLE = true
-                    } else {
-                      element.COMMENTABLE = false
-                    }
-                  })
-                }
-                // eslint-disable-next-line camelcase
-                if (t_pos !== undefined && t_pos.length > 0) {
-                  t_pos.forEach(element => {
-                    if (element.COMMENTABLE === 'X') {
-                      element.COMMENTABLE = true
-                    } else {
-                      element.COMMENTABLE = false
-                    }
-                  })
-                }
-                return res.status(200).send({
-                  header_texts: { results: t_header },
-                  pos_texts: { results: t_pos }
+                const sql = 'SELECT * FROM \"AUPSUP_DATABASE.data.tables::T_TEXTS\" WHERE BSTYP = \'' + bstyp + '\' AND COMMENTABLE = \'X\''
+
+                hdbext.createConnection(req.tenantContainer, function (error, client) {
+                  if (error) {
+                    console.error('ERROR T_TEXTS :' + stringifyObj(error))
+                    return res.status(500).send('T_TEXTS CONNECTION ERROR: ' + stringifyObj(error))
+                  }
+                  if (client) {
+                    async.waterfall([
+                      function prepare (callback) {
+                        client.prepare(sql,
+                          function (err, statement) {
+                            callback(null, err, statement)
+                          })
+                      },
+
+                      function execute (_err, statement, callback) {
+                        statement.exec([], function (execErr, results) {
+                          callback(null, execErr, results)
+                        })
+                      },
+
+                      function response (err, results, callback) {
+                        if (err) {
+                          res.type('application/json').status(500).send({ ERROR: err })
+                        } else {
+                          console.log('T_TEXTS FOUND :' + stringifyObj(results))
+                          // eslint-disable-next-line camelcase
+                          if (t_header !== undefined && t_header.length > 0) {
+                            t_header.forEach(element => {
+                              if (element.COMMENTABLE === 'X') {
+                                element.COMMENTABLE = true
+                              } else {
+                                element.COMMENTABLE = false
+                              }
+                              element.TABLE = 'EKKO'
+                              element.EBELP = ebelp
+
+                              if (results && results.length > 0) {
+                                for (let index = 0; index < results.length; index++) {
+                                  const testo = results[index]
+                                  if (element.ID !== testo.ID && testo.TABLE === 'EKKO') {
+                                    t_header.push({ EBELN: element.EBELN, EBELP: element.EBELP, ID: testo.ID, DESCRIPTION: testo.DESCRIPTION, TESTO: '', COMMENTABLE: testo.COMMENTABLE === 'X' })
+                                  }
+                                }
+                              }
+                            })
+                          } else {
+                            for (let index = 0; index < results.length; index++) {
+                              const testo = results[index]
+                              if (testo.TABLE === 'EKKO') {
+                                t_header.push({ EBELN: ebeln, EBELP: ebelp, ID: testo.ID, DESCRIPTION: testo.DESCRIPTION, TESTO: '', COMMENTABLE: testo.COMMENTABLE === 'X', TABLE: 'EKKO' })
+                              }
+                            }
+                          }
+                          // eslint-disable-next-line camelcase
+                          if (t_pos !== undefined && t_pos.length > 0) {
+                            t_pos.forEach(element => {
+                              if (element.COMMENTABLE === 'X') {
+                                element.COMMENTABLE = true
+                              } else {
+                                element.COMMENTABLE = false
+                              }
+
+                              element.TABLE = 'EKPO'
+                              element.EBELP = ebelp
+
+                              if (results && results.length > 0) {
+                                for (let index = 0; index < results.length; index++) {
+                                  const testo = results[index]
+                                  if (element.ID !== testo.ID && testo.TABLE === 'EKPO') {
+                                    t_pos.push({ EBELN: element.EBELN, EBELP: element.EBELP, ID: testo.ID, DESCRIPTION: testo.DESCRIPTION, TESTO: '', COMMENTABLE: testo.COMMENTABLE === 'X' })
+                                  }
+                                }
+                              }
+                            })
+                          } else {
+                            if (results && results.length > 0) {
+                              for (let index = 0; index < results.length; index++) {
+                                const testo = results[index]
+                                if (testo.TABLE === 'EKPO') {
+                                  t_pos.push({ EBELN: ebeln, EBELP: ebelp, ID: testo.ID, DESCRIPTION: testo.DESCRIPTION, TESTO: '', COMMENTABLE: testo.COMMENTABLE === 'X', TABLE: 'EKPO' })
+                                }
+                              }
+                            }
+                          }
+
+                          const sql = 'SELECT * FROM \"AUPSUP_DATABASE.data.tables::T_TEXTS_COMMENT\" WHERE EBELN = \'' + ebeln + '\' AND EBELP = \'' + ebelp + '\''
+
+                          hdbext.createConnection(req.tenantContainer, function (error, client) {
+                            if (error) {
+                              return res.status(500).send('T_TEXTS_COMMENT CONNECTION ERROR: ' + stringifyObj(error))
+                            }
+                            if (client) {
+                              async.waterfall([
+
+                                function prepare (callback) {
+                                  client.prepare(sql,
+                                    function (err, statement) {
+                                      callback(null, err, statement)
+                                    })
+                                },
+
+                                function execute (_err, statement, callback) {
+                                  statement.exec([], function (execErr, results) {
+                                    callback(null, execErr, results)
+                                  })
+                                },
+
+                                function response (err, listaCommentiPrecedenti, callback) {
+                                  if (err) {
+                                    res.type('application/json').status(500).send({ ERROR: err })
+                                    return
+                                  } else {
+                                    for (let index = 0; index < listaCommentiPrecedenti.length; index++) {
+                                      const commento = listaCommentiPrecedenti[index]
+                                      for (let i = 0; i < t_header.length; i++) {
+                                        const testata = t_header[i]
+                                        if (testata.EBELN === commento.EBELN && testata.EBELP === commento.EBELP && testata.ID === commento.ID && testata.TABLE === commento.TABLE) {
+                                          testata.COMMENT = commento.COMMENT
+                                        }
+                                      }
+                                      for (let i = 0; i < t_pos.length; i++) {
+                                        const pos = t_pos[i]
+                                        if (pos.EBELN === commento.EBELN && pos.EBELP === commento.EBELP && pos.ID === commento.ID && pos.TABLE === commento.TABLE) {
+                                          pos.COMMENT = commento.COMMENT
+                                        }
+                                      }
+                                    }
+                                  }
+
+                                  return res.status(200).send({
+                                    header_texts: { results: t_header },
+                                    pos_texts: { results: t_pos }
+                                  })
+                                }
+                              ], function done (err, parameters, rows) {
+                                console.log('---->>> CLIENT END T_GESTIONE_ETICHETTE <<<<<-----')
+                                client.close()
+                                if (err) {
+                                  return console.error('Done error', err)
+                                }
+                              })
+                            }
+                          })
+                        }
+                        callback()
+                      }
+                    ], function done (err, parameters, rows) {
+                      console.log('---->>> CLIENT END T_AVVISI_QUALITA <<<<<-----')
+                      client.close()
+                      if (err) {
+                        return console.error('Done error', err)
+                      }
+                    })
+                  }
                 })
               }
             })
@@ -579,7 +712,7 @@ module.exports = function () {
         // for (var i = 0; i < body.maktx.length; i++) {
         maktx.push({ DESCR: body.maktx })
         // }
-      //  maktx = oMaktx
+        //  maktx = oMaktx
       }
 
       hdbext.createConnection(req.tenantContainer, (err, client) => {

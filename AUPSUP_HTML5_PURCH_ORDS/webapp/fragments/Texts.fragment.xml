@@ -41,6 +41,11 @@
 											<FlexItemData growFactor="2"/>
 										</layoutData>
 									</Label>
+									<Label text="" visible="{= ${TextsJSONModel>COMMENTABLE} === false}" width="31rem">
+										<layoutData>
+											<FlexItemData growFactor="2"/>
+										</layoutData>
+									</Label>									
 								</items>
 							</FlexBox>
 							<VBox height="5px"></VBox>
@@ -62,11 +67,16 @@
 											<FlexItemData growFactor="1"/>
 										</layoutData>
 									</Text>
-									<TextArea growing="true" value="{TextsJSONModel>COMMENT}" visible="{TextsJSONModel>COMMENTABLE}" rows="3" width="30.5rem">
+									<TextArea growing="true" value="{TextsJSONModel>COMMENT}" visible="{TextsJSONModel>COMMENTABLE}" rows="3" width="30.5rem" liveChange="onEditTexts">
 										<layoutData>
 											<FlexItemData growFactor="2"/>
 										</layoutData>
 									</TextArea>
+									<Label text="" visible="{= ${TextsJSONModel>COMMENTABLE} === false}" width="30.5rem">
+										<layoutData>
+											<FlexItemData growFactor="2"/>
+										</layoutData>
+									</Label>										
 								</items>
 							</FlexBox>
 						</VBox>
