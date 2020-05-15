@@ -462,7 +462,7 @@ module.exports = function () {
                             for (let index = 0; index < results.length; index++) {
                               const testo = results[index]
                               if (testo.TABLE === 'EKKO') {
-                                t_header.push({ EBELN: ebeln, EBELP: ebelp, ID: testo.ID, DESCRIPTION: testo.DESCRIPTION, TESTO: '', COMMENTABLE: testo.COMMENTABLE === 'X', TABLE: 'EKKO' })
+                                t_header.push({ EBELN: ebeln, EBELP: ebelp, ID: testo.ID, DESCRIPTION: testo.DESCRIPTION, TESTO: '', COMMENTABLE: testo.COMMENTABLE === 'X', TABLE: 'EKKO', COMMENT: '' })
                               }
                             }
                           }
@@ -492,7 +492,7 @@ module.exports = function () {
                               for (let index = 0; index < results.length; index++) {
                                 const testo = results[index]
                                 if (testo.TABLE === 'EKPO') {
-                                  t_pos.push({ EBELN: ebeln, EBELP: ebelp, ID: testo.ID, DESCRIPTION: testo.DESCRIPTION, TESTO: '', COMMENTABLE: testo.COMMENTABLE === 'X', TABLE: 'EKPO' })
+                                  t_pos.push({ EBELN: ebeln, EBELP: ebelp, ID: testo.ID, DESCRIPTION: testo.DESCRIPTION, TESTO: '', COMMENTABLE: testo.COMMENTABLE === 'X', TABLE: 'EKPO', COMMENT: '' })
                                 }
                               }
                             }
@@ -583,6 +583,7 @@ module.exports = function () {
   app.post('/SaveDocumentTexts', function (req, res) {
     const body = req.body
 
+    body.COMMENT = body.COMMENT === undefined ? '' : body.COMMENT
     var sql = 'UPSERT \"AUPSUP_DATABASE.data.tables::T_TEXTS_COMMENT\" VALUES (\'' + body.SYSID + '\',\'' + body.BSTYP + '\',\'' + body.TABLE + '\',\'' + body.ID + '\',\'' + body.EBELN + '\',\'' + body.EBELP + '\',\'' + body.COMMENT + '\') WITH PRIMARY KEY'
     console.log('sql: ' + sql)
     hdbext.createConnection(req.tenantContainer, function (error, client) {

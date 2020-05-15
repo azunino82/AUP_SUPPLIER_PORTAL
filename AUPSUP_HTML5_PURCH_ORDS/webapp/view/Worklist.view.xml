@@ -193,7 +193,7 @@
 															<m:Text text="{OrderJSONModel>TXZ01}"/>
 															<m:Text text="{OrderJSONModel>IDNLF}"/>
 															<m:Text text="{path : 'OrderJSONModel>MENGE', formatter : '.importFormatter'}"/>
-															<m:Text text="{OrderJSONModel>MEINS}"/>
+															<m:Text text="{= ${OrderJSONModel>MEINS} === 'ST' ? 'PZ' : ${OrderJSONModel>MEINS}}"/>
 															<m:Text text="{OrderJSONModel>WAERS}"/>
 															<m:Text text="{path : 'OrderJSONModel>PRIMO_PERIODO', formatter : '.importFormatter'}"/>
 															<m:Text text="{path : 'OrderJSONModel>SECONDO_PERIODO', formatter : '.importFormatter'}"/>
