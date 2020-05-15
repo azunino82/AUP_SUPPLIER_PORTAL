@@ -2306,6 +2306,7 @@ sap.ui.define([
 				undefined ? sap.ui.getCore().getModel("sysIdJSONModel").getData().SYSID : "";
 
 			var body = {}
+			var arrPromise = [];
 			if (oModel && oModel.header_texts && oModel.header_texts.results && oModel.header_texts.results.length > 0) {
 
 				var numberOfConfirmable = 0
@@ -2318,7 +2319,6 @@ sap.ui.define([
 					})
 
 					if (numberOfConfirmable > 0) {
-						var numberOfConfirms = 0
 						oModel.header_texts.results.forEach(element => {
 							if (element.COMMENTABLE) {
 								body.SYSID = currentSYSID,
@@ -2331,17 +2331,19 @@ sap.ui.define([
 							}
 
 							var url = "/backend/Utils/UtilsManagement/SaveDocumentTexts";
-							that.ajaxPost(url, body, function (oData) {
-								if (oData) {
-									numberOfConfirms++
-									if (numberOfConfirms === numberOfConfirmable) {
-										//MessageBox.success("Data correctly saved");
-										that.onCloseTexts()
-									}
-								}
-							})
 
+							arrPromise.push(new Promise(
+								function (resolve, reject) {
+									setTimeout(
+										function () {
+											//do something special
+										}, 1);
+									that.ajaxPost(url, body, function (oData) {
+										resolve();
+									})
+								}));
 						});
+
 					}
 				}
 			}
@@ -2355,7 +2357,6 @@ sap.ui.define([
 				})
 
 				if (numberOfConfirmablePos > 0) {
-					var numberOfConfirmsPos = 0
 					oModel.pos_texts.results.forEach(element => {
 						if (element.COMMENTABLE) {
 							body.SYSID = currentSYSID,
@@ -2368,25 +2369,28 @@ sap.ui.define([
 						}
 
 						var url = "/backend/Utils/UtilsManagement/SaveDocumentTexts";
-						that.ajaxPost(url, body, function (oData) {
-							if (oData) {
-								numberOfConfirmsPos++
-								if (numberOfConfirmablePos === numberOfConfirmsPos) {
-									//MessageBox.success("Data correctly saved");
-									that.onCloseTexts()
-								}
-							}
-						})
+
+						arrPromise.push(new Promise(
+							function (resolve, reject) {
+								setTimeout(
+									function () {
+										//do something special
+									}, 1);
+								that.ajaxPost(url, body, function (oData) {
+									resolve();
+								})
+							}));
 
 					});
 				}
 			}
-
-			if (numberOfConfirmable === 0 && numberOfConfirmablePos === 0) {
-				that.onCloseTexts()
+			if (arrPromise.length > 0) {
+				that.showBusyDialog();
 			}
-
-			that.onCloseTexts()
+			Promise.all(arrPromise).then(function () {
+				that.hideBusyDialog();
+				that.onCloseTexts();
+			})
 		},
 
 		onItemDownload: function (oEvent) {
