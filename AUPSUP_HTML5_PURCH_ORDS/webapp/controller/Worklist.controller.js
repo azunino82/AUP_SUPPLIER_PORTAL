@@ -29,6 +29,50 @@ sap.ui.define([
 			that.onGetOdataColumns();
 			that.getCurrentSYSID();
 
+			// chiamata proveniente da planning
+			var orderToOpen = that.getUrlParameter('orderPos');
+
+			if (orderToOpen) {
+				Promise.all([
+					new Promise(function (resolve, reject) {
+
+						var url = "/backend/Utils/UtilsManagement/GetUserPlants";
+
+						that.ajaxGet(url, function (oData) { // funzione generica su BaseController
+							if (oData) {
+								var oModel = new JSONModel();
+								oModel.setData(oData);
+								//	that.getView().setModel(oModel, "PlantsJSONModel");
+								var oComponent = that.getOwnerComponent();
+								oComponent.setModel(oModel, "PlantsJSONModel");
+								resolve();
+							}
+						});
+
+					}),
+					new Promise(function (resolve, reject) {
+
+						var url = "/backend/Utils/UtilsManagement/GetPurchaseOrganizations";
+						that.ajaxGet(url, function (oData) {
+							if (oData) {
+								var oModel = new JSONModel();
+								oModel.setData(oData);
+								// that.getView().setModel(oModel, "PurchaseOrganizationJSONModel");
+								var oComponent = that.getOwnerComponent();
+								oComponent.setModel(oModel, "PurchaseOrganizationJSONModel");
+								resolve();
+							}
+						});
+
+					}),
+				]).then(function (values) {
+					var oRouter = sap.ui.core.UIComponent.getRouterFor(that);
+					oRouter.navTo("detail", {
+						datas: orderToOpen
+					});
+				});
+			}
+
 			// questo meccanismo serve per navigare sull'ordine selezionato da RMO. funziona solo sul portale pubblicato non in preview da webide
 			if (this.getOwnerComponent().getComponentData() != undefined) {
 				startupParams = this.getOwnerComponent().getComponentData().startupParameters;
@@ -2533,6 +2577,22 @@ sap.ui.define([
 			that.getView().getModel("SelectedPositionsJSONModel").refresh()
 
 
+		},
+
+
+		getUrlParameter: function (sParam) {
+			var sPageURL = window.location.search.substring(1),
+				sURLVariables = sPageURL.split('&'),
+				sParameterName,
+				i;
+
+			for (i = 0; i < sURLVariables.length; i++) {
+				sParameterName = sURLVariables[i].split('=');
+
+				if (sParameterName[0] === sParam) {
+					return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+				}
+			}
 		}
 	});
 
