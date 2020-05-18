@@ -455,13 +455,17 @@ sap.ui.define([
 
 			//Generate a  URL for the second application
 
-			var url = '';
-			if (BSTYP === 'F')
-				url = "/cp.portal/site?#PurchaseOrders-Display?objectId={\"orderId\":\"" + order + "\",\"posNumber\":\"" + pos + "\"}";
-
-			if (BSTYP === 'L')
-				url = "/cp.portal/site?#SchedulingAgreement-Display?objectId={\"orderId\":\"" + order + "\",\"posNumber\":\"" + pos + "\"}";
-
+			var url = window.location.href;
+			if (BSTYP === 'F'){
+				url = url.replace('#PlanningDisplay-Display','&orderPos=%7B"orderId":\"'+order+'\","posNumber":\"'+pos+'\"%7D#SchedulingAgreement-Display');
+				url = url.replace('it.aupsup.planning','it.aupsup.schedulingagreement');
+				//url = "/cp.portal/site?#PurchaseOrders-Display?objectId={\"orderId\":\"" + order + "\",\"posNumber\":\"" + pos + "\"}";
+			}
+			if (BSTYP === 'L'){
+				url = url.replace('#PlanningDisplay-Display','&orderPos=%7B"orderId":\"'+order+'\","posNumber":\"'+pos+'\"%7D#PurchaseOrders-Display');
+				url = url.replace('it.aupsup.planning','it.aupsup.purchords');
+				// url = "/cp.portal/site?#SchedulingAgreement-Display?objectId={\"orderId\":\"" + order + "\",\"posNumber\":\"" + pos + "\"}";
+			}
 			//Navigate to second app
 			sap.m.URLHelper.redirect(url, true);
 		},
