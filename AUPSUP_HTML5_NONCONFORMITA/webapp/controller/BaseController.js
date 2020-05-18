@@ -194,7 +194,21 @@ sap.ui.define([
 				}
 			});
 
+		},
+
+		getLanguage: function () {
+			if (sap.ui.getCore().getConfiguration().getLanguage() !== undefined && sap.ui.getCore().getConfiguration().getLanguage() === 'it') {
+				return 'I';
+			}
+			if (sap.ui.getCore().getConfiguration().getLanguage() !== undefined && sap.ui.getCore().getConfiguration().getLanguage() === 'en') {
+				return 'E';
+			}
+			if (sap.ui.getCore().getConfiguration().getLanguage() !== undefined && sap.ui.getCore().getConfiguration().getLanguage() === 'de') {
+				return 'D';
+			}
+			return 'E'
 		}
+
 
 	});
 });
