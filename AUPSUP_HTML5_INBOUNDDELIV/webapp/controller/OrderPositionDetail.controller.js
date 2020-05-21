@@ -1,17 +1,17 @@
 sap.ui.define([
-	"it/alteaup/supplier/portal/inboundDelivery/controller/BaseController",
+	"it/aupsup/inboundDelivery/controller/BaseController",
 	"sap/ui/model/json/JSONModel",
 	"sap/m/MessageBox",
 	"sap/ui/model/Filter",
 	"sap/ui/model/Sorter",
-	"it/alteaup/supplier/portal/inboundDelivery/js/Date",
-	"it/alteaup/supplier/portal/inboundDelivery/js/formatter",
+	"it/aupsup/inboundDelivery/js/Date",
+	"it/aupsup/inboundDelivery/js/formatter",
 ], function (BaseController, JSONModel, MessageBox, Filter, Sorter, Date, Formatter) {
 	"use strict";
 
 	var that = undefined;
 
-	return BaseController.extend("it.alteaup.supplier.portal.inboundDelivery.controller.OrderPositionDetail", {
+	return BaseController.extend("it.aupsup.inboundDelivery.controller.OrderPositionDetail", {
 
 		/**
 		 * Called when a controller is instantiated and its View controls (if available) are already created.
@@ -30,7 +30,7 @@ sap.ui.define([
 			// 	});
 			// 	// this.getView().setModel(oModelFilters, "filterElementJSONModel");
 
-			// 	this._oResponsivePopover = sap.ui.xmlfragment("it.alteaup.supplier.portal.inboundDelivery.fragments.FilterSorter", this);
+			// 	this._oResponsivePopover = sap.ui.xmlfragment("it.aupsup.inboundDelivery.fragments.FilterSorter", this);
 			// 	this._oResponsivePopover.setModel(oModelFilters, "filterElementJSONModel");
 			// }
 			// var oTable = this.getView().byId("ShedulersTable");
@@ -114,8 +114,8 @@ sap.ui.define([
 
 			that.loadObject(datas, function (oData) {
 				that.hideBusyDialog();
-				if (oData === null || oData === undefined) {} else {
-					that._completeInit("Display", oData, function () {});
+				if (oData === null || oData === undefined || oData.results === undefined) {} else {
+					that._completeInit("Display", oData.results, function () {});
 				}
 			});
 		},
@@ -130,8 +130,7 @@ sap.ui.define([
 
 		loadObject: function (sObjectId, fCompletion) {
 
-			var url = "/SupplierPortal_InboundDelivery/xsOdata/GetInboundSchedAndConf.xsjs?I_USERID=" + this.getCurrentUserId() +
-				"&I_EBELN=" + sObjectId.orderId + "&I_EBELP=" + sObjectId.posNumber;
+			var url = "/backend/InboundDeliveryManagement/GetSchedAndConf?I_EBELN=" + sObjectId.orderId + "&I_EBELP=" + sObjectId.posNumber;
 
 			that.showBusyDialog();
 			that.ajaxGet(url, function (oData) { // funzione generica su BaseController

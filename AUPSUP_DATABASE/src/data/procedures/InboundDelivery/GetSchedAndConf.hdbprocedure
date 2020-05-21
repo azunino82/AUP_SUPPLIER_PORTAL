@@ -1,0 +1,21 @@
+PROCEDURE "AUPSUP_DATABASE.data.procedures.InboundDelivery::GetSchedAndConf"(
+	IN userid VARCHAR(20),
+	IN ebeln NVARCHAR(10),
+	IN ebelp VARCHAR(5),
+	OUT T_EKKO "AUPSUP_DATABASE.data.structures.SchedulingAgreement::ET_SAG_EKKOStructure",
+	OUT T_EKPO "AUPSUP_DATABASE.data.structures.SchedulingAgreement::ET_SAG_EKPOStructure",
+	OUT T_EKES "AUPSUP_DATABASE.data.structures.SchedulingAgreement::ET_SAG_EKESStructure",
+	OUT T_EKET "AUPSUP_DATABASE.data.structures.SchedulingAgreement::ET_SAG_EKETStructure") 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	--DEFAULT SCHEMA <default_schema_name>
+	READS SQL DATA AS
+BEGIN
+
+	T_EKKO = SELECT * FROM "AUPSUP_DATABASE.data.tables::ET_SAG_EKKO" WHERE EBELN = :ebeln;
+	T_EKPO = SELECT * FROM "AUPSUP_DATABASE.data.tables::ET_SAG_EKPO" WHERE EBELN = :ebeln AND EBELP = :ebelp;
+	T_EKES = SELECT * FROM "AUPSUP_DATABASE.data.tables::ET_SAG_EKES" WHERE EBELN = :ebeln AND EBELP = :ebelp AND EBTYP IN 
+		(SELECT CAT_CONFERMA FROM "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" WHERE TIPO_CONFERMA = '2');
+	T_EKET = SELECT * FROM "AUPSUP_DATABASE.data.tables::ET_SAG_EKET" WHERE EBELN = :ebeln AND EBELP = :ebelp ORDER BY EINDT;
+
+END;
