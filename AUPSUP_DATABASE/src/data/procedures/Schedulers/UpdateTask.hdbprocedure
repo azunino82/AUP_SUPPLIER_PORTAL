@@ -1,5 +1,6 @@
 PROCEDURE "AUPSUP_DATABASE.data.procedures.Schedulers::UpdateTask" (
-    IN I_BSTYP NVARCHAR(1)
+    IN I_BSTYP NVARCHAR(1),
+    OUT NEW_ODA_FROM_ABAP "AUPSUP_DATABASE.data.tables::T_JOB_ODA_STATUS"
  )
    LANGUAGE SQLSCRIPT
    SQL SECURITY INVOKER AS
@@ -17,7 +18,7 @@ DECLARE I_RETPO_P_EXCL NVARCHAR(1);
 DECLARE I_WITH_EKES NVARCHAR(1);
 DECLARE I_WITH_EKET NVARCHAR(1); 
 
-DECLARE NEW_ODA_FROM_ABAP "AUPSUP_DATABASE.data.tables::T_JOB_ODA_STATUS";
+--DECLARE NEW_ODA_FROM_ABAP "AUPSUP_DATABASE.data.tables::T_JOB_ODA_STATUS";
 DECLARE CURRENT_SYSID NVARCHAR(30);
 DECLARE counterRow INTEGER;
 DECLARE userid VARCHAR(250);
@@ -61,7 +62,7 @@ IT_MATNR = SELECT * FROM #IT_MATNR;
 
 IT_WERKS = SELECT PLANT AS EWERK, '' AS DESCR FROM "AUPSUP_DATABASE.data.tables::T_BU_PLANT";
 IT_LIFNR = SELECT DISTINCT a.LIFNR as ELIFN FROM "AUPSUP_DATABASE.data.tables::T_METAID_FORN" AS a INNER JOIN (SELECT METAID FROM "AUPSUP_DATABASE.data.tables::T_METASUPPLIER_DATA" WHERE ATTIVO = 1) as b ON a.METAID = b.METAID;
---IT_BSTYP = SELECT 'F' AS BSTYP FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
+IT_BSTYP = SELECT I_BSTYP AS BSTYP FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
 IT_BSART = SELECT BSART AS ESART FROM "AUPSUP_DATABASE.data.tables::T_ORDERS_TYPES" WHERE SYSID = :CURRENT_SYSID and LISTA_ODA = 'X' and BSTYP IN (SELECT BSTYP FROM :IT_BSTYP);
 
 CALL "AUPSUP_DATABASE.data.virtualProcedures::VIRTUAL_MM00_SAG_DOC_LIST"(:IT_BSART,:IT_BSTYP,:IT_CUST_FIELDS,:IT_EBELN,:IT_EBELP,:IT_EKGRP,:IT_EKORG,:IT_LIFNR,:IT_MATNR,:IT_WERKS,'X','X','X','X','X','X',:I_EGLKZ_P_EXCL,:I_ELIKZ_P_EXCL,:I_LOEKZ_K_EXCL,:I_LOEKZ_P_EXCL,:I_MEMORY_EXCL,'X',:I_RETPO_P_EXCL,:ET_SAG_EKEH,:ET_SAG_EKEK,:ET_SAG_EKES,:ET_SAG_EKET,:ET_SAG_EKKO,:ET_SAG_EKPO);
@@ -114,7 +115,9 @@ DROP TABLE #IT_MATNR;
 
 /*Estraggo dai risultati tutte gli ODA che non avevo già salvato prima*/
 select CURRENT_TIMESTAMP INTO C_TIMESTAMP FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
-NEW_ODA_FROM_ABAP = SELECT EBELN, LIFNR, '' AS STATUS, :C_TIMESTAMP AS CREATION_DATE, null AS UPDATE_DATE FROM :ET_SAG_EKKO WHERE EBELN NOT IN (SELECT EBELN FROM "AUPSUP_DATABASE.data.tables::T_JOB_ODA_STATUS");
+NEW_ODA_FROM_ABAP = SELECT a.EBELN, a.EBELP, b.LIFNR, a.MATNR, '' AS STATUS, :C_TIMESTAMP AS CREATION_DATE, null AS UPDATE_DATE FROM :ET_SAG_EKPO as a 
+INNER JOIN :ET_SAG_EKKO as b ON a.EBELN = b.EBELN
+WHERE (a.EBELN,a.EBELP) NOT IN (SELECT EBELN, EBELP FROM "AUPSUP_DATABASE.data.tables::T_JOB_ODA_STATUS");
 
 -- LOG Numero righe aggiornate
 SELECT COUNT(*) INTO counterRow FROM :NEW_ODA_FROM_ABAP;
@@ -123,12 +126,18 @@ INSERT INTO "AUPSUP_DATABASE.data.tables::T_LOGS" (SERVICE_NAME,CALLED_METHOD,DA
  
 
 /*Aggiungo i nuovi ODA a quelli salvati*/
-INSERT INTO "AUPSUP_DATABASE.data.tables::T_JOB_ODA_STATUS" ("EBELN","LIFNR","STATUS","CREATION_DATE","UPDATE_DATE") SELECT * FROM :NEW_ODA_FROM_ABAP;
+IF I_BSTYP = 'F' THEN --ODA
+INSERT INTO "AUPSUP_DATABASE.data.tables::T_JOB_ODA_STATUS" ("EBELN","EBELP","LIFNR","MATNR","STATUS","CREATION_DATE","UPDATE_DATE") SELECT * FROM :NEW_ODA_FROM_ABAP;
+END IF;
+
+IF I_BSTYP = 'L' THEN --SAG
+INSERT INTO "AUPSUP_DATABASE.data.tables::T_JOB_SAG_STATUS" ("EBELN","EBELP","LIFNR","MATNR","STATUS","CREATION_DATE","UPDATE_DATE") SELECT * FROM :NEW_ODA_FROM_ABAP;
+END IF;
 
 	SELECT COUNT(*) INTO counterRow FROM :NEW_ODA_FROM_ABAP;
 	IF (counterRow>0) THEN 
 		BEGIN
-            DECLARE I_APP NVARCHAR(10);
+         /*   DECLARE I_APP NVARCHAR(10);
             DECLARE I_EVENT NVARCHAR(10);
             DECLARE I_NAVIGATION_INTENT NVARCHAR(255);
 			DECLARE CURSOR cursorODA FOR SELECT DISTINCT * FROM :NEW_ODA_FROM_ABAP;
@@ -147,21 +156,44 @@ INSERT INTO "AUPSUP_DATABASE.data.tables::T_JOB_ODA_STATUS" ("EBELN","LIFNR","ST
 			FOR cursorRow AS cursorODA DO
                 CALL "AUPSUP_DATABASE.data.procedures.Notifications::InsertNotification" ('JOB_ODA',:I_NAVIGATION_INTENT,cursorRow.EBELN,:I_APP,:I_EVENT,'','','IT',cursorRow.LIFNR,'','');
 			END FOR;
+            */
 			
-		/*Aggiorno gli stati sulla tabella*/
-		UPDATE
-            Table_A
-        SET
-            Table_A.EBELN = Table_B.EBELN,
-            Table_A.LIFNR = Table_B.LIFNR,
-                Table_A.STATUS = 'I',
-                    Table_A.CREATION_DATE = Table_B.CREATION_DATE,
-                        Table_A.UPDATE_DATE = :C_TIMESTAMP
-        FROM
-            "AUPSUP_DATABASE.data.tables::T_JOB_ODA_STATUS" AS Table_A
-            INNER JOIN :NEW_ODA_FROM_ABAP AS Table_B
-                ON Table_A.EBELN = Table_B.EBELN;
-		END;
+            /*Aggiorno gli stati sulla tabella*/
+            IF I_BSTYP = 'F' THEN --ODA
+                UPDATE
+                    Table_A
+                SET
+                    Table_A.EBELN = Table_B.EBELN,
+                    Table_A.EBELP = Table_B.EBELP,
+                    Table_A.LIFNR = Table_B.LIFNR,
+                    Table_A.MATNR = Table_B.MATNR,
+                        Table_A.STATUS = 'I',
+                            Table_A.CREATION_DATE = Table_B.CREATION_DATE,
+                                Table_A.UPDATE_DATE = :C_TIMESTAMP
+                FROM
+                    "AUPSUP_DATABASE.data.tables::T_JOB_ODA_STATUS" AS Table_A
+                    INNER JOIN :NEW_ODA_FROM_ABAP AS Table_B
+                        ON Table_A.EBELN = Table_B.EBELN AND Table_A.EBELP = Table_B.EBELP;
+
+            END IF;
+            
+            IF I_BSTYP = 'L' THEN --SAG
+                UPDATE
+                    Table_A
+                SET
+                    Table_A.EBELN = Table_B.EBELN,
+                    Table_A.EBELP = Table_B.EBELP,
+                    Table_A.LIFNR = Table_B.LIFNR,
+                    Table_A.MATNR = Table_B.MATNR,
+                        Table_A.STATUS = 'I',
+                            Table_A.CREATION_DATE = Table_B.CREATION_DATE,
+                                Table_A.UPDATE_DATE = :C_TIMESTAMP
+                FROM
+                    "AUPSUP_DATABASE.data.tables::T_JOB_SAG_STATUS" AS Table_A
+                    INNER JOIN :NEW_ODA_FROM_ABAP AS Table_B
+                        ON Table_A.EBELN = Table_B.EBELN AND Table_A.EBELP = Table_B.EBELP;
+            END IF;   
+        END;     
 	END IF;
 
 END
