@@ -18,7 +18,7 @@ sap.ui.define([
 		},
 
 		handleRoutePatternMatched: function (oEvent) {
-
+			that = this;
 			selectedSuppliers = oEvent.getParameter("arguments").suppliers;
 			var data = that.getOwnerComponent().getModel("defaultSupplier");
 
