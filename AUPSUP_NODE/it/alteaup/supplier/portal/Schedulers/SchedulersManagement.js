@@ -100,7 +100,7 @@ module.exports = function () {
             hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Schedulers::UpdateTask', function (_err, sp) {
               sp('L', (err, parameters, returns) => {
                 if (err) {
-                  console.error('SCHEDULER SAG LUVE ERROR: ' + err)
+                  console.error('SCHEDULER SAG LUVE ERROR: ' + stringifyObj(err))
                   // eslint-disable-next-line prefer-promise-reject-errors
                   reject()
                 } else {
