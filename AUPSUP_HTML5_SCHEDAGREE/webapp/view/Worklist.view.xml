@@ -125,6 +125,14 @@
 															<m:Title text="{= ${OrderJSONModel>/results}.length}" level="H2"/>
 															<m:ToolbarSpacer/>
 															<m:Button visible="false" id="headerFilterButton" tooltip="{i18n>clearFilter}" icon="sap-icon://clear-filter" press="onClearFilter" type="Transparent"/>
+															<m:HBox alignItems="Center" id="comboProfiliConferma" visible="false">
+																<m:Label text="{i18n>CAT_CONS}" class="labelSpace"/>
+																<m:ComboBox selectedKey="{ListProfiliConfermaJSONModel>/CAT_CONFERMA}" width="auto" change="onChangeProfiloConsegna"
+																	items="{ path: 'ListProfiliConfermaJSONModel>/results', sorter: { path: 'CAT_CONFERMA' } }">
+																	<core:Item key="{ListProfiliConfermaJSONModel>CAT_CONFERMA}"
+																		text="{ListProfiliConfermaJSONModel>CAT_CONFERMA} - {ListProfiliConfermaJSONModel>DESCRIZIONE}"/>
+																</m:ComboBox>
+															</m:HBox>												
 															<m:Button icon="sap-icon://excel-attachment" press="onExport" tooltip="{i18n>Export_Excel}"/>
 															<m:Button icon="sap-icon://vertical-grip" visible="true" press="onColumnSelection" tooltip="{i18n>personalization}"/>
 														</m:content>
@@ -179,7 +187,7 @@
 													</m:Column>
 												</m:columns>
 												<m:items>
-													<m:ColumnListItem type="Navigation" highlight="{path:'OrderJSONModel>Status'}">
+													<m:ColumnListItem type="Navigation">
 														<m:cells>
 															<m:CheckBox selected="{OrderJSONModel>isSelected}" editable= "{= ${OrderJSONModel>SKIP_NO_CONFERME} !== true}"/>
 															<m:Text text="{OrderJSONModel>EBELN}"/>
