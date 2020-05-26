@@ -1,0 +1,267 @@
+<mvc:View controllerName="it.alteaup.supplier.portal.inboundDelivery.controller.OrderPositions" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.uxap"
+	xmlns:layout="sap.ui.layout" xmlns:m="sap.m" xmlns:table="sap.ui.table" xmlns:f="sap.f" xmlns:core="sap.ui.core"
+	xmlns:personal="sap.uxap.sample.SharedBlocks.personal" xmlns:form="sap.ui.layout.form">
+	<m:Shell id="shell" appWidthLimited="false">
+		<m:App id="app">
+			<m:pages>
+				<m:Page id="object">
+					<m:customHeader>
+						<m:Bar>
+							<m:contentLeft>
+								<m:Text text="{DataJSONModel>/EBELN}"></m:Text>
+							</m:contentLeft>
+							<m:contentMiddle>
+								<m:Text text="{i18n>title}" class="sapMTitle sapMTitleStyleAuto sapMTitleMaxWidth"></m:Text>
+							</m:contentMiddle>
+						</m:Bar>
+					</m:customHeader>
+					<m:content>
+						<ObjectPageLayout id="ObjectPageLayout" showFooter="true">
+							<!--	<headerTitle>
+								<ObjectPageHeader id="headerForTest" headerDesign="Light" objectTitle="{DataJSONModel>/EBELN}" objectImageShape="Circle"></ObjectPageHeader>
+							</headerTitle> -->
+							<headerContent>
+								<core:Fragment fragmentName="it.alteaup.supplier.portal.inboundDelivery.fragments.DatiTestata" type="XML"/>
+							</headerContent>
+							<sections>
+								<ObjectPageSection showTitle="false">
+									<subSections>
+										<ObjectPageSubSection >
+											<m:Table id="OrderTable" items="{DataJSONModel>/OrderPositions/results}" itemPress="onRowSelectionChange" mode="MultiSelect">
+												<m:headerToolbar>
+													<m:OverflowToolbar>
+														<m:content>
+															<m:Title text="{i18n>orderPositionViewTitle}" level="H2"/>
+															<m:Title text="{= ${DataJSONModel>/OrderPositions/results}.length}" level="H2"/>
+															<m:ToolbarSpacer/>
+															<!--	<m:Button visible="false" id="headerFilterButton" tooltip="{i18n>clearFilter}" icon="sap-icon://clear-filter" press="onClearFilter"
+																type="Transparent"/>
+															<m:SearchField id="searchField" tooltip="{i18n>worklistSearchTooltip}" search="onGlobalFilter" width="auto"/>
+															-->
+															<m:HBox alignItems="Center">
+																<m:Label class="labelSpace" text="{i18n>CAT_CONS}"/>
+																<m:ComboBox selectedKey="{AllProfiliConfermaJSONModel>/CAT_CONFERMA}" width="auto" change="onChangeProfiloConsegna"
+																	items="{ path: 'AllProfiliConfermaJSONModel>/results', sorter: { path: 'CAT_CONFERMA' } }">
+																	<core:Item key="{AllProfiliConfermaJSONModel>CAT_CONFERMA}"
+																		text="{AllProfiliConfermaJSONModel>CAT_CONFERMA} - {AllProfiliConfermaJSONModel>DESCRIZIONE}"/>
+																</m:ComboBox>
+															</m:HBox>
+														</m:content>
+													</m:OverflowToolbar>
+												</m:headerToolbar>
+												<m:columns>
+													<m:Column id="SYSID" visible="false" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>SYSID}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="EBELN" visible="false" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>EBELN}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="EBELP" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>EBELP}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="MATNR" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>MATNR}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="TXZ01" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>TXZ01}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="IDNLF" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>IDNLF}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="MENGE" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>MENGE}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="MEINS" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>MEINS}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="NETPR" visible="false" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>NETPR}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="PEINH" visible="false" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>PEINH}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="BPRME" visible="false" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>BPRME}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="BPUMZ" visible="false" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>BPUMZ}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="BPUMN" visible="false" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>BPUMN}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="UMREZ" visible="false" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>UMREZ}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="UMREN" visible="false" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>UMREN}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="WERKS" visible="false" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>WERKS}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="SCHPR" visible="false" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>SCHPR}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="KANBA" visible="false" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>KANBA}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="HANDOVERLOC" visible="false" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>HANDOVERLOC}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="BSTAE" visible="false" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>BSTAE}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="MAHNZ" visible="false" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>MAHNZ}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="MAHN1" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>MAHN1}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="MAHN2" visible="false" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>MAHN2}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="MAHN3" visible="false" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>MAHN3}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="UEBTO" visible="false" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>UEBTO}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="UEBTK" visible="false" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>UEBTK}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="UNTTO" visible="false" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>UNTTO}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="PSTYP" visible="false" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>PSTYP}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="KNTTP" visible="false" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>KNTTP}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="RETPO" visible="false" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>RETPO}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="KZABS" visible="false" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>KZABS}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="LABNR" visible="false" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>LABNR}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="KONNR" visible="false" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>KONNR}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="KTPNR" visible="false" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>KTPNR}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="ABDAT" visible="false" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>ABDAT}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="ABFTZ" visible="false" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>ABFTZ}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="ETFZ1" visible="false" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>ETFZ1}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="ETFZ2" visible="false" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>ETFZ2}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="BSTYP" visible="false" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>BSTYP}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="ZGTYP" visible="false" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>ZGTYP}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="EAN11" visible="false" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>EAN11}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="INCO1" visible="false" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>INCO1}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="INCO2" visible="false" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>INCO2}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="MFRPN" visible="false" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>MFRPN}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="MFRNR" visible="false" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>MFRNR}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="EMNFR" visible="false" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>EMNFR}" class="columnLabelStyle"/>
+													</m:Column>
+													<m:Column id="PLANT" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>WERKS}" class="columnLabelStyle"/>
+													</m:Column>
+												</m:columns>
+												<m:items>
+													<m:ColumnListItem type="Navigation" highlight="{path:'DataJSONModel>POS_STATUS', formatter:'.formatRowHighlight'}">
+														<m:cells>
+															<m:Text text="{DataJSONModel>SYSID}"/>
+															<m:Text text="{DataJSONModel>EBELN}"/>
+															<m:Text text="{DataJSONModel>EBELP}"/>
+															<m:Text text="{DataJSONModel>MATNR}"/>
+															<m:Text text="{DataJSONModel>TXZ01}"/>
+															<m:Text text="{DataJSONModel>IDNLF}"/>
+															<m:Text text="{DataJSONModel>MENGE}"/>
+															<m:Text text="{DataJSONModel>MEINS}"/>
+															<m:Text text="{DataJSONModel>NETPR}"/>
+															<m:Text text="{DataJSONModel>PEINH}"/>
+															<m:Text text="{DataJSONModel>BPRME}"/>
+															<m:Text text="{DataJSONModel>BPUMZ}"/>
+															<m:Text text="{DataJSONModel>BPUMN}"/>
+															<m:Text text="{DataJSONModel>UMREZ}"/>
+															<m:Text text="{DataJSONModel>UMREN}"/>
+															<m:Text text="{DataJSONModel>WERKS}"/>
+															<m:Text text="{DataJSONModel>SCHPR}"/>
+															<m:Text text="{DataJSONModel>KANBA}"/>
+															<m:Text text="{DataJSONModel>HANDOVERLOC}"/>
+															<m:Text text="{DataJSONModel>BSTAE}"/>
+															<m:Text text="{DataJSONModel>MAHNZ}"/>
+															<m:Text text="{DataJSONModel>MAHN1}"/>
+															<m:Text text="{DataJSONModel>MAHN2}"/>
+															<m:Text text="{DataJSONModel>MAHN3}"/>
+															<m:Text text="{DataJSONModel>UEBTO}"/>
+															<m:Text text="{DataJSONModel>UEBTK}"/>
+															<m:Text text="{DataJSONModel>UNTTO}"/>
+															<m:Text text="{DataJSONModel>PSTYP}"/>
+															<m:Text text="{DataJSONModel>KNTTP}"/>
+															<m:Text text="{DataJSONModel>RETPO}"/>
+															<m:Text text="{DataJSONModel>KZABS}"/>
+															<m:Text text="{DataJSONModel>LABNR}"/>
+															<m:Text text="{DataJSONModel>KONNR}"/>
+															<m:Text text="{DataJSONModel>KTPNR}"/>
+															<m:Text text="{DataJSONModel>ABDAT}"/>
+															<m:Text text="{DataJSONModel>ABFTZ}"/>
+															<m:Text text="{DataJSONModel>ETFZ1}"/>
+															<m:Text text="{DataJSONModel>ETFZ2}"/>
+															<m:Text text="{DataJSONModel>BSTYP}"/>
+															<m:Text text="{DataJSONModel>ZGTYP}"/>
+															<m:Text text="{DataJSONModel>EAN11}"/>
+															<m:Text text="{DataJSONModel>INCO1}"/>
+															<m:Text text="{DataJSONModel>INCO2}"/>
+															<m:Text text="{DataJSONModel>MFRPN}"/>
+															<m:Text text="{DataJSONModel>MFRNR}"/>
+															<m:Text text="{DataJSONModel>EMNFR}"/>
+															<m:Text text="{DataJSONModel>DESCR_EWERK}"/>
+															<!--<core:Icon src="sap-icon://status-completed" color="{path:'DataJSONModel>POS_STATUS', formatter: 'STATO.formatter.getColor'}"></core:Icon>	-->
+														</m:cells>
+													</m:ColumnListItem>
+												</m:items>
+											</m:Table>
+										</ObjectPageSubSection>
+									</subSections>
+								</ObjectPageSection>
+							</sections>
+							<footer>
+								<m:Toolbar visible="{VisibilityJSONModel>/isSupplier}">
+									<m:ToolbarSpacer/>
+									<m:Button type="Accept" text="{i18n>Confirm}" press="onConfirmPositions"/>
+									<!--<m:Button type="Reject" text="Reject"/>-->
+								</m:Toolbar>
+							</footer>
+						</ObjectPageLayout>
+					</m:content>
+				</m:Page>
+			</m:pages>
+		</m:App>
+	</m:Shell>
+</mvc:View>

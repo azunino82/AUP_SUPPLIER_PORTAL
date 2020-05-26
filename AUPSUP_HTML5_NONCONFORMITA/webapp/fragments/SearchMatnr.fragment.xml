@@ -39,8 +39,8 @@
 					<items>
 						<ColumnListItem>
 							<cells>
-								<Text text="{MatnrJSONModel>CODE}"/>
-								<Text text="{MatnrJSONModel>DESCR}"/>
+								<Text text="{MatnrJSONModel>materialCode}"/>
+								<Text text="{MatnrJSONModel>materialDescr}"/>
 							</cells>
 						</ColumnListItem>
 					</items>

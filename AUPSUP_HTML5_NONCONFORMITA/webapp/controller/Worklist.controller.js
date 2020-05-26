@@ -37,8 +37,7 @@ sap.ui.define([
 					"qmnum": startupParams.objectId[0],
 					"qmart": [],
 					"qmart_stat": [],
-					"spras": sap.ui.getCore().getConfiguration().getLanguage() !== undefined ? sap.ui.getCore().getConfiguration().getLanguage().toUpperCase()
-						.charAt(0) : "I" // TODO da prendere dall'utente
+					"spras": that.getLanguage()
 				};
 
 				var url = "/backend/QualityManagement/GetNotificationList";
@@ -79,8 +78,7 @@ sap.ui.define([
 				"bu": "",
 				"qmart": [],
 				"qmart_stat": [],
-				"spras": sap.ui.getCore().getConfiguration().getLanguage() !== undefined ? sap.ui.getCore().getConfiguration().getLanguage().toUpperCase()
-					.charAt(0) : "I" // TODO da prendere dall'utente
+				"spras": that.getLanguage()
 			};
 
 			var oModel = new JSONModel();
@@ -272,13 +270,13 @@ sap.ui.define([
 			var oItems = oTable.getItems();
 
 			var body = {
-				"userid": that.getCurrentUserId(),
 				"matnr": "",
 				"maktx": ""
 			};
 			var oModelMT = new JSONModel();
 			oModelMT.setData(body);
 			this.getView().setModel(oModelMT, "MatnrSearchJSONModel");
+			this.getView().getModel("MatnrJSONModel").setData(null);
 
 		},
 		onCloseSearchMatnr: function () {
@@ -448,8 +446,7 @@ sap.ui.define([
 							"it_viqmma": [],
 							"it_viqmsm": [],
 							"it_viqmur": [],
-							"i_notif": that.getModel("DetailJSONModel").getData().QMNUM,
-							"userid": that.getCurrentUserId()
+							"i_notif": that.getModel("DetailJSONModel").getData().QMNUM
 						};
 						// Valorizzo Modifiche di posizione  -- DA RICONTROLLARE 17.12.2019
 						var viqmfeRow = that.getModel("DetailJSONModel").getData().P_DEFECTS;
@@ -656,25 +653,26 @@ sap.ui.define([
 				//var vContent = e.currentTarget.result.replace("data:" + file.type + ";base64,", "");
 				var vContent = e.currentTarget.result.split(',');
 				vContent = vContent[1];
+				var fd = new FormData();
+				fd.append( 'file', file );
 				var url = "/backend/DocumentManagement/DocUpload?I_CLASSIFICATION=REP_8D&I_APPLICATION=NC&I_FILE_NAME=" + file.name + "&I_OBJECT_CODE=" + selctedRowdata.QMNUM + "&I_WERKS=" +
 					selctedRowdata.MAWERK + "&I_LIFNR=" + selctedRowdata.LIFNUM;
 
 				that.showBusyDialog();
 				jQuery.ajax({
 					url: url,
-					data: vContent, //e.currentTarget.result,
+					data: fd, //e.currentTarget.result,
 					method: 'POST',
 					cache: false,
 					contentType: false,
 					processData: false,
 					success: function (data) {
 						that.hideBusyDialog();
-						data = jQuery.parseJSON(data);
-						if (data && data.docId) {
+						if (data && data.results && data.results.docId) {
 							MessageBox.success(that.getResourceBundle().getText("OK_Upload"));
 						} else {
-							if (data && data.message) {
-								MessageBox.error(data.message);
+							if (data && data.results && data.results.message) {
+								MessageBox.error(data.results.message);
 							}
 						}
 					},
