@@ -22,20 +22,8 @@
 					},
 					"semanticObject": "ApproveSchedAgree",
 					"action": "Display",
-<<<<<<< HEAD
 					"title": "{{appTitle}}",
-<<<<<<< HEAD
 					"icon": "sap-icon://validate"
-=======
-					"indicatorDataSource": {
-						"dataSource": "mainService",
-						"path": "count",
-						"refresh": 1000
-					}
->>>>>>> e1d28c0db13ae92a55fa2725297b46d85f1a44bf
-=======
-					"title": "{{appTitle}}"
->>>>>>> b01ff3940e92241954648a608eb8811b4b1d84dc
 				}
 			}
 		}
