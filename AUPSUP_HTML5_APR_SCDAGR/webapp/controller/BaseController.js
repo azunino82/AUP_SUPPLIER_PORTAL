@@ -221,7 +221,27 @@ sap.ui.define([
 				return sValue.substring(n, sValue.length);
 			}
 			return sValue
+		},
+
+		getLanguage: function () {
+			if (sap.ui.getCore().getConfiguration().getLanguage() !== undefined && sap.ui.getCore().getConfiguration().getLanguage() === 'it') {
+				return 'I';
+			}
+			if (sap.ui.getCore().getConfiguration().getLanguage() !== undefined && sap.ui.getCore().getConfiguration().getLanguage() === 'it-IT') {
+				return 'I';
+			}			
+			if (sap.ui.getCore().getConfiguration().getLanguage() !== undefined && sap.ui.getCore().getConfiguration().getLanguage() === 'en') {
+				return 'E';
+			}
+			if (sap.ui.getCore().getConfiguration().getLanguage() !== undefined && sap.ui.getCore().getConfiguration().getLanguage() === 'en-EN') {
+				return 'E';
+			}			
+			if (sap.ui.getCore().getConfiguration().getLanguage() !== undefined && sap.ui.getCore().getConfiguration().getLanguage() === 'de') {
+				return 'D';
+			}
+			return 'E'
 		}
+
 
 	});
 });

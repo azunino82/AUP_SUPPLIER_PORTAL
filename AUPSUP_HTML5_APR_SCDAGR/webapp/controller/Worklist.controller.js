@@ -1010,7 +1010,7 @@ sap.ui.define([
 			var mod = that.getModel("SchedAgreeJSONModel").getProperty(oPath);
 
 			var url = "/backend/SchedulingAgreementManagement/GetConfermeRifiutiForQuant?I_EBELN=" + mod.EBELN +
-				"&I_EBELP=" + mod.EBELP + "&I_BSTYP=" + mod.BSTYP;
+				"&I_EBELP=" + mod.EBELP + "&I_BSTYP=" + mod.BSTYP + "&I_SPRAS=" + that.getLanguage();
 			this.showBusyDialog();
 			that.ajaxGet(url, function (oData) { // funzione generica su BaseController
 				that.hideBusyDialog();
