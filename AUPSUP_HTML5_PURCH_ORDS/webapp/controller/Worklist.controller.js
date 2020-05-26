@@ -2311,6 +2311,8 @@ sap.ui.define([
 					oData.EBELP = selectedRowdata.EBELP
 					oData.EBELN = selectedRowdata.EBELN
 
+					oData.ordineTestata=selectedRowdata.EBELN;
+
 					var oModel = new JSONModel();
 					oModel.setData(oData);
 					var oComponent = that.getOwnerComponent();

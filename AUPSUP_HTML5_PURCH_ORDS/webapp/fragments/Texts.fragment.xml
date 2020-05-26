@@ -10,7 +10,7 @@
 			<content>
 				<FlexBox alignItems="Start" justifyContent="Center">
 					<items>
-						<Title text="{i18n>Header} - {TextsJSONModel>/header_texts/results/0/EBELN}" titleStyle="H2"/>
+						<Title text="{i18n>Header} - {TextsJSONModel>/ordineTestata}" titleStyle="H2"/>
 					</items>
 				</FlexBox>
 				<VBox height="10px"></VBox>
