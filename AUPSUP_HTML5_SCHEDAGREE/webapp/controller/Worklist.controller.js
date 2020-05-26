@@ -127,7 +127,7 @@ sap.ui.define([
 				//that.getUserInfo();
 				that.getMetasupplier();
 				that.getPurchaseGroup();
-				that.getAllProfiliConsegna();
+
 
 				// Inizio modifiche LS
 				var filterOrd = {
@@ -141,15 +141,15 @@ sap.ui.define([
 					"werks": [],
 					//	"bstae": "",
 					"ebtyp": "",
-					"orderType": "ODA"
+					"orderType": "ODA",
+					"spras": that.getLanguage()
 				};
-
-				// Default LIFNR
 
 				var oModelFI = new JSONModel();
 				oModelFI.setData(filterOrd);
 				this.getView().setModel(oModelFI, "filterOrdersJSONModel");
-				// Fine modifiche LS
+
+				that.getAllProfiliConsegna();
 
 				if (!this._oResponsivePopover) {
 
@@ -660,8 +660,19 @@ sap.ui.define([
 								}
 							}
 						}
-						if (!trovato)
-							outArr.push(oData.results[j]);
+						if (!trovato) {
+							if (oData.results[j].TIPO_CONFERMA === "1")
+								outArr.push(oData.results[j]);
+						}
+					}
+
+					// metto nei parametri di filtro il 1° elemento della lista dei profili (come default generico)
+					if (outArr.length > 0) {
+						that.getModel("filterOrdersJSONModel").getData().ebtyp = outArr[0].CAT_CONFERMA;
+					}
+					// se ho 1 solo profilo conferma metto invisibile la combobox della worklist
+					if (outArr.length <= 1) {
+						that.getView().byId('comboProfiliConferma').setVisible(false);
 					}
 
 					var oModel = new JSONModel();
@@ -697,6 +708,7 @@ sap.ui.define([
 				that.getModel("filterOrdersJSONModel").getData().ekorg = '';
 				that.getModel("filterOrdersJSONModel").getData().ekgrp = '';
 				that.getModel("filterOrdersJSONModel").getData().werks = '';
+				that.getModel("filterOrdersJSONModel").getData().spras = that.getLanguage()
 			}
 			if (that.getModel("MetasupplierJSONModel") !== undefined && that.getModel("MetasupplierJSONModel").getData() !== undefined) {
 				that.getModel("MetasupplierJSONModel").getData().METAID = '';
@@ -2006,15 +2018,25 @@ sap.ui.define([
 		},
 
 		onSetSchedulationStatus: function (oValue) {
-			if (oValue === "G") {
-				return "Success";
-			} else if (oValue === "O") {
-				return "Indication03";
+			if (oValue === "L") {
+				return "Indication04";
+			} else if (oValue === "ML") {
+				return "Indication05";
 			} else {
-				if (oValue === "R") {
-					return "Indication02";
-				} else
-					return "None";
+				if (oValue === "M") {
+					return "Indication03";
+				} else {
+					if (oValue === "MH") {
+						return "Indication02";
+					} else {
+						if (oValue === "H") {
+							return "Indication01";
+						} else {
+							return null
+						}
+					}
+				}
+
 			}
 		},
 
@@ -2534,7 +2556,7 @@ sap.ui.define([
 					if (oModel.oData.length > 0)
 						oSelectDialog1.open();
 
-				}else{
+				} else {
 					MessageBox.error(that.getResourceBundle().getText("ERR_file_not_found"));
 				}
 			});
