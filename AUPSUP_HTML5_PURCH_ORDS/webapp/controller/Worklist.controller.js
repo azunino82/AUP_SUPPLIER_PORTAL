@@ -2447,7 +2447,7 @@ sap.ui.define([
 			var url = "/backend/DocumentManagement/getDocumentTypes?I_APPLICATION=ODA";
 
 			that.ajaxGet(url, function (oData) {
-				if (oData) {
+				if (oData && oData.length > 0) {
 					var oModel = new JSONModel();
 					oModel.setData(oData);
 					var oComponent = that.getOwnerComponent();
@@ -2542,6 +2542,8 @@ sap.ui.define([
 					if (oModel.oData.length > 0)
 						oSelectDialog1.open();
 
+				}else{
+					MessageBox.error(that.getResourceBundle().getText("ERR_file_not_found"));
 				}
 			});
 
