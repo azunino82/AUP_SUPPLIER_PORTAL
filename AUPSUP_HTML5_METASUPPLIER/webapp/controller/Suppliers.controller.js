@@ -42,13 +42,14 @@ sap.ui.define([
 		},
 
 		handleRoutePatternMatched: function (oEvent) {
-
+			that = this;
 			//MOCK DATA 
 			var data = [];
 
 			var jsonModel = new sap.ui.model.json.JSONModel();
 			jsonModel.setData(data);
 			that.getView().byId("idSuppliersTable").setModel(jsonModel, "tableModelSuppliers");
+			that.getView().byId("idSuppliersTable").getModel().refresh();
 			//END MOCK DATA
 		},
 
@@ -151,7 +152,7 @@ sap.ui.define([
 				oDialog.open();
 			} else if (selectedItems.length === 1) {
 				var path = selectedItems[0].getBindingContext("tableModelSuppliers").getPath();
-				var selectedSuppliers = oModel.getProperty(path).LIFNR + "-" + oModel.getProperty(path).NAME1 + ",";
+				var selectedSuppliers = oModel.getProperty(path).LIFNR + "-" + oModel.getProperty(path).NAME1.replace('/','') + ",";
 				that.getOwnerComponent().setModel(oModel.getProperty(path), "defaultSupplier");
 				that.getOwnerComponent().getRouter().navTo("RouteCreateMetasuppliers", {
 					suppliers: selectedSuppliers
