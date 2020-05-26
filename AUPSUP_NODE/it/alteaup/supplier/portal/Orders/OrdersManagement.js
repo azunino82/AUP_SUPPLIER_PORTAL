@@ -37,7 +37,9 @@ module.exports = function () {
             var matnr = []
             var werks = []
             var bstyp = []
+            var spras = 'I'
             var userid = req.user.id
+            var ebtyp = 'AB'
 
             if (body.bstyp !== null && body.bstyp !== undefined && body.bstyp !== '') {
                 var oBstyp = []
@@ -62,6 +64,14 @@ module.exports = function () {
                 }
                 lifnr = oLifnr
             }
+
+            if (body.spras !== null && body.spras !== undefined && body.spras !== '') {
+                spras = body.spras
+            }
+
+            if (body.ebtyp !== null && body.ebtyp !== undefined && body.ebtyp !== '') {
+                ebtyp = body.ebtyp
+            }            
 
             if (body.ebeln !== null && body.ebeln !== undefined && body.ebeln !== '') {
                 ebeln.push({
@@ -124,7 +134,7 @@ module.exports = function () {
                         if (_err) {
                             console.log('---->>> CLIENT END ERR MM00_SAG_DOC_LIST <<<<<-----')
                         }
-                        sp(userid, lifnr, ebeln, ebelp, ekorg, matnr, ekgrp, werks, bstyp, (err, parameters, ET_SAG_EKEH, ET_SAG_EKEK, ET_SAG_EKES, ET_SAG_EKET, ET_SAG_EKKO, ET_SAG_EKPO, OUT_POS_ORDERS) => {
+                        sp(userid, lifnr, ebeln, ebelp, ekorg, matnr, ekgrp, werks, bstyp, spras, ebtyp, 'ODA', (err, parameters, ET_SAG_EKEH, ET_SAG_EKEK, ET_SAG_EKES, ET_SAG_EKET, ET_SAG_EKKO, ET_SAG_EKPO, OUT_POS_ORDERS) => {
                             console.log('---->>> CLIENT END MM00_SAG_DOC_LIST <<<<<-----')
                             client.close()
                             if (err) {
@@ -140,7 +150,7 @@ module.exports = function () {
                                 if (OUT_POS_ORDERS !== undefined && OUT_POS_ORDERS !== null && OUT_POS_ORDERS.length > 0) {
                                     for (var i = 0; i < OUT_POS_ORDERS.length; i++) {
                                         var objectCopy = OUT_POS_ORDERS[i]
-                                        console.log('SKIP_NO_CONFERME: ' + objectCopy.SKIP_NO_CONFERME)
+                                //        console.log('SKIP_NO_CONFERME: ' + objectCopy.SKIP_NO_CONFERME)
                                         if (objectCopy.SKIP_NO_CONFERME !== null) {
                                             if (objectCopy.SKIP_NO_CONFERME === 'X') {
                                                 objectCopy.SKIP_NO_CONFERME = true
@@ -148,7 +158,7 @@ module.exports = function () {
                                             objectCopy.PRIMO_PERIODO = '?'
                                         } else {
                                             if (objectCopy.P1_PROGR_RIC !== null) {
-                                                console.log('LS P1_PROGR_RIC: ' + objectCopy.P1_PROGR_RIC)
+                                  //              console.log('LS P1_PROGR_RIC: ' + objectCopy.P1_PROGR_RIC)
                                                 objectCopy.PRIMO_PERIODO = parseFloat(objectCopy.P1_PROGR_RIC) > 0 ? ((parseFloat(objectCopy.P1_PROGR_CONF) / parseFloat(objectCopy.P1_PROGR_RIC)) * 100).toFixed(2) : 0
                                             } else {
                                                 objectCopy.PRIMO_PERIODO = 0
@@ -158,7 +168,7 @@ module.exports = function () {
                                             objectCopy.SECONDO_PERIODO = '?'
                                         } else {
                                             if (objectCopy.P2_PROGR_RIC !== null) {
-                                                console.log('LS P1_PROGR_RIC: ' + objectCopy.P2_PROGR_RIC)
+                                    //            console.log('LS P1_PROGR_RIC: ' + objectCopy.P2_PROGR_RIC)
                                                 objectCopy.SECONDO_PERIODO = parseFloat(objectCopy.P2_PROGR_RIC) > 0 ? ((parseFloat(objectCopy.P2_PROGR_CONF) / parseFloat(objectCopy.P2_PROGR_RIC)) * 100).toFixed(2) : 0
                                             } else {
                                                 objectCopy.SECONDO_PERIODO = 0

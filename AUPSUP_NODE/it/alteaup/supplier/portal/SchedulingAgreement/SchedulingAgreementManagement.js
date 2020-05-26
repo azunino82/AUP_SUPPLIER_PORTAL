@@ -39,6 +39,8 @@ module.exports = function () {
             var werks = []
             var bstyp = []
             var userid = req.user.id
+            var spras = 'I'
+            var ebtyp = 'AB'
 
             if (body.bstyp !== null && body.bstyp !== undefined && body.bstyp !== '') {
                 var oBstyp = []
@@ -52,7 +54,7 @@ module.exports = function () {
 
             if (bstyp.length === 0) {
                 return res.status(500).send('bstyp is mandatory')
-            }         
+            }
 
             if (body.lifnr !== null && body.lifnr !== undefined && body.lifnr !== '') {
                 var oLifnr = []
@@ -75,6 +77,15 @@ module.exports = function () {
                     EBELP: body.ebelp
                 })
             }
+
+            if (body.spras !== null && body.spras !== undefined && body.spras !== '') {
+                spras = body.spras
+            }
+
+            if (body.ebtyp !== null && body.ebtyp !== undefined && body.ebtyp !== '') {
+                ebtyp = body.ebtyp
+            }
+
             if (body.ekorg !== null && body.ekorg !== undefined && body.ekorg.length > 0) {
                 var oEkorg = []
                 // eslint-disable-next-line no-redeclare
@@ -126,11 +137,11 @@ module.exports = function () {
                         if (_err) {
                             console.log('---->>> CLIENT END ERR MM00_SAG_DOC_LIST <<<<<-----')
                         }
-                        sp(userid, lifnr, ebeln, ebelp, ekorg, matnr, ekgrp, werks, bstyp, (err, parameters, ET_SAG_EKEH, ET_SAG_EKEK, ET_SAG_EKES, ET_SAG_EKET, ET_SAG_EKKO, ET_SAG_EKPO, OUT_POS_PIANI_CONS) => {
+                        sp(userid, lifnr, ebeln, ebelp, ekorg, matnr, ekgrp, werks, bstyp, spras, ebtyp, 'SAG', (err, parameters, ET_SAG_EKEH, ET_SAG_EKEK, ET_SAG_EKES, ET_SAG_EKET, ET_SAG_EKKO, ET_SAG_EKPO, OUT_POS_PIANI_CONS) => {
                             console.log('---->>> CLIENT END MM00_SAG_DOC_LIST <<<<<-----')
                             client.close()
                             if (err) {
-                                console.error('ERROR: ' + err)
+                                console.error('ERROR: ' + stringifyObj(err))
                                 return res.status(500).send(stringifyObj(err))
                             } else {
                                 var t_ekpo = []
@@ -138,29 +149,33 @@ module.exports = function () {
                                 var t_eket = []
                                 var t_ekeh = []
                                 var t_ekek = []
-                                console.log('OUT_POS_PIANI_CONS: ' + stringifyObj(err))
+                             //   console.log('OUT_POS_PIANI_CONS: ' + stringifyObj(err))
                                 if (OUT_POS_PIANI_CONS !== undefined && OUT_POS_PIANI_CONS !== null && OUT_POS_PIANI_CONS.length > 0) {
                                     for (var i = 0; i < OUT_POS_PIANI_CONS.length; i++) {
                                         var objectCopy = OUT_POS_PIANI_CONS[i]
-                                        console.log('SKIP_NO_CONFERME: ' + objectCopy.SKIP_NO_CONFERME)
+                               //         console.log('SKIP_NO_CONFERME: ' + objectCopy.SKIP_NO_CONFERME)
                                         if (objectCopy.SKIP_NO_CONFERME !== null) {
                                             if (objectCopy.SKIP_NO_CONFERME === 'X') {
                                                 objectCopy.SKIP_NO_CONFERME = true
                                             }
                                             objectCopy.PRIMO_PERIODO = '?'
                                         } else {
-                                            if (objectCopy.P1_PROGR_RIC !== null) {
-                                                console.log('LS P1_PROGR_RIC: ' + objectCopy.P1_PROGR_RIC)
-                                                objectCopy.PRIMO_PERIODO = parseFloat(objectCopy.P1_PROGR_RIC) > 0 ? ((parseFloat(objectCopy.P1_PROGR_CONF) / parseFloat(objectCopy.P1_PROGR_RIC)) * 100).toFixed(2) : 0
+                                            if (objectCopy.P1_PROGR_RIC === null || parseFloat(objectCopy.P1_PROGR_RIC) === 0) {
+                                                objectCopy.PRIMO_PERIODO = 100
                                             } else {
-                                                objectCopy.PRIMO_PERIODO = 0
+                                                if (objectCopy.P1_PROGR_RIC !== null) {
+                                 //                   console.log('LS P1_PROGR_RIC: ' + objectCopy.P1_PROGR_RIC)
+                                                    objectCopy.PRIMO_PERIODO = parseFloat(objectCopy.P1_PROGR_RIC) > 0 ? ((parseFloat(objectCopy.P1_PROGR_CONF) / parseFloat(objectCopy.P1_PROGR_RIC)) * 100).toFixed(2) : 0
+                                                } else {
+                                                    objectCopy.PRIMO_PERIODO = 0
+                                                }
                                             }
                                         }
                                         if (objectCopy.SKIP_NO_CONFERME !== null) {
                                             objectCopy.SECONDO_PERIODO = '?'
                                         } else {
                                             if (objectCopy.P2_PROGR_RIC !== null) {
-                                                console.log('LS P1_PROGR_RIC: ' + objectCopy.P2_PROGR_RIC)
+                                         //       console.log('LS P1_PROGR_RIC: ' + objectCopy.P2_PROGR_RIC)
                                                 objectCopy.SECONDO_PERIODO = parseFloat(objectCopy.P2_PROGR_RIC) > 0 ? ((parseFloat(objectCopy.P2_PROGR_CONF) / parseFloat(objectCopy.P2_PROGR_RIC)) * 100).toFixed(2) : 0
                                             } else {
                                                 objectCopy.SECONDO_PERIODO = 0
@@ -298,254 +313,254 @@ module.exports = function () {
 
             for (var j = 0; j < ordPos.length; j++) {
                 promiseAll.push(new Promise((resolve, reject) => {
-                var objectCopy = ordPos[j]
+                    var objectCopy = ordPos[j]
 
-                hdbext.createConnection(req.tenantContainer, (err, client) => {
-                    if (err) {
-                        return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
-                    } else {
-                        // 1) TORNARE LA LISTA DELLE EKET E EKEH con data < data estrazione + gg inseriti su tabella Ordini di Acquisto
-                        hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.SchedulingAgreement::GetSchedulationForSAG', function (_err, sp) {
-                            console.error('ERROR CONNECTION :' + stringifyObj(_err))
-                            if (_err) {
-                                console.log('---->>> CLIENT END ERR GetSchedulationForSAG <<<<<-----')
-                                reject('reject')
-                            }
-                            sp(userid, objectCopy.EBELN, objectCopy.EBELP, objectCopy.BSTYP, objectCopy.BSART, '', [], (err, parameters, results) => {
-                                console.log('---->>> CLIENT END GetSchedulationForSAG <<<<<-----')
-                                client.close()
-                                if (err) {
-                                    console.error('ERROR GetSchedulationForSAG: ' + stringifyObj(err))
+                    hdbext.createConnection(req.tenantContainer, (err, client) => {
+                        if (err) {
+                            return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
+                        } else {
+                            // 1) TORNARE LA LISTA DELLE EKET E EKEH con data < data estrazione + gg inseriti su tabella Ordini di Acquisto
+                            hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.SchedulingAgreement::GetSchedulationForSAG', function (_err, sp) {
+                                console.error('ERROR CONNECTION :' + stringifyObj(_err))
+                                if (_err) {
+                                    console.log('---->>> CLIENT END ERR GetSchedulationForSAG <<<<<-----')
                                     reject('reject')
-                                } else {
-                                    console.log('OK GetSchedulationForSAG: ' + (stringifyObj(results)))
+                                }
+                                sp(userid, objectCopy.EBELN, objectCopy.EBELP, objectCopy.BSTYP, objectCopy.BSART, '', [], (err, parameters, results) => {
+                                    console.log('---->>> CLIENT END GetSchedulationForSAG <<<<<-----')
+                                    client.close()
+                                    if (err) {
+                                        console.error('ERROR GetSchedulationForSAG: ' + stringifyObj(err))
+                                        reject('reject')
+                                    } else {
+                                        console.log('OK GetSchedulationForSAG: ' + (stringifyObj(results)))
 
-                                    objectCopy.SchedulationsStatus = results
+                                        objectCopy.SchedulationsStatus = results
 
-                                    hdbext.createConnection(req.tenantContainer, (err, client) => {
-                                        if (err) {
-                                            reject('reject')
-                                        } else {
-                                            // Prendo le RMO per fare i calcoli a front-end
-                                            hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.SchedulingAgreement::GetConfirms', function (_err, sp) {
-                                                console.error('ERROR CONNECTION :' + stringifyObj(_err))
-                                                if (_err) {
-                                                    console.log('---->>> CLIENT END ERR <<<<<-----')
-                                                    reject('reject')
-                                                    client.close()
-                                                }
-                                                sp(userid, objectCopy.EBELN, objectCopy.EBELP, lifnr, ekorg, matnr, ekgrp, werks, (err, parameters, ET_RETURN_EKKO_EKPO, ET_RETURN_EKES_EKET, ET_RETURN_EKEH_EKEK) => {
-                                                    console.log('---->>> CLIENT END GetConfirms<<<<<-----')
-                                                    client.close()
-                                                    if (err) {
-                                                        console.error('ERROR GetConfirms: ' + stringifyObj(err))
+                                        hdbext.createConnection(req.tenantContainer, (err, client) => {
+                                            if (err) {
+                                                reject('reject')
+                                            } else {
+                                                // Prendo le RMO per fare i calcoli a front-end
+                                                hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.SchedulingAgreement::GetConfirms', function (_err, sp) {
+                                                    console.error('ERROR CONNECTION :' + stringifyObj(_err))
+                                                    if (_err) {
+                                                        console.log('---->>> CLIENT END ERR <<<<<-----')
                                                         reject('reject')
-                                                    } else {
-                                                        console.log('OK GetConfirms: ' + (stringifyObj(ET_RETURN_EKKO_EKPO) + ' ==== ' + (stringifyObj(ET_RETURN_EKKO_EKPO))))
-                                                        var outEkkoEkpo = []
+                                                        client.close()
+                                                    }
+                                                    sp(userid, objectCopy.EBELN, objectCopy.EBELP, lifnr, ekorg, matnr, ekgrp, werks, (err, parameters, ET_RETURN_EKKO_EKPO, ET_RETURN_EKES_EKET, ET_RETURN_EKEH_EKEK) => {
+                                                        console.log('---->>> CLIENT END GetConfirms<<<<<-----')
+                                                        client.close()
+                                                        if (err) {
+                                                            console.error('ERROR GetConfirms: ' + stringifyObj(err))
+                                                            reject('reject')
+                                                        } else {
+                                                            console.log('OK GetConfirms: ' + (stringifyObj(ET_RETURN_EKKO_EKPO) + ' ==== ' + (stringifyObj(ET_RETURN_EKKO_EKPO))))
+                                                            var outEkkoEkpo = []
 
-                                                        if (ET_RETURN_EKKO_EKPO !== null && ET_RETURN_EKKO_EKPO !== undefined && ET_RETURN_EKKO_EKPO.length > 0) {
-                                                            for (var i = 0; i < ET_RETURN_EKKO_EKPO.length; i++) {
-                                                                var elem = ET_RETURN_EKKO_EKPO[i]
-                                                                if (elem.EBELP === objectCopy.EBELP) {
-                                                                    outEkkoEkpo.push(elem)
-                                                                }
-                                                            }
-                                                        }
-                                                        var outEketEkes = []
-
-                                                        if (ET_RETURN_EKES_EKET !== null && ET_RETURN_EKES_EKET !== undefined && ET_RETURN_EKES_EKET.length > 0) {
-                                                            // eslint-disable-next-line no-redeclare
-                                                            for (var i = 0; i < ET_RETURN_EKES_EKET.length; i++) {
-                                                                // eslint-disable-next-line no-redeclare
-                                                                var elem = ET_RETURN_EKES_EKET[i]
-                                                                if (elem.EBELP === objectCopy.EBELP) {
-                                                                    outEketEkes.push(ET_RETURN_EKES_EKET[i])
-                                                                }
-                                                            }
-                                                        }
-                                                        var outEkehEkek = []
-
-                                                        if (ET_RETURN_EKEH_EKEK !== null && ET_RETURN_EKEH_EKEK !== undefined && ET_RETURN_EKEH_EKEK.length > 0) {
-                                                            // eslint-disable-next-line no-redeclare
-                                                            for (var i = 0; i < ET_RETURN_EKEH_EKEK.length; i++) {
-                                                                // eslint-disable-next-line no-redeclare
-                                                                var elem = ET_RETURN_EKEH_EKEK[i]
-                                                                if (elem.EBELP === objectCopy.EBELP) {
-                                                                    outEkehEkek.push(ET_RETURN_EKEH_EKEK[i])
-                                                                }
-                                                            }
-                                                        }
-
-                                                        objectCopy.RMOData = {
-                                                            EkkoEkpo: outEkkoEkpo,
-                                                            EketEkes: outEketEkes,
-                                                            EkehEkek: outEkehEkek
-                                                        }
-
-                                                        hdbext.createConnection(req.tenantContainer, (err, client) => {
-                                                            if (err) {
-                                                                reject('reject')
-                                                            } else {
-                                                                hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Utils::GetProfiliConferma', function (_err, sp) {
-                                                                    console.error('ERROR CONNECTION :' + stringifyObj(_err))
-                                                                    if (_err) {
-                                                                        console.log('---->>> CLIENT END ERR <<<<<-----')
-                                                                        reject('reject')
+                                                            if (ET_RETURN_EKKO_EKPO !== null && ET_RETURN_EKKO_EKPO !== undefined && ET_RETURN_EKKO_EKPO.length > 0) {
+                                                                for (var i = 0; i < ET_RETURN_EKKO_EKPO.length; i++) {
+                                                                    var elem = ET_RETURN_EKKO_EKPO[i]
+                                                                    if (elem.EBELP === objectCopy.EBELP) {
+                                                                        outEkkoEkpo.push(elem)
                                                                     }
-                                                                    sp(userid, objectCopy.BSTAE, (err, parameters, results) => {
-                                                                        console.log('---->>> CLIENT END GetProfiliConferma <<<<<-----')
-                                                                        client.close()
-                                                                        if (err) {
-                                                                            console.error('ERROR GetProfiliConferma: ' + stringifyObj(err))
+                                                                }
+                                                            }
+                                                            var outEketEkes = []
+
+                                                            if (ET_RETURN_EKES_EKET !== null && ET_RETURN_EKES_EKET !== undefined && ET_RETURN_EKES_EKET.length > 0) {
+                                                                // eslint-disable-next-line no-redeclare
+                                                                for (var i = 0; i < ET_RETURN_EKES_EKET.length; i++) {
+                                                                    // eslint-disable-next-line no-redeclare
+                                                                    var elem = ET_RETURN_EKES_EKET[i]
+                                                                    if (elem.EBELP === objectCopy.EBELP) {
+                                                                        outEketEkes.push(ET_RETURN_EKES_EKET[i])
+                                                                    }
+                                                                }
+                                                            }
+                                                            var outEkehEkek = []
+
+                                                            if (ET_RETURN_EKEH_EKEK !== null && ET_RETURN_EKEH_EKEK !== undefined && ET_RETURN_EKEH_EKEK.length > 0) {
+                                                                // eslint-disable-next-line no-redeclare
+                                                                for (var i = 0; i < ET_RETURN_EKEH_EKEK.length; i++) {
+                                                                    // eslint-disable-next-line no-redeclare
+                                                                    var elem = ET_RETURN_EKEH_EKEK[i]
+                                                                    if (elem.EBELP === objectCopy.EBELP) {
+                                                                        outEkehEkek.push(ET_RETURN_EKEH_EKEK[i])
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            objectCopy.RMOData = {
+                                                                EkkoEkpo: outEkkoEkpo,
+                                                                EketEkes: outEketEkes,
+                                                                EkehEkek: outEkehEkek
+                                                            }
+
+                                                            hdbext.createConnection(req.tenantContainer, (err, client) => {
+                                                                if (err) {
+                                                                    reject('reject')
+                                                                } else {
+                                                                    hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Utils::GetProfiliConferma', function (_err, sp) {
+                                                                        console.error('ERROR CONNECTION :' + stringifyObj(_err))
+                                                                        if (_err) {
+                                                                            console.log('---->>> CLIENT END ERR <<<<<-----')
                                                                             reject('reject')
-                                                                        } else {
-                                                                            console.log('OK GetProfiliConferma: ' + (stringifyObj(results)))
-                                                                            var outProfiles = []
-                                                                            if (results != null && results !== undefined && results.length > 0) {
-                                                                                for (var i = 0; i < results.length; i++) {
-                                                                                    var singleProf = results[i]
-                                                                                    if (singleProf.TIPO_CONFERMA !== '2') {
-                                                                                        outProfiles.push(singleProf)
+                                                                        }
+                                                                        sp(userid, objectCopy.BSTAE, (err, parameters, results) => {
+                                                                            console.log('---->>> CLIENT END GetProfiliConferma <<<<<-----')
+                                                                            client.close()
+                                                                            if (err) {
+                                                                                console.error('ERROR GetProfiliConferma: ' + stringifyObj(err))
+                                                                                reject('reject')
+                                                                            } else {
+                                                                                console.log('OK GetProfiliConferma: ' + (stringifyObj(results)))
+                                                                                var outProfiles = []
+                                                                                if (results != null && results !== undefined && results.length > 0) {
+                                                                                    for (var i = 0; i < results.length; i++) {
+                                                                                        var singleProf = results[i]
+                                                                                        if (singleProf.TIPO_CONFERMA !== '2') {
+                                                                                            outProfiles.push(singleProf)
+                                                                                        }
                                                                                     }
                                                                                 }
-                                                                            }
 
-                                                                            objectCopy.profiliConferma = outProfiles
-                                                                            objectCopy.editPrice = false
+                                                                                objectCopy.profiliConferma = outProfiles
+                                                                                objectCopy.editPrice = false
 
-                                                                            var sql = "SELECT * FROM \"AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA_HEADER\" WHERE PROFILO_CONTROLLO = \'" + objectCopy.BSTAE + "\'"
+                                                                                var sql = "SELECT * FROM \"AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA_HEADER\" WHERE PROFILO_CONTROLLO = \'" + objectCopy.BSTAE + "\'"
 
-                                                                            hdbext.createConnection(req.tenantContainer, function (error, client) {
-                                                                                if (error) {
-                                                                                    console.error('---->>> CLIENT END T_PROFILI_CONFERMA_HEADER ERRORE <<<<<-----')
-                                                                                    reject('reject')
-                                                                                }
-                                                                                if (client) {
-                                                                                    async.waterfall([
+                                                                                hdbext.createConnection(req.tenantContainer, function (error, client) {
+                                                                                    if (error) {
+                                                                                        console.error('---->>> CLIENT END T_PROFILI_CONFERMA_HEADER ERRORE <<<<<-----')
+                                                                                        reject('reject')
+                                                                                    }
+                                                                                    if (client) {
+                                                                                        async.waterfall([
 
-                                                                                        function prepare (callback) {
-                                                                                            client.prepare(sql,
-                                                                                                function (err, statement) {
-                                                                                                    callback(null, err, statement)
+                                                                                            function prepare (callback) {
+                                                                                                client.prepare(sql,
+                                                                                                    function (err, statement) {
+                                                                                                        callback(null, err, statement)
+                                                                                                    })
+                                                                                            },
+
+                                                                                            function execute (_err, statement, callback) {
+                                                                                                statement.exec([], function (execErr, results) {
+                                                                                                    callback(null, execErr, results)
                                                                                                 })
-                                                                                        },
+                                                                                            },
 
-                                                                                        function execute (_err, statement, callback) {
-                                                                                            statement.exec([], function (execErr, results) {
-                                                                                                callback(null, execErr, results)
-                                                                                            })
-                                                                                        },
-
-                                                                                        function response (err, results, callback) {
-                                                                                            if (err) {
-                                                                                                reject('reject')
-                                                                                            } else {
-                                                                                                console.log('OK T_PROFILI_CONFERMA_HEADER: ' + (stringifyObj(results)))
-                                                                                                if (results !== null && results.length > 0) {
-                                                                                                    var guid = results[0]
-                                                                                                    if (guid !== null && guid.MODIFICA_PREZZO !== null && guid.MODIFICA_PREZZO === 'X') {
-                                                                                                        objectCopy.editPrice = true
-                                                                                                        objectCopy.PricePercDOWN = guid.PERC_INFERIORE
-                                                                                                        objectCopy.PricePercUP = guid.PERC_SUPERIORE
-                                                                                                        objectCopy.KSCHL = guid.TIPO_COND_PREZZO
-                                                                                                        objectCopy.CONFERMA_MANDATORY = !!(guid.CONFERMA_MANDATORY !== null && guid.CONFERMA_MANDATORY === 'X')
-                                                                                                    } else {
-                                                                                                        objectCopy.editPrice = false
-                                                                                                    }
-                                                                                                }
-                                                                                                callback()
-                                                                                            }
-
-                                                                                            objectCopy.TimeDependent = false
-                                                                                            objectCopy.GGEstrazione = 0
-
-                                                                                            sql = "SELECT * FROM \"AUPSUP_DATABASE.data.tables::T_ORDERS_TYPES\" WHERE BSTYP = \'" + objectCopy.BSTYP + "\' AND BSART = \'" + objectCopy.BSART + "\'"
-
-                                                                                            hdbext.createConnection(req.tenantContainer, function (error, client) {
-                                                                                                if (error) {
-                                                                                                    console.error('---->>> ERROR T_ORDERS_TYPES <<<<<-----' + error)
+                                                                                            function response (err, results, callback) {
+                                                                                                if (err) {
                                                                                                     reject('reject')
+                                                                                                } else {
+                                                                                                    console.log('OK T_PROFILI_CONFERMA_HEADER: ' + (stringifyObj(results)))
+                                                                                                    if (results !== null && results.length > 0) {
+                                                                                                        var guid = results[0]
+                                                                                                        if (guid !== null && guid.MODIFICA_PREZZO !== null && guid.MODIFICA_PREZZO === 'X') {
+                                                                                                            objectCopy.editPrice = true
+                                                                                                            objectCopy.PricePercDOWN = guid.PERC_INFERIORE
+                                                                                                            objectCopy.PricePercUP = guid.PERC_SUPERIORE
+                                                                                                            objectCopy.KSCHL = guid.TIPO_COND_PREZZO
+                                                                                                            objectCopy.CONFERMA_MANDATORY = !!(guid.CONFERMA_MANDATORY !== null && guid.CONFERMA_MANDATORY === 'X')
+                                                                                                        } else {
+                                                                                                            objectCopy.editPrice = false
+                                                                                                        }
+                                                                                                    }
+                                                                                                    callback()
                                                                                                 }
-                                                                                                if (client) {
-                                                                                                    async.waterfall([
 
-                                                                                                        function prepare (callback) {
-                                                                                                            client.prepare(sql,
-                                                                                                                function (err, statement) {
-                                                                                                                    callback(null, err, statement)
+                                                                                                objectCopy.TimeDependent = false
+                                                                                                objectCopy.GGEstrazione = 0
+
+                                                                                                sql = "SELECT * FROM \"AUPSUP_DATABASE.data.tables::T_ORDERS_TYPES\" WHERE BSTYP = \'" + objectCopy.BSTYP + "\' AND BSART = \'" + objectCopy.BSART + "\'"
+
+                                                                                                hdbext.createConnection(req.tenantContainer, function (error, client) {
+                                                                                                    if (error) {
+                                                                                                        console.error('---->>> ERROR T_ORDERS_TYPES <<<<<-----' + error)
+                                                                                                        reject('reject')
+                                                                                                    }
+                                                                                                    if (client) {
+                                                                                                        async.waterfall([
+
+                                                                                                            function prepare (callback) {
+                                                                                                                client.prepare(sql,
+                                                                                                                    function (err, statement) {
+                                                                                                                        callback(null, err, statement)
+                                                                                                                    })
+                                                                                                            },
+
+                                                                                                            function execute (_err, statement, callback) {
+                                                                                                                statement.exec([], function (execErr, results) {
+                                                                                                                    callback(null, execErr, results)
                                                                                                                 })
-                                                                                                        },
+                                                                                                            },
 
-                                                                                                        function execute (_err, statement, callback) {
-                                                                                                            statement.exec([], function (execErr, results) {
-                                                                                                                callback(null, execErr, results)
-                                                                                                            })
-                                                                                                        },
-
-                                                                                                        function response (err, results, callback) {
-                                                                                                            if (err) {
-                                                                                                                reject('reject')
-                                                                                                            } else {
-                                                                                                                console.log('OK T_ORDERS_TYPES: ' + (stringifyObj(results)))
-                                                                                                                if (results !== null && results.length > 0) {
-                                                                                                                    var guid = results[0]
-                                                                                                                    if (guid !== null) {
-                                                                                                                        if (guid !== null && guid.TIME_DEPENDENT !== null && guid.TIME_DEPENDENT === 'X') {
-                                                                                                                            objectCopy.TimeDependent = true
+                                                                                                            function response (err, results, callback) {
+                                                                                                                if (err) {
+                                                                                                                    reject('reject')
+                                                                                                                } else {
+                                                                                                                    console.log('OK T_ORDERS_TYPES: ' + (stringifyObj(results)))
+                                                                                                                    if (results !== null && results.length > 0) {
+                                                                                                                        var guid = results[0]
+                                                                                                                        if (guid !== null) {
+                                                                                                                            if (guid !== null && guid.TIME_DEPENDENT !== null && guid.TIME_DEPENDENT === 'X') {
+                                                                                                                                objectCopy.TimeDependent = true
+                                                                                                                            }
+                                                                                                                            objectCopy.GGEstrazione = guid.GG_ESTRAZIONE
+                                                                                                                            objectCopy.ISPROGRESSIVI = !!(guid.PROGRESSIVI !== null && guid.PROGRESSIVI === 'X')
                                                                                                                         }
-                                                                                                                        objectCopy.GGEstrazione = guid.GG_ESTRAZIONE
-                                                                                                                        objectCopy.ISPROGRESSIVI = !!(guid.PROGRESSIVI !== null && guid.PROGRESSIVI === 'X')
                                                                                                                     }
                                                                                                                 }
+                                                                                                                megaResults.push(objectCopy)
+                                                                                                                callback()
+                                                                                                                console.log('---->>> PROMISE RESOLVE <<<<<-----')
+                                                                                                                resolve('ok')
                                                                                                             }
-                                                                                                            megaResults.push(objectCopy)
-                                                                                                            callback()
-                                                                                                            console.log('---->>> PROMISE RESOLVE <<<<<-----')
-                                                                                                            resolve('ok')
-                                                                                                        }
-                                                                                                    ], function done (err, parameters, rows) {
-                                                                                                        console.log('---->>> CLIENT END T_ORDERS_TYPES <<<<<-----')
-                                                                                                        client.close()
-                                                                                                        if (err) {
-                                                                                                            return console.error('Done error', err)
-                                                                                                        }
-                                                                                                    })
-                                                                                                }
-                                                                                            })
-                                                                                        }
-                                                                                    ], function done (err, parameters, rows) {
-                                                                                        console.log('---->>> CLIENT END PROFILO_CONTROLLO <<<<<-----')
-                                                                                        client.close()
-                                                                                        if (err) {
-                                                                                            reject('KO')
-                                                                                            return console.error('Done error', err)
-                                                                                        }
-                                                                                    })
-                                                                                }
-                                                                            })
-                                                                        }
+                                                                                                        ], function done (err, parameters, rows) {
+                                                                                                            console.log('---->>> CLIENT END T_ORDERS_TYPES <<<<<-----')
+                                                                                                            client.close()
+                                                                                                            if (err) {
+                                                                                                                return console.error('Done error', err)
+                                                                                                            }
+                                                                                                        })
+                                                                                                    }
+                                                                                                })
+                                                                                            }
+                                                                                        ], function done (err, parameters, rows) {
+                                                                                            console.log('---->>> CLIENT END PROFILO_CONTROLLO <<<<<-----')
+                                                                                            client.close()
+                                                                                            if (err) {
+                                                                                                reject('KO')
+                                                                                                return console.error('Done error', err)
+                                                                                            }
+                                                                                        })
+                                                                                    }
+                                                                                })
+                                                                            }
+                                                                        })
                                                                     })
-                                                                })
-                                                            }
-                                                        })
-                                                    }
+                                                                }
+                                                            })
+                                                        }
+                                                    })
                                                 })
-                                            })
-                                        }
-                                    })
-                                }
+                                            }
+                                        })
+                                    }
+                                })
                             })
-                        })
-                    }
-                })
-                  }))
+                        }
+                    })
+                }))
             }
             console.log('promiseAll LENGTH: ' + promiseAll.length)
-            Promise.all(promiseAll).then(values => { 
+            Promise.all(promiseAll).then(values => {
                 console.log('END PROMISE')
                 return res.status(200).send(megaResults)
-              })
+            })
         }
     })
 
@@ -1040,6 +1055,7 @@ module.exports = function () {
         var userid = req.user.id
         var ebeln = req.query.I_EBELN !== null && req.query.I_EBELN !== undefined ? req.query.I_EBELN : ''
         var ebelp = req.query.I_EBELP !== null && req.query.I_EBELP !== undefined ? req.query.I_EBELP : ''
+        var spras = req.query.I_SPRAS !== null && req.query.I_SPRAS !== undefined ? req.query.I_SPRAS : 'I'
         var bstyp = []
 
         if (req.query.I_BSTYP !== null && req.query.I_BSTYP !== undefined) {
@@ -1056,7 +1072,7 @@ module.exports = function () {
                         console.log('---->>> CLIENT END ERR GetConfermeRifiutiForQuant <<<<<-----')
                         return res.status(500).send('CLIENT END ERR GetConfermeRifiuti: ' + stringifyObj(_err))
                     }
-                    sp(userid, ebeln, ebelp, bstyp, (err, parameters, results) => {
+                    sp(userid, ebeln, ebelp, bstyp, spras, (err, parameters, results) => {
                         console.log('---->>> CLIENT END GetConfermeRifiutiForQuant <<<<<-----')
                         client.close()
                         if (err) {
@@ -1078,7 +1094,7 @@ module.exports = function () {
                                         element.ISTOCONFIRM = false
                                     }
                                 }
-                               // outArr.push(element)
+                                // outArr.push(element)
                                 i++
                             })
                             return res.status(200).send({
@@ -1089,7 +1105,7 @@ module.exports = function () {
                 })
             }
         })
-    })    
+    })
 
     // Parse URL-encoded bodies (as sent by HTML forms)
     // app.use(express.urlencoded());
