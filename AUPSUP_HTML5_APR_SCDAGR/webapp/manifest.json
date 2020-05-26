@@ -22,23 +22,8 @@
 					},
 					"semanticObject": "ApproveSchedAgree",
 					"action": "Display",
-					"title": "{{appTitle}}",
-					"indicatorDataSource": {
-						"dataSource": "mainService",
-						"path": "count",
-						"refresh": 1000
-					}
+					"title": "{{appTitle}}"
 				}
-			}
-		},
-		"dataSources": {
-			"mainService": {
-				"uri": "items",
-				"type": "JSON"
-			},
-			"scopedService": {
-				"uri": "items/scopes",
-				"type": "JSON"
 			}
 		}
 	},
