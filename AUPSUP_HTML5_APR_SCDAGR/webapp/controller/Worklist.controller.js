@@ -377,7 +377,9 @@ sap.ui.define([
 					that.getView().byId("OrderHeadersTable").setModel(oModel);
 				} else {
 					that.getView().byId("OrderHeadersTable").setModel(null);
-					//that.getView().byId("OrderHeadersTable").refresh();
+					var oModel = new JSONModel();
+					oModel.setData({});
+					that.getView().setModel(oModel, "SchedAgreeJSONModel");
 				}
 			})
 		},

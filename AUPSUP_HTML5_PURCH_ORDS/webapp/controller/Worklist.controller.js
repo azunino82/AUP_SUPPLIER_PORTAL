@@ -126,7 +126,7 @@ sap.ui.define([
 				//that.getUserInfo();
 				that.getMetasupplier();
 				that.getPurchaseGroup();
-				
+
 
 				// Inizio modifiche LS
 				var filterOrd = {
@@ -295,7 +295,7 @@ sap.ui.define([
 			that.showBusyDialog();
 			that.ajaxPost(url, body, function (oData) {
 				that.hideBusyDialog();
-				if (oData) {
+				if (oData && oData.results) {
 					// Valorizzare OriginalPrice LS
 					for (var i = 0; i < oData.results.length; i++) {
 						var PEINH = oData.results[i].PEINH;
@@ -321,6 +321,10 @@ sap.ui.define([
 					});
 
 					that.getView().byId("OrderHeadersTable").getBinding("items").sort(oSorter);
+				} else {
+					var oModel = new JSONModel();
+					oModel.setData({});
+					that.getView().setModel(oModel, "OrderJSONModel");
 				}
 			})
 
@@ -705,11 +709,12 @@ sap.ui.define([
 		onClearFilters: function () {
 			if (that.getModel("filterOrdersJSONModel") !== undefined && that.getModel("filterOrdersJSONModel").getData() !== undefined) {
 				that.getModel("filterOrdersJSONModel").getData().MatnrDesc = '';
+				that.getModel("filterOrdersJSONModel").getData().matnr = [];
 				that.getModel("filterOrdersJSONModel").getData().ebeln = '';
-				that.getModel("filterOrdersJSONModel").getData().lifnr = '';
-				that.getModel("filterOrdersJSONModel").getData().ekorg = '';
-				that.getModel("filterOrdersJSONModel").getData().ekgrp = '';
-				that.getModel("filterOrdersJSONModel").getData().werks = '';
+				that.getModel("filterOrdersJSONModel").getData().lifnr = [];
+				that.getModel("filterOrdersJSONModel").getData().ekorg = [];
+				that.getModel("filterOrdersJSONModel").getData().ekgrp = [];
+				that.getModel("filterOrdersJSONModel").getData().werks = [];
 				that.getModel("filterOrdersJSONModel").getData().spras = that.getLanguage();
 			}
 			if (that.getModel("MetasupplierJSONModel") !== undefined && that.getModel("MetasupplierJSONModel").getData() !== undefined) {
@@ -2336,7 +2341,7 @@ sap.ui.define([
 					oData.EBELP = selectedRowdata.EBELP
 					oData.EBELN = selectedRowdata.EBELN
 
-					oData.ordineTestata=selectedRowdata.EBELN;
+					oData.ordineTestata = selectedRowdata.EBELN;
 
 					var oModel = new JSONModel();
 					oModel.setData(oData);
@@ -2569,7 +2574,7 @@ sap.ui.define([
 					if (oModel.oData.length > 0)
 						oSelectDialog1.open();
 
-				}else{
+				} else {
 					MessageBox.error(that.getResourceBundle().getText("ERR_file_not_found"));
 				}
 			});
