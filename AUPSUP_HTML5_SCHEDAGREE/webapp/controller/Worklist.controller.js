@@ -176,7 +176,7 @@ sap.ui.define([
 
 			}
 
-			this.getView().setModel(sap.ui.getCore().getModel("userapi"), "userapi");
+			
 
 		},
 		onAfterRendering: function () {
