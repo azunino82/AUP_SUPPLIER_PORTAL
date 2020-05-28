@@ -178,7 +178,6 @@ sap.ui.define([
 
 			}
 
-			this.getView().setModel(sap.ui.getCore().getModel("userapi"), "userapi");
 
 		},
 		onAfterRendering: function () {
@@ -316,7 +315,7 @@ sap.ui.define([
 					that.getView().byId("OrderHeadersTable").setModel(oModel);
 
 					var oSorter = new Sorter({
-						path: 'PRIMO_PERIODO',
+						path: 'STATUS_PRIORITY', //PRIMO_PERIODO
 						ascending: true
 					});
 

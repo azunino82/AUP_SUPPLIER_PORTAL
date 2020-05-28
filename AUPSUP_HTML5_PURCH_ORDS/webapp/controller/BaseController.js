@@ -229,6 +229,7 @@ sap.ui.define([
 					oModel.setData(visibilityRoles);
 					//sap.ui.getCore().setModel(oModel, "VisibilityJSONModel");
 					that.getView().setModel(oModel, "VisibilityJSONModel");
+					that.getView().setModel(sap.ui.getCore().getModel("userapi"), "userapi");
 				} else {
 					return null;
 				}

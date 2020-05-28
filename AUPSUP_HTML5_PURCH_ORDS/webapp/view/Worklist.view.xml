@@ -117,7 +117,7 @@
 									<subSections>
 										<ObjectPageSubSection >
 											<m:Table id="OrderHeadersTable"
-												items="{ path: 'OrderJSONModel>/results', sorter: { path: 'PRIMO_PERIODO', ascending: true }}"
+												items="{ path: 'OrderJSONModel>/results', sorter: { path: 'STATUS_PRIORITY', ascending: true }}"
 												itemPress="onRowSelectionChange" growing="true" growingThreshold="50" growingScrollToLoad="false">
 												<m:headerToolbar>
 													<m:OverflowToolbar>
@@ -127,7 +127,15 @@
 															<m:ToolbarSpacer/>
 															<m:Button visible="false" id="headerFilterButton" tooltip="{i18n>clearFilter}" icon="sap-icon://clear-filter" press="onClearFilter"
 																type="Transparent"/>
-															
+															<m:HBox alignItems="Center" id="comboProfiliConferma">
+																<m:Label text="{i18n>CAT_CONS}" class="labelSpace"/>
+																<m:ComboBox selectedKey="{ListProfiliConfermaJSONModel>/CAT_CONFERMA}" width="auto" change="onChangeProfiloConsegna"
+																	items="{ path: 'ListProfiliConfermaJSONModel>/results', sorter: { path: 'CAT_CONFERMA' } }">
+																	<core:Item key="{ListProfiliConfermaJSONModel>CAT_CONFERMA}"
+																		text="{ListProfiliConfermaJSONModel>CAT_CONFERMA} - {ListProfiliConfermaJSONModel>DESCRIZIONE}"/>
+																</m:ComboBox>
+															</m:HBox>								
+															<m:Button icon="sap-icon://legend" press="onLegend" tooltip="{i18n>Legend}"/>							
 															<m:Button icon="sap-icon://excel-attachment" press="onExport" tooltip="{i18n>Export_Excel}"/>
 															<m:Button icon="sap-icon://vertical-grip" visible="true" press="onColumnSelection" tooltip="{i18n>personalization}"/>
 														</m:content>
@@ -182,7 +190,7 @@
 													</m:Column>
 												</m:columns>
 												<m:items>
-													<m:ColumnListItem type="Navigation">
+													<m:ColumnListItem type="Navigation" highlight="{path:'OrderJSONModel>STATUS', formatter:'.onSetSchedulationStatus'}">
 														<m:cells>
 															<m:CheckBox selected="{OrderJSONModel>isSelected}" editable= "{= ${OrderJSONModel>SKIP_NO_CONFERME} !== true}"/>
 															<m:Text text="{OrderJSONModel>EBELN}"/>
@@ -194,7 +202,7 @@
 															<m:Text text="{OrderJSONModel>TXZ01}"/>
 															<m:Text text="{OrderJSONModel>IDNLF}"/>
 															<m:Text text="{path : 'OrderJSONModel>MENGE', formatter : '.importFormatter'}"/>
-															<m:Text text="{= ${OrderJSONModel>MEINS} === 'ST' ? 'PZ' : ${OrderJSONModel>MEINS}}"/>
+															<m:Text text="{OrderJSONModel>MEINS}"/>
 															<m:Text text="{OrderJSONModel>WAERS}"/>
 															<m:Text text="{path : 'OrderJSONModel>PRIMO_PERIODO', formatter : '.importFormatter'}"/>
 															<m:Text text="{path : 'OrderJSONModel>SECONDO_PERIODO', formatter : '.importFormatter'}"/>
