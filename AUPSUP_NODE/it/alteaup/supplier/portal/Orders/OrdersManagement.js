@@ -71,7 +71,7 @@ module.exports = function () {
 
             if (body.ebtyp !== null && body.ebtyp !== undefined && body.ebtyp !== '') {
                 ebtyp = body.ebtyp
-            }            
+            }
 
             if (body.ebeln !== null && body.ebeln !== undefined && body.ebeln !== '') {
                 ebeln.push({
@@ -150,7 +150,34 @@ module.exports = function () {
                                 if (OUT_POS_ORDERS !== undefined && OUT_POS_ORDERS !== null && OUT_POS_ORDERS.length > 0) {
                                     for (var i = 0; i < OUT_POS_ORDERS.length; i++) {
                                         var objectCopy = OUT_POS_ORDERS[i]
-                                //        console.log('SKIP_NO_CONFERME: ' + objectCopy.SKIP_NO_CONFERME)
+
+                                        switch (objectCopy.STATUS) {
+                                            case 'H':
+                                                objectCopy.STATUS_PRIORITY = 0
+                                                break
+
+                                            case 'MH':
+                                                objectCopy.STATUS_PRIORITY = 1
+                                                break
+
+                                            case 'M':
+                                                objectCopy.STATUS_PRIORITY = 2
+                                                break
+
+                                            case 'ML':
+                                                objectCopy.STATUS_PRIORITY = 3
+                                                break
+
+                                            case 'L':
+                                                objectCopy.STATUS_PRIORITY = 4
+                                                break
+
+                                            default:
+                                                objectCopy.STATUS_PRIORITY = 0
+                                                break
+                                        }
+
+                                        //        console.log('SKIP_NO_CONFERME: ' + objectCopy.SKIP_NO_CONFERME)
                                         if (objectCopy.SKIP_NO_CONFERME !== null) {
                                             if (objectCopy.SKIP_NO_CONFERME === 'X') {
                                                 objectCopy.SKIP_NO_CONFERME = true
@@ -158,7 +185,7 @@ module.exports = function () {
                                             objectCopy.PRIMO_PERIODO = '?'
                                         } else {
                                             if (objectCopy.P1_PROGR_RIC !== null) {
-                                  //              console.log('LS P1_PROGR_RIC: ' + objectCopy.P1_PROGR_RIC)
+                                                //              console.log('LS P1_PROGR_RIC: ' + objectCopy.P1_PROGR_RIC)
                                                 objectCopy.PRIMO_PERIODO = parseFloat(objectCopy.P1_PROGR_RIC) > 0 ? ((parseFloat(objectCopy.P1_PROGR_CONF) / parseFloat(objectCopy.P1_PROGR_RIC)) * 100).toFixed(2) : 0
                                             } else {
                                                 objectCopy.PRIMO_PERIODO = 0
@@ -168,7 +195,7 @@ module.exports = function () {
                                             objectCopy.SECONDO_PERIODO = '?'
                                         } else {
                                             if (objectCopy.P2_PROGR_RIC !== null) {
-                                    //            console.log('LS P1_PROGR_RIC: ' + objectCopy.P2_PROGR_RIC)
+                                                //            console.log('LS P1_PROGR_RIC: ' + objectCopy.P2_PROGR_RIC)
                                                 objectCopy.SECONDO_PERIODO = parseFloat(objectCopy.P2_PROGR_RIC) > 0 ? ((parseFloat(objectCopy.P2_PROGR_CONF) / parseFloat(objectCopy.P2_PROGR_RIC)) * 100).toFixed(2) : 0
                                             } else {
                                                 objectCopy.SECONDO_PERIODO = 0
@@ -488,7 +515,7 @@ module.exports = function () {
         }
     })
 
-    function sendMail (req, res, confirms, notaReject) {
+    function sendMail(req, res, confirms, notaReject) {
         var lifnrs = '('
         for (let index = 0; index < confirms.length; index++) {
             var element = confirms[index]
