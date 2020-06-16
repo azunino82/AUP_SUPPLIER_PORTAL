@@ -3,11 +3,15 @@
 		class="sapUiResponsivePadding--header sapUiResponsivePadding--content sapUiResponsivePadding--footer" placement="Bottom">
 		<FlexBox direction="Column" alignItems="Start">
 			<items>
-				<ObjectStatus class="sapUiSmallMarginBottom" text="Progr. Richiesto &gt; Progr. Conferma" inverted="true" state="Indication03"/>
+				<ObjectStatus class="sapUiSmallMarginBottom" text="{i18n>statusL}" inverted="true" state="Indication04"/>
 				<HBox></HBox>
-				<ObjectStatus class="sapUiSmallMarginBottom" text="Progr. Richiesto = Progr. Conferma" inverted="true" state="Success"/>
+				<ObjectStatus class="sapUiSmallMarginBottom" text="{i18n>statusML}" inverted="true" state="Indication05"/>
 				<HBox></HBox>
-				<ObjectStatus class="sapUiSmallMarginBottom" text="Progr. Richiesto &lt; Progr. Conferma" inverted="true" state="Indication02"/>
+				<ObjectStatus class="sapUiSmallMarginBottom" text="{i18n>statusM}" inverted="true" state="Indication03"/>
+				<HBox></HBox>
+				<ObjectStatus class="sapUiSmallMarginBottom" text="{i18n>statusMH}" inverted="true" state="Indication02"/>
+				<HBox></HBox>
+				<ObjectStatus class="sapUiSmallMarginBottom" text="{i18n>statusH}" inverted="true" state="Indication01"/>	
 			</items>
 		</FlexBox>
 	</Popover>

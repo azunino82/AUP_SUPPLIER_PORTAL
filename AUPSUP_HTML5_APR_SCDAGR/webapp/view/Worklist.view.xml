@@ -156,6 +156,9 @@
 												<m:Column id="NAME1" visible="{columnVisibilityModel>/NAME1}" minScreenWidth="Desktop" demandPopin="true">
 													<m:Label text="{i18n>NAME1}" class="columnLabelStyle" wrapping="true"/>
 												</m:Column>
+												<m:Column id="WERKS" visible="{columnVisibilityModel>/WERKS}" minScreenWidth="Desktop" demandPopin="true">
+													<m:Label text="{i18n>WERKS}" class="columnLabelStyle" wrapping="true"/>
+												</m:Column>												
 												<m:Column id="MENGE_ORIGINAL" visible="{columnVisibilityModel>/MENGE_ORIGINAL}" minScreenWidth="Desktop" demandPopin="true">
 													<m:Label text="{i18n>MENGE}" class="columnLabelStyle" wrapping="true"/>
 												</m:Column>
@@ -198,6 +201,7 @@
 														<m:Text text="{SchedAgreeJSONModel>TXZ01}"/>
 														<m:Text text="{path : 'SchedAgreeJSONModel>LIFNR', formatter : '.removeZeroBefore'}"/>
 														<m:Text text="{SchedAgreeJSONModel>NAME1}"/>
+														<m:Text text="{SchedAgreeJSONModel>WERKS} - {SchedAgreeJSONModel>WERKS_DESCR}"/>
 														<m:Text text="{path : 'SchedAgreeJSONModel>MENGE_ORIGINAL', formatter : '.importFormatter'}"/>
 														<m:Text text="{path : 'SchedAgreeJSONModel>MENGE', formatter : '.importFormatter'}"/>
 														<m:Text text="{path : 'SchedAgreeJSONModel>NETPR_ORIGINAL', formatter : '.importFormatter'}" visible="{= ${SchedAgreeJSONModel>CONF_TYPE} === 'PRZ'}"/>

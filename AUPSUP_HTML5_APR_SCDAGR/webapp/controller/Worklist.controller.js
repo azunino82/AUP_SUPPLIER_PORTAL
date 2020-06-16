@@ -1290,7 +1290,7 @@ sap.ui.define([
 			//	var oModelData = that.getOwnerComponent().getModel("VariantsModel");
 			//	oModelData.metadataLoaded().then(
 			//		that.onMetadataLoaded.bind(that, oModelData));
-			var columModel = { "EBELN": true, "EBELP": true, "EBTYP": false, "MATNR": true, "TXZ01": true, "LIFNR": true, "NAME1": true, "MENGE_ORIGINAL": false, "MENGE": false, "NETPR_ORIGINAL": true, "NETPR": true, "ZINVALIDITA": true, "ZFINVALIDATA": true, "PEINH_ORIGINAL": true, "PEINH": true, "SCHEDMOD": false };
+			var columModel = { "EBELN": true, "EBELP": true, "EBTYP": false, "MATNR": true, "TXZ01": true, "LIFNR": true, "NAME1": true, "WERKS": true, "MENGE_ORIGINAL": false, "MENGE": false, "NETPR_ORIGINAL": true, "NETPR": true, "ZINVALIDITA": true, "ZFINVALIDATA": true, "PEINH_ORIGINAL": true, "PEINH": true, "SCHEDMOD": false };
 			var oModel = new JSONModel();
 			oModel.setData(columModel);
 			that.getView().setModel(oModel, "columnVisibilityModel");

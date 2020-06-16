@@ -153,6 +153,38 @@ module.exports = function () {
                                 if (OUT_POS_PIANI_CONS !== undefined && OUT_POS_PIANI_CONS !== null && OUT_POS_PIANI_CONS.length > 0) {
                                     for (var i = 0; i < OUT_POS_PIANI_CONS.length; i++) {
                                         var objectCopy = OUT_POS_PIANI_CONS[i]
+
+                                        switch (objectCopy.STATUS) {
+                                            case 'H':
+                                                objectCopy.STATUS_PRIORITY = 0
+                                                break
+
+                                            case 'MH':
+                                                objectCopy.STATUS_PRIORITY = 1
+                                                break
+
+                                            case 'M':
+                                                objectCopy.STATUS_PRIORITY = 2
+                                                break
+
+                                            case 'ML':
+                                                objectCopy.STATUS_PRIORITY = 3
+                                                break
+
+                                            case 'L':
+                                                objectCopy.STATUS_PRIORITY = 4
+                                                break
+
+                                            default:
+                                                objectCopy.STATUS_PRIORITY = 999
+                                                break
+                                        }
+
+                                        if (objectCopy.BSTAE === '' || objectCopy.BSTAE === null) {
+                                            objectCopy.STATUS_PRIORITY = null
+                                            objectCopy.STATUS = ''
+                                        }
+
                                //         console.log('SKIP_NO_CONFERME: ' + objectCopy.SKIP_NO_CONFERME)
                                         if (objectCopy.SKIP_NO_CONFERME !== null) {
                                             if (objectCopy.SKIP_NO_CONFERME === 'X') {
@@ -902,7 +934,8 @@ module.exports = function () {
                                 TXZ01: header.TXZ01,
                                 IDNLF: header.IDNLF,
                                 MENGE: header.MENGE,
-                                PEINH: header.PEINH
+                                PEINH: header.PEINH,
+                                NETPR: header.NETPR
                             }
                             return res.status(200).send(results)
                         }
