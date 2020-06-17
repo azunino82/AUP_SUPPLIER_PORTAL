@@ -873,18 +873,19 @@ module.exports = function () {
     app.get('/GetPianoConfermaDetail', function (req, res) {
         var ebeln = req.query.I_EBELN !== undefined && req.query.I_EBELN !== null && req.query.I_EBELN !== '' ? req.query.I_EBELN : ''
         var ebelp = req.query.I_EBELP !== undefined && req.query.I_EBELP !== null && req.query.I_EBELP !== '' ? req.query.I_EBELP : ''
+        var updateData = req.query.I_UPDATE_DATA !== undefined && req.query.I_UPDATE_DATA !== null && req.query.I_UPDATE_DATA !== '' ? req.query.I_UPDATE_DATA : ''
+        var spras = req.query.I_SPRAS !== undefined && req.query.I_SPRAS !== null && req.query.I_SPRAS !== '' ? req.query.I_SPRAS : ''
 
         hdbext.createConnection(req.tenantContainer, (err, client) => {
             if (err) {
                 return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
             } else {
                 hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.SchedulingAgreement::GetPianiConsegnaDetail', function (_err, sp) {
-                    console.error('ERROR CONNECTION :' + stringifyObj(_err))
                     if (_err) {
                         console.log('---->>> CLIENT END ERR <<<<<-----')
                         client.close()
                     }
-                    sp(req.user.id, ebeln, ebelp, (err, parameters, ET_HEADER, ET_SAG_EKEH, ET_SAG_EKES, ET_SAG_EKET) => {
+                    sp(req.user.id, ebeln, ebelp, updateData, spras, (err, parameters, ET_HEADER, ET_SAG_EKEH, ET_SAG_EKES, ET_SAG_EKET) => {
                         console.log('---->>> CLIENT END <<<<<-----')
                         client.close()
                         if (err) {

@@ -66,9 +66,13 @@ sap.ui.define([
 
 					}),
 				]).then(function (values) {
-					that.getRouter().navTo("detail", {
+					orderToOpen.spras = that.getLanguage();
+					orderToOpen.isUpdateData = '';
+
+					var oRouter = sap.ui.core.UIComponent.getRouterFor(that);
+					oRouter.navTo("detail", {
 						datas: orderToOpen
-					}, true);
+					});
 
 				});
 			}
@@ -114,9 +118,14 @@ sap.ui.define([
 
 					}),
 				]).then(function (values) {
-					that.getRouter().navTo("detail", {
-						datas: JSON.stringify(startupParams.objectId[0])
-					}, true);
+					var json = JSON.parse(startupParams.objectId[0])
+					json.spras = that.getLanguage();
+					json.isUpdateData = 'X';
+
+					var oRouter = sap.ui.core.UIComponent.getRouterFor(that);
+					oRouter.navTo("detail", {
+						datas: JSON.stringify(json)
+					});
 
 				});
 
@@ -243,7 +252,9 @@ sap.ui.define([
 
 			var data = {
 				orderId: oItem.EBELN,
-				posNumber: oItem.EBELP
+				posNumber: oItem.EBELP,
+				isUpdateData: '',
+				spras: that.getLanguage()
 			};
 
 			var oRouter = sap.ui.core.UIComponent.getRouterFor(that);
