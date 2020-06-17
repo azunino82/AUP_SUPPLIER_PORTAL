@@ -67,7 +67,7 @@
 											<FlexItemData growFactor="1"/>
 										</layoutData>
 									</Text>
-									<TextArea growing="true" value="{TextsJSONModel>COMMENT}" visible="{TextsJSONModel>COMMENTABLE}" enabled="{= ${TextsJSONModel>BESTAE} !== '' ? true : false}" rows="3" width="30.5rem" liveChange="onEditTexts">
+									<TextArea growing="true" value="{TextsJSONModel>COMMENT}" visible="{TextsJSONModel>COMMENTABLE}" enabled="{= ${TextsJSONModel>BSTAE} !== ''}" rows="3" width="30.5rem" liveChange="onEditTexts">
 										<layoutData>
 											<FlexItemData growFactor="2"/>
 										</layoutData>
@@ -138,7 +138,7 @@
 											<FlexItemData growFactor="1"/>
 										</layoutData>
 									</Text>
-									<TextArea growing="true" liveChange="onEditTexts" value="{TextsJSONModel>COMMENT}" visible="{TextsJSONModel>COMMENTABLE}" enabled="{= ${TextsJSONModel>BESTAE} !== '' ? true : false}" rows="3" width="30.5rem">
+									<TextArea growing="true" liveChange="onEditTexts" value="{TextsJSONModel>COMMENT}" visible="{TextsJSONModel>COMMENTABLE}" enabled="{= ${TextsJSONModel>BSTAE} !== ''}" rows="3" width="30.5rem">
 										<layoutData>
 											<FlexItemData growFactor="2"/>
 										</layoutData>

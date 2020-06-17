@@ -314,7 +314,7 @@ sap.ui.define([
 					that.getView().byId("OrderHeadersTable").setModel(oModel);
 
 					var oSorter = new Sorter({
-						path: 'PRIMO_PERIODO',
+						path: 'STATUS_PRIORITY', // PRIMO_PERIODO
 						ascending: true
 					});
 
@@ -2335,6 +2335,20 @@ sap.ui.define([
 
 					oData.EBELP = selectedRowdata.EBELP
 					oData.EBELN = selectedRowdata.EBELN
+
+					oData.ordineTestata = selectedRowdata.EBELN;
+
+					if(oData.header_texts && oData.header_texts.results && oData.header_texts.results.length>0){
+						for (let index = 0; index < oData.header_texts.results.length; index++) {
+							oData.header_texts.results[index].BSTAE = selectedRowdata.BSTAE;
+						}
+					}
+
+					if(oData.pos_texts && oData.pos_texts.results && oData.pos_texts.results.length>0){
+						for (let index = 0; index < oData.pos_texts.results.length; index++) {
+							oData.pos_texts.results[index].BSTAE = selectedRowdata.BSTAE;
+						}
+					}
 
 					var oModel = new JSONModel();
 					oModel.setData(oData);

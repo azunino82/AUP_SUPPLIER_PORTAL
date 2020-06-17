@@ -173,8 +173,13 @@ module.exports = function () {
                                                 break
 
                                             default:
-                                                objectCopy.STATUS_PRIORITY = 0
+                                                objectCopy.STATUS_PRIORITY = 999
                                                 break
+                                        }
+
+                                        if (objectCopy.BSTAE === '' || objectCopy.BSTAE === null) {
+                                            objectCopy.STATUS_PRIORITY = null
+                                            objectCopy.STATUS = ''
                                         }
 
                                         //        console.log('SKIP_NO_CONFERME: ' + objectCopy.SKIP_NO_CONFERME)
@@ -515,7 +520,7 @@ module.exports = function () {
         }
     })
 
-    function sendMail(req, res, confirms, notaReject) {
+    function sendMail (req, res, confirms, notaReject) {
         var lifnrs = '('
         for (let index = 0; index < confirms.length; index++) {
             var element = confirms[index]

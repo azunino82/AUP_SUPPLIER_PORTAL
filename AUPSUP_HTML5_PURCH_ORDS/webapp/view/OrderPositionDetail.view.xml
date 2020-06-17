@@ -34,6 +34,8 @@
 									<!--Codice Materiale usato dal fornitore-->
 									<m:ObjectAttribute title="{i18n>MENGE}" text="{ path: 'OrderPrositionJSONModel>/MENGE', formatter : '.importFormatter' }"/>
 									<!--Quantità-->
+									<m:ObjectAttribute title="{i18n>NETPR}" text="{ path: 'OrderPrositionJSONModel>/NETPR', formatter : '.importFormatter' }"/>
+									<!--prezzo-->									
 									<m:ObjectAttribute title="{i18n>PEINH}" text="{ path: 'OrderPrositionJSONModel>/PEINH', formatter : '.importFormatter' }"/>
 									<!--Unità di prezzo-->
 								</m:VBox >
