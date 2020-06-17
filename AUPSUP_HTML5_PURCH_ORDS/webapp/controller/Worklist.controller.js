@@ -2342,6 +2342,18 @@ sap.ui.define([
 
 					oData.ordineTestata = selectedRowdata.EBELN;
 
+					if(oData.header_texts && oData.header_texts.results && oData.header_texts.results.length>0){
+						for (let index = 0; index < oData.header_texts.results.length; index++) {
+							oData.header_texts.results[index].BSTAE = selectedRowdata.BSTAE;
+						}
+					}
+
+					if(oData.pos_texts && oData.pos_texts.results && oData.pos_texts.results.length>0){
+						for (let index = 0; index < oData.pos_texts.results.length; index++) {
+							oData.pos_texts.results[index].BSTAE = selectedRowdata.BSTAE;
+						}
+					}
+
 					var oModel = new JSONModel();
 					oModel.setData(oData);
 					var oComponent = that.getOwnerComponent();
