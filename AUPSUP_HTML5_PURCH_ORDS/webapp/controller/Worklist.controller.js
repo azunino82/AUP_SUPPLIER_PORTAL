@@ -67,12 +67,13 @@ sap.ui.define([
 					}),
 				]).then(function (values) {
 
-					orderToOpen.spras = that.getLanguage();
-					orderToOpen.isUpdateData = '';
+					var json = JSON.parse(orderToOpen)
+					json.spras = that.getLanguage();
+					json.isUpdateData = '';
 
 					var oRouter = sap.ui.core.UIComponent.getRouterFor(that);
 					oRouter.navTo("detail", {
-						datas: orderToOpen
+						datas: JSON.stringify(json)
 					});
 				});
 			}
