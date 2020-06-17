@@ -133,8 +133,9 @@ sap.ui.define([
 		},
 
 		loadObject: function (sObjectId, fCompletion) {
+			
 			var url = "/backend/SchedulingAgreementManagement/GetPianoConfermaDetail?I_EBELN=" +
-			sObjectId.orderId + "&I_EBELP=" + sObjectId.posNumber;;
+			sObjectId.orderId + "&I_EBELP=" + sObjectId.posNumber + "&I_SPRAS=" + sObjectId.spras + "&I_UPDATE_DATA=" + sObjectId.isUpdateData;
 			that.ajaxGet(url, function (oData) {
 				if (oData === null || oData === undefined) {
 					if (fCompletion !== undefined) {
