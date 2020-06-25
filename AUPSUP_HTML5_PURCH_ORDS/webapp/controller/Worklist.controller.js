@@ -118,7 +118,7 @@ sap.ui.define([
 
 					}),
 				]).then(function (values) {
-					
+
 					var json = JSON.parse(startupParams.objectId[0])
 					json.spras = that.getLanguage();
 					json.isUpdateData = 'X';
@@ -151,7 +151,9 @@ sap.ui.define([
 					//	"bstae": "",
 					"ebtyp": "",
 					"orderType": "ODA",
-					"spras": that.getLanguage()
+					"spras": that.getLanguage(),
+					"eindtFrom": null,
+					"eindtTo": null
 				};
 
 				// Default LIFNR
@@ -303,8 +305,29 @@ sap.ui.define([
 
 			var url = "/backend/OrdersManagement/GetOrders";
 			var body = that.getModel("filterOrdersJSONModel").getData();
+
+			var jsonBody = JSON.parse(JSON.stringify(body));
+
+			if (body !== undefined && body.eindtFrom !== undefined && body.eindtFrom !== null) {
+				var year = body.eindtFrom.getFullYear();
+				var month = (1 + body.eindtFrom.getMonth()).toString();
+				month = month.length > 1 ? month : '0' + month;
+				var day = body.eindtFrom.getDate().toString();
+				day = day.length > 1 ? day : '0' + day;
+				jsonBody.eindtFrom = year + month + day;
+			}
+			if (body !== undefined && body.eindtTo !== undefined && body.eindtTo !== null) {
+				var year = body.eindtTo.getFullYear();
+				var month = (1 + body.eindtTo.getMonth()).toString();
+				month = month.length > 1 ? month : '0' + month;
+				var day = body.eindtTo.getDate().toString();
+				day = day.length > 1 ? day : '0' + day;
+				jsonBody.eindtTo = year + month + day;
+			}
+
+			
 			that.showBusyDialog();
-			that.ajaxPost(url, body, function (oData) {
+			that.ajaxPost(url, jsonBody, function (oData) {
 				that.hideBusyDialog();
 				if (oData && oData.results) {
 					// Valorizzare OriginalPrice LS
@@ -727,6 +750,8 @@ sap.ui.define([
 				that.getModel("filterOrdersJSONModel").getData().ekgrp = [];
 				that.getModel("filterOrdersJSONModel").getData().werks = [];
 				that.getModel("filterOrdersJSONModel").getData().spras = that.getLanguage();
+				that.getModel("filterOrdersJSONModel").getData().eindtFrom = null;
+				that.getModel("filterOrdersJSONModel").getData().eindtTo = null;
 			}
 			if (that.getModel("MetasupplierJSONModel") !== undefined && that.getModel("MetasupplierJSONModel").getData() !== undefined) {
 				that.getModel("MetasupplierJSONModel").getData().METAID = '';
@@ -2354,13 +2379,13 @@ sap.ui.define([
 
 					oData.ordineTestata = selectedRowdata.EBELN;
 
-					if(oData.header_texts && oData.header_texts.results && oData.header_texts.results.length>0){
+					if (oData.header_texts && oData.header_texts.results && oData.header_texts.results.length > 0) {
 						for (let index = 0; index < oData.header_texts.results.length; index++) {
 							oData.header_texts.results[index].BSTAE = selectedRowdata.BSTAE;
 						}
 					}
 
-					if(oData.pos_texts && oData.pos_texts.results && oData.pos_texts.results.length>0){
+					if (oData.pos_texts && oData.pos_texts.results && oData.pos_texts.results.length > 0) {
 						for (let index = 0; index < oData.pos_texts.results.length; index++) {
 							oData.pos_texts.results[index].BSTAE = selectedRowdata.BSTAE;
 						}
