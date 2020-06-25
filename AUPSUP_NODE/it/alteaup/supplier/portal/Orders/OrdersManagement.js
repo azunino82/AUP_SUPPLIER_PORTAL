@@ -40,6 +40,8 @@ module.exports = function () {
             var spras = 'I'
             var userid = req.user.id
             var ebtyp = 'AB'
+            var eindtFrom = ''
+            var eindtTo = ''
 
             if (body.bstyp !== null && body.bstyp !== undefined && body.bstyp !== '') {
                 var oBstyp = []
@@ -63,7 +65,15 @@ module.exports = function () {
                     })
                 }
                 lifnr = oLifnr
+            }            
+
+            if (body.eindtFrom !== null && body.eindtFrom !== undefined && body.eindtFrom !== '') {
+                eindtFrom = body.eindtFrom
             }
+
+            if (body.eindtTo !== null && body.eindtTo !== undefined && body.eindtTo !== '') {
+                eindtTo = body.eindtTo
+            }            
 
             if (body.spras !== null && body.spras !== undefined && body.spras !== '') {
                 spras = body.spras
@@ -134,7 +144,7 @@ module.exports = function () {
                         if (_err) {
                             console.log('---->>> CLIENT END ERR MM00_SAG_DOC_LIST <<<<<-----')
                         }
-                        sp(userid, lifnr, ebeln, ebelp, ekorg, matnr, ekgrp, werks, bstyp, spras, ebtyp, 'ODA', (err, parameters, ET_SAG_EKEH, ET_SAG_EKEK, ET_SAG_EKES, ET_SAG_EKET, ET_SAG_EKKO, ET_SAG_EKPO, OUT_POS_ORDERS) => {
+                        sp(userid, lifnr, ebeln, ebelp, ekorg, matnr, ekgrp, werks, bstyp, spras, ebtyp, 'ODA', eindtFrom, eindtTo, (err, parameters, ET_SAG_EKEH, ET_SAG_EKEK, ET_SAG_EKES, ET_SAG_EKET, ET_SAG_EKKO, ET_SAG_EKPO, OUT_POS_ORDERS) => {
                             console.log('---->>> CLIENT END MM00_SAG_DOC_LIST <<<<<-----')
                             client.close()
                             if (err) {
