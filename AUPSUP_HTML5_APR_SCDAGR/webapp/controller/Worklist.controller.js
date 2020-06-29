@@ -16,7 +16,8 @@ sap.ui.define([
 	"sap/m/Text",
 	"sap/m/TextArea",
 	"sap/m/library",
-], function (BaseController, JSONModel, MessageBox, MessageToast, Sorter, Filter, FilterOperator, Export, ExportTypeCSV, Date, Formatter, Button, Dialog, Label, Text, TextArea, Library) {
+	"sap/ui/core/Fragment",
+], function (BaseController, JSONModel, MessageBox, MessageToast, Sorter, Filter, FilterOperator, Export, ExportTypeCSV, Date, Formatter, Button, Dialog, Label, Text, TextArea, Library,Fragment) {
 	"use strict";
 	var that = undefined;
 	var ButtonType = Library.ButtonType;
@@ -1297,6 +1298,55 @@ sap.ui.define([
 
 		},
 
+		handleTextPopoverPress: function (oEvent) {
+			var oPath = oEvent.getSource().getParent().getBindingContext("SchedAgreeJSONModel").sPath;
+
+			var oButton = oEvent.getSource();
+
+			if (this._oPopover !== undefined) {
+				this._oPopover = undefined;
+			}
+
+			// create popover
+			if (!this._oPopover) {
+				Fragment.load({
+					name: "it.aupsup.aprvschdagr.fragments.TextPopOver",
+					controller: this
+				}).then(function (pPopover) {
+					this._oPopover = pPopover;
+					this.getView().addDependent(this._oPopover);
+					this._oPopover.bindElement({ path: oPath, model: "SchedAgreeJSONModel" });
+					this._oPopover.openBy(oButton);
+				}.bind(this));
+			} else {
+				this._oPopover.openBy(oButton);
+			}
+		},
+
+		handleTextPositionPopoverPress: function(oEvent){
+			var oPath = oEvent.getSource().getParent().getBindingContext("SchedAgrToApproveRejectJSONModel").sPath;
+
+			var oButton = oEvent.getSource();
+
+			if (this._oPopoverPos !== undefined) {
+				this._oPopoverPos = undefined;
+			}
+			
+			// create popover
+			if (!this._oPopoverPos) {
+				Fragment.load({
+					name: "it.aupsup.aprvschdagr.fragments.TextPopOverPos",
+					controller: this
+				}).then(function (pPopover) {
+					this._oPopoverPos = pPopover;
+					this.getView().addDependent(this._oPopoverPos);
+					this._oPopoverPos.bindElement({ path: oPath, model: "SchedAgrToApproveRejectJSONModel" });
+					this._oPopoverPos.openBy(oButton);
+				}.bind(this));
+			} else {
+				this._oPopoverPos.openBy(oButton);
+			}			
+		}
 
 	});
 

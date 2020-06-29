@@ -187,6 +187,9 @@
 													<m:Label text="{i18n>SchedMod}" class="columnLabelStyle" wrapping="true"/>
 												</m:Column>
 												<m:Column minScreenWidth="Desktop" demandPopin="true" hAlign="Center">
+													<m:Label text="{i18n>COMMENT}" class="columnLabelStyle" wrapping="true"/>
+												</m:Column>												
+												<m:Column minScreenWidth="Desktop" demandPopin="true" hAlign="Center">
 													<m:Label text="{i18n>approveReject}" class="columnLabelStyle" wrapping="true"/>
 												</m:Column>
 											</m:columns>
@@ -211,6 +214,7 @@
 														<m:Text text="{path : 'SchedAgreeJSONModel>PEINH_ORIGINAL', formatter : '.importFormatter'}" visible="{= ${SchedAgreeJSONModel>CONF_TYPE} === 'PRZ'}"/>
 														<m:Text text="{path : 'SchedAgreeJSONModel>PEINH', formatter : '.importFormatter'}" visible="{= ${SchedAgreeJSONModel>CONF_TYPE} === 'PRZ'}"/>
 														<m:Text text="{SchedAgreeJSONModel>SCHEDMOD}"/>
+														<m:Button icon="sap-icon://notification-2" press="handleTextPopoverPress" visible="{= ${SchedAgreeJSONModel>COMMENT} !== '' &amp;&amp; ${SchedAgreeJSONModel>COMMENT} !== null }"/>
 														<m:Button icon="sap-icon://validate" press="onValidate" ariaLabelledBy="editButtonLabel" visible="{= ${SchedAgreeJSONModel>CONF_TYPE} === 'QUA'}"/>
 													</m:cells>
 												</m:ColumnListItem>

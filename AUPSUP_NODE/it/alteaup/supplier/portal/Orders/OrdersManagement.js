@@ -339,6 +339,8 @@ module.exports = function () {
             var ekko = []
             var ekpo = []
             var ekes = []
+            var t_herder_comment = []
+            var t_position_comment = []
             var skipAppBuyer = []
             var userid = req.user.id
 
@@ -353,6 +355,12 @@ module.exports = function () {
             }
             if (body.skipAppBuyer !== null && body.skipAppBuyer !== undefined && body.skipAppBuyer.length > 0) {
                 skipAppBuyer = body.skipAppBuyer
+            }
+            if (body.t_herder_comment !== null && body.t_herder_comment !== undefined && body.t_herder_comment.length > 0) {
+                t_herder_comment = body.t_herder_comment
+            }
+            if (body.t_position_comment !== null && body.t_position_comment !== undefined && body.t_position_comment.length > 0) {
+                t_position_comment = body.t_position_comment
             }
             /* if (body.notaReject !== null && body.notaReject !== undefined && body.notaReject !== '') {
                 notaReject = body.notaReject
@@ -380,7 +388,7 @@ module.exports = function () {
                             client.close()
                             return res.status(500).send(stringifyObj(_err))
                         }
-                        sp(userid, ekko, ekpo, ekes, skipAppBuyer, (err, parameters, results) => {
+                        sp(userid, ekko, ekpo, ekes, skipAppBuyer, t_herder_comment, t_position_comment, (err, parameters, results) => {
                             console.log('---->>> CLIENT END ConfirmOrders <<<<<-----')
                             client.close()
                             if (err) {

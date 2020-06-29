@@ -41,6 +41,12 @@
 									<Input required="{SelectedPositionsJSONModel>editPrice}" value="{SelectedPositionsJSONModel>NETPR}" enabled="{SelectedPositionsJSONModel>editPrice}" type="Number"/>
 									<Label text="{i18n>PEINH}"/>
 									<Input required="{SelectedPositionsJSONModel>editPrice}" value="{SelectedPositionsJSONModel>PEINH}" enabled="{SelectedPositionsJSONModel>editPrice}" type="Number"/>
+									<Label text="{i18n>COMMENT}"/>
+									<TextArea growing="true" value="{SelectedPositionsJSONModel>HEADER_COMMENT}" rows="3" enabled="{SelectedPositionsJSONModel>editPrice}">
+										<layoutData>
+											<FlexItemData growFactor="2"/>
+										</layoutData>
+									</TextArea>
 									<core:Title text=""/>
 									<Label text="{i18n>KDATB}" visible="{=${SelectedPositionsJSONModel>TimeDependent} === true &amp;&amp; ${SelectedPositionsJSONModel>editPrice} === true}"/>
 									<DatePicker displayFormat="dd MMM yyyy" valueFormat="YYYYMMdd" required="{SelectedPositionsJSONModel>TimeDependent}" visible="{=${SelectedPositionsJSONModel>TimeDependent} === true &amp;&amp; ${SelectedPositionsJSONModel>editPrice} === true}" value="{path:'SelectedPositionsJSONModel>ZINVALIDITA'}"/>
@@ -113,6 +119,9 @@
 									<Column>
 										<Text text="{i18n>confirmationType}"/>
 									</Column>
+									<Column>
+										<Text text="{i18n>COMMENT}"/>
+									</Column>									
 									<Column hAlign="End">
 										<Text text=""/>
 									</Column>
@@ -124,15 +133,16 @@
 								<items textAlign="Center">
 									<ColumnListItem visible="{= ${SelectedPositionsJSONModel>SYSID} === undefined}">
 										<cells >
-											<DatePicker enabled="{= ${SelectedPositionsJSONModel>SYSID} === undefined}" displayFormat="dd MMM yyyy" valueFormat="YYYYMMdd" value="{path:'SelectedPositionsJSONModel>EINDT'}"/>
-											<Input enabled="{= ${SelectedPositionsJSONModel>SYSID} === undefined}" value="{SelectedPositionsJSONModel>MENGE}" type="Number"/>
-											<ComboBox enabled = "{SelectedPositionsJSONModel>ETENRenabled}" selectedKey="{SelectedPositionsJSONModel>ETENR}" items="{SelectedPositionsJSONModel>ETENRS}">
+											<DatePicker width="10rem" enabled="{= ${SelectedPositionsJSONModel>SYSID} === undefined}" displayFormat="dd MMM yyyy" valueFormat="YYYYMMdd" value="{path:'SelectedPositionsJSONModel>EINDT'}"/>
+											<Input width="10rem" enabled="{= ${SelectedPositionsJSONModel>SYSID} === undefined}" value="{SelectedPositionsJSONModel>MENGE}" type="Number"/>
+											<ComboBox width="10rem" enabled = "{SelectedPositionsJSONModel>ETENRenabled}" selectedKey="{SelectedPositionsJSONModel>ETENR}" items="{SelectedPositionsJSONModel>ETENRS}">
 												<core:Item key="{SelectedPositionsJSONModel>ETENR}" text="{SelectedPositionsJSONModel>ETENR}"/>
 											</ComboBox>
 											<!-- <Text text="{SelectedPositionsJSONModel>ETENR}" /> -->
-											<Text text="{SelectedPositionsJSONModel>EBTYP}"/>
-											<Button icon="sap-icon://add" press="onAddSchedulation" visible="{= ${SelectedPositionsJSONModel>SYSID} === undefined}"/>
-											<Button icon="sap-icon://delete" press="onDeleteSchedulation" visible="{= ${SelectedPositionsJSONModel>SYSID} === undefined}"/>
+											<Text width="5rem" text="{SelectedPositionsJSONModel>EBTYP}"/>
+											<TextArea width="25rem" value="{SelectedPositionsJSONModel>COMMENT}" rows="3" visible="{= ${SelectedPositionsJSONModel>SYSID} === undefined}"/>
+											<Button width="3rem" icon="sap-icon://add" press="onAddSchedulation" visible="{= ${SelectedPositionsJSONModel>SYSID} === undefined}"/>
+											<Button width="3rem" icon="sap-icon://delete" press="onDeleteSchedulation" visible="{= ${SelectedPositionsJSONModel>SYSID} === undefined}"/>
 										</cells>
 									</ColumnListItem>
 								</items>

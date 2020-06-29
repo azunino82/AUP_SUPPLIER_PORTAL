@@ -325,7 +325,7 @@ sap.ui.define([
 				jsonBody.eindtTo = year + month + day;
 			}
 
-			
+
 			that.showBusyDialog();
 			that.ajaxPost(url, jsonBody, function (oData) {
 				that.hideBusyDialog();
@@ -859,6 +859,28 @@ sap.ui.define([
 					template: {
 						content: "{SECONDO_PERIODO}"
 					}
+				}, {
+					name: that.getResourceBundle().getText("RangeDateEketEkeh"),
+					template: {
+						content: {
+							path: "EKET_EKEH_EINDT",
+							formatter: function (sDate) {
+								var oFromFormat = sap.ui.core.format.DateFormat.getDateTimeInstance({
+									pattern: "yyyyMMdd"
+								});
+								var oDate = oFromFormat.parse(sDate, true);
+								var oToFormat = sap.ui.core.format.DateFormat.getDateTimeInstance({
+									pattern: "dd MMM yyyy"
+								});
+								if (sDate === "00000000") {
+									return ""; // or whatever special case
+								} else {
+									var sResult = oToFormat.format(oDate);
+									return sResult;
+								}
+							}
+						}
+					}
 				}]
 			});
 
@@ -1381,7 +1403,9 @@ sap.ui.define([
 							"ekes": [],
 							"skipAppBuyer": [],
 							"notaReject": "",
-							"confirmType": ""
+							"confirmType": "",
+							"t_herder_comment": [],
+							"t_position_comment": []
 						};
 						var ekpoRow = that.getModel("SelectedPositionsJSONModel").getData();
 						if (ekpoRow !== undefined) {
@@ -1551,6 +1575,12 @@ sap.ui.define([
 											}
 										}
 
+										var positionComments = {}
+										positionComments.EBELN = row.EBELN
+										positionComments.EBELP = row.EBELP
+										positionComments.COMMENT = row.POItemSchedulers.results[j].COMMENT
+										positionComments.XBLNR = singleEkesModel.XBLNR
+										body.t_position_comment.push(positionComments)
 
 									}
 								}
@@ -1610,7 +1640,10 @@ sap.ui.define([
 								singleEkkoModel.ZCUSTOM10 = row.ZCUSTOM10;
 								body.ekko.push(singleEkkoModel);
 
-
+								var headerComments = {};
+								headerComments.EBELN = row.EBELN;
+								headerComments.COMMENT = row.HEADER_COMMENT;
+								body.t_herder_comment.push(headerComments);
 
 							}
 						}

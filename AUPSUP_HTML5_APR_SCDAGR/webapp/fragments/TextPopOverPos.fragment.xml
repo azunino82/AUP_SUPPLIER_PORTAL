@@ -1,0 +1,13 @@
+<core:FragmentDefinition xmlns="sap.m" 
+	xmlns:core="sap.ui.core">
+	<Popover title="{i18n>COMMENT}" class="sapUiResponsivePadding--header sapUiResponsivePadding--footer" placement="Bottom">
+		<HBox >
+			<Label text="." class="hideLabel"/>
+			<FlexBox alignItems="Start" justifyContent="Center" width="30rem">
+				<items>
+					<Text text="{SchedAgrToApproveRejectJSONModel>COMMENT}"></Text>
+				</items>
+			</FlexBox>
+		</HBox>
+	</Popover>
+</core:FragmentDefinition>

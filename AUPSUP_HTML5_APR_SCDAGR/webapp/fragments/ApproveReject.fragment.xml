@@ -43,6 +43,9 @@
 							<Text text="{i18n>deltaQuantita}"/>
 						</Column>
 						<Column>
+							<Text text="{i18n>COMMENT}"/>
+						</Column>						
+						<Column>
 							<Text text="{i18n>approva}"/>
 						</Column>
 						<Column>
@@ -63,6 +66,7 @@
 								<Text text="{ path : 'SchedAgrToApproveRejectJSONModel>EKET_MENGE', formatter : '.importFormatter'}"/>
 								<Text text="{SchedAgrToApproveRejectJSONModel>DELTA_GG}"/>
 								<Text text="{ path : 'SchedAgrToApproveRejectJSONModel>DELTA_QUANT', formatter : '.importFormatter'}"/>
+								<Button icon="sap-icon://notification-2" press="handleTextPositionPopoverPress" visible="{= ${SchedAgrToApproveRejectJSONModel>COMMENT} !== '' &amp;&amp; ${SchedAgrToApproveRejectJSONModel>COMMENT} !== null }"/>
 								<RadioButton groupName="{SchedAgrToApproveRejectJSONModel>RADIO_GRP_NAME}" selected="{SchedAgrToApproveRejectJSONModel>APPROVE}" visible="{SchedAgrToApproveRejectJSONModel>ISTOCONFIRM}"></RadioButton>
 								<RadioButton groupName="{SchedAgrToApproveRejectJSONModel>RADIO_GRP_NAME}" selected="{SchedAgrToApproveRejectJSONModel>REJECT}" visible="{SchedAgrToApproveRejectJSONModel>ISTOCONFIRM}"></RadioButton>
 								<Text text="{i18n>advice_msg}" visible = "{= ${SchedAgrToApproveRejectJSONModel>DELTA_QUANT} !== '0.000'}"/>

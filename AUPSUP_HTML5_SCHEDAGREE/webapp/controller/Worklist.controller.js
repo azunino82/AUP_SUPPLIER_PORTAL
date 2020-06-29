@@ -1356,7 +1356,9 @@ sap.ui.define([
 							"ekes": [],
 							"skipAppBuyer": [],
 							"notaReject": "",
-							"confirmType": ""
+							"confirmType": "",
+							"t_herder_comment": [],
+							"t_position_comment": []
 						};
 						var ekpoRow = that.getModel("SelectedPositionsJSONModel").getData();
 						if (ekpoRow !== undefined) {
@@ -1526,6 +1528,12 @@ sap.ui.define([
 											}
 										}
 
+										var positionComments = {}
+										positionComments.EBELN = row.EBELN
+										positionComments.EBELP = row.EBELP
+										positionComments.COMMENT = row.POItemSchedulers.results[j].COMMENT
+										positionComments.XBLNR = singleEkesModel.XBLNR
+										body.t_position_comment.push(positionComments)
 
 									}
 								}
@@ -1586,7 +1594,10 @@ sap.ui.define([
 								singleEkkoModel.ZCUSTOM10 = row.ZCUSTOM10;
 								body.ekko.push(singleEkkoModel);
 
-
+								var headerComments = {};
+								headerComments.EBELN = row.EBELN;
+								headerComments.COMMENT = row.HEADER_COMMENT;
+								body.t_herder_comment.push(headerComments);
 
 							}
 						}
