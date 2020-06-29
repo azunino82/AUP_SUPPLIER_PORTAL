@@ -73,6 +73,10 @@ modules:
           artifacts:
             - './*'
           target-path: resources/AUPSUP_HTML5_CUSTOMIZING
+        - name: AUPSUP_HTML5_LOGSORDSCHED
+          artifacts:
+            - './*'
+          target-path: resources/AUPSUP_HTML5_LOGSORDSCHED
   - name: AUPSUP_LAUNCHPAD
     type: com.sap.portal.content
     path: AUPSUP_LAUNCHPAD
@@ -191,6 +195,13 @@ modules:
   - name: AUPSUP_HTML5_CUSTOMIZING
     type: html5
     path: AUPSUP_HTML5_CUSTOMIZING
+    build-parameters:
+      builder: grunt
+      supported-platforms: []
+      build-result: dist
+  - name: AUPSUP_HTML5_LOGSORDSCHED
+    type: html5
+    path: AUPSUP_HTML5_LOGSORDSCHED
     build-parameters:
       builder: grunt
       supported-platforms: []

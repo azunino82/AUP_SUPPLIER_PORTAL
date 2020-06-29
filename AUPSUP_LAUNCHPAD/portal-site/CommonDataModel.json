@@ -70,6 +70,10 @@
 					"id": "AUPSUP_HTML5_CUSTOMIZING",
 					"appId": "it.aupsup.customizing",
 					"vizId": "Customizing-Display"
+				}, {
+					"id": "AUPSUP_HTML5_LOGSORDSCHED",
+					"appId": "it.aupsup.logsordsched",
+					"vizId": "LogsOrdPurch-Display"
 				}]
 			}
 		}],
