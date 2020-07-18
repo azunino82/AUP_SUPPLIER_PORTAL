@@ -1533,6 +1533,7 @@ sap.ui.define([
 										positionComments.EBELP = row.EBELP
 										positionComments.COMMENT = row.POItemSchedulers.results[j].COMMENT
 										positionComments.XBLNR = singleEkesModel.XBLNR
+										positionComments.COUNTER= singleEkesModel.COUNTER
 										body.t_position_comment.push(positionComments)
 
 									}

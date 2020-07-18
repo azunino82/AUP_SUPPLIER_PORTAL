@@ -802,6 +802,264 @@ module.exports = function () {
     }
   })
 
+  // GET CONFIRMATION STATUS (ORDER and SCHED AGREE)
+  app.post('/GetConfirmStatus', function (req, res) {
+    const body = req.body
+
+    console.log('INPUT BODY ==========> ' + JSON.stringify(body))
+
+    if (body !== undefined && body !== '' && body !== null) {
+      var lifnr = []
+      var ebeln = ''
+      var ebelp = ''
+      var ekorg = []
+      var ekgrp = []
+      var matnr = []
+      var werks = []
+      var bstyp = []
+      var spras = 'I'
+      var userid = req.user.id
+      var ebtyp = 'AB'
+      var schedEindtFrom = ''
+      var schedEindtTo = ''
+      var createEindtFrom = ''
+      var createEindtTo = ''
+      var isPrezzo = 'X'
+      var isQuantita = 'X'
+      var etenr = ''
+
+      if (body.bstyp !== null && body.bstyp !== undefined && body.bstyp !== '') {
+        var oBstyp = []
+        for (var i = 0; i < body.bstyp.length; i++) {
+          oBstyp.push({
+            BSTYP: body.bstyp[i]
+          })
+        }
+        bstyp = oBstyp
+      }
+
+      if (bstyp.length === 0) {
+        return res.status(500).send('bstyp is mandatory')
+      }
+
+      if (body.lifnr !== null && body.lifnr !== undefined && body.lifnr !== '') {
+        var oLifnr = []
+        for (var i = 0; i < body.lifnr.length; i++) {
+          oLifnr.push({
+            ELIFN: body.lifnr[i]
+          })
+        }
+        lifnr = oLifnr
+      }
+
+      if (body.etenr !== null && body.etenr !== undefined && body.etenr !== '') {
+        etenr = body.etenr
+      }
+
+      if (body.isPrezzo !== null && body.isPrezzo === true) {
+        isPrezzo = 'X'
+      } else {
+        isPrezzo = ''
+      }
+
+      if (body.isQuantita !== null && body.isQuantita === true) {
+        isQuantita = 'X'
+      } else {
+        isQuantita = ''
+      }
+
+      if (body.schedEindtFrom !== null && body.schedEindtFrom !== undefined && body.schedEindtFrom !== '') {
+        schedEindtFrom = body.schedEindtFrom
+      }
+
+      if (body.schedEindtTo !== null && body.schedEindtTo !== undefined && body.schedEindtTo !== '') {
+        schedEindtTo = body.schedEindtTo
+      }
+
+      if (body.createEindtFrom !== null && body.createEindtFrom !== undefined && body.createEindtFrom !== '') {
+        createEindtFrom = body.createEindtFrom
+      }
+
+      if (body.createEindtTo !== null && body.createEindtTo !== undefined && body.createEindtTo !== '') {
+        createEindtTo = body.createEindtTo
+      }
+
+      if (body.spras !== null && body.spras !== undefined && body.spras !== '') {
+        spras = body.spras
+      }
+
+      if (body.ebtyp !== null && body.ebtyp !== undefined && body.ebtyp !== '') {
+        ebtyp = body.ebtyp
+      }
+
+      if (body.ebeln !== null && body.ebeln !== undefined && body.ebeln !== '') {
+        ebeln = body.ebeln
+      }
+
+      if (body.ebelp !== null && body.ebelp !== undefined && body.ebelp !== '') {
+        ebelp = body.ebelp
+      }
+
+      if (body.ekorg !== null && body.ekorg !== undefined && body.ekorg.length > 0) {
+        var oEkorg = []
+        // eslint-disable-next-line no-redeclare
+        for (var i = 0; i < body.ekorg.length; i++) {
+          oEkorg.push({
+            EKORG: body.ekorg[i]
+          })
+        }
+        ekorg = oEkorg
+      }
+
+      if (body.ekgrp !== null && body.ekgrp !== undefined && body.ekgrp.length > 0) {
+        var oEkgrp = []
+        // eslint-disable-next-line no-redeclare
+        for (var i = 0; i < body.ekgrp.length; i++) {
+          oEkgrp.push({
+            EKGRP: body.ekgrp[i]
+          })
+        }
+        ekgrp = oEkgrp
+      }
+      if (body.matnr !== null && body.matnr !== undefined && body.matnr.length > 0) {
+        var oMatnr = []
+        // eslint-disable-next-line no-redeclare
+        for (var i = 0; i < body.matnr.length; i++) {
+          oMatnr.push({
+            MATNR: body.matnr[i]
+          })
+        }
+        matnr = oMatnr
+      }
+      if (body.werks !== null && body.werks !== undefined && body.werks.length > 0) {
+        var oWerks = []
+        // eslint-disable-next-line no-redeclare
+        for (var i = 0; i < body.werks.length; i++) {
+          oWerks.push({
+            EWERK: body.werks[i],
+            DESCR: ''
+          })
+        }
+        werks = oWerks
+      }
+
+      hdbext.createConnection(req.tenantContainer, (err, client) => {
+        if (err) {
+          return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
+        } else {
+          hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Utils::GetConfirmStatus', function (_err, sp) {
+            if (_err) {
+              console.log('---->>> CLIENT END ERR GetConfirmStatus <<<<<-----')
+            }
+            sp(userid, lifnr, ebeln, ebelp, ekorg, matnr, ekgrp, werks, bstyp, spras, schedEindtFrom, schedEindtTo, createEindtFrom, createEindtTo,
+              isPrezzo, isQuantita, etenr, (err, parameters, ET_APPROVE_EKKO_EKPO, ET_APPROVE_EKES_EKET) => {
+                console.log('---->>> CLIENT END GetConfirmStatus <<<<<-----')
+                client.close()
+                if (err) {
+                  console.error('ERROR: ' + err)
+                  return res.status(500).send(stringifyObj(err))
+                } else {
+                  var results = { results: [] }
+                  for (let index = 0; index < ET_APPROVE_EKKO_EKPO.length; index++) {
+                    var obj = {}
+                    var element = ET_APPROVE_EKKO_EKPO[index]
+                    obj.EBELN = element.EBELN
+                    obj.visibility = false
+                    obj.IcoArrow = 'sap-icon://navigation-right-arrow'
+
+                    obj.positions = []
+
+                    for (let i = 0; i < ET_APPROVE_EKKO_EKPO.length; i++) {
+                      var el = ET_APPROVE_EKKO_EKPO[i]
+                      if (element.EBELN === el.EBELN) {
+                        var trovato = false
+                        obj.positions.forEach(pos => {
+                          if (pos.EBELP === el.EBELP) {
+                            trovato = true
+                          }
+                        })
+
+                        if (!trovato) {
+                          obj.positions.push({
+                            EBELP: el.EBELP,
+                            ConfermePrezzoVisibility: false,
+                            ConfermeQuantitaVisibility: false,
+                            IcoArrowQuantita: 'sap-icon://navigation-right-arrow',
+                            IcoArrowPrezzo: 'sap-icon://navigation-right-arrow',
+                            ConfermeQuantita: [],
+                            ConfermePrezzo: []
+                          })
+                        }
+                      }
+                    }
+
+                    var trovato = false
+                    results.results.forEach(el => {
+                      if (el.EBELN === element.EBELN) {
+                        trovato = true
+                      }
+                    })
+
+                    if (!trovato) {
+                      results.results.push(obj)
+                    }
+                  }
+
+                  for (let index = 0; index < results.results.length; index++) {
+                    const element = results.results[index]
+                    element.positions.forEach(position => {
+                      for (let i = 0; i < ET_APPROVE_EKKO_EKPO.length; i++) {
+                        const ekkoekpo = ET_APPROVE_EKKO_EKPO[i]
+                        if (ekkoekpo.EBELP === position.EBELP && element.EBELN === ekkoekpo.EBELN) {
+                          if (ekkoekpo.CONF_TYPE === 'PRZ') {
+                            position.ConfermePrezzo.push({
+                              actual_price: ekkoekpo.NETPR_ORIGINAL,
+                              actual_UDP: ekkoekpo.PEINH_ORIGINAL,
+                              date_start: '',
+                              date_end: '',
+                              new_price: ekkoekpo.NETPR,
+                              new_udp: ekkoekpo.PEINH,
+                              new_start_date: ekkoekpo.ZINVALIDITA,
+                              new_end_date: ekkoekpo.ZFINVALIDATA,
+                              insert_date: ekkoekpo.CREATION_DATE,
+                              approve_date: ekkoekpo.MODIFY_STATUS_DATE,
+                              status: ekkoekpo.STATUS,
+                              comment: ekkoekpo.COMMENT,
+                              confirmDirectToSap: ekkoekpo.CONF_DIRECT_TO_SAP
+                            })
+                          } else {
+                            for (let j = 0; j < ET_APPROVE_EKES_EKET.length; j++) {
+                              var sched = ET_APPROVE_EKES_EKET[j]
+                              if (sched.EBELP === position.EBELP && ekkoekpo.EBELN === sched.EBELN) {
+                                position.ConfermeQuantita.push({
+                                  sched_numb: sched.ETENS,
+                                  sched_date: sched.EINDT,
+                                  sched_quant: sched.MENGE,
+                                  conf_date: sched.MODIFY_STATUS_DATE,
+                                  conf_quant: ekkoekpo.MENGE,
+                                  insert_date: ekkoekpo.CREATION_DATE,
+                                  approve_date: sched.MODIFY_STATUS_DATE,
+                                  status: sched.STATUS,
+                                  comment: sched.COMMENT,
+                                  confirmDirectToSap: sched.CONF_DIRECT_TO_SAP
+                                })
+                              }
+                            }
+                          }
+                        }
+                      }
+                    })
+                  }
+
+                  return res.status(200).send(results)
+                }
+              })
+          })
+        }
+      })
+    }
+  })
+
   // CONTATORE TILES
 
   app.get('/GetCounter', function (req, res) {

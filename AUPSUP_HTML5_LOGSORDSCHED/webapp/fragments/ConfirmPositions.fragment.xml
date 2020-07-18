@@ -132,15 +132,15 @@
 								<items>
 									<ColumnListItem visible="{= ${SelectedPositionsJSONModel>SYSID} === undefined}">
 										<cells>
-											<DatePicker enabled="{= ${SelectedPositionsJSONModel>SYSID} === undefined}" displayFormat="dd MMM yyyy" valueFormat="YYYYMMdd" value="{path:'SelectedPositionsJSONModel>EINDT'}"/>
-											<Input enabled="{= ${SelectedPositionsJSONModel>SYSID} === undefined}" value="{SelectedPositionsJSONModel>MENGE}" type="Number"/>
+											<DatePicker width="10rem" enabled="{= ${SelectedPositionsJSONModel>SYSID} === undefined}" displayFormat="dd MMM yyyy" valueFormat="YYYYMMdd" value="{path:'SelectedPositionsJSONModel>EINDT'}"/>
+											<Input width="10rem" enabled="{= ${SelectedPositionsJSONModel>SYSID} === undefined}" value="{SelectedPositionsJSONModel>MENGE}" type="Number"/>
 											<ComboBox width="10rem" enabled = "{SelectedPositionsJSONModel>ETENRenabled}" selectedKey="{SelectedPositionsJSONModel>ETENR}" items="{SelectedPositionsJSONModel>ETENRS}">
 												<core:Item key="{SelectedPositionsJSONModel>ETENR}" text="{SelectedPositionsJSONModel>ETENR}"/>
 											</ComboBox>
-											<Text text="{SelectedPositionsJSONModel>EBTYP}"/>
-											<TextArea  value="{SelectedPositionsJSONModel>COMMENT}" rows="3" visible="{= ${SelectedPositionsJSONModel>SYSID} === undefined}"/>
-											<Button icon="sap-icon://add" press="onAddSchedulation" visible="{= ${SelectedPositionsJSONModel>SYSID} === undefined}"/>
-											<Button icon="sap-icon://delete" press="onDeleteSchedulation" visible="{= ${SelectedPositionsJSONModel>SYSID} === undefined}"/>
+											<Text width="5rem" text="{SelectedPositionsJSONModel>EBTYP}"/>
+											<TextArea width="25rem" value="{SelectedPositionsJSONModel>COMMENT}" rows="3" visible="{= ${SelectedPositionsJSONModel>SYSID} === undefined}"/>
+											<Button width="3rem" icon="sap-icon://add" press="onAddSchedulation" visible="{= ${SelectedPositionsJSONModel>SYSID} === undefined}"/>
+											<Button width="3rem" icon="sap-icon://delete" press="onDeleteSchedulation" visible="{= ${SelectedPositionsJSONModel>SYSID} === undefined}"/>
 										</cells>
 									</ColumnListItem>
 								</items>

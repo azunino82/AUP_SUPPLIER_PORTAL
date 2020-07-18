@@ -30,6 +30,7 @@
 	},
 
 	"sap.ui": {
+		"fullWidth": true,
 		"technology": "UI5",
 		"icons": {
 			"icon": "",
@@ -47,6 +48,9 @@
 	},
 
 	"sap.ui5": {
+		"config": {
+			"fullWidth": true
+		},
 		"flexEnabled": false,
 		"rootView": {
 			"viewName": "it.aupsup.logsordsched.view.App",
@@ -86,21 +90,44 @@
 				"async": true,
 				"viewPath": "it.aupsup.logsordsched.view",
 				"controlAggregation": "pages",
-				"controlId": "app",
+				"controlId": "idAppControl",
 				"clearControlAggregation": false
 			},
-			"routes": [{
-				"name": "RouteApp",
-				"pattern": "RouteApp",
-				"target": ["TargetApp"]
-			}],
+			"routes": [
+				{
+					"pattern": "",
+					"name": "worklist",
+					"greedy": false,
+					"target": [
+						"worklist"
+					]
+				},
+				{
+					"name": "detail",
+					"pattern": "detail/{datas}",
+					"titleTarget": "",
+					"greedy": false,
+					"target": [
+						"detail"
+					]
+				}
+			],
 			"targets": {
-				"TargetApp": {
+				"worklist": {
+					"viewLevel": 1,
+					"viewName": "Worklist"
+				},
+				"detail": {
+					"viewLevel": 2,
+					"viewName": "OrderPositionDetail"
+				},
+				"OrderPositions": {
 					"viewType": "XML",
-					"transition": "slide",
-					"clearControlAggregation": false,
-					"viewId": "App",
-					"viewName": "App"
+					"viewName": "OrderPositions"
+				},
+				"OrderPositionDetail": {
+					"viewType": "XML",
+					"viewName": "OrderPositionDetail"
 				}
 			}
 		}

@@ -85,12 +85,12 @@ module.exports = function () {
 
             if (body.ebeln !== null && body.ebeln !== undefined && body.ebeln !== '') {
                 ebeln.push({
-                    EBELN: body.ebeln
+                    EBELN: body.ebeln.trim()
                 })
             }
             if (body.ebelp !== null && body.ebelp !== undefined && body.ebelp !== '') {
                 ebelp.push({
-                    EBELP: body.ebelp
+                    EBELP: body.ebelp.trim()
                 })
             }
             if (body.ekorg !== null && body.ekorg !== undefined && body.ekorg.length > 0) {
