@@ -936,7 +936,9 @@ module.exports = function () {
                                 IDNLF: header.IDNLF,
                                 MENGE: header.MENGE,
                                 PEINH: header.PEINH,
-                                NETPR: header.NETPR
+                                NETPR: header.NETPR,
+                                ORIG_PEINH: header.ORIG_PEINH,
+                                ORIG_NETPR: header.ORIG_NETPR
                             }
                             return res.status(200).send(results)
                         }
