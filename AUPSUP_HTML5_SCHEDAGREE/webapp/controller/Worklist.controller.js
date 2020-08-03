@@ -2527,7 +2527,7 @@ sap.ui.define([
 					};
 
 					var oSelectDialog1 = new sap.m.SelectDialog({
-						title: that.getResourceBundle().getText("Title_TypeDoc"),
+						title: '',
 						search: fnDoSearch,
 						liveChange: fnDoSearch
 

@@ -38,6 +38,9 @@
 									<!--prezzo-->									
 									<m:ObjectAttribute title="{i18n>PEINH}" text="{ path: 'OrderPrositionJSONModel>/PEINH', formatter : '.importFormatter' }"/>
 									<!--Unità di prezzo-->
+									<m:ObjectAttribute title="{i18n>ORIG_NETPR}" text="{ path: 'OrderPrositionJSONModel>/ORIG_NETPR', formatter : '.importFormatter' }"/>
+										<!--prezzo-->									
+									<m:ObjectAttribute title="{i18n>ORIG_PEINH}" text="{ path: 'OrderPrositionJSONModel>/ORIG_PEINH', formatter : '.importFormatter' }"/>									
 								</m:VBox >
 							</layout:HorizontalLayout>
 						</headerContent>
