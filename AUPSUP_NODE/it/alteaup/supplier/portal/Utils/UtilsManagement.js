@@ -1033,10 +1033,10 @@ module.exports = function () {
                               if (sched.EBELP === position.EBELP && ekkoekpo.EBELN === sched.EBELN) {
                                 position.ConfermeQuantita.push({
                                   sched_numb: sched.ETENS,
-                                  sched_date: sched.EINDT,
-                                  sched_quant: sched.MENGE,
-                                  conf_date: sched.MODIFY_STATUS_DATE,
-                                  conf_quant: ekkoekpo.MENGE,
+                                  sched_date: sched.ORIG_EINDT,
+                                  sched_quant: sched.ORIG_MENGE,
+                                  conf_date: sched.EINDT,
+                                  conf_quant: sched.MENGE,
                                   insert_date: ekkoekpo.CREATION_DATE,
                                   approve_date: sched.MODIFY_STATUS_DATE,
                                   status: sched.STATUS,

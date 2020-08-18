@@ -19,8 +19,8 @@ CREATE LOCAL TEMPORARY TABLE #LIFNR (LIFNR NVARCHAR(10),EBELN NVARCHAR(10),EBELP
 
 SELECT CURRENT_TIMESTAMP INTO V_CURRENT_TIMESTAMP FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
 
-INSERT INTO #T_CONF_TYPE VALUES ('4500288858','00020','0001','A','F','1');
-INSERT INTO #T_CONF_TYPE VALUES ('4500288858','00020','0001','A','F','0');
+INSERT INTO #T_CONF_TYPE VALUES ('4500000022','00010','0003','A','F','1');
+INSERT INTO #T_CONF_TYPE VALUES ('4500000022','00010','0003','R','F','0');
 TIPO_OPERAZIONE := 'QUA';
 userid := 'azunino@alteanet.it';
 
@@ -58,9 +58,11 @@ IF counter > 0 THEN
             SELECT COUNT(*) into counter FROM :IT_EKPO_CH;
             IF (counter>0) THEN
 
-				UPDATE "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" AS table1 SET STATUS = 'AP', MODIFY_STATUS_DATE = :V_CURRENT_TIMESTAMP WHERE (table1.EBELN,table1.EBELP) IN (SELECT EBELN,EBELP FROM :IT_EKPO_CH) 
+				UPDATE "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" AS table1 SET STATUS = 'AP', MODIFY_STATUS_DATE = :V_CURRENT_TIMESTAMP, COMMENT = (
+                        SELECT COMMENT FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" WHERE EBELN = table1.EBELN AND EBELP = table1.EBELP AND ETENS = table1.ETENS AND COUNTER = table1.COUNTER ) 
+                WHERE (table1.EBELN,table1.EBELP) IN (SELECT EBELN,EBELP FROM :IT_EKPO_CH) 
                 AND table1.CONF_TYPE = :TIPO_OPERAZIONE
-                AND (table1.XBLNR,table1.COUNTER) IN (SELECT XBLNR,COUNTER FROM #T_CONF_TYPE); 
+                AND (table1.XBLNR,table1.COUNTER) IN (SELECT XBLNR,COUNTER FROM #T_CONF_TYPE WHERE CONF_TYPE = 'A'); 
 
               /*  DELETE FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" AS table1 WHERE (table1.EBELN,table1.EBELP) IN (SELECT EBELN,EBELP FROM :IT_EKPO_CH) 
                 AND table1.CONF_TYPE = :TIPO_OPERAZIONE
@@ -76,17 +78,14 @@ IF counter > 0 THEN
                         -- righe da cambiare stato
                         
 
-                       /* SELECT COUNT(*) INTO counter FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" WHERE (EBELN,EBELP,XBLNR,COUNTER) NOT IN (
-                        SELECT EBELN,EBELP,XBLNR,COUNTER FROM"AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" AS table1 WHERE (table1.EBELN,table1.EBELP) IN (SELECT EBELN,EBELP FROM :IT_EKPO_CH) 
-                        AND table1.CONF_TYPE = :TIPO_OPERAZIONE
-                        AND (table1.XBLNR,table1.COUNTER) IN (SELECT XBLNR,COUNTER FROM #T_CONF_TYPE)); */
-
-
-                        SELECT COUNT(*) INTO counter FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" WHERE EBELN = cursorRow.EBELN AND EBELP = cursorRow.EBELP AND STATUS <> 'RC' AND COUNTER NOT IN (
+                        SELECT COUNT(*) INTO counter FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" WHERE EBELN = cursorRow.EBELN AND EBELP = cursorRow.EBELP AND STATUS = 'RC' AND COUNTER NOT IN (
                            SELECT COUNTER FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" as a WHERE (a.EBELN,a.EBELP) IN (SELECT EBELN,EBELP FROM :IT_EKPO_CH) 
                            AND a.CONF_TYPE = :TIPO_OPERAZIONE
                            AND (a.XBLNR,a.COUNTER) IN (SELECT XBLNR,COUNTER FROM #T_CONF_TYPE)
                         );
+
+
+                        --SELECT COUNT(*) INTO counter FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" WHERE EBELN = cursorRow.EBELN AND EBELP = cursorRow.EBELP AND STATUS <> 'RC';
                         IF counter = 0 THEN
                             UPDATE "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKKO_EKPO" SET STATUS = 'AP', MODIFY_STATUS_DATE = :V_CURRENT_TIMESTAMP WHERE EBELN = cursorRow.EBELN AND EBELP = cursorRow.EBELP AND CONF_TYPE = :TIPO_OPERAZIONE AND (MODIFY_STATUS_DATE = null OR MODIFY_STATUS_DATE = '') ;				
                         END IF;
@@ -128,7 +127,7 @@ IF counter > 0 THEN
 
     END IF;
 
-    --------------- UTTE LE POSIZIONI DA RIFIUTARE ---------------------------------
+    --------------- UTTE LE POSIZIONI DA RIFIUTARE -------------    --------------------
 
     DELETE FROM #LIFNR;
 
@@ -158,10 +157,20 @@ IF counter > 0 THEN
             SELECT COUNT(*) into counter FROM :IT_EKPO_CH;
             IF (counter>0) THEN
                 
-                UPDATE "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" AS table1 SET STATUS = 'RF', MODIFY_STATUS_DATE = :V_CURRENT_TIMESTAMP WHERE (table1.EBELN,table1.EBELP) IN 
-                (SELECT EBELN,EBELP FROM :IT_EKPO_CH) 
-                AND table1.CONF_TYPE = :TIPO_OPERAZIONE
-                AND (table1.XBLNR,table1.COUNTER) IN (SELECT XBLNR,COUNTER FROM #T_CONF_TYPE); 
+                IF (TIPO_OPERAZIONE = 'QUA') THEN
+                    UPDATE "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" AS table1 SET STATUS = 'RF', MODIFY_STATUS_DATE = :V_CURRENT_TIMESTAMP,
+                    COMMENT = (
+                        SELECT COMMENT FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" WHERE EBELN = table1.EBELN AND EBELP = table1.EBELP AND ETENS = table1.ETENS AND COUNTER = table1.COUNTER ) || '<br>' || :userid || ': ' || :I_NOTE WHERE (table1.EBELN,table1.EBELP) IN 
+                    (SELECT EBELN,EBELP FROM :IT_EKPO_CH) 
+                    AND table1.CONF_TYPE = :TIPO_OPERAZIONE
+                    AND (table1.XBLNR,table1.COUNTER) IN (SELECT XBLNR,COUNTER FROM #T_CONF_TYPE WHERE CONF_TYPE = 'R');  
+                ELSE
+                    UPDATE "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" AS table1 SET STATUS = 'RF', MODIFY_STATUS_DATE = :V_CURRENT_TIMESTAMP
+                    WHERE (table1.EBELN,table1.EBELP) IN 
+                    (SELECT EBELN,EBELP FROM :IT_EKPO_CH) 
+                    AND table1.CONF_TYPE = :TIPO_OPERAZIONE
+                    AND (table1.XBLNR,table1.COUNTER) IN (SELECT XBLNR,COUNTER FROM #T_CONF_TYPE WHERE CONF_TYPE = 'R');                 
+                END IF;
             /*
                 DELETE FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" AS table1 WHERE (table1.EBELN,table1.EBELP) IN (SELECT EBELN,EBELP FROM :IT_EKPO_CH) 
                 AND table1.CONF_TYPE = :TIPO_OPERAZIONE
@@ -175,14 +184,22 @@ IF counter > 0 THEN
                 FOR cursorRow AS cursorApproveReject DO
                     IF TIPO_OPERAZIONE = 'QUA' THEN
                         BEGIN
-                            SELECT COUNT(*) INTO counter FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" WHERE EBELN = cursorRow.EBELN AND EBELP = cursorRow.EBELP AND STATUS <> 'RC';
+
+                        SELECT COUNT(*) INTO counter FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" WHERE EBELN = cursorRow.EBELN AND EBELP = cursorRow.EBELP AND STATUS = 'RC' AND COUNTER NOT IN (
+                           SELECT COUNTER FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" as a WHERE (a.EBELN,a.EBELP) IN (SELECT EBELN,EBELP FROM :IT_EKPO_CH) 
+                           AND a.CONF_TYPE = :TIPO_OPERAZIONE
+                           AND (a.XBLNR,a.COUNTER) IN (SELECT XBLNR,COUNTER FROM #T_CONF_TYPE)
+                        );
+
+                        --    SELECT COUNT(*) INTO counter FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" WHERE EBELN = cursorRow.EBELN AND EBELP = cursorRow.EBELP AND STATUS <> 'RC';
                             IF counter = 0 THEN
-                                UPDATE "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKKO_EKPO" SET STATUS = 'RF', MODIFY_STATUS_DATE = :V_CURRENT_TIMESTAMP 
+                                UPDATE "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKKO_EKPO" SET STATUS = 'RF', MODIFY_STATUS_DATE = :V_CURRENT_TIMESTAMP, COMMENT = (SELECT COMMENT FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKKO_EKPO" WHERE EBELN = cursorRow.EBELN AND EBELP = cursorRow.EBELP AND CONF_TYPE = :TIPO_OPERAZIONE AND (MODIFY_STATUS_DATE = null OR MODIFY_STATUS_DATE = '') ) || '<br>' || :userid || ': ' || :I_NOTE
                                 WHERE EBELN = cursorRow.EBELN AND EBELP = cursorRow.EBELP AND CONF_TYPE = :TIPO_OPERAZIONE AND (MODIFY_STATUS_DATE = null OR MODIFY_STATUS_DATE = '') ;				
                             END IF;
                         END;
                     ELSE
-                        UPDATE "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKKO_EKPO" SET STATUS = 'RF', MODIFY_STATUS_DATE = :V_CURRENT_TIMESTAMP 
+                        UPDATE "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKKO_EKPO" SET STATUS = 'RF', MODIFY_STATUS_DATE = :V_CURRENT_TIMESTAMP,
+                        COMMENT = (SELECT COMMENT FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKKO_EKPO" WHERE EBELN = cursorRow.EBELN AND EBELP = cursorRow.EBELP AND CONF_TYPE = :TIPO_OPERAZIONE AND (MODIFY_STATUS_DATE = null OR MODIFY_STATUS_DATE = '') ) || '<br>' || :userid || ': ' || :I_NOTE 
                         WHERE EBELN = cursorRow.EBELN AND EBELP = cursorRow.EBELP AND CONF_TYPE = :TIPO_OPERAZIONE AND (MODIFY_STATUS_DATE = null OR MODIFY_STATUS_DATE = '') ;				
                     END IF;   
 
@@ -223,5 +240,5 @@ ELSE
 END IF;
 
 DROP TABLE #LIFNR;
-DROP TABLE #T_CONF_TYPE;
+
 END;
