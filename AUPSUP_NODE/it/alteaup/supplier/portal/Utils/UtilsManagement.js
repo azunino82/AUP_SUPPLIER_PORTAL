@@ -160,20 +160,20 @@ module.exports = function () {
       if (client) {
         async.waterfall([
 
-          function prepare (callback) {
+          function prepare(callback) {
             client.prepare(sql,
               function (err, statement) {
                 callback(null, err, statement)
               })
           },
 
-          function execute (_err, statement, callback) {
+          function execute(_err, statement, callback) {
             statement.exec([], function (execErr, results) {
               callback(null, execErr, results)
             })
           },
 
-          function response (err, results, callback) {
+          function response(err, results, callback) {
             if (err) {
               res.type('application/json').status(500).send({ ERROR: err })
               return
@@ -182,7 +182,7 @@ module.exports = function () {
             }
             callback()
           }
-        ], function done (err, parameters, rows) {
+        ], function done(err, parameters, rows) {
           console.log('---->>> CLIENT END T_AVVISI_QUALITA <<<<<-----')
           client.close()
           if (err) {
@@ -206,20 +206,20 @@ module.exports = function () {
       if (client) {
         async.waterfall([
 
-          function prepare (callback) {
+          function prepare(callback) {
             client.prepare(sql,
               function (err, statement) {
                 callback(null, err, statement)
               })
           },
 
-          function execute (_err, statement, callback) {
+          function execute(_err, statement, callback) {
             statement.exec([], function (execErr, results) {
               callback(null, execErr, results)
             })
           },
 
-          function response (err, results, callback) {
+          function response(err, results, callback) {
             if (err) {
               res.type('application/json').status(500).send({ ERROR: err })
               return
@@ -228,7 +228,7 @@ module.exports = function () {
             }
             callback()
           }
-        ], function done (err, parameters, rows) {
+        ], function done(err, parameters, rows) {
           console.log('---->>> CLIENT END T_BCKND_SYSTEMS <<<<<-----')
           client.close()
           if (err) {
@@ -354,20 +354,20 @@ module.exports = function () {
       if (client) {
         async.waterfall([
 
-          function prepare (callback) {
+          function prepare(callback) {
             client.prepare(sql,
               function (err, statement) {
                 callback(null, err, statement)
               })
           },
 
-          function execute (_err, statement, callback) {
+          function execute(_err, statement, callback) {
             statement.exec([], function (execErr, results) {
               callback(null, execErr, results)
             })
           },
 
-          function response (err, results, callback) {
+          function response(err, results, callback) {
             if (err) {
               res.type('application/json').status(500).send({ ERROR: err })
               return
@@ -376,7 +376,7 @@ module.exports = function () {
             }
             callback()
           }
-        ], function done (err, parameters, rows) {
+        ], function done(err, parameters, rows) {
           console.log('---->>> CLIENT END T_GESTIONE_ETICHETTE <<<<<-----')
           client.close()
           if (err) {
@@ -420,20 +420,20 @@ module.exports = function () {
                   }
                   if (client) {
                     async.waterfall([
-                      function prepare (callback) {
+                      function prepare(callback) {
                         client.prepare(sql,
                           function (err, statement) {
                             callback(null, err, statement)
                           })
                       },
 
-                      function execute (_err, statement, callback) {
+                      function execute(_err, statement, callback) {
                         statement.exec([], function (execErr, results) {
                           callback(null, execErr, results)
                         })
                       },
 
-                      function response (err, results, callback) {
+                      function response(err, results, callback) {
                         if (err) {
                           res.type('application/json').status(500).send({ ERROR: err })
                         } else {
@@ -507,20 +507,20 @@ module.exports = function () {
                             if (client) {
                               async.waterfall([
 
-                                function prepare (callback) {
+                                function prepare(callback) {
                                   client.prepare(sql,
                                     function (err, statement) {
                                       callback(null, err, statement)
                                     })
                                 },
 
-                                function execute (_err, statement, callback) {
+                                function execute(_err, statement, callback) {
                                   statement.exec([], function (execErr, results) {
                                     callback(null, execErr, results)
                                   })
                                 },
 
-                                function response (err, listaCommentiPrecedenti, callback) {
+                                function response(err, listaCommentiPrecedenti, callback) {
                                   if (err) {
                                     res.type('application/json').status(500).send({ ERROR: err })
                                     return
@@ -547,7 +547,7 @@ module.exports = function () {
                                     pos_texts: { results: t_pos }
                                   })
                                 }
-                              ], function done (err, parameters, rows) {
+                              ], function done(err, parameters, rows) {
                                 console.log('---->>> CLIENT END T_GESTIONE_ETICHETTE <<<<<-----')
                                 client.close()
                                 if (err) {
@@ -559,7 +559,7 @@ module.exports = function () {
                         }
                         callback()
                       }
-                    ], function done (err, parameters, rows) {
+                    ], function done(err, parameters, rows) {
                       console.log('---->>> CLIENT END T_AVVISI_QUALITA <<<<<-----')
                       client.close()
                       if (err) {
@@ -594,20 +594,20 @@ module.exports = function () {
       if (client) {
         async.waterfall([
 
-          function prepare (callback) {
+          function prepare(callback) {
             client.prepare(sql,
               function (err, statement) {
                 callback(null, err, statement)
               })
           },
 
-          function execute (_err, statement, callback) {
+          function execute(_err, statement, callback) {
             statement.exec([], function (execErr, results) {
               callback(null, execErr, results)
             })
           },
 
-          function response (err, results, callback) {
+          function response(err, results, callback) {
             if (err) {
               res.type('application/json').status(500).send({ ERROR: err })
               return
@@ -616,7 +616,7 @@ module.exports = function () {
             }
             callback()
           }
-        ], function done (err, parameters, rows) {
+        ], function done(err, parameters, rows) {
           console.log('---->>> CLIENT END T_TEXTS_COMMENT <<<<<-----')
           client.close()
           if (err) {
@@ -1031,18 +1031,31 @@ module.exports = function () {
                             for (let j = 0; j < ET_APPROVE_EKES_EKET.length; j++) {
                               var sched = ET_APPROVE_EKES_EKET[j]
                               if (sched.EBELP === position.EBELP && ekkoekpo.EBELN === sched.EBELN) {
-                                position.ConfermeQuantita.push({
-                                  sched_numb: sched.ETENS,
-                                  sched_date: sched.ORIG_EINDT,
-                                  sched_quant: sched.ORIG_MENGE,
-                                  conf_date: sched.EINDT,
-                                  conf_quant: sched.MENGE,
-                                  insert_date: ekkoekpo.CREATION_DATE,
-                                  approve_date: sched.MODIFY_STATUS_DATE,
-                                  status: sched.STATUS,
-                                  comment: sched.COMMENT,
-                                  confirmDirectToSap: sched.CONF_DIRECT_TO_SAP
+
+                                var trovato = false;
+                                position.ConfermeQuantita.forEach(el => {
+                                  if (el.EBELN === element.EBELN && el.EBELP === sched.EBELP && el.COUNTER === sched.COUNTER && el.status === sched.STATUS && el.comment === sched.COMMENT) {
+                                    trovato = true
+                                  }
                                 })
+
+                                if (!trovato) {
+                                  position.ConfermeQuantita.push({
+                                    EBELN: sched.EBELN,
+                                    EBELP: sched.EBELP,
+                                    COUNTER: sched.COUNTER,
+                                    sched_numb: sched.ETENS,
+                                    sched_date: sched.ORIG_EINDT,
+                                    sched_quant: sched.ORIG_MENGE,
+                                    conf_date: sched.EINDT,
+                                    conf_quant: sched.MENGE,
+                                    insert_date: ekkoekpo.CREATION_DATE,
+                                    approve_date: sched.MODIFY_STATUS_DATE,
+                                    status: sched.STATUS,
+                                    comment: sched.COMMENT,
+                                    confirmDirectToSap: sched.CONF_DIRECT_TO_SAP
+                                  })
+                                }
                               }
                             }
                           }
