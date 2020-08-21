@@ -15,26 +15,33 @@
 					<CustomListItem >
 						<VBox>
 							<f:SimpleForm editable="true" layout="ResponsiveGridLayout" labelSpanXL="12" labelSpanL="12" labelSpanM="12" labelSpanS="12"
-								adjustLabelSpan="false" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="4" columnsL="4" columnsM="4" columnsS="4">
+								adjustLabelSpan="false" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="3" columnsL="3" columnsM="3" columnsS="3">
 								<f:content>
-									<core:Title text="{SelectedPositionsJSONModel>EBELN} - {SelectedPositionsJSONModel>EBELP}"/>
+									<core:Title text="{SelectedPositionsJSONModel>EBELN} - {SelectedPositionsJSONModel>EBELP}" level="H2"/>
 									<Label text="{i18n>IDNLF}"/>
 									<Text text="{SelectedPositionsJSONModel>IDNLF}"/>
-									<Label text="{i18n>NrColli}"/>
-									<Input value="{SelectedPositionsJSONModel>NrColli}" type="Number"/>
-									<core:Title text=""/>
 									<Label text="{i18n>materialCode}"/>
-									<Text text="{SelectedPositionsJSONModel>MATNR}"/>
-									<Label text="{i18n>QuantitaCollo}"/>
-									<Input value="{SelectedPositionsJSONModel>QuantitaCollo}" type="Number"/>
-									<core:Title text=""/>
+									<Text text="{SelectedPositionsJSONModel>MATNR}"/>										
 									<Label text="{i18n>materialDescr}"/>
 									<Text text="{SelectedPositionsJSONModel>TXZ01}"/>
-									<Label text=" " class="hideLabel"/>
-									<Button text="{i18n>ADD}" press="onAddDeliveries"/>
+
 									<core:Title text=""/>
 									<Label text="{i18n>MENGE}"/>
-									<Text text="{SelectedPositionsJSONModel>MENGE} - {SelectedPositionsJSONModel>MEINS}"/>
+									<Text text="{path : 'SelectedPositionsJSONModel>MENGE', formatter : '.importFormatter'} - {SelectedPositionsJSONModel>MEINS}"/>
+									<Label text="{i18n>ETENR}"/>
+									<Text text="{SelectedPositionsJSONModel>ETENR}"/>
+									<Label text="{i18n>EINDT}"/>
+									<Text text="{ path: 'SelectedPositionsJSONModel>EINDT', type: 'it.aupsup.inboundDelivery.type.Date' }"/>
+
+									<core:Title text=""/>
+									<Label text="{i18n>NrColli}"/>
+									<Input value="{SelectedPositionsJSONModel>NrColli}" type="Number"/>
+								    <Label text="{i18n>QuantitaCollo}"/>
+									<Input value="{SelectedPositionsJSONModel>QuantitaCollo}" type="Number"/>										
+									<Label text=" " class="hideLabel"/>
+									<Button text="{i18n>ADD}" press="onAddDeliveries"/>
+
+
 								</f:content>
 							</f:SimpleForm>
 							<Table width="auto" items="{ path: 'SelectedPositionsJSONModel>Deliveries/results' }">
@@ -51,11 +58,23 @@
 										<Text text="{i18n>MENGE}"/>
 									</Column>
 									<Column>
+										<Text text="{i18n>IMBALLO}"/>
+									</Column>
+									<Column>
+										<Text text="{i18n>peso}"/>
+									</Column>	
+									<Column>
+										<Text text="{i18n>volume}"/>
+									</Column>	
+									<Column>
+										<Text text="{i18n>NumExtHU}"/>
+									</Column>																
+								<!--	<Column>
 										<Text text="{i18n>lotto}"/>
 									</Column>
 									<Column>
 										<Text text="{i18n>scadenza}"/>
-									</Column>
+									</Column>-->
 									<!--è possibile cancellare la schedulazione solo se Confirmation type è pieno-->
 									<Column hAlign="End">
 										<Text text=""/>
@@ -65,9 +84,18 @@
 									<ColumnListItem>
 										<cells>
 											<Input value="{SelectedPositionsJSONModel>QUANT}" enabled="{SelectedPositionsJSONModel>editQuant}" type="Number"/>
-											<Input value="{SelectedPositionsJSONModel>LOTTO}" enabled="{SelectedPositionsJSONModel>editLotto}"/>
+												<TextArea growing="true" value="{SelectedPositionsJSONModel>IMBALLO}" enabled="{SelectedPositionsJSONModel>editImballo}" rows="3" width="16rem">
+													<layoutData>
+														<FlexItemData growFactor="2"/>
+													</layoutData>
+												</TextArea>												
+											
+											<Input value="{SelectedPositionsJSONModel>PESO}" enabled="{SelectedPositionsJSONModel>editPeso}" type="Number"/>
+											<Input value="{SelectedPositionsJSONModel>VOLUME}" enabled="{SelectedPositionsJSONModel>editVolume}" type="Number"/>			
+											<Input value="{SelectedPositionsJSONModel>EXTHUNUMB}" enabled="{SelectedPositionsJSONModel>editExtHuNumb}" type="Number"/>																							
+									<!--		<Input value="{SelectedPositionsJSONModel>LOTTO}" enabled="{SelectedPositionsJSONModel>editLotto}"/>
 											<DatePicker displayFormat="dd MMM yyyy" valueFormat="YYYYMMdd" value="{SelectedPositionsJSONModel>SCADENZA}"
-												enabled="{SelectedPositionsJSONModel>editDataScadenza}"/>
+												enabled="{SelectedPositionsJSONModel>editDataScadenza}"/>-->
 											<Button icon="sap-icon://delete" press="onDeleteSchedulation"/>
 										</cells>
 									</ColumnListItem>
@@ -94,10 +122,10 @@
 							adjustLabelSpan="false" emptySpanXL="1" emptySpanL="1" emptySpanM="1" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1">
 							<f:content>
 								<core:Title text=""/>
-								<Label class="labelSpace" required="true" text="{i18n>peso} Kg"/>
+							<!--	<Label class="labelSpace" required="true" text="{i18n>peso} Kg"/>
 								<Input id="BTGEW" value="" type="Number"/>
 								<Label class="labelSpace" required="true" text="{i18n>volume} M3"/>
-								<Input id="VOLUM" value="" type="Number"/>
+								<Input id="VOLUM" value="" type="Number"/>-->
 								<Label class="labelSpace" required="true" text="{i18n>testo}"/>
 								<TextArea id="NOTES" rows="8"/>
 								<Label class="labelSpace" required="true" text="{i18n>referenceDocumentNumber}"/>

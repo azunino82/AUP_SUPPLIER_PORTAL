@@ -50,7 +50,7 @@ sap.ui.define([
 			}
 			// Calcolo valori dafault settimane
 			var myDate = new Date();
-			 var fromD = myDate.subDays(14);
+			var fromD = myDate.subDays(14);
 			var toD = myDate.addDays(7);
 
 			if (startupParams != undefined && startupParams.objectId && startupParams.objectId[0]) {
@@ -114,9 +114,9 @@ sap.ui.define([
 					}
 				}, oTable);
 
-            }
-            
-            this.getView().setModel(sap.ui.getCore().getModel("userapi"), "userapi");
+			}
+
+			this.getView().setModel(sap.ui.getCore().getModel("userapi"), "userapi");
 
 		},
 
@@ -235,13 +235,17 @@ sap.ui.define([
 
 			var url = "/backend/InboundDeliveryManagement/GetSchedulations";
 			var body = that.getModel("filterInboundDelivJSONModel").getData();
+
+			var jsonBody = JSON.parse(JSON.stringify(body));
+
+
 			if (body !== undefined && body.dateFrom !== undefined && body.dateFrom !== null) {
 				var year = body.dateFrom.getFullYear();
 				var month = (1 + body.dateFrom.getMonth()).toString();
 				month = month.length > 1 ? month : '0' + month;
 				var day = body.dateFrom.getDate().toString();
 				day = day.length > 1 ? day : '0' + day;
-				body.dateFrom = year + month + day;
+				jsonBody.dateFrom = year + month + day;
 			}
 			if (body !== undefined && body.dateFrom !== undefined && body.dateFrom !== null) {
 				var year = body.dateTo.getFullYear();
@@ -249,10 +253,10 @@ sap.ui.define([
 				month = month.length > 1 ? month : '0' + month;
 				var day = body.dateTo.getDate().toString();
 				day = day.length > 1 ? day : '0' + day;
-				body.dateTo = year + month + day;
+				jsonBody.dateTo = year + month + day;
 			}
-			this.showBusyDialog();			
-			that.ajaxPost(url, body, function (oData) { 
+			this.showBusyDialog();
+			that.ajaxPost(url, jsonBody, function (oData) {
 				that.hideBusyDialog();
 				if (oData) {
 					var oModel = new JSONModel();
@@ -265,7 +269,7 @@ sap.ui.define([
 
 		getPurchaseOrganizations: function () {
 
-            var url = "/backend/Utils/UtilsManagement/GetPurchaseOrganizations";
+			var url = "/backend/Utils/UtilsManagement/GetPurchaseOrganizations";
 			this.showBusyDialog();
 			that.ajaxGet(url, function (oData) {
 				that.hideBusyDialog();
@@ -280,7 +284,7 @@ sap.ui.define([
 		},
 
 		getMetasupplier: function () {
-            var url = "/backend/Utils/UtilsManagement/GetMetasupplierList";
+			var url = "/backend/Utils/UtilsManagement/GetMetasupplierList";
 			that.ajaxGet(url, function (oData) {
 
 				if (oData) {
@@ -294,7 +298,7 @@ sap.ui.define([
 					oModelLF.setData(oLifnr);
 					that.getView().setModel(oModelLF, "filterInboundDelivJSONModel");
 				}
-            })
+			})
 		},
 
 		onChangeMetasupplier: function (oEvent) {
@@ -479,7 +483,7 @@ sap.ui.define([
 		getPurchaseGroup: function () {
 
 			var url = "/backend/Utils/UtilsManagement/GetPurchaseDoc";
-			that.ajaxPost(url, {}, function (oData) { 
+			that.ajaxPost(url, {}, function (oData) {
 				if (oData) {
 					var oModel = new JSONModel();
 					oModel.setData(oData);
@@ -490,7 +494,7 @@ sap.ui.define([
 		},
 		getPlants: function () {
 
-            var url = "/backend/Utils/UtilsManagement/GetUserPlants";
+			var url = "/backend/Utils/UtilsManagement/GetUserPlants";
 			that.ajaxGet(url, function (oData) {
 				if (oData) {
 					var oModel = new JSONModel();
@@ -582,7 +586,7 @@ sap.ui.define([
 		},
 
 		getAllProfiliConsegna: function () {
-            var url = "/backend/Utils/UtilsManagement/GetProfiliConferma";
+			var url = "/backend/Utils/UtilsManagement/GetProfiliConferma";
 			that.ajaxGet(url, function (oData) {
 				if (oData && oData.results) {
 					var oModel = new JSONModel();
@@ -627,7 +631,7 @@ sap.ui.define([
 				var oPositionModel = JSON.parse(JSON.stringify(oRow));
 				var trovato = false;
 				selectedContextBinding.forEach(function (elem) {
-					if (oPositionModel.EBELN === elem.EBELN && oPositionModel.EBELP === elem.EBELP) {
+					if (oPositionModel.EBELN === elem.EBELN && oPositionModel.EBELP === elem.EBELP && oPositionModel.ETENR === elem.ETENR) {
 						trovato = true;
 					}
 				});
@@ -675,6 +679,24 @@ sap.ui.define([
 
 			if (mod.NrColli !== undefined && mod.NrColli !== "" && mod.QuantitaCollo !== undefined && mod.QuantitaCollo !== "") {
 				var profiloSelezionato = that.getCurrentProfiloConsegna(mod.BSTAE);
+
+				var perc = (Math.abs(mod.QuantitaCollo) / parseFloat(mod.MENGE)) * 100
+				var err = ''
+				var ordine = mod.EBELN + "-" + mod.EBELP + " CONF: " + mod.ETENR;
+				if (perc > profiloSelezionato.PERC_SUPERIORE_QUANT && profiloSelezionato.PERC_SUPERIORE_QUANT !== 0) {
+					err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Up_Single");
+					err = err + "\n" + ordine;
+				}
+				if (perc < profiloSelezionato.PERC_INFERIORE_QUANT && profiloSelezionato.PERC_INFERIORE_QUANT !== 0) {
+					err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Down_Single");
+					err = err + "\n" + ordine;
+				}
+				if (err !== '') {
+					MessageBox.error(err);
+					return
+				}
+
+
 				var oSchedulationsArray = [];
 				if (mod !== undefined && mod.Deliveries !== undefined && mod.Deliveries.results !== undefined) {
 					oSchedulationsArray = mod.Deliveries.results;
@@ -699,7 +721,11 @@ sap.ui.define([
 						"SCADENZA": null,
 						"editLotto": enabledLotto,
 						"editDataScadenza": enabledDataScadenza,
-						"editQuant": enabledQuant
+						"editQuant": enabledQuant,
+						"editImballo": profiloSelezionato !== undefined && profiloSelezionato.PACK_MAT_DEFAULT === 'X' ? true : false,
+						"editPeso": profiloSelezionato !== undefined && profiloSelezionato.IS_PESO === 'X' ? true : false,
+						"editVolume": profiloSelezionato !== undefined && profiloSelezionato.IS_VOLUME === 'X' ? true : false,
+						"editExtHuNumb": profiloSelezionato !== undefined && profiloSelezionato.NUM_INT_HU === 'X' ? true : false
 					};
 					oSchedulationsArray.push(schedulation);
 				}
@@ -746,11 +772,26 @@ sap.ui.define([
 								err = that.getResourceBundle().getText("ERR_Deliveries_Mandatory", [model[i].EBELN + " - " + model[i].EBELP]);
 								break;
 							}*/
-						if (model[i].Deliveries.results[j] && model[i].Deliveries.results[j].editQuant === true && model[i].Deliveries.results[j].QUANT ==
-							"") {
+						if (model[i].Deliveries.results[j] && model[i].Deliveries.results[j].editQuant === true && model[i].Deliveries.results[j].QUANT === "") {
 							err = that.getResourceBundle().getText("ERR_Deliveries_Mandatory", [model[i].EBELN + " - " + model[i].EBELP]);
 							break;
 						}
+						if (model[i].Deliveries.results[j] && model[i].Deliveries.results[j].editImballo === true && (model[i].Deliveries.results[j].IMBALLO === undefined || model[i].Deliveries.results[j].IMBALLO === "")) {
+							err = that.getResourceBundle().getText("ERR_Deliveries_Mandatory_Imballo", [model[i].EBELN + " - " + model[i].EBELP]);
+							break;
+						}
+						if (model[i].Deliveries.results[j] && model[i].Deliveries.results[j].editPeso === true && (model[i].Deliveries.results[j].PESO === undefined || model[i].Deliveries.results[j].PESO === "")) {
+							err = that.getResourceBundle().getText("ERR_Deliveries_Mandatory_Peso", [model[i].EBELN + " - " + model[i].EBELP]);
+							break;
+						}
+						if (model[i].Deliveries.results[j] && model[i].Deliveries.results[j].editExtHuNumb === true && (model[i].Deliveries.results[j].EXTHUNUMB === undefined || model[i].Deliveries.results[j].EXTHUNUMB === "")) {
+							err = that.getResourceBundle().getText("ERR_Deliveries_Mandatory_ExtHuNumb", [model[i].EBELN + " - " + model[i].EBELP]);
+							break;
+						}
+						if (model[i].Deliveries.results[j] && model[i].Deliveries.results[j].editVolume === true && (model[i].Deliveries.results[j].VOLUME === undefined || model[i].Deliveries.results[j].VOLUME === "")) {
+							err = that.getResourceBundle().getText("ERR_Deliveries_Mandatory_Volume", [model[i].EBELN + " - " + model[i].EBELP]);
+							break;
+						}								
 					}
 					if (err != "") {
 						break;
@@ -771,15 +812,15 @@ sap.ui.define([
 		},
 
 		getGestioneEtichette: function () {
-            
-            var url = "/backend/Utils/UtilsManagement/GetGestioneEtichette";
+
+			var url = "/backend/Utils/UtilsManagement/GetGestioneEtichette";
 			that.ajaxGet(url, function (oData) {
-                if (oData) {
-                    var oModel = new JSONModel();
-                    oModel.setData(oData.results);
-                    that.getView().setModel(oModel, "gestioneEtichetteJSONModel");
-                }
-            });
+				if (oData) {
+					var oModel = new JSONModel();
+					oModel.setData(oData.results);
+					that.getView().setModel(oModel, "gestioneEtichetteJSONModel");
+				}
+			});
 
 		},
 
@@ -805,17 +846,17 @@ sap.ui.define([
 							"verur": sap.ui.getCore().byId("XBLNR").getValue(),
 							"lfdat": sap.ui.getCore().byId("LFDAT").getValue(),
 							"wadat": "",
-							"btgew": sap.ui.getCore().byId("BTGEW").getValue(),
+							/*"btgew": sap.ui.getCore().byId("BTGEW").getValue(),
 							"gewei": "Kg",
 							"volum": sap.ui.getCore().byId("VOLUM").getValue(),
-							"voleh": "M3",
+							"voleh": "M3",*/
 							"notes": sap.ui.getCore().byId("NOTES").getValue(),
 							"lifnr": "",
 							/*	"btgew": sap.ui.getCore().byId("BYGEW").getValue(),*/
 							"it_hu_detail": [],
 							"it_hu_header": [],
 							"it_item": [],
-							"it_serial_no": [ /*passare vuota per ama*/ ]
+							"it_serial_no": [ /*passare vuota per ama*/]
 						};
 
 						var model = that.getModel("SelectedPositionsJSONModel").getData();
@@ -866,7 +907,8 @@ sap.ui.define([
 												"VRKME": item.MEINS,
 												"LICHN": sDelivery.LOTTO,
 												"VFDAT": sDelivery.SCADENZA,
-												"HSDAT": ""
+												"HSDAT": "",
+												"LIFEXPOS":item.ETENR
 											};
 											body.it_item.push(deliveryItem);
 										}
@@ -886,7 +928,9 @@ sap.ui.define([
 										var elem_it_hu_header = {
 											"REFHU": numeratoreEsterno,
 											"EXIDV2": "",
-											"VHILM": ""
+											"VHILM": "",
+											"BRGEW": sDelivery.PESO !== undefined ? parseFloat(sDelivery.PESO) : 0,
+											"BTVOL":sDelivery.VOLUME !== undefined ? parseFloat(sDelivery.VOLUME) : 0
 										};
 										if (gestioneEtichetteModel !== undefined && gestioneEtichetteModel.getData() !== undefined) {
 											var selectedEtichetta = gestioneEtichetteModel.getData().find(x => x.PLANT === item.WERKS);
@@ -1070,7 +1114,7 @@ sap.ui.define([
 				var ekpoRow = that.getModel("InboundDelJSONModel").getData().results.EkkoEkpo[ind];
 				if (ekpoRow !== undefined) {
 					var ekesrow = that.getModel("InboundDelJSONModel").getData().results.EketEkes;
-					if (ekesrow !== undefined) {}
+					if (ekesrow !== undefined) { }
 				}
 			}
 			//Chiamata al servizio per la conferma
@@ -1106,9 +1150,9 @@ sap.ui.define([
 						MessageBox.success(that.getResourceBundle().getText("correctConfirmData"), {
 							title: "Success", // default
 							onClose: function () {
-									// aggiorno la lista
-									that.onSearch();
-								} // default
+								// aggiorno la lista
+								that.onSearch();
+							} // default
 
 						});
 

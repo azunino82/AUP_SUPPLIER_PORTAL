@@ -194,7 +194,33 @@ sap.ui.define([
 				}
 			});
 
-		}
+		},
+
+		importFormatter: function (sValue) {
+			if (sValue !== null && sValue !== undefined) {
+				if (sValue.toString().includes('.000'))
+					return sValue.toString().replace('.000', '')
+				else
+					if (sValue.toString().includes('.00'))
+						return sValue.toString().replace('.00', '')
+					else
+						return sValue.toString().replace('.', ',')
+			}
+		},
+
+		removeZeroBefore: function (sValue) {
+			if (sValue !== undefined) {
+				var n = 0
+				for (var i = 0; i < sValue.length; i++) {
+					if (sValue.charAt(i) !== '0') {
+						n = i
+						break
+					}
+				}
+				return sValue.substring(n, sValue.length);
+			}
+			return sValue
+		},
 
 	});
 });
