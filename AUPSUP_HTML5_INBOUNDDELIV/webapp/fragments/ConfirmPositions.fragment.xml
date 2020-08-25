@@ -57,7 +57,7 @@
 									<Column>
 										<Text text="{i18n>MENGE}"/>
 									</Column>
-									<Column>
+									<Column visible="false">
 										<Text text="{i18n>IMBALLO}"/>
 									</Column>
 									<Column>
@@ -84,7 +84,7 @@
 									<ColumnListItem>
 										<cells>
 											<Input value="{SelectedPositionsJSONModel>QUANT}" enabled="{SelectedPositionsJSONModel>editQuant}" type="Number"/>
-												<TextArea growing="true" value="{SelectedPositionsJSONModel>IMBALLO}" enabled="{SelectedPositionsJSONModel>editImballo}" rows="3" width="16rem">
+												<TextArea growing="true" value="{SelectedPositionsJSONModel>IMBALLO}" visible="{SelectedPositionsJSONModel>editImballo}" rows="3" width="16rem">
 													<layoutData>
 														<FlexItemData growFactor="2"/>
 													</layoutData>
@@ -92,7 +92,7 @@
 											
 											<Input value="{SelectedPositionsJSONModel>PESO}" enabled="{SelectedPositionsJSONModel>editPeso}" type="Number"/>
 											<Input value="{SelectedPositionsJSONModel>VOLUME}" enabled="{SelectedPositionsJSONModel>editVolume}" type="Number"/>			
-											<Input value="{SelectedPositionsJSONModel>EXTHUNUMB}" enabled="{SelectedPositionsJSONModel>editExtHuNumb}" type="Number"/>																							
+											<Input value="{SelectedPositionsJSONModel>EXTHUNUMB}" enabled="{SelectedPositionsJSONModel>editExtHuNumb}"/>																							
 									<!--		<Input value="{SelectedPositionsJSONModel>LOTTO}" enabled="{SelectedPositionsJSONModel>editLotto}"/>
 											<DatePicker displayFormat="dd MMM yyyy" valueFormat="YYYYMMdd" value="{SelectedPositionsJSONModel>SCADENZA}"
 												enabled="{SelectedPositionsJSONModel>editDataScadenza}"/>-->

@@ -1,4 +1,4 @@
-FUNCTION "AUPSUP_DATABASE.data.functions::TF_ADD_ZERO_BEFORE" ( INPUT_STRING NVARCHAR(35) ) 
+FUNCTION "AUPSUP_DATABASE.data.functions::TF_ADD_ZERO_BEFORE" ( INPUT_STRING NVARCHAR(35), N_CHAR INTEGER ) 
 	RETURNS ADDZERO NVARCHAR(35)
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER AS
@@ -10,39 +10,90 @@ BEGIN
 
     IF INPUT_STRING <> '' THEN
 
-        SELECT LENGTH(INPUT_STRING) INTO IN_STR_INT FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
+        IF N_CHAR = 4 THEN
 
-        -- controllo se la stringa di input è convertibile in INTEGER
-        SELECT CASE WHEN :INPUT_STRING LIKE_REGEXPR '[A-Z-a-z]' THEN 0 ELSE 1 END INTO IS_INT_CONVERTIBLE FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
+            SELECT LENGTH(INPUT_STRING) INTO IN_STR_INT FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
 
-        IF IS_INT_CONVERTIBLE = 1 THEN --la stringa è convertibile in int
+            -- controllo se la stringa di input è convertibile in INTEGER
+            SELECT CASE WHEN :INPUT_STRING LIKE_REGEXPR '[A-Z-a-z]' THEN 0 ELSE 1 END INTO IS_INT_CONVERTIBLE FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
 
-            IF IN_STR_INT <= 4 THEN
-        
-                SELECT CAST(INPUT_STRING AS INTEGER) INTO IN_STR_INT FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
-                
-                IF IN_STR_INT < 10 THEN
-                    select CONCAT('000',(SELECT CAST (IN_STR_INT AS NVARCHAR(4)) FROM "AUPSUP_DATABASE.data.synonyms::DUMMY")) INTO ADDZERO FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
+            IF IS_INT_CONVERTIBLE = 1 THEN --la stringa è convertibile in int
+
+                IF IN_STR_INT <= 4 THEN
+            
+                    SELECT CAST(INPUT_STRING AS INTEGER) INTO IN_STR_INT FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
+                    
+                    IF IN_STR_INT < 10 THEN
+                        select CONCAT('000',(SELECT CAST (IN_STR_INT AS NVARCHAR(4)) FROM "AUPSUP_DATABASE.data.synonyms::DUMMY")) INTO ADDZERO FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
+                    END IF;
+
+                    IF IN_STR_INT >= 10 AND IN_STR_INT < 100  THEN
+                        select CONCAT('00',(SELECT CAST (IN_STR_INT AS NVARCHAR(4)) FROM "AUPSUP_DATABASE.data.synonyms::DUMMY")) INTO ADDZERO FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
+                    END IF;
+                    
+                    IF IN_STR_INT >= 100 AND IN_STR_INT < 1000  THEN
+                        select CONCAT('0',(SELECT CAST (IN_STR_INT AS NVARCHAR(4)) FROM "AUPSUP_DATABASE.data.synonyms::DUMMY")) INTO ADDZERO FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
+                    END IF;
+                    
+                    IF IN_STR_INT >= 1000  THEN
+                        select CAST (IN_STR_INT AS NVARCHAR(4)) INTO ADDZERO FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
+                    END IF;
+
+                ELSE
+                    ADDZERO := INPUT_STRING;
                 END IF;
-
-                IF IN_STR_INT >= 10 AND IN_STR_INT < 100  THEN
-                    select CONCAT('00',(SELECT CAST (IN_STR_INT AS NVARCHAR(4)) FROM "AUPSUP_DATABASE.data.synonyms::DUMMY")) INTO ADDZERO FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
-                END IF;
-                
-                IF IN_STR_INT >= 100 AND IN_STR_INT < 1000  THEN
-                    select CONCAT('0',(SELECT CAST (IN_STR_INT AS NVARCHAR(4)) FROM "AUPSUP_DATABASE.data.synonyms::DUMMY")) INTO ADDZERO FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
-                END IF;
-                
-                IF IN_STR_INT >= 1000  THEN
-                    select CAST (IN_STR_INT AS NVARCHAR(4)) INTO ADDZERO FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
-                END IF;
-
             ELSE
                 ADDZERO := INPUT_STRING;
             END IF;
+
         ELSE
-            ADDZERO := INPUT_STRING;
+
+            IF N_CHAR = 6 THEN
+
+                SELECT LENGTH(INPUT_STRING) INTO IN_STR_INT FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
+
+                -- controllo se la stringa di input è convertibile in INTEGER
+                SELECT CASE WHEN :INPUT_STRING LIKE_REGEXPR '[A-Z-a-z]' THEN 0 ELSE 1 END INTO IS_INT_CONVERTIBLE FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
+
+                IF IS_INT_CONVERTIBLE = 1 THEN --la stringa è convertibile in int
+
+                    IF IN_STR_INT <= 6 THEN
+                
+                        SELECT CAST(INPUT_STRING AS INTEGER) INTO IN_STR_INT FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
+                        
+                        IF IN_STR_INT < 10 THEN
+                            select CONCAT('00000',(SELECT CAST (IN_STR_INT AS NVARCHAR(6)) FROM "AUPSUP_DATABASE.data.synonyms::DUMMY")) INTO ADDZERO FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
+                        END IF;
+
+                        IF IN_STR_INT >= 10 AND IN_STR_INT < 100  THEN
+                            select CONCAT('000',(SELECT CAST (IN_STR_INT AS NVARCHAR(6)) FROM "AUPSUP_DATABASE.data.synonyms::DUMMY")) INTO ADDZERO FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
+                        END IF;
+                        
+                        IF IN_STR_INT >= 100 AND IN_STR_INT < 1000  THEN
+                            select CONCAT('00',(SELECT CAST (IN_STR_INT AS NVARCHAR(6)) FROM "AUPSUP_DATABASE.data.synonyms::DUMMY")) INTO ADDZERO FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
+                        END IF;
+                        
+                        IF IN_STR_INT >= 1000 AND IN_STR_INT < 10000  THEN
+                            select CONCAT('000',(SELECT CAST (IN_STR_INT AS NVARCHAR(6)) FROM "AUPSUP_DATABASE.data.synonyms::DUMMY")) INTO ADDZERO FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
+                        END IF;
+
+                        IF IN_STR_INT >= 10000  THEN
+                            select CAST (IN_STR_INT AS NVARCHAR(6)) INTO ADDZERO FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
+                        END IF;                        
+
+                    ELSE
+                        ADDZERO := INPUT_STRING;
+                    END IF;
+                ELSE
+                    ADDZERO := INPUT_STRING;
+                END IF;
+
+            ELSE
+                ADDZERO := '';
+            END IF;        
+
         END IF;
+
     ELSE
         ADDZERO := '';
     END IF;

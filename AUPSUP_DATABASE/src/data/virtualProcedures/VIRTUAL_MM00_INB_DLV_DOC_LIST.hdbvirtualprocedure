@@ -34,7 +34,8 @@ OUT ET_INB_DLV_EKEK "AUPSUP_DATABASE.data.structures.InboundDelivery::ET_INB_DLV
 OUT ET_INB_DLV_EKES "AUPSUP_DATABASE.data.structures.InboundDelivery::ET_INB_DLV_EKESStructure",
 OUT ET_INB_DLV_EKET "AUPSUP_DATABASE.data.structures.InboundDelivery::ET_INB_DLV_EKETStructure",
 OUT ET_INB_DLV_EKKO "AUPSUP_DATABASE.data.structures.InboundDelivery::ET_INB_DLV_EKKOStructure",
-OUT ET_INB_DLV_EKPO "AUPSUP_DATABASE.data.structures.InboundDelivery::ET_INB_DLV_EKPOStructure"
+OUT ET_INB_DLV_EKPO "AUPSUP_DATABASE.data.structures.InboundDelivery::ET_INB_DLV_EKPOStructure",
+OUT ET_INB_DLV_LIPS "AUPSUP_DATABASE.data.structures.InboundDelivery::ET_INB_DLV_LIPSStructure"
 )
 CONFIGURATION '{
   "__DP_UNIQUE_NAME__": "/AUPSUP/MM00_INB_DLV_DOC_LIST",
