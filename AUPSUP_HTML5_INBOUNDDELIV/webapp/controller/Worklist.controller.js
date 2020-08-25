@@ -680,7 +680,7 @@ sap.ui.define([
 			if (mod.NrColli !== undefined && mod.NrColli !== "" && mod.QuantitaCollo !== undefined && mod.QuantitaCollo !== "") {
 				var profiloSelezionato = that.getCurrentProfiloConsegna(mod.BSTAE);
 
-				var perc = (Math.abs(mod.QuantitaCollo) / parseFloat(mod.MENGE)) * 100
+				var perc = ((Math.abs(mod.QuantitaCollo) * Math.abs(mod.NrColli)) / parseFloat(mod.MENGE)) * 100
 				var err = ''
 				var ordine = mod.EBELN + "-" + mod.EBELP + " CONF: " + mod.ETENR;
 				if (perc > profiloSelezionato.PERC_SUPERIORE_QUANT && profiloSelezionato.PERC_SUPERIORE_QUANT !== 0) {
@@ -722,7 +722,7 @@ sap.ui.define([
 						"editLotto": enabledLotto,
 						"editDataScadenza": enabledDataScadenza,
 						"editQuant": enabledQuant,
-						"editImballo": profiloSelezionato !== undefined && profiloSelezionato.PACK_MAT_DEFAULT === 'X' ? true : false,
+						"editImballo": profiloSelezionato !== undefined && profiloSelezionato.PACK_MAT_DEFAULT === 'X' ? false : true,
 						"editPeso": profiloSelezionato !== undefined && profiloSelezionato.IS_PESO === 'X' ? true : false,
 						"editVolume": profiloSelezionato !== undefined && profiloSelezionato.IS_VOLUME === 'X' ? true : false,
 						"editExtHuNumb": profiloSelezionato !== undefined && profiloSelezionato.NUM_INT_HU === 'X' ? true : false
@@ -888,7 +888,7 @@ sap.ui.define([
 										var quantTrovato = 0;
 										if (currentItemsList !== undefined && currentItemsList.length > 0) {
 											$.each(currentItemsList, function (index, sItem) {
-												if (sItem.VGBEL === item.EBELN && sItem.VGPOS === item.EBELP &&
+												if (sItem.VGBEL === item.EBELN && sItem.VGPOS === item.EBELP && sItem.LIFEXPOS === item.ETENR &&
 													sItem.MATNR === item.MATNR && sItem.VFDAT === sDelivery.SCADENZA && sItem.LICHN === sDelivery.LOTTO) {
 													trovato = true;
 													sItem.LFIMG = parseFloat(sItem.LFIMG) + parseFloat(sDelivery.QUANT);
@@ -927,11 +927,12 @@ sap.ui.define([
 										// preparazione it_hu_header
 										var elem_it_hu_header = {
 											"REFHU": numeratoreEsterno,
-											"EXIDV2": "",
-											"VHILM": "",
+											"EXIDV2": sDelivery.EXTHUNUMB,
+											"VHILM": sDelivery.IMBALLO,
 											"BRGEW": sDelivery.PESO !== undefined ? parseFloat(sDelivery.PESO) : 0,
 											"BTVOL":sDelivery.VOLUME !== undefined ? parseFloat(sDelivery.VOLUME) : 0
 										};
+										
 										if (gestioneEtichetteModel !== undefined && gestioneEtichetteModel.getData() !== undefined) {
 											var selectedEtichetta = gestioneEtichetteModel.getData().find(x => x.PLANT === item.WERKS);
 											if (selectedEtichetta !== undefined) {

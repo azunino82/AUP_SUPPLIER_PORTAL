@@ -54,9 +54,9 @@ module.exports = function () {
             }
             if (body.vbeln !== null && body.vbeln !== undefined && body.vbeln.length > 0) {
                 var oVbeln = []
-                for (var i = 0; i < body.vbeln.length; i++) {
-                    oVbeln.push({ VBELN: body.vbeln[i] })
-                }
+               // for (var i = 0; i < body.vbeln.length; i++) {
+                    oVbeln.push({ VBELN: body.vbeln })
+               // }
                 vbeln = oVbeln
             }
             if (body.verur !== null && body.verur !== undefined && body.verur.length > 0) {
@@ -334,6 +334,8 @@ module.exports = function () {
                             return res.status(500).send(stringifyObj(err))
                         } else {
                             if (parameters.STREAM !== undefined) {
+                                res.setHeader('Content-Type', 'application/pdf')
+                                res.contentType('application/pdf')
                                 return res.status(200).send(parameters.STREAM)
                             } else {
                                 return res.status(200).send({})

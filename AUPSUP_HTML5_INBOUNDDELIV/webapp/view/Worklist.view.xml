@@ -185,7 +185,7 @@
 															<m:Text text="{InboundDelJSONModel>TXZ01}"/>
 															<m:Text text="{InboundDelJSONModel>DESCR_WERKS}"/>															
 															<m:Text text="{InboundDelJSONModel>IDNLF}"/>
-															<m:Text text="{InboundDelJSONModel>MENGE} {InboundDelJSONModel>MEINS}"/>
+															<m:Text text="{path : 'InboundDelJSONModel>MENGE', formatter : '.importFormatter'} {InboundDelJSONModel>MEINS}"/>
 															<m:Text text="{ path: 'InboundDelJSONModel>EINDT', type: 'it.aupsup.inboundDelivery.type.Date' }"/>
 														</m:cells>
 													</m:ColumnListItem>

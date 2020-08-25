@@ -18,9 +18,9 @@
 				<items>
 					<ColumnListItem>
 						<cells>
-							<Text text="{HUToPrintJSONModel>VENUM}"/>
-							<Text text="{HUToPrintJSONModel>EXIDV}"/>
-							<Text text="{HUToPrintJSONModel>MATNR}"/>
+							<Text text="{path : 'HUToPrintJSONModel>VENUM', formatter : '.removeZeroBefore'}"/>
+							<Text text="{path : 'HUToPrintJSONModel>EXIDV', formatter : '.removeZeroBefore'}"/>
+							<Text text="{path : 'HUToPrintJSONModel>MATNR', formatter : '.removeZeroBefore'}"/>
 							<Button icon="sap-icon://print" press="onItemPrintHU"/>
 						</cells>
 					</ColumnListItem>
