@@ -284,7 +284,7 @@ module.exports = function () {
                 return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
             } else {
                 hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.InboundDelivery::GetSchedAndConf', function (_err, sp) {
-                    sp(userid, ebeln, ebelp, (err, parameters, T_EKKO, T_EKPO, T_EKES, T_EKET) => {
+                    sp(userid, ebeln, ebelp, (err, parameters, T_EKEH, T_EKEK, T_EKES, T_EKET, T_EKKO, T_EKPO) => {
                         if (err) {
                             console.error('ERROR: ' + err)
                             return res.status(500).send(stringifyObj(err))
