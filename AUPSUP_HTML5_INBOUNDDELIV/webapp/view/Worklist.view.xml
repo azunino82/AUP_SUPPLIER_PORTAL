@@ -149,6 +149,12 @@
 													<m:Column id="EBELP" minScreenWidth="Desktop" demandPopin="true">
 														<m:Label text="{i18n>EBELP}" class="columnLabelStyle" wrapping="true"/>
 													</m:Column>
+													<m:Column id="NumeroRiferimento" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>NumeroRiferimento}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>														
+													<m:Column id="TYPE" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>TYPE}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>													
 													<m:Column id="MATNR" minScreenWidth="Desktop" demandPopin="true">
 														<m:Label text="{i18n>MATNR}" class="columnLabelStyle" wrapping="true"/>
 													</m:Column>
@@ -173,12 +179,14 @@
 														<m:cells>
 															<m:Text text="{InboundDelJSONModel>EBELN}"/>
 															<m:Text text="{InboundDelJSONModel>EBELP}"/>
+															<m:Text text="{InboundDelJSONModel>ETENR}"/>
+															<m:Text text="{InboundDelJSONModel>TYPE}"/>
 															<m:Text text="{InboundDelJSONModel>MATNR}"/>
 															<m:Text text="{InboundDelJSONModel>TXZ01}"/>
 															<m:Text text="{InboundDelJSONModel>DESCR_WERKS}"/>															
 															<m:Text text="{InboundDelJSONModel>IDNLF}"/>
-															<m:Text text="{InboundDelJSONModel>QUANT_SCHED} {InboundDelJSONModel>MEINS}"/>
-															<m:Text text="{ path: 'InboundDelJSONModel>EINDT', type: 'it.alteaup.supplier.portal.inboundDelivery.type.Date' }"/>
+															<m:Text text="{InboundDelJSONModel>MENGE} {InboundDelJSONModel>MEINS}"/>
+															<m:Text text="{ path: 'InboundDelJSONModel>EINDT', type: 'it.aupsup.inboundDelivery.type.Date' }"/>
 														</m:cells>
 													</m:ColumnListItem>
 												</m:items>
