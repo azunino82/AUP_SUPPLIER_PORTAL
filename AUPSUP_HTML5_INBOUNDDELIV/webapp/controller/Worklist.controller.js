@@ -680,22 +680,10 @@ sap.ui.define([
 			if (mod.NrColli !== undefined && mod.NrColli !== "" && mod.QuantitaCollo !== undefined && mod.QuantitaCollo !== "") {
 				var profiloSelezionato = that.getCurrentProfiloConsegna(mod.BSTAE);
 
-				var perc = ((Math.abs(mod.QuantitaCollo) * Math.abs(mod.NrColli)) / parseFloat(mod.MENGE)) * 100
-				var err = ''
-				var ordine = mod.EBELN + "-" + mod.EBELP + " CONF: " + mod.ETENR;
-				if (perc > profiloSelezionato.PERC_SUPERIORE_QUANT && profiloSelezionato.PERC_SUPERIORE_QUANT !== 0) {
-					err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Up_Single");
-					err = err + "\n" + ordine;
+				if((parseFloat(mod.NrColli) * parseFloat(mod.QuantitaCollo)) > parseFloat(mod.MENGE)){
+					MessageBox.error(that.getResourceBundle().getText("ERR_Quantity",mod.EBELN + "-" + mod.EBELP + " CONF: " + mod.ETENR));
+					return;
 				}
-				if (perc < profiloSelezionato.PERC_INFERIORE_QUANT && profiloSelezionato.PERC_INFERIORE_QUANT !== 0) {
-					err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Down_Single");
-					err = err + "\n" + ordine;
-				}
-				if (err !== '') {
-					MessageBox.error(err);
-					return
-				}
-
 
 				var oSchedulationsArray = [];
 				if (mod !== undefined && mod.Deliveries !== undefined && mod.Deliveries.results !== undefined) {
@@ -759,7 +747,10 @@ sap.ui.define([
 
 				//	var sommaQuantitaSchedulazioni = 0;
 				if (model[i].Deliveries !== undefined && model[i].Deliveries.results) {
+					var sumMenge = 0
 					for (var j = 0; j < model[i].Deliveries.results.length; j++) {
+						var mod = model[i].Deliveries.results[j]
+						sumMenge = sumMenge + parseFloat(mod.QUANT)
 						//sommaQuantitaSchedulazioni = sommaQuantitaSchedulazioni + parseInt(model[i].POItemSchedulers.results[j].MENGE);
 						/*	if (model[i].Deliveries.results[j] && model[i].Deliveries.results[j].editLotto === true && model[i].Deliveries.results[j].LOTTO ==
 								"") {
@@ -791,8 +782,33 @@ sap.ui.define([
 						if (model[i].Deliveries.results[j] && model[i].Deliveries.results[j].editVolume === true && (model[i].Deliveries.results[j].VOLUME === undefined || model[i].Deliveries.results[j].VOLUME === "")) {
 							err = that.getResourceBundle().getText("ERR_Deliveries_Mandatory_Volume", [model[i].EBELN + " - " + model[i].EBELP]);
 							break;
-						}								
+						}						
+						
 					}
+
+					var ordine = model[i].EBELN + "-" + model[i].EBELP + " CONF: " + model[i].ETENR;
+					if(Math.abs(sumMenge) > parseFloat(model[i].MENGE))
+					{
+						err = err + "\n" + that.getResourceBundle().getText("ERR_Quantity",ordine);
+					}
+
+					var profiloSelezionato = that.getCurrentProfiloConsegna(model[i].BSTAE);
+					var perc = (Math.abs(sumMenge) / parseFloat(model[i].MENGE)) * 100
+					
+					if (perc > profiloSelezionato.PERC_SUPERIORE_QUANT && profiloSelezionato.PERC_SUPERIORE_QUANT !== 0) {
+						err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Up_Single");
+						err = err + "\n" + ordine;
+					}
+					if (perc < profiloSelezionato.PERC_INFERIORE_QUANT && profiloSelezionato.PERC_INFERIORE_QUANT !== 0) {
+						err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Down_Single");
+						err = err + "\n" + ordine;
+					}
+					
+					if (err !== '') {
+						MessageBox.error(err);
+						return
+					}
+
 					if (err != "") {
 						break;
 					}
@@ -888,7 +904,7 @@ sap.ui.define([
 										var quantTrovato = 0;
 										if (currentItemsList !== undefined && currentItemsList.length > 0) {
 											$.each(currentItemsList, function (index, sItem) {
-												if (sItem.VGBEL === item.EBELN && sItem.VGPOS === item.EBELP && sItem.LIFEXPOS === item.ETENR &&
+												if (sItem.VGBEL === item.EBELN && sItem.VGPOS === item.EBELP && sItem.ETENR === item.ETENR && sItem.LIFEXPOS === item.ETENR &&
 													sItem.MATNR === item.MATNR && sItem.VFDAT === sDelivery.SCADENZA && sItem.LICHN === sDelivery.LOTTO) {
 													trovato = true;
 													sItem.LFIMG = parseFloat(sItem.LFIMG) + parseFloat(sDelivery.QUANT);
@@ -908,7 +924,8 @@ sap.ui.define([
 												"LICHN": sDelivery.LOTTO,
 												"VFDAT": sDelivery.SCADENZA,
 												"HSDAT": "",
-												"LIFEXPOS":item.ETENR
+												"LIFEXPOS":item.ETENR,
+												"ETENR":item.ETENR
 											};
 											body.it_item.push(deliveryItem);
 										}
@@ -981,6 +998,10 @@ sap.ui.define([
 
 							});
 						}
+
+						body.it_item.forEach(element => {
+							delete element['ETENR'];
+						});
 
 						// invio i dati a SAP
 						var url = "/backend/InboundDeliveryManagement/CreateSchedulations";
@@ -1246,6 +1267,16 @@ sap.ui.define([
 						content: "{EBELP}"
 					}
 				}, {
+					name: that.getResourceBundle().getText("ETENR"),
+					template: {
+						content: "{ETENR}"
+					}
+				}, {
+					name: that.getResourceBundle().getText("TYPE"),
+					template: {
+						content: "{TYPE}"
+					}
+				},  {
 					name: that.getResourceBundle().getText("MATNR"),
 					template: {
 						content: "{MATNR}"

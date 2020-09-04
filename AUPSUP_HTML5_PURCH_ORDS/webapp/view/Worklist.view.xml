@@ -100,7 +100,7 @@
 													<m:OverflowToolbar>
 														<m:content>
 															<m:Title text="{i18n>title}" level="H2"/>
-															<m:Title text="{= ${OrderJSONModel>/results}.length}" level="H2"/>
+
 															<m:ToolbarSpacer/>
 															<m:Button visible="false" id="headerFilterButton" tooltip="{i18n>clearFilter}" icon="sap-icon://clear-filter" press="onClearFilter" type="Transparent"/>
 															<m:HBox alignItems="Center" id="comboProfiliConferma">

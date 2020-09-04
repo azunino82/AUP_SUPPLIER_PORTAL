@@ -184,7 +184,7 @@ IF (counterRow > 0) THEN
 									table2.MATNR as MATNR, table2.TXZ01 as TXZ01, table2.IDNLF as IDNLF, table2.BSTAE as BSTAE, table2.WERKS as WERKS,
 									c.PLANT_DESCR as DESCR_WERKS,
 									(table1.MENGE - COALESCE((SELECT SUM(LFIMG) FROM :ET_INB_DLV_LIPS WHERE VGBEL = table1.EBELN and VGPOS = table1.EBELP and LIFEXPOS = table1.XBLNR),0)) AS MENGE, 
-									0 AS QUANT_SCHED, table2.MEINS as MEINS, table1.EINDT as EINDT, d.LIFNR as LIFNR, d.NAME1 as NAME1, 'C' as TYPE
+									0 AS QUANT_SCHED, table2.MEINS as MEINS, table1.EINDT as EINDT, d.LIFNR as LIFNR, d.NAME1 as NAME1, 'C' as TYPE, table1.LIFEXPOS as LIFEXPOS
 								
 									FROM :ET_INB_DLV_EKES as table1
 									INNER JOIN :ET_INB_DLV_EKPO as table2 ON table1.EBELN = table2.EBELN and table2.EBELP = table2.EBELP
@@ -201,7 +201,7 @@ IF (counterRow > 0) THEN
 								*/
 								INSERT INTO #out_table 
 								SELECT a.MANDT, a.SYSID, a.EBELN, a.EBELP, b.ETENR, a.MATNR, a.TXZ01, a.IDNLF, a.BSTAE, a.WERKS, c.PLANT_DESCR as DESCR_WERKS, a.MENGE,
-								(b.MENGE - b.WEMNG) AS QUANT_SCHED, a.MEINS,b.EINDT,d.LIFNR,d.NAME1, 'S' as TYPE from :ET_INB_DLV_EKPO as a 
+								(b.MENGE - b.WEMNG) AS QUANT_SCHED, a.MEINS,b.EINDT,d.LIFNR,d.NAME1, 'S' as TYPE, '' as LIFEXPOS from :ET_INB_DLV_EKPO as a 
 								INNER JOIN :ET_INB_DLV_EKET AS b ON a.EBELN = b.EBELN AND a.EBELP = b.EBELP 
 								INNER JOIN "AUPSUP_DATABASE.data.tables::T_BU_PLANT" AS c ON a.WERKS = c.PLANT
 								INNER JOIN :ET_INB_DLV_EKKO AS d ON a.EBELN = d.EBELN -- per estrarre il LIFNR sulle testate utile per invio mail
@@ -218,7 +218,7 @@ IF (counterRow > 0) THEN
 
 					INSERT INTO #out_table 
 					SELECT a.MANDT, a.SYSID, a.EBELN, a.EBELP, b.ETENR, a.MATNR, a.TXZ01, a.IDNLF, a.BSTAE, a.WERKS, c.PLANT_DESCR as DESCR_WERKS, a.MENGE,(b.MENGE - b.WEMNG) AS QUANT_SCHED, a.MEINS,b.EINDT,d.LIFNR,
-					d.NAME1, 'S' as TYPE from :ET_INB_DLV_EKPO as a 
+					d.NAME1, 'S' as TYPE, '' as LIFEXPOS from :ET_INB_DLV_EKPO as a 
 					INNER JOIN :ET_INB_DLV_EKET AS b ON a.EBELN = b.EBELN AND a.EBELP = b.EBELP 
 					INNER JOIN "AUPSUP_DATABASE.data.tables::T_BU_PLANT" AS c ON a.WERKS = c.PLANT
 					INNER JOIN :ET_INB_DLV_EKKO AS d ON a.EBELN = d.EBELN -- per estrarre il LIFNR sulle testate utile per invio mail

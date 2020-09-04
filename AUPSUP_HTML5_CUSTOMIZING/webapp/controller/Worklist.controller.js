@@ -164,6 +164,10 @@ sap.ui.define([
                             elem.NUMERO_SERIALE_INB = elem.NUMERO_SERIALE_INB === "X" ? true : false;
                             elem.CONFERMA_MANDATORY = elem.CONFERMA_MANDATORY === "X" ? true : false;
                             elem.CONTROLLO_CORSO_APP = elem.CONTROLLO_CORSO_APP === "X" ? true : false;
+                            elem.NUM_INT_HU = elem.NUM_INT_HU === "X" ? true : false;
+                            elem.IS_PESO = elem.IS_PESO === "X" ? true : false;
+                            elem.IS_VOLUME = elem.IS_VOLUME === "X" ? true : false;
+                            elem.PACK_MAT_DEFAULT = elem.PACK_MAT_DEFAULT === "X" ? true : false;
 
                         });
 
@@ -458,8 +462,8 @@ sap.ui.define([
                 "SYSID": "",
                 "PROFILO_CONTROLLO": "",
                 "MODIFICA_PREZZO": false,
-                "PERC_INFERIORE": "",
-                "PERC_SUPERIORE": "",
+                "PERC_INFERIORE": 0,
+                "PERC_SUPERIORE": 0,
                 "TIPO_COND_PREZZO": "",
                 "CONFERMA_MANDATORY": false
             });
@@ -475,11 +479,11 @@ sap.ui.define([
                 "OWNER": "",
                 "TIPO_CONFERMA": "",
                 "MODIFICA_PREZZO": false,
-                "PERC_INFERIORE": "",
-                "PERC_SUPERIORE": "",
+                "PERC_INFERIORE": 0,
+                "PERC_SUPERIORE": 0,
                 "PARZIALE_QUANTITA": false,
-                "PERC_INFERIORE_QUANT": "",
-                "PERC_SUPERIORE_QUANT": "",
+                "PERC_INFERIORE_QUANT": 0,
+                "PERC_SUPERIORE_QUANT": 0,
                 "MODIFICA_QUANTITA": false,
                 "TIPO_COND_PREZZO": "",
                 "TIPO_CONSEGNA_INB": "",
@@ -489,10 +493,15 @@ sap.ui.define([
                 "NUMERO_SERIALE_INB": false,
                 "CONFERMA_MANDATORY": false,
                 "CONTROLLO_CORSO_APP": false,
-                "ZAPPPERSUP": "",
-                "ZAPPPERINF": "",
-                "ZAPPGGSUP": "",
-                "ZAPPGGINF": "",
+                "ZAPPPERSUP": 0,
+                "ZAPPPERINF": 0,
+                "ZAPPGGSUP": 0,
+                "ZAPPGGINF": 0,
+                "NUM_INT_HU":false,
+                "IS_PESO":false,
+                "IS_VOLUME":false,
+                "PACK_MAT_DEFAULT":false,
+                "CAT_CONF_RIFER_NO_PROGR":""
             });
             that.getView().getModel("ProfiliConfermaJSONModel").refresh();
         },
@@ -724,6 +733,10 @@ sap.ui.define([
                     elem.NUMERO_SERIALE_INB = elem.NUMERO_SERIALE_INB === true ? "X" : "";
                     elem.CONFERMA_MANDATORY = elem.CONFERMA_MANDATORY === true ? "X" : "";
                     elem.CONTROLLO_CORSO_APP = elem.CONTROLLO_CORSO_APP === true ? "X" : "";
+                    elem.NUM_INT_HU = elem.NUM_INT_HU === true ? "X" : "";
+                    elem.IS_PESO = elem.IS_PESO === true ? "X" : "";
+                    elem.IS_VOLUME = elem.IS_VOLUME === true ? "X" : "";
+                    elem.PACK_MAT_DEFAULT = elem.PACK_MAT_DEFAULT === true ? "X" : "";
 
                     promiseArr.push(new Promise(function (resolve, reject) {
                         that.onSaveProfiliConf(elem, function () {

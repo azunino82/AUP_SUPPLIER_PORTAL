@@ -415,6 +415,33 @@
 																			<core:Title text=""/>
 																			<m:Label text="{i18n>ZAPPGGINF}"/>
 																			<m:Input value="{ProfiliConfermaJSONModel>ZAPPGGINF}"/>
+																				<core:Title text=""/>
+																				<m:Label text="{i18n>CAT_CONF_RIFER_NO_PROGR}"/>
+																				<m:Input value="{ProfiliConfermaJSONModel>CAT_CONF_RIFER_NO_PROGR}"/>	
+
+																			<core:Title text=""/>
+																			<m:Label text="{i18n>NUM_INT_HU}"/>
+																			<m:CheckBox selected="{ProfiliConfermaJSONModel>NUM_INT_HU}"/>
+																			<core:Title text=""/>
+																			<m:Label text="{i18n>IS_PESO}"/>
+																			<m:CheckBox selected="{ProfiliConfermaJSONModel>IS_PESO}"/>
+																			<core:Title text=""/>
+																			<m:Label text="{i18n>IS_VOLUME}"/>
+																			<m:CheckBox selected="{ProfiliConfermaJSONModel>IS_VOLUME}"/>
+																			<core:Title text=""/>
+																			<m:Label text="{i18n>PACK_MAT_DEFAULT}"/>
+																			<m:CheckBox selected="{ProfiliConfermaJSONModel>PACK_MAT_DEFAULT}"/>		
+	
+
+																			<core:Title text=""/>
+																			<m:ToolbarSpacer/>
+																			<m:ToolbarSpacer/>
+																			<core:Title text=""/>
+																			<m:ToolbarSpacer/>
+																			<m:ToolbarSpacer/>
+																			<core:Title text=""/>
+																			<m:ToolbarSpacer/>
+																			<m:ToolbarSpacer/>
 																			<core:Title text=""/>
 																			<m:ToolbarSpacer/>
 																			<m:ToolbarSpacer/>

@@ -54,9 +54,9 @@ module.exports = function () {
             }
             if (body.vbeln !== null && body.vbeln !== undefined && body.vbeln.length > 0) {
                 var oVbeln = []
-               // for (var i = 0; i < body.vbeln.length; i++) {
-                    oVbeln.push({ VBELN: body.vbeln })
-               // }
+                // for (var i = 0; i < body.vbeln.length; i++) {
+                oVbeln.push({ VBELN: body.vbeln })
+                // }
                 vbeln = oVbeln
             }
             if (body.verur !== null && body.verur !== undefined && body.verur.length > 0) {
@@ -154,7 +154,7 @@ module.exports = function () {
                 lifnr = oLifnr
             }
             if (body.ebeln !== null && body.ebeln !== '' && body.ebeln !== undefined) {
-                ebeln.push({ ebeln: body.ebeln })
+                ebeln.push({ EBELN: body.ebeln })
             }
             if (body.ekorg !== null && body.ekorg !== undefined && body.ekorg.length > 0) {
                 var oEkorg = []
@@ -191,8 +191,61 @@ module.exports = function () {
                                 console.error('ERROR: ' + err)
                                 return res.status(500).send(stringifyObj(err))
                             } else {
+                                var outArr = []
+                                for (let index = 0; index < results.length; index++) {
+                                    var element = results[index]
+                                    var trovato = false
+                                    for (let i = 0; i < outArr.length; i++) {
+                                        var outElem = outArr[i]
+                                        if (outElem.EBELN === element.EBELN && outElem.EBELP === element.EBELP && parseInt(outElem.ETENR) === parseInt(element.ETENR) && outElem.TYPE === element.TYPE) {
+                                            trovato = true
+                                            break
+                                        }
+                                    }
+                                    if (!trovato) {
+                                        outArr.push(element)
+                                    }
+                                }
+
+                                var expArray = []
+                                for (let index = 0; index < outArr.length; index++) {
+                                    const element = outArr[index]
+                                    for (let i = 0; i < outArr.length; i++) {
+                                        var outElem = outArr[i]
+                                        var trovatoC = false
+                                        if (element.TYPE === 'S') {
+                                            if (outElem.EBELN === element.EBELN && outElem.EBELP === element.EBELP && outElem.TYPE === 'C') {
+                                                trovatoC = true
+                                                break
+                                            }
+                                        } else {
+                                            expArray.push(element)
+                                            break
+                                        }
+                                    }
+                                    if (!trovatoC) {
+                                        expArray.push(element)
+                                    }
+                                }
+
+                                var e = []
+                                for (let index = 0; index < expArray.length; index++) {
+                                    var element = expArray[index]
+                                    var trovato = false
+                                    for (let i = 0; i < e.length; i++) {
+                                        var outElem = e[i]
+                                        if (outElem.EBELN === element.EBELN && outElem.EBELP === element.EBELP && parseInt(outElem.ETENR) === parseInt(element.ETENR) && outElem.TYPE === element.TYPE) {
+                                            trovato = true
+                                            break
+                                        }
+                                    }
+                                    if (!trovato) {
+                                        e.push(element)
+                                    }
+                                }                                
+
                                 return res.status(200).send({
-                                    results: results
+                                    results: e
                                 })
                             }
                         })

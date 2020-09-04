@@ -24,13 +24,6 @@
 								<subSections>
 									<ObjectPageSubSection title="">
 										<m:Table id="ShedulersTable" items="{OrderPrositionJSONModel>/results/POItemConfirmations}">
-											<m:headerToolbar>
-												<m:OverflowToolbar>
-													<m:content>
-														<m:Title text="{i18n>schedules}" level="H2"/>
-													</m:content>
-												</m:OverflowToolbar>
-											</m:headerToolbar>
 											<m:columns>
 												<m:Column id="SYSID" visible="false" minScreenWidth="Desktop" demandPopin="true">
 													<m:Label text="{i18n>SYSID}" class="columnLabelStyle"/>
@@ -79,10 +72,59 @@
 									</ObjectPageSubSection>
 								</subSections>
 							</ObjectPageSection>
-							<ObjectPageSection title="{i18n>confirmations}">
+							<ObjectPageSection title="{i18n>confirmationsData}">
 								<subSections>
 									<ObjectPageSubSection title="">
-										<m:Table id="ConfirmationsTable" items="{OrderPrositionJSONModel>/results/POItemSchedulers/}">
+										<m:Table id="ConfirmationsTableData" items="{OrderPrositionJSONModel>/results/POItemSchedulers/}">
+											<m:columns>
+												<m:Column minScreenWidth="Desktop" demandPopin="true">
+													<m:Label text="{i18n>ETENS}" class="columnLabelStyle"/>
+												</m:Column>
+												<m:Column minScreenWidth="Desktop" demandPopin="true">
+													<m:Label text="{i18n>EINDT}" class="columnLabelStyle"/>
+												</m:Column>
+												<m:Column minScreenWidth="Desktop" demandPopin="true"  visible = "false">
+													<m:Label text="{i18n>LPEIN}" class="columnLabelStyle"/>
+												</m:Column>
+												<m:Column minScreenWidth="Desktop" demandPopin="true" visible = "false">
+													<m:Label text="{i18n>XBLNR}" class="columnLabelStyle"/>
+												</m:Column>
+												<m:Column minScreenWidth="Desktop" demandPopin="true">
+													<m:Label text="{i18n>MENGE}" class="columnLabelStyle"/>
+												</m:Column>
+												<m:Column minScreenWidth="Desktop" demandPopin="true" visible = "false">
+													<m:Label text="{i18n>DABMG}" class="columnLabelStyle"/>
+												</m:Column>
+												<m:Column minScreenWidth="Desktop" demandPopin="true" visible = "false">
+													<m:Label text="{i18n>MNG02}" class="columnLabelStyle"/>
+												</m:Column>
+												<m:Column minScreenWidth="Desktop" demandPopin="true" visible="false">
+													<m:Label text="{i18n>Status}" class="columnLabelStyle"/>
+												</m:Column>
+											</m:columns>
+											<m:items>
+												<m:ColumnListItem visible = "{= ${OrderPrositionJSONModel>TYPE} !== '2'}">
+													<m:cells>
+														<m:Text text="{OrderPrositionJSONModel>ETENS}"/>
+														<m:Text text="{ path: 'OrderPrositionJSONModel>EINDT', type: 'it.aupsup.inboundDelivery.type.Date' }"/>
+														<m:Text text="{OrderPrositionJSONModel>LPEIN}"/>
+														<m:Text text="{OrderPrositionJSONModel>XBLNR}"/>														
+														<m:Text text="{OrderPrositionJSONModel>MENGE}"/>
+														<m:Text text="{OrderPrositionJSONModel>DABMG}"/>
+														<m:Text text="{OrderPrositionJSONModel>ESTKZ}"/>
+														<m:Text text="{= ${OrderPrositionJSONModel>MENGE} - ${OrderPrositionJSONModel>WEMNG} > 0 ? '' : 'RICEVUTA'}"/>
+													</m:cells>
+												</m:ColumnListItem>
+											</m:items>
+										</m:Table>
+									</ObjectPageSubSection>
+								</subSections>
+							</ObjectPageSection>
+
+							<ObjectPageSection title="{i18n>confirmationsSpedizioni}">
+								<subSections>
+									<ObjectPageSubSection title="">
+										<m:Table id="ConfirmationsTableSpedizioni" items="{OrderPrositionJSONModel>/results/POItemSchedulers/}">
 											<m:headerToolbar>
 												<m:OverflowToolbar>
 													<m:content>
@@ -97,7 +139,7 @@
 												<m:Column minScreenWidth="Desktop" demandPopin="true">
 													<m:Label text="{i18n>EINDT}" class="columnLabelStyle"/>
 												</m:Column>
-												<m:Column minScreenWidth="Desktop" demandPopin="true">
+												<m:Column minScreenWidth="Desktop" demandPopin="true"  visible = "false">
 													<m:Label text="{i18n>LPEIN}" class="columnLabelStyle"/>
 												</m:Column>
 												<m:Column minScreenWidth="Desktop" demandPopin="true">
@@ -106,18 +148,18 @@
 												<m:Column minScreenWidth="Desktop" demandPopin="true">
 													<m:Label text="{i18n>MENGE}" class="columnLabelStyle"/>
 												</m:Column>
-												<m:Column minScreenWidth="Desktop" demandPopin="true">
+												<m:Column minScreenWidth="Desktop" demandPopin="true" visible = "false">
 													<m:Label text="{i18n>DABMG}" class="columnLabelStyle"/>
 												</m:Column>
-												<m:Column minScreenWidth="Desktop" demandPopin="true">
+												<m:Column minScreenWidth="Desktop" demandPopin="true" visible = "false">
 													<m:Label text="{i18n>MNG02}" class="columnLabelStyle"/>
 												</m:Column>
-												<m:Column id="STATO" minScreenWidth="Desktop" demandPopin="true">
+												<m:Column minScreenWidth="Desktop" demandPopin="true">
 													<m:Label text="{i18n>Status}" class="columnLabelStyle"/>
 												</m:Column>
 											</m:columns>
 											<m:items>
-												<m:ColumnListItem>
+												<m:ColumnListItem visible = "{= ${OrderPrositionJSONModel>TYPE} === '2'}">
 													<m:cells>
 														<m:Text text="{OrderPrositionJSONModel>ETENS}"/>
 														<m:Text text="{ path: 'OrderPrositionJSONModel>EINDT', type: 'it.aupsup.inboundDelivery.type.Date' }"/>
