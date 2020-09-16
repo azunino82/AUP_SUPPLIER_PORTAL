@@ -2,7 +2,16 @@
 	contentWidth="100%" contentHeight="100%">
 	<Page title="{i18n>printHU}">
 		<content>
-			<Table id="idHUTable" inset="false" items="{ path: 'HUToPrintJSONModel>/results' }">
+			<Table id="idHUTable" inset="false" items="{ path: 'HUToPrintJSONModel>/results' }" mode="MultiSelect">
+				<headerToolbar>
+					<OverflowToolbar>
+						<content>
+							<Title text="" level="H2"/>
+							<ToolbarSpacer/>
+							<Button icon="sap-icon://download" press="onDownloadZip" tooltip="{i18n>DownloadSelected}"/>
+						</content>
+					</OverflowToolbar>
+				</headerToolbar>				
 				<columns>
 					<Column width="auto">
 						<Text text="{i18n>VENUM}"/>

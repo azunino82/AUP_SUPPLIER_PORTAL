@@ -22,7 +22,7 @@
 									<fb:filterItems>
 										<fb:FilterItem name="Documento" label="{i18n>EBELN}">
 											<fb:control>
-												<m:Input value="{filterInboundDelivJSONModel>/ebeln}"/>
+												<m:Input value="{filterInboundDelivJSONModel>/ebeln}" submit="onSearch"/>
 											</fb:control>
 										</fb:FilterItem>
 										<fb:FilterItem name="Metasupplier" label="{i18n>METASUP}" visible="{VisibilityJSONModel>/isBuyer}">
@@ -35,12 +35,12 @@
 										</fb:FilterItem>
 										<fb:FilterItem name="Cond.Pag" label="{i18n>ZTERM}" visible="false">
 											<fb:control>
-												<m:Input value="{filterInboundDelivJSONModel>/ZTERM}"/>
+												<m:Input value="{filterInboundDelivJSONModel>/ZTERM}" submit="onSearch"/>
 											</fb:control>
 										</fb:FilterItem>
 										<fb:FilterItem name="Incoterm" label="{i18n>INCO1}" visible="false">
 											<fb:control>
-												<m:Input value="{filterInboundDelivJSONModel>/INCO1}"/>
+												<m:Input value="{filterInboundDelivJSONModel>/INCO1}" submit="onSearch"/>
 											</fb:control>
 										</fb:FilterItem>
 										<fb:FilterItem name="Lifnr" label="{i18n>supplier}" visible="{VisibilityJSONModel>/isBuyer}">
@@ -53,7 +53,7 @@
 										<fb:FilterItem name="Matnr" label="{i18n>MATNR}" visible="{VisibilityJSONModel>/isBuyer}">
 											<fb:control>
 												<m:Input type="Text" value="{filterInboundDelivJSONModel>/MatnrDesc}" showValueHelp="true" valueHelpOnly="true"
-													valueHelpRequest="handleMatnr" class="sapUiSmallMarginBottom"/>
+													valueHelpRequest="handleMatnr" class="sapUiSmallMarginBottom" submit="onSearch"/>
 											</fb:control>
 										</fb:FilterItem>
 										<fb:FilterItem name="Ekorg" label="{i18n>purchaseOrganization}" visible="false">
@@ -181,7 +181,7 @@
 															<m:Text text="{InboundDelJSONModel>EBELP}"/>
 															<m:Text text="{InboundDelJSONModel>ETENR}"/>
 															<m:Text text="{InboundDelJSONModel>TYPE}"/>
-															<m:Text text="{InboundDelJSONModel>MATNR}"/>
+															<m:Text text="{path : 'InboundDelJSONModel>MATNR', formatter : '.removeZeroBefore'}"/>
 															<m:Text text="{InboundDelJSONModel>TXZ01}"/>
 															<m:Text text="{InboundDelJSONModel>DESCR_WERKS}"/>															
 															<m:Text text="{InboundDelJSONModel>IDNLF}"/>

@@ -10,9 +10,10 @@ sap.ui.define([
 	"it/aupsup/inboundDelivery/js/formatter",
 	"sap/ui/core/util/Export",
 	"sap/ui/core/util/ExportTypeCSV",
-	"sap/m/PDFViewer"
+	"sap/m/PDFViewer",
+	"it/aupsup/inboundDelivery/js/jszip",
 ], function (BaseController, Filter, FilterOperator, JSONModel, MessageBox, MessageToast, Sorter, DateF, Formatter, Export, ExportTypeCSV,
-	PDFViewer) {
+	PDFViewer, JSZIP) {
 	"use strict";
 	var that;
 	Date.prototype.addDays = function (days) {
@@ -680,8 +681,8 @@ sap.ui.define([
 			if (mod.NrColli !== undefined && mod.NrColli !== "" && mod.QuantitaCollo !== undefined && mod.QuantitaCollo !== "") {
 				var profiloSelezionato = that.getCurrentProfiloConsegna(mod.BSTAE);
 
-				if((parseFloat(mod.NrColli) * parseFloat(mod.QuantitaCollo)) > parseFloat(mod.MENGE)){
-					MessageBox.error(that.getResourceBundle().getText("ERR_Quantity",mod.EBELN + "-" + mod.EBELP + " CONF: " + mod.ETENR));
+				if ((parseFloat(mod.NrColli) * parseFloat(mod.QuantitaCollo)) > parseFloat(mod.MENGE)) {
+					MessageBox.error(that.getResourceBundle().getText("ERR_Quantity", mod.EBELN + "-" + mod.EBELP + " CONF: " + mod.ETENR));
 					return;
 				}
 
@@ -691,6 +692,18 @@ sap.ui.define([
 				} else {
 					mod.Deliveries = [];
 				}
+
+				var gestioneEtichetteModel = that.getView().getModel("gestioneEtichetteJSONModel");
+				var udmPeso = ""
+				var udmVolume = ""
+				if (gestioneEtichetteModel !== undefined && gestioneEtichetteModel.getData() !== undefined) {
+					var selectedEtichetta = gestioneEtichetteModel.getData().find(x => x.PLANT === mod.WERKS);
+					if (selectedEtichetta !== undefined) {
+						udmPeso = selectedEtichetta.UDM_PESO
+						udmVolume = selectedEtichetta.UDM_VOLUME
+					}
+				}
+
 				for (var i = 0; i < mod.NrColli; i++) {
 					var enabledLotto = false;
 					var enabledDataScadenza = false;
@@ -705,6 +718,8 @@ sap.ui.define([
 
 					var schedulation = {
 						"QUANT": mod.QuantitaCollo,
+						"UDM_PESO": udmPeso,
+						"UDM_VOLUME": udmVolume,
 						"LOTTO": "",
 						"SCADENZA": null,
 						"editLotto": enabledLotto,
@@ -713,7 +728,8 @@ sap.ui.define([
 						"editImballo": profiloSelezionato !== undefined && profiloSelezionato.PACK_MAT_DEFAULT === 'X' ? false : true,
 						"editPeso": profiloSelezionato !== undefined && profiloSelezionato.IS_PESO === 'X' ? true : false,
 						"editVolume": profiloSelezionato !== undefined && profiloSelezionato.IS_VOLUME === 'X' ? true : false,
-						"editExtHuNumb": profiloSelezionato !== undefined && profiloSelezionato.NUM_INT_HU === 'X' ? true : false
+						"editExtHuNumb": profiloSelezionato !== undefined && profiloSelezionato.NUM_INT_HU === 'X' ? true : false,
+						"editContent": profiloSelezionato !== undefined && profiloSelezionato.IS_CONTENT === 'X' ? true : false
 					};
 					oSchedulationsArray.push(schedulation);
 				}
@@ -782,19 +798,22 @@ sap.ui.define([
 						if (model[i].Deliveries.results[j] && model[i].Deliveries.results[j].editVolume === true && (model[i].Deliveries.results[j].VOLUME === undefined || model[i].Deliveries.results[j].VOLUME === "")) {
 							err = that.getResourceBundle().getText("ERR_Deliveries_Mandatory_Volume", [model[i].EBELN + " - " + model[i].EBELP]);
 							break;
-						}						
-						
+						}
+						if (model[i].Deliveries.results[j] && model[i].Deliveries.results[j].editContent === true && (model[i].Deliveries.results[j].CONTENT === undefined || model[i].Deliveries.results[j].CONTENT === "")) {
+							err = that.getResourceBundle().getText("ERR_Deliveries_Mandatory_Content", [model[i].EBELN + " - " + model[i].EBELP]);
+							break;
+						}
+
 					}
 
 					var ordine = model[i].EBELN + "-" + model[i].EBELP + " CONF: " + model[i].ETENR;
-					if(Math.abs(sumMenge) > parseFloat(model[i].MENGE))
-					{
-						err = err + "\n" + that.getResourceBundle().getText("ERR_Quantity",ordine);
+					if (Math.abs(sumMenge) > parseFloat(model[i].MENGE)) {
+						err = err + "\n" + that.getResourceBundle().getText("ERR_Quantity", ordine);
 					}
 
 					var profiloSelezionato = that.getCurrentProfiloConsegna(model[i].BSTAE);
 					var perc = (Math.abs(sumMenge) / parseFloat(model[i].MENGE)) * 100
-					
+
 					if (perc > profiloSelezionato.PERC_SUPERIORE_QUANT && profiloSelezionato.PERC_SUPERIORE_QUANT !== 0) {
 						err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Up_Single");
 						err = err + "\n" + ordine;
@@ -803,7 +822,7 @@ sap.ui.define([
 						err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Down_Single");
 						err = err + "\n" + ordine;
 					}
-					
+
 					if (err !== '') {
 						MessageBox.error(err);
 						return
@@ -924,8 +943,8 @@ sap.ui.define([
 												"LICHN": sDelivery.LOTTO,
 												"VFDAT": sDelivery.SCADENZA,
 												"HSDAT": "",
-												"LIFEXPOS":item.ETENR,
-												"ETENR":item.ETENR
+												"LIFEXPOS": item.ETENR,
+												"ETENR": item.ETENR
 											};
 											body.it_item.push(deliveryItem);
 										}
@@ -947,9 +966,9 @@ sap.ui.define([
 											"EXIDV2": sDelivery.EXTHUNUMB,
 											"VHILM": sDelivery.IMBALLO,
 											"BRGEW": sDelivery.PESO !== undefined ? parseFloat(sDelivery.PESO) : 0,
-											"BTVOL":sDelivery.VOLUME !== undefined ? parseFloat(sDelivery.VOLUME) : 0
+											"BTVOL": sDelivery.VOLUME !== undefined ? parseFloat(sDelivery.VOLUME) : 0
 										};
-										
+
 										if (gestioneEtichetteModel !== undefined && gestioneEtichetteModel.getData() !== undefined) {
 											var selectedEtichetta = gestioneEtichetteModel.getData().find(x => x.PLANT === item.WERKS);
 											if (selectedEtichetta !== undefined) {
@@ -1008,6 +1027,12 @@ sap.ui.define([
 						that.showBusyDialog();
 						that.ajaxPost(url, body, function (oData) { // funzione generica su BaseController
 							that.hideBusyDialog();
+
+							if (oData.error !== undefined) {
+								MessageBox.error(decodeURI(oData.error));
+								return
+							}
+
 							if (oData) {
 								if (oData.errLog) {
 									MessageBox.error(decodeURI(oData.errLog));
@@ -1090,6 +1115,8 @@ sap.ui.define([
 			}
 			this.getView().setModel(null,
 				"SelectedPositionsJSONModel");
+
+			that.onSearch()
 		},
 
 		onClosePrintHU: function () {
@@ -1101,13 +1128,88 @@ sap.ui.define([
 			that.getView().setModel(null, "HUToPrintJSONModel");
 		},
 
+		onDownloadZip: function (oEvent) {
+
+			var oTable = sap.ui.getCore().byId("idHUTable");
+			var idx = oTable.indexOfItem(oTable.getSelectedItem());
+			if (idx !== -1) {
+
+				var oItems = oTable.getSelectedItems()
+				var promiseArr = []
+				var zip = new JSZip()
+				this.showBusyDialog();
+				for (var i = 0; i < oItems.length; i++) {
+					var oPositionModel = that.getModel("HUToPrintJSONModel").getProperty(oItems[i].getBindingContextPath());
+					promiseArr.push(new Promise(function (resolve, reject) {
+
+						var url = "/backend/InboundDeliveryManagement/GetHUPDF" + "?I_EXIDV=" + oPositionModel.EXIDV + "&I_WERKS=" + oPositionModel.WERKS;
+
+						jQuery.ajax({
+							url: url,
+							method: 'GET',
+							async: false,
+							contentType: 'application/pdf',
+							success: function (data) {
+								zip.file("download_hu_" + oPositionModel.EXIDV + ".pdf", data, { binary: true });
+								resolve()
+							},
+							error: function (e) {
+								reject()
+							}
+						});
+
+					}))
+
+				}
+
+				Promise.all(promiseArr).then(values => {
+					that.hideBusyDialog();
+					zip.generateAsync({ type: "blob" })
+						.then(function (content) {
+							// Force down of the Zip file
+							that.saveAs(content, "download.zip");
+						});
+				});
+
+			} else {
+				MessageBox.error(that.getResourceBundle().getText("ERR_Select_HU"));
+			}
+
+
+		},
+
+		saveAs: function (blob, filename) {
+			if (typeof navigator.msSaveOrOpenBlob !== 'undefined') {
+				return navigator.msSaveOrOpenBlob(blob, fileName);
+			} else if (typeof navigator.msSaveBlob !== 'undefined') {
+				return navigator.msSaveBlob(blob, fileName);
+			} else {
+				var elem = window.document.createElement('a');
+				elem.href = window.URL.createObjectURL(blob);
+				elem.download = filename;
+				elem.style = 'display:none;opacity:0;color:transparent;';
+				(document.body || document.documentElement).appendChild(elem);
+				if (typeof elem.click === 'function') {
+					elem.click();
+				} else {
+					elem.target = '_blank';
+					elem.dispatchEvent(new MouseEvent('click', {
+						view: window,
+						bubbles: true,
+						cancelable: true
+					}));
+				}
+				URL.revokeObjectURL(elem.href);
+			}
+		},
+
 		onItemPrintHU: function (oEvent) {
 			var getTabledata = that.getView().getModel("HUToPrintJSONModel").getData().results;
 			var itemPosition = oEvent.getSource().getParent().getParent().indexOfItem(oEvent.getSource().getParent());
 			var selctedRowdata = getTabledata[itemPosition];
 			//	MessageToast.show("TODO Print " + selctedRowdata.EXIDV);
 
-			var url = "/backend/InboundDeliveryManagement/GetHUPDF?I_EXIDV=" + selctedRowdata.EXIDV;
+			var url = "/backend/InboundDeliveryManagement/GetHUPDF?I_EXIDV=" + selctedRowdata.EXIDV + "&I_WERKS=" + selctedRowdata.WERKS;
 
 			that._pdfViewer = new PDFViewer();
 			that._pdfViewer.setShowDownloadButton(false);
@@ -1276,7 +1378,7 @@ sap.ui.define([
 					template: {
 						content: "{TYPE}"
 					}
-				},  {
+				}, {
 					name: that.getResourceBundle().getText("MATNR"),
 					template: {
 						content: "{MATNR}"

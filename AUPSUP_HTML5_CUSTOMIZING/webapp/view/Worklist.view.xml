@@ -434,8 +434,8 @@
 	
 
 																			<core:Title text=""/>
-																			<m:ToolbarSpacer/>
-																			<m:ToolbarSpacer/>
+																			<m:Label text="{i18n>IS_CONTENT}"/>
+																			<m:CheckBox selected="{ProfiliConfermaJSONModel>IS_CONTENT}"/>
 																			<core:Title text=""/>
 																			<m:ToolbarSpacer/>
 																			<m:ToolbarSpacer/>
@@ -878,6 +878,12 @@
 																<m:Column minScreenWidth="Desktop" demandPopin="true">
 																	<m:Label text="{i18n>APPLICAZIONE}" class="columnLabelStyle"/>
 																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>UDM_PESO}" class="columnLabelStyle"/>
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>UDM_VOLUME}" class="columnLabelStyle"/>
+																</m:Column>																																
 																<m:Column minScreenWidth="Desktop" demandPopin="true" hAlign="End" width="5em">
 																	<m:Label class="columnLabelStyle"/>
 																</m:Column>
@@ -890,6 +896,8 @@
 																		<m:Input value="{GestioneEtichetteJSONModel>MATERIALE_IMBALLO}"/>
 																		<m:Input value="{GestioneEtichetteJSONModel>TIPO_MSG_HU}"/>
 																		<m:Input value="{GestioneEtichetteJSONModel>APPLICAZIONE}"/>
+																		<m:Input value="{GestioneEtichetteJSONModel>UDM_PESO}"/>
+																		<m:Input value="{GestioneEtichetteJSONModel>UDM_VOLUME}"/>
 																		<m:Button icon="sap-icon://delete" press="deleteGestioneEtichetteRow"/>
 																	</m:cells>
 																</m:ColumnListItem>

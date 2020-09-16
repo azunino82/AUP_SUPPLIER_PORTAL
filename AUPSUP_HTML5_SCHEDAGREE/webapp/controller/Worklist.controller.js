@@ -2502,7 +2502,7 @@ sap.ui.define([
 			//var itemPosition = oEvent.getSource().getParent().getParent().indexOfItem(oEvent.getSource().getParent());
 			//var selctedRowdata = getTabledata[itemPosition];
 			// Richiamare servizio estrazione Customizing
-			var url = "/backend/DocumentManagement/getDocumentTypes?I_APPLICATION=ODA";
+			var url = "/backend/DocumentManagement/getDocumentTypes?I_APPLICATION=P_CONS";
 
 			that.ajaxGet(url, function (oData) {
 				if (oData && oData.length > 0) {

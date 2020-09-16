@@ -193,7 +193,7 @@ module.exports = function () {
                                             objectCopy.PRIMO_PERIODO = '?'
                                         } else {
                                             if (objectCopy.P1_PROGR_RIC === null || parseFloat(objectCopy.P1_PROGR_RIC) === 0) {
-                                                objectCopy.PRIMO_PERIODO = 100
+                                                objectCopy.PRIMO_PERIODO = ''
                                             } else {
                                                 if (objectCopy.P1_PROGR_RIC !== null) {
                                  //                   console.log('LS P1_PROGR_RIC: ' + objectCopy.P1_PROGR_RIC)

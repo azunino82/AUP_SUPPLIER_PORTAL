@@ -168,6 +168,7 @@ sap.ui.define([
                             elem.IS_PESO = elem.IS_PESO === "X" ? true : false;
                             elem.IS_VOLUME = elem.IS_VOLUME === "X" ? true : false;
                             elem.PACK_MAT_DEFAULT = elem.PACK_MAT_DEFAULT === "X" ? true : false;
+                            elem.IS_CONTENT = elem.IS_CONTENT === "X" ? true : false;
 
                         });
 
@@ -501,7 +502,8 @@ sap.ui.define([
                 "IS_PESO":false,
                 "IS_VOLUME":false,
                 "PACK_MAT_DEFAULT":false,
-                "CAT_CONF_RIFER_NO_PROGR":""
+                "CAT_CONF_RIFER_NO_PROGR":"",
+                "IS_CONTENT":false,
             });
             that.getView().getModel("ProfiliConfermaJSONModel").refresh();
         },
@@ -600,7 +602,9 @@ sap.ui.define([
                 "PLANT": "",
                 "MATERIALE_IMBALLO": "",
                 "TIPO_MSG_HU": "",
-                "APPLICAZIONE": ""
+                "APPLICAZIONE": "",
+                "UDM_PESO":"",
+                "UDM_VOLUME":""
             });
             that.getView().getModel("GestioneEtichetteJSONModel").refresh();
         },
@@ -737,6 +741,7 @@ sap.ui.define([
                     elem.IS_PESO = elem.IS_PESO === true ? "X" : "";
                     elem.IS_VOLUME = elem.IS_VOLUME === true ? "X" : "";
                     elem.PACK_MAT_DEFAULT = elem.PACK_MAT_DEFAULT === true ? "X" : "";
+                    elem.IS_CONTENT = elem.IS_CONTENT === true ? "X" : "";
 
                     promiseArr.push(new Promise(function (resolve, reject) {
                         that.onSaveProfiliConf(elem, function () {

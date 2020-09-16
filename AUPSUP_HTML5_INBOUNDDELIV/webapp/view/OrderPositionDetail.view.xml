@@ -62,9 +62,9 @@
 														<m:Text text="{OrderPrositionJSONModel>ETENR}"/>
 														<m:Text text="{ path: 'OrderPrositionJSONModel>EINDT', type: 'it.aupsup.inboundDelivery.type.Date' }"/>
 														<m:Text text="{OrderPrositionJSONModel>LPEIN}"/>
-														<m:Text text="{= ${OrderPrositionJSONModel>MENGE} - ${OrderPrositionJSONModel>WEMNG}}"/>
-														<m:Text text="{OrderPrositionJSONModel>WEMNG}"/>
-														<m:Text text="{OrderPrositionJSONModel>MNG02}"/>
+														<m:Text text="{= ${OrderPrositionJSONModel>MENGE} - ${OrderPrositionJSONModel>WEMNG}}"/>														
+														<m:Text text="{path : 'OrderPrositionJSONModel>WEMNG', formatter : '.importFormatter'}"/>
+														<m:Text text="{path : 'OrderPrositionJSONModel>MNG02', formatter : '.importFormatter'}"/>
 														</m:cells>
 												</m:ColumnListItem>
 											</m:items>
@@ -109,7 +109,7 @@
 														<m:Text text="{ path: 'OrderPrositionJSONModel>EINDT', type: 'it.aupsup.inboundDelivery.type.Date' }"/>
 														<m:Text text="{OrderPrositionJSONModel>LPEIN}"/>
 														<m:Text text="{OrderPrositionJSONModel>XBLNR}"/>														
-														<m:Text text="{OrderPrositionJSONModel>MENGE}"/>
+														<m:Text text="{path : 'OrderPrositionJSONModel>MENGE', formatter : '.importFormatter'}"/>
 														<m:Text text="{OrderPrositionJSONModel>DABMG}"/>
 														<m:Text text="{OrderPrositionJSONModel>ESTKZ}"/>
 														<m:Text text="{= ${OrderPrositionJSONModel>MENGE} - ${OrderPrositionJSONModel>WEMNG} > 0 ? '' : 'RICEVUTA'}"/>
@@ -165,7 +165,7 @@
 														<m:Text text="{ path: 'OrderPrositionJSONModel>EINDT', type: 'it.aupsup.inboundDelivery.type.Date' }"/>
 														<m:Text text="{OrderPrositionJSONModel>LPEIN}"/>
 														<m:Text text="{OrderPrositionJSONModel>XBLNR}"/>														
-														<m:Text text="{OrderPrositionJSONModel>MENGE}"/>
+														<m:Text text="{path : 'OrderPrositionJSONModel>MENGE', formatter : '.importFormatter'}"/>															
 														<m:Text text="{OrderPrositionJSONModel>DABMG}"/>
 														<m:Text text="{OrderPrositionJSONModel>ESTKZ}"/>
 														<m:Text text="{= ${OrderPrositionJSONModel>MENGE} - ${OrderPrositionJSONModel>DABMG} > 0 ? '' : 'RICEVUTA'}"/>

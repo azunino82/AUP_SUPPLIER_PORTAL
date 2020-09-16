@@ -21,7 +21,7 @@
 									<Label text="{i18n>IDNLF}"/>
 									<Text text="{SelectedPositionsJSONModel>IDNLF}"/>
 									<Label text="{i18n>materialCode}"/>
-									<Text text="{SelectedPositionsJSONModel>MATNR}"/>										
+									<Text text="{path : 'SelectedPositionsJSONModel>MATNR', formatter : '.removeZeroBefore'}"/>									
 									<Label text="{i18n>materialDescr}"/>
 									<Text text="{SelectedPositionsJSONModel>TXZ01}"/>
 
@@ -68,7 +68,10 @@
 									</Column>	
 									<Column>
 										<Text text="{i18n>NumExtHU}"/>
-									</Column>																
+									</Column>					
+									<Column>
+										<Text text="{i18n>editContent}"/>
+									</Column>																					
 								<!--	<Column>
 										<Text text="{i18n>lotto}"/>
 									</Column>
@@ -88,11 +91,33 @@
 													<layoutData>
 														<FlexItemData growFactor="2"/>
 													</layoutData>
-												</TextArea>												
-											
-											<Input value="{SelectedPositionsJSONModel>PESO}" enabled="{SelectedPositionsJSONModel>editPeso}" type="Number"/>
-											<Input value="{SelectedPositionsJSONModel>VOLUME}" enabled="{SelectedPositionsJSONModel>editVolume}" type="Number"/>			
-											<Input value="{SelectedPositionsJSONModel>EXTHUNUMB}" enabled="{SelectedPositionsJSONModel>editExtHuNumb}"/>																							
+												</TextArea>	
+												<FlexBox renderType="Bare">
+													<Input value="{SelectedPositionsJSONModel>PESO}" enabled="{SelectedPositionsJSONModel>editPeso}" type="Number">
+														<layoutData>
+															<FlexItemData growFactor="1" />
+														</layoutData>
+													</Input>
+														<Text text = "{SelectedPositionsJSONModel>UDM_PESO}" width="2rem" class="spaceLabel">
+															<layoutData>
+																<FlexItemData growFactor="1" />
+															</layoutData>
+														</Text>
+												</FlexBox>		
+												<FlexBox renderType="Bare">
+												<Input value="{SelectedPositionsJSONModel>VOLUME}" enabled="{SelectedPositionsJSONModel>editVolume}" type="Number">
+													<layoutData>
+														<FlexItemData growFactor="1" />
+													</layoutData>
+												</Input>
+												<Text text = "{SelectedPositionsJSONModel>UDM_VOLUME}" width="2rem" class="spaceLabel">
+													<layoutData>
+														<FlexItemData growFactor="1" />
+													</layoutData>
+												</Text>			
+											</FlexBox>
+											<Input value="{SelectedPositionsJSONModel>EXTHUNUMB}" enabled="{SelectedPositionsJSONModel>editExtHuNumb}"/>	
+											<Input value="{SelectedPositionsJSONModel>CONTENT}" enabled="{SelectedPositionsJSONModel>editContent}"/>																																		
 									<!--		<Input value="{SelectedPositionsJSONModel>LOTTO}" enabled="{SelectedPositionsJSONModel>editLotto}"/>
 											<DatePicker displayFormat="dd MMM yyyy" valueFormat="YYYYMMdd" value="{SelectedPositionsJSONModel>SCADENZA}"
 												enabled="{SelectedPositionsJSONModel>editDataScadenza}"/>-->

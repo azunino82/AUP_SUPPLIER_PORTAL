@@ -182,7 +182,7 @@
 															<m:Text text="{OrderJSONModel>MEINS}"/>
 															<m:Text text="{OrderJSONModel>WAERS}"/>
 															<m:Text text="{ path: 'OrderJSONModel>EKET_EKEH_EINDT', type: 'it.aupsup.purchords.type.Date' }"/>
-															<m:Text text="{path : 'OrderJSONModel>PRIMO_PERIODO', formatter : '.importFormatter'}"/>
+															<m:Text text="{path : 'OrderJSONModel>PRIMO_PERIODO', formatter : '.importFormatter'}"  visible="{= ${OrderJSONModel>PRIMO_PERIODO} !== '100'}"/>
 															<m:Text text="{path : 'OrderJSONModel>SECONDO_PERIODO', formatter : '.importFormatter'}"/>
 															<m:Button icon="sap-icon://document-text" press="onGetTexts"/>
 															<m:Button icon="sap-icon://download" press="onItemDownload"/>

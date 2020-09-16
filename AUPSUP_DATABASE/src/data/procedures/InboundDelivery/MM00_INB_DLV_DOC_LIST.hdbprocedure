@@ -179,44 +179,46 @@ IF (counterRow > 0) THEN
 						-- estraggo tutte le posizioni che degli ordini con i progressivi non attivi
 						DECLARE CURSOR cursorEKPO FOR SELECT * FROM :ET_INB_DLV_EKPO WHERE EBELN = cursorRow.EBELN;
 						FOR cursorRowEkpo AS cursorEKPO DO
-							-- Per ogni EKPO-BSTAE andare in T_PROFILI_CONFERMA dove EKPO-BSTAE = T_PROFILI_CONFERMA- PROFILO_CONTROLLO e T_PROFILI_CONFERMA- TIPO_CONFERMA = 1
-							SELECT COUNT(*) into counterRow FROM "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" WHERE PROFILO_CONTROLLO = cursorRowEkpo.BSTAE AND TIPO_CONFERMA = '1';
-							-- Se trovo qualcosa
-							IF (counterRow > 0) THEN
+							BEGIN
+								-- Per ogni EKPO-BSTAE andare in T_PROFILI_CONFERMA dove EKPO-BSTAE = T_PROFILI_CONFERMA- PROFILO_CONTROLLO e T_PROFILI_CONFERMA- TIPO_CONFERMA = 1
+								SELECT COUNT(*) into counterRow FROM "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" WHERE PROFILO_CONTROLLO = cursorRowEkpo.BSTAE AND TIPO_CONFERMA = '1';
+								-- Se trovo qualcosa
+								IF (counterRow > 0) THEN
 
-								INSERT INTO #out_table 
-								SELECT table1.MANDT as MANDT, table1.SYSID as SYSID, table1.EBELN as EBELN, table1.EBELP as EBELP, table1.XBLNR as ETENR, 
-									table2.MATNR as MATNR, table2.TXZ01 as TXZ01, table2.IDNLF as IDNLF, table2.BSTAE as BSTAE, table2.WERKS as WERKS,
-									c.PLANT_DESCR as DESCR_WERKS,
-									(table1.MENGE - COALESCE((SELECT SUM(LFIMG) FROM :ET_INB_DLV_LIPS WHERE VGBEL = table1.EBELN and VGPOS = table1.EBELP and LIFEXPOS = (SELECT "AUPSUP_DATABASE.data.functions::TF_ADD_ZERO_BEFORE"(table1.XBLNR,6) FROM "AUPSUP_DATABASE.data.synonyms::DUMMY")),0)) AS MENGE, 
-									0 AS QUANT_SCHED, table2.MEINS as MEINS, table1.EINDT as EINDT, d.LIFNR as LIFNR, d.NAME1 as NAME1, 'C' as TYPE, table1.LIFEXPOS as LIFEXPOS
-								
-									FROM :ET_INB_DLV_EKES as table1
-									INNER JOIN :ET_INB_DLV_EKPO as table2 ON table1.EBELN = table2.EBELN and table2.EBELP = table2.EBELP
-									INNER JOIN "AUPSUP_DATABASE.data.tables::T_BU_PLANT" AS c ON table2.WERKS = c.PLANT
-									INNER JOIN :ET_INB_DLV_EKKO AS d ON d.EBELN = table1.EBELN
-									WHERE (table1.EBELN,table1.EBELP,table1.EBTYP) IN (SELECT a.EBELN,a.EBELP,b.CAT_CONF_RIFER_NO_PROGR FROM :ET_INB_DLV_EKPO as a
-									INNER JOIN "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" as b ON a.BSTAE = b.PROFILO_CONTROLLO WHERE b.TIPO_CONFERMA = '2')
-									AND table1.EBELN = cursorRowEkpo.EBELN and table1.EBELP = cursorRowEkpo.EBELP
-								;
+									INSERT INTO #out_table 
+									SELECT table1.MANDT as MANDT, table1.SYSID as SYSID, table1.EBELN as EBELN, table1.EBELP as EBELP, table1.XBLNR as ETENR, 
+										table2.MATNR as MATNR, table2.TXZ01 as TXZ01, table2.IDNLF as IDNLF, table2.BSTAE as BSTAE, table2.WERKS as WERKS,
+										c.PLANT_DESCR as DESCR_WERKS,
+										(table1.MENGE - COALESCE((SELECT SUM(LFIMG) FROM :ET_INB_DLV_LIPS WHERE VGBEL = table1.EBELN and VGPOS = table1.EBELP and LIFEXPOS = (SELECT "AUPSUP_DATABASE.data.functions::TF_ADD_ZERO_BEFORE"(table1.XBLNR,6) FROM "AUPSUP_DATABASE.data.synonyms::DUMMY")),0)) AS MENGE, 
+										0 AS QUANT_SCHED, table2.MEINS as MEINS, table1.EINDT as EINDT, d.LIFNR as LIFNR, d.NAME1 as NAME1, 'C' as TYPE, table1.LIFEXPOS as LIFEXPOS
+									
+										FROM :ET_INB_DLV_EKES as table1
+										INNER JOIN :ET_INB_DLV_EKPO as table2 ON table1.EBELN = table2.EBELN and table2.EBELP = table2.EBELP
+										INNER JOIN "AUPSUP_DATABASE.data.tables::T_BU_PLANT" AS c ON table2.WERKS = c.PLANT
+										INNER JOIN :ET_INB_DLV_EKKO AS d ON d.EBELN = table1.EBELN
+										WHERE (table1.EBELN,table1.EBELP,table1.EBTYP) IN (SELECT a.EBELN,a.EBELP,b.CAT_CONF_RIFER_NO_PROGR FROM :ET_INB_DLV_EKPO as a
+										INNER JOIN "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" as b ON a.BSTAE = b.PROFILO_CONTROLLO WHERE b.TIPO_CONFERMA = '2')
+										AND table1.EBELN = cursorRowEkpo.EBELN and table1.EBELP = cursorRowEkpo.EBELP;
 
-							ELSE
-								/* Se non trovo nulla
-								1)	Altrimenti estrarre le schedulazioni EKET e EKEH, con la medesima logica attuale. Verificare che sia nettizzata EKET-MENGE con EKET-MENGE. Dovrebbe essere già attiva la logica
-								*/
-								INSERT INTO #out_table 
-								SELECT a.MANDT, a.SYSID, a.EBELN, a.EBELP, b.ETENR, a.MATNR, a.TXZ01, a.IDNLF, a.BSTAE, a.WERKS, c.PLANT_DESCR as DESCR_WERKS, (b.MENGE - b.WEMNG) AS MENGE,
-								(b.MENGE - b.WEMNG) AS QUANT_SCHED, a.MEINS,b.EINDT,d.LIFNR,d.NAME1, 'S' as TYPE, '' as LIFEXPOS from :ET_INB_DLV_EKPO as a 
-								INNER JOIN :ET_INB_DLV_EKET AS b ON a.EBELN = b.EBELN AND a.EBELP = b.EBELP 
-								INNER JOIN "AUPSUP_DATABASE.data.tables::T_BU_PLANT" AS c ON a.WERKS = c.PLANT
-								INNER JOIN :ET_INB_DLV_EKKO AS d ON a.EBELN = d.EBELN -- per estrarre il LIFNR sulle testate utile per invio mail
-								WHERE (b.MENGE - b.WEMNG) >= 0;							
+								ELSE
+									/* Se non trovo nulla
+									1)	Altrimenti estrarre le schedulazioni EKET e EKEH, con la medesima logica attuale. Verificare che sia nettizzata EKET-MENGE con EKET-MENGE. Dovrebbe essere già attiva la logica
+									*/
+									INSERT INTO #out_table 
+									SELECT a.MANDT, a.SYSID, a.EBELN, a.EBELP, b.ETENR, a.MATNR, a.TXZ01, a.IDNLF, a.BSTAE, a.WERKS, c.PLANT_DESCR as DESCR_WERKS, (b.MENGE - b.WEMNG) AS MENGE,
+									(b.MENGE - b.WEMNG) AS QUANT_SCHED, a.MEINS,b.EINDT,d.LIFNR,d.NAME1, 'S' as TYPE, '' as LIFEXPOS from 
+									:ET_INB_DLV_EKPO as a 
+									INNER JOIN :ET_INB_DLV_EKET AS b ON a.EBELN = b.EBELN AND a.EBELP = b.EBELP 
+									INNER JOIN "AUPSUP_DATABASE.data.tables::T_BU_PLANT" AS c ON a.WERKS = c.PLANT
+									INNER JOIN :ET_INB_DLV_EKKO AS d ON a.EBELN = d.EBELN -- per estrarre il LIFNR sulle testate utile per invio mail
+									WHERE a.EBELN = cursorRowEkpo.EBELN and a.EBELP = cursorRowEkpo.EBELP;
+									--WHERE (b.MENGE - b.WEMNG) >= 0;							
 
-							END IF;							
+								END IF;							
+							END;
+						END FOR;	
 
-						END FOR;
-
-					END;
+					END;	
 
 				ELSE
 
@@ -237,6 +239,46 @@ IF (counterRow > 0) THEN
 
 END IF;	
 
+/*
+ - 
+								COALESCE((SELECT (t1.MENGE-t1.DABMG) FROM :ET_INB_DLV_EKES as t1 
+								INNER JOIN "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" as t2 ON t1.EBTYP = t2.CAT_CONFERMA 
+								INNER JOIN :ET_INB_DLV_EKET AS c ON t1.EBELN = c.EBELN AND t1.EBELP = c.EBELP 
+								INNER JOIN :ET_INB_DLV_LIPS as z ON z.VGBEL = t1.EBELN and z.VGPOS = t1.EBELP 
+								WHERE z.LIFEXPOS = (SELECT "AUPSUP_DATABASE.data.functions::TF_ADD_ZERO_BEFORE"(b.ETENR,6) FROM "AUPSUP_DATABASE.data.synonyms::DUMMY") AND t2.TIPO_CONFERMA = '2'  ),0)
+								
+*/
+
+
+BEGIN
+
+		DECLARE CURSOR cursorEKKO FOR SELECT * FROM #out_table WHERE TYPE = 'S';
+		FOR cursorRow AS cursorEKKO DO
+
+		UPDATE #out_table as table1 SET table1.MENGE = (cursorRow.MENGE - 
+		COALESCE(
+			
+		/*	(SELECT DISTINCT (t1.MENGE-t1.DABMG) FROM :ET_INB_DLV_EKES as t1 
+								INNER JOIN "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" as t2 ON t1.EBTYP = t2.CAT_CONFERMA 
+								INNER JOIN :ET_INB_DLV_LIPS as z ON z.VBELN = t1.VBELN and z.POSNR = t1.VBELP 
+								WHERE z.LIFEXPOS = 
+								(SELECT "AUPSUP_DATABASE.data.functions::TF_ADD_ZERO_BEFORE"(cursorRow.ETENR,6) FROM "AUPSUP_DATABASE.data.synonyms::DUMMY") 
+								AND t2.TIPO_CONFERMA = '2') */
+
+			(SELECT SUM(MENGE-DABMG) FROM :ET_INB_DLV_EKES WHERE (VBELN,VBELP) IN 
+			(SELECT VBELN,POSNR FROM :ET_INB_DLV_LIPS WHERE VGBEL = cursorRow.EBELN AND VGPOS = cursorRow.EBELP AND 
+			LIFEXPOS = (SELECT "AUPSUP_DATABASE.data.functions::TF_ADD_ZERO_BEFORE"(cursorRow.ETENR,6) FROM "AUPSUP_DATABASE.data.synonyms::DUMMY")  ))	
+								
+								
+								
+								,0)
+		) WHERE table1.EBELN = cursorRow.EBELN and table1.EBELP = cursorRow.EBELP and table1.ETENR = cursorRow.ETENR;
+
+		END FOR;
+
+END;
+
+
  
  out_table = SELECT DISTINCT * FROM #out_table ORDER BY EBELN, EBELP, EINDT ASC;
 
@@ -250,4 +292,4 @@ END IF;
  DROP TABLE #I_LIFNR;
  DROP TABLE #out_table;
  
-END;
+END;	

@@ -2,11 +2,11 @@
 	async="true">
 	<layout:HorizontalLayout>
 		<m:VBox class="sapUiSmallMargin"> 
-			<m:ObjectAttribute title="{i18n>MATNR}" text="{ path: 'OrderPrositionJSONModel>/MATNR' }"/> <!--Materiale-->
+			<m:ObjectAttribute title="{i18n>MATNR}" text="{ path: 'OrderPrositionJSONModel>/MATNR', formatter : '.removeZeroBefore'}"/> <!--Materiale-->
 			<m:ObjectAttribute title="{i18n>TXZ01}" text="{ path: 'OrderPrositionJSONModel>/TXZ01' }"/> <!--Testo Breve-->
 			<m:ObjectAttribute title="{i18n>IDNLF}" text="{ path: 'OrderPrositionJSONModel>/IDNLF' }"/> <!--Codice Materiale usato dal fornitore-->
-			<m:ObjectAttribute title="{i18n>MENGE}" text="{ path: 'OrderPrositionJSONModel>/MENGE' }"/> <!--Quantità-->
-			<m:ObjectAttribute title="{i18n>PEINH}" text="{ path: 'OrderPrositionJSONModel>/PEINH' }"/> <!--Unità di prezzo-->
+			<m:ObjectAttribute title="{i18n>MENGE}" text="{ path: 'OrderPrositionJSONModel>/MENGE', formatter : '.importFormatter'}"/> <!--Quantità-->
+			<m:ObjectAttribute title="{i18n>PEINH}" text="{ path: 'OrderPrositionJSONModel>/PEINH' }" visible="false"/> <!--Unità di prezzo-->
 		</m:VBox >
 	</layout:HorizontalLayout>
 </core:FragmentDefinition> 

@@ -61,10 +61,7 @@ module.exports = function () {
             }
             if (body.verur !== null && body.verur !== undefined && body.verur.length > 0) {
                 var oVerur = []
-                // eslint-disable-next-line no-redeclare
-                for (var i = 0; i < body.verur.length; i++) {
-                    oVerur.push({ VERUR: body.verur[i] })
-                }
+                oVerur.push({ VERUR: body.verur })
                 verur = oVerur
             }
             if (body.vgbel !== null && body.vgbel !== undefined && body.vgbel.length > 0) {
@@ -154,7 +151,7 @@ module.exports = function () {
                 lifnr = oLifnr
             }
             if (body.ebeln !== null && body.ebeln !== '' && body.ebeln !== undefined) {
-                ebeln.push({ EBELN: body.ebeln })
+                ebeln.push({ EBELN: body.ebeln.trim() })
             }
             if (body.ekorg !== null && body.ekorg !== undefined && body.ekorg.length > 0) {
                 var oEkorg = []
@@ -197,7 +194,7 @@ module.exports = function () {
                                     var trovato = false
                                     for (let i = 0; i < outArr.length; i++) {
                                         var outElem = outArr[i]
-                                        if (outElem.EBELN === element.EBELN && outElem.EBELP === element.EBELP && parseInt(outElem.ETENR) === parseInt(element.ETENR) && outElem.TYPE === element.TYPE) {
+                                        if (outElem.EBELN === element.EBELN && outElem.EBELP === element.EBELP && outElem.ETENR === element.ETENR && outElem.TYPE === element.TYPE) {
                                             trovato = true
                                             break
                                         }
@@ -234,7 +231,7 @@ module.exports = function () {
                                     var trovato = false
                                     for (let i = 0; i < e.length; i++) {
                                         var outElem = e[i]
-                                        if (outElem.EBELN === element.EBELN && outElem.EBELP === element.EBELP && parseInt(outElem.ETENR) === parseInt(element.ETENR) && outElem.TYPE === element.TYPE) {
+                                        if (outElem.EBELN === element.EBELN && outElem.EBELP === element.EBELP && outElem.ETENR === element.ETENR && outElem.TYPE === element.TYPE) {
                                             trovato = true
                                             break
                                         }
@@ -316,6 +313,10 @@ module.exports = function () {
                                         return res.status(200).send({
                                             nInbound: parameters.E_VBELN
                                         })
+                                    } else {
+                                        return res.status(500).send({
+                                            error: 'HANA - Inbound Delivery number not found'
+                                        })
                                     }
                                 }
                             }
@@ -373,6 +374,7 @@ module.exports = function () {
     app.get('/GetHUPDF', function (req, res) {
         var userid = req.user.id
         var exidv = req.query.I_EXIDV
+        var werks = req.query.I_WERKS
 
         console.log('INPUT exidv ==========> ' + JSON.stringify(exidv))
 
@@ -381,9 +383,9 @@ module.exports = function () {
                 return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
             } else {
                 hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.InboundDelivery::MM00_INB_DLV_GET_PRINT', function (_err, sp) {
-                    sp(userid, exidv, (err, parameters, results) => {
+                    sp(userid, exidv, werks, (err, parameters, results) => {
                         if (err) {
-                            console.error('ERROR: ' + err)
+                            console.error('ERROR: ' + stringifyObj(err))
                             return res.status(500).send(stringifyObj(err))
                         } else {
                             if (parameters.STREAM !== undefined) {

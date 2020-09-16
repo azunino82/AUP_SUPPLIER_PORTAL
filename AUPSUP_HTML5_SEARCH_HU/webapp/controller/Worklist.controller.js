@@ -7,9 +7,9 @@ sap.ui.define([
 	"sap/ui/model/Sorter",
 	"sap/ui/core/util/Export",
 	"sap/ui/core/util/ExportTypeCSV",
-	"sap/m/PDFViewer"
-], function (BaseController, JSONModel, MessageBox, MessageToast, Filter, Sorter, Export, ExportTypeCSV,
-	PDFViewer) {
+	"sap/m/PDFViewer",
+	"it/aupsup/searchHU/js/jszip",
+], function (BaseController, JSONModel, MessageBox, MessageToast, Filter, Sorter, Export, ExportTypeCSV, PDFViewer, JSZIP) {
 	"use strict";
 	var that;
 
@@ -63,7 +63,7 @@ sap.ui.define([
 							that.onClick(oID, i + 1);
 					}
 				}
-			}, oTable);			
+			}, oTable);
 
 		},
 
@@ -300,24 +300,45 @@ sap.ui.define([
 
 			var url = "/backend/InboundDeliveryManagement/GetInboundList";
 			var body = that.getModel("filterHUJSONModel").getData();
-			if (body !== undefined && body.dateFrom !== undefined && body.dateFrom !== null) {
-				var year = body.dateFrom.getFullYear();
-				var month = (1 + body.dateFrom.getMonth()).toString();
+
+			var jsonBody = JSON.parse(JSON.stringify(body));
+
+
+			if (body !== undefined && body.lfDateFrom !== undefined && body.lfDateFrom !== null) {
+				var year = body.lfDateFrom.getFullYear();
+				var month = (1 + body.lfDateFrom.getMonth()).toString();
 				month = month.length > 1 ? month : '0' + month;
-				var day = body.dateFrom.getDate().toString();
+				var day = body.lfDateFrom.getDate().toString();
 				day = day.length > 1 ? day : '0' + day;
-				body.dateFrom = year + month + day;
+				jsonBody.lfDateFrom = year + month + day;
 			}
-			if (body !== undefined && body.dateFrom !== undefined && body.dateFrom !== null) {
-				var year = body.dateTo.getFullYear();
-				var month = (1 + body.dateTo.getMonth()).toString();
+			if (body !== undefined && body.lfDateTo !== undefined && body.lfDateTo !== null) {
+				var year = body.lfDateTo.getFullYear();
+				var month = (1 + body.lfDateTo.getMonth()).toString();
 				month = month.length > 1 ? month : '0' + month;
-				var day = body.dateTo.getDate().toString();
+				var day = body.lfDateTo.getDate().toString();
 				day = day.length > 1 ? day : '0' + day;
-				body.dateTo = year + month + day;
+				jsonBody.lfDateTo = year + month + day;
 			}
+			if (body !== undefined && body.waDateFrom !== undefined && body.waDateFrom !== null) {
+				var year = body.waDateFrom.getFullYear();
+				var month = (1 + body.waDateFrom.getMonth()).toString();
+				month = month.length > 1 ? month : '0' + month;
+				var day = body.waDateFrom.getDate().toString();
+				day = day.length > 1 ? day : '0' + day;
+				jsonBody.waDateFrom = year + month + day;
+			}
+			if (body !== undefined && body.waDateTo !== undefined && body.waDateTo !== null) {
+				var year = body.waDateTo.getFullYear();
+				var month = (1 + body.waDateTo.getMonth()).toString();
+				month = month.length > 1 ? month : '0' + month;
+				var day = body.waDateTo.getDate().toString();
+				day = day.length > 1 ? day : '0' + day;
+				jsonBody.waDateTo = year + month + day;
+			}
+
 			this.showBusyDialog();
-			that.ajaxPost(url, body, function (oData) {
+			that.ajaxPost(url, jsonBody, function (oData) {
 				that.hideBusyDialog();
 				if (oData) {
 					var oModel = new JSONModel();
@@ -329,13 +350,63 @@ sap.ui.define([
 
 		},
 
+		onDownloadZip: function (oEvent) {
+
+			var oTable = that.getView().byId("HUHeadersTable");
+			var idx = oTable.indexOfItem(oTable.getSelectedItem());
+			if (idx !== -1) {
+
+				var oItems = oTable.getSelectedItems()
+				var promiseArr = []
+				var zip = new JSZip()
+				this.showBusyDialog();
+				for (var i = 0; i < oItems.length; i++) {
+					var oPositionModel = that.getModel("HUJSONModel").getProperty(oItems[i].getBindingContextPath());
+					promiseArr.push(new Promise(function (resolve, reject) {
+
+						var url = "/backend/InboundDeliveryManagement/GetHUPDF" + "?I_EXIDV=" + oPositionModel.EXIDV + "&I_WERKS=" + oPositionModel.WERKS;
+
+						jQuery.ajax({
+							url: url,
+							method: 'GET',
+							async: false,
+							contentType: 'application/pdf',
+							success: function (data) {
+								zip.file("download_hu_" + oPositionModel.EXIDV + ".pdf", data, { binary: true });
+								resolve()
+							},
+							error: function (e) {
+								reject()
+							}
+						});
+
+					}))
+
+				}
+
+				Promise.all(promiseArr).then(values => {
+					that.hideBusyDialog();
+					zip.generateAsync({ type: "blob" })
+						.then(function (content) {
+							// Force down of the Zip file
+							that.saveAs(content, "download.zip");
+						});
+				});
+
+			} else {
+				MessageBox.error(that.getResourceBundle().getText("ERR_Select_HU"));
+			}
+
+
+		},
+
 		onItemPrintHU: function (oEvent) {
 			var getTabledata = that.getView().getModel("HUJSONModel").getData().results;
 			var itemPosition = oEvent.getSource().getParent().getParent().indexOfItem(oEvent.getSource().getParent());
 			var selctedRowdata = getTabledata[itemPosition];
 			//MessageToast.show("TODO Print " + selctedRowdata.EXIDV); 
 
-			var url = "/backend/InboundDeliveryManagement/GetHUPDF" + "?I_EXIDV=" + selctedRowdata.EXIDV;
+			var url = "/backend/InboundDeliveryManagement/GetHUPDF" + "?I_EXIDV=" + selctedRowdata.EXIDV + "&I_WERKS=" + selctedRowdata.WERKS;
 
 			that._pdfViewer = new PDFViewer();
 			that._pdfViewer.setShowDownloadButton(false);
@@ -347,6 +418,30 @@ sap.ui.define([
 			that._pdfViewer.open();
 			that.onCloseOrderPositions();
 
+		},
+		saveAs: function (blob, filename) {
+			if (typeof navigator.msSaveOrOpenBlob !== 'undefined') {
+				return navigator.msSaveOrOpenBlob(blob, fileName);
+			} else if (typeof navigator.msSaveBlob !== 'undefined') {
+				return navigator.msSaveBlob(blob, fileName);
+			} else {
+				var elem = window.document.createElement('a');
+				elem.href = window.URL.createObjectURL(blob);
+				elem.download = filename;
+				elem.style = 'display:none;opacity:0;color:transparent;';
+				(document.body || document.documentElement).appendChild(elem);
+				if (typeof elem.click === 'function') {
+					elem.click();
+				} else {
+					elem.target = '_blank';
+					elem.dispatchEvent(new MouseEvent('click', {
+						view: window,
+						bubbles: true,
+						cancelable: true
+					}));
+				}
+				URL.revokeObjectURL(elem.href);
+			}
 		},
 		onExport: function (oEvent) {
 

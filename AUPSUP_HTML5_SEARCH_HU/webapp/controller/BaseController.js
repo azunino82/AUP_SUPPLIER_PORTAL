@@ -47,7 +47,7 @@ sap.ui.define([
 		},
 
 		ajaxPost: function (url, body, fCompletion) {
-
+			var _this = this
 			jQuery.ajax({
 				url: url,
 				data: JSON.stringify(body),
@@ -60,10 +60,14 @@ sap.ui.define([
 				},
 				error: function (e) {
 					try {
-						if (e.responseText) {
-							fCompletion(JSON.parse(e.responseText));
-						} else
-							fCompletion();
+						if(e.status === 502 || e.status === 504){
+							fCompletion(_this.getOwnerComponent().getModel("i18n").getResourceBundle().getText("ERR_Server_Timeout"));
+						}else{
+							if (e.responseText) {
+								fCompletion(JSON.parse(e.responseText));
+							} else
+								fCompletion();
+							}
 					} catch (err) {
 						fCompletion({
 							"errLog": e.responseText
@@ -221,7 +225,33 @@ sap.ui.define([
 				}
 			});
 
-		}		
+		},
+
+		importFormatter: function (sValue) {
+			if (sValue !== null && sValue !== undefined) {
+				if (sValue.toString().includes('.000'))
+					return sValue.toString().replace('.000', '')
+				else
+					if (sValue.toString().includes('.00'))
+						return sValue.toString().replace('.00', '')
+					else
+						return sValue.toString().replace('.', ',')
+			}
+		},
+
+		removeZeroBefore: function (sValue) {
+			if (sValue !== undefined) {
+				var n = 0
+				for (var i = 0; i < sValue.length; i++) {
+					if (sValue.charAt(i) !== '0') {
+						n = i
+						break
+					}
+				}
+				return sValue.substring(n, sValue.length);
+			}
+			return sValue
+		},
 
 
 	});

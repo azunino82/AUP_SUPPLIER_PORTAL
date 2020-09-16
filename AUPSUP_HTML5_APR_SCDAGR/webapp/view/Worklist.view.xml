@@ -196,7 +196,7 @@
 											<m:items>
 												<m:ColumnListItem>
 													<m:cells>
-														<m:CheckBox selected="{SchedAgreeJSONModel>isSelected}"/>
+														<m:CheckBox selected="{SchedAgreeJSONModel>isSelected}" enabled="{= ${SchedAgreeJSONModel>CONF_TYPE} === 'PRZ'}"/>
 														<m:Text text="{SchedAgreeJSONModel>EBELN}"/>
 														<m:Text text="{SchedAgreeJSONModel>EBELP}"/>
 														<m:Text text="{SchedAgreeJSONModel>EBTYP}"/>

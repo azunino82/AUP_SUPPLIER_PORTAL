@@ -556,6 +556,7 @@ sap.ui.define([
 					elem.CONF_TYPE = 'A';
 					elem.BSTYP = element.BSTYP; // per piani di consegna
 					elem.COUNTER = element.COUNTER;
+					elem.CREATION_DATE = element.CREATION_DATE;
 					body.confirmType.push(elem);
 				});
 			}
@@ -572,6 +573,7 @@ sap.ui.define([
 					elem.MENGE = that.importFormatter(element.EKES_MENGE);
 					elem.BSTYP = element.BSTYP; // per piani di consegna
 					elem.COUNTER = element.COUNTER;
+					elem.CREATION_DATE = element.CREATION_DATE;
 					body.confirmType.push(elem);
 				});
 			}
@@ -649,6 +651,7 @@ sap.ui.define([
 					elem.CONF_TYPE = confirmationType;
 					elem.BSTYP = element.BSTYP; // per piani di consegna
 					elem.COUNTER = counter++;
+					elem.CREATION_DATE = element.CREATION_DATE;
 					body.confirmType.push(elem);
 				}
 			});
