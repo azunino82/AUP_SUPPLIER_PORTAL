@@ -17,8 +17,10 @@ APIExternalProducer.js
 /mta_archives/
 preview.json
 cp.project.properties.json
-*/node_modules/*
-/node_modules/*
+/AUP_SUPPLIER_PORTAL_appRouter/node_modules/*
+/AUP_SUPPLIER_PORTAL_ui_deployer/node_modules/*
+/AUPSUP_DATABASE/node_modules/*
+/AUPSUP_LAUNCHPAD/node_modules/*
 /AUP_SUPPLIER_PORTAL_ui_deployer/resources/*
 /AUPSUP_HTML5_METASUPPLIER/dist/*
 *.mtar
