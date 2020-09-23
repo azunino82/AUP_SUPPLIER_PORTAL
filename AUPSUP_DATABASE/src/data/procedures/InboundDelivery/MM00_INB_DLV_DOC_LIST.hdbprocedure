@@ -193,7 +193,7 @@ IF (counterRow > 0) THEN
 										0 AS QUANT_SCHED, table2.MEINS as MEINS, table1.EINDT as EINDT, d.LIFNR as LIFNR, d.NAME1 as NAME1, 'C' as TYPE, table1.LIFEXPOS as LIFEXPOS
 									
 										FROM :ET_INB_DLV_EKES as table1
-										INNER JOIN :ET_INB_DLV_EKPO as table2 ON table1.EBELN = table2.EBELN and table2.EBELP = table2.EBELP
+										INNER JOIN :ET_INB_DLV_EKPO as table2 ON table1.EBELN = table2.EBELN and table1.EBELP = table2.EBELP
 										INNER JOIN "AUPSUP_DATABASE.data.tables::T_BU_PLANT" AS c ON table2.WERKS = c.PLANT
 										INNER JOIN :ET_INB_DLV_EKKO AS d ON d.EBELN = table1.EBELN
 										WHERE (table1.EBELN,table1.EBELP,table1.EBTYP) IN (SELECT a.EBELN,a.EBELP,b.CAT_CONF_RIFER_NO_PROGR FROM :ET_INB_DLV_EKPO as a

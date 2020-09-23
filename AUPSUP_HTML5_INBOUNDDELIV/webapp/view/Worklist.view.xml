@@ -79,7 +79,7 @@
 													<core:ListItem key="{PlantsJSONModel>EWERK}" text="{PlantsJSONModel>DESCR}" additionalText="{PlantsJSONModel>EWERK}"/>
 												</m:MultiComboBox>
 											</fb:control>
-										</fb:FilterItem>
+										</fb:FilterItem>										
 										<fb:FilterItem name="RangeDate" label="{i18n>RangeDate}">
 											<fb:control>
 												<m:DateRangeSelection dateValue="{path:'filterInboundDelivJSONModel>/dateFrom'}" valueFormat="YYYYMMdd" displayFormat="dd MMM yyyy"
@@ -126,7 +126,7 @@
 													<m:OverflowToolbar>
 														<m:content>
 															<m:Title text="{i18n>title}" level="H2"/>
-															<m:Title text="{= ${InboundDelJSONModel>/results}.length}" level="H2"/>
+															<!--<m:Title text="{= ${InboundDelJSONModel>/results}.length}" level="H2"/>-->
 															<m:ToolbarSpacer/>
 															<m:Button visible="false" id="headerFilterButton" tooltip="{i18n>clearFilter}" icon="sap-icon://clear-filter" press="onClearFilter"
 																type="Transparent"/>
