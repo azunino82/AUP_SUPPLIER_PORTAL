@@ -29,6 +29,7 @@ sap.ui.define([
 				"matnr": [],
 				"vgbel": [],
 				"exdiv": [],
+				"exdiv2": [],
 				"lfDateFrom": null,
 				"lfDateTo": null,
 				"waDateFrom": null,
@@ -281,6 +282,7 @@ sap.ui.define([
 				that.getModel("filterHUJSONModel").getData().waDateFrom = null;
 				that.getModel("filterHUJSONModel").getData().waDateTo = null;
 				that.getModel("filterHUJSONModel").getData().exdiv = '';
+				that.getModel("filterHUJSONModel").getData().exdiv2 = '';
 				that.getModel("filterHUJSONModel").getData().MatnrDesc = '';
 				that.getModel("filterHUJSONModel").refresh();
 			}
