@@ -34,6 +34,7 @@ module.exports = function () {
             var matnr = []
             var vgbel = []
             var exdiv = []
+            var exdiv2 = []
             var lfDateFrom = ''
             var lfDateTo = ''
             var waDateFrom = ''
@@ -96,13 +97,18 @@ module.exports = function () {
                 }
                 matnr = oMatnr
             }
+            if (body.exdiv2 !== null && body.exdiv2 !== undefined && body.exdiv2.length > 0) {
+                var oExdiv2 = []
+                oExdiv2.push({ EXIDV2: body.exdiv2 })
+                exdiv2 = oExdiv2
+            }
 
             hdbext.createConnection(req.tenantContainer, (err, client) => {
                 if (err) {
                     return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
                 } else {
                     hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.InboundDelivery::MM00_INB_DLV_LIST', function (_err, sp) {
-                        sp(userid, exdiv, lifnr, matnr, vbeln, verur, vgbel, lfDateFrom, lfDateTo, waDateFrom, waDateTo, (err, parameters, results) => {
+                        sp(userid, exdiv, exdiv2, lifnr, matnr, vbeln, verur, vgbel, lfDateFrom, lfDateTo, waDateFrom, waDateTo, (err, parameters, results) => {
                             if (err) {
                                 console.error('ERROR: ' + err)
                                 return res.status(500).send(stringifyObj(err))

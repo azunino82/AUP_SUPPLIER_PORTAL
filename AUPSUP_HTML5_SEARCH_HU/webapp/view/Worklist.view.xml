@@ -63,6 +63,11 @@
 												<m:Input value="{filterHUJSONModel>/exdiv}"/>
 											</fb:control>
 										</fb:FilterItem>
+										<fb:FilterItem name="exdiv2" label="{i18n>EXDIV2}">
+											<fb:control>
+												<m:Input value="{filterHUJSONModel>/exdiv2}"/>
+											</fb:control>
+										</fb:FilterItem>										
 										<fb:FilterItem name="RangeDatelf" label="{i18n>RangeDateLF}">
 											<fb:control>
 												<m:DateRangeSelection dateValue="{path:'filterHUJSONModel>/lfDateFrom'}" valueFormat="YYYYMMdd" displayFormat="dd MMM yyyy"
@@ -113,9 +118,12 @@
 													<m:Column id="SYSID" minScreenWidth="Desktop" demandPopin="true" visible="false">
 														<m:Label text="{i18n>SYSID}" class="columnLabelStyle" wrapping="true"/>
 													</m:Column>
-													<m:Column id="VENUM" minScreenWidth="Desktop" demandPopin="true" visible="{columnVisibilityModel>/VENUM}">
+													<m:Column id="VENUM" minScreenWidth="Desktop" demandPopin="true" visible="false"> <!--"{columnVisibilityModel>/VENUM}">-->
 														<m:Label text="{i18n>VENUM}" class="columnLabelStyle" wrapping="true"/>
 													</m:Column>
+													<m:Column id="EXIDV2" minScreenWidth="Desktop" demandPopin="true" visible="{columnVisibilityModel>/EXIDV2}">
+														<m:Label text="{i18n>EXDIV2}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>													
 													<m:Column id="VEPOS" minScreenWidth="Desktop" demandPopin="true" visible="{columnVisibilityModel>/VEPOS}">
 														<m:Label text="{i18n>VEPOS}" class="columnLabelStyle" wrapping="true"/>
 													</m:Column>
@@ -144,6 +152,7 @@
 														<m:cells>
 															<m:Text text="{HUJSONModel>SYSID}"/>
 															<m:Text text="{path : 'HUJSONModel>VENUM', formatter : '.removeZeroBefore'}"/>
+															<m:Text text="{path : 'HUJSONModel>EXIDV2', formatter : '.removeZeroBefore'}"/>
 															<m:Text text="{HUJSONModel>VEPOS}"/>
 															<m:Text text="{HUJSONModel>VBELN}"/>
 															<m:Text text="{HUJSONModel>POSNR}"/>
