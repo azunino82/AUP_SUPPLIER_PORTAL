@@ -208,9 +208,9 @@
 														<m:Text text="{path : 'SchedAgreeJSONModel>MENGE_ORIGINAL', formatter : '.importFormatter'}"/>
 														<m:Text text="{path : 'SchedAgreeJSONModel>MENGE', formatter : '.importFormatter'}"/>
 														<m:Text text="{path : 'SchedAgreeJSONModel>NETPR_ORIGINAL', formatter : '.importFormatter'}" visible="{= ${SchedAgreeJSONModel>CONF_TYPE} === 'PRZ'}"/>
-														<m:Text text="{path : 'SchedAgreeJSONModel>NETPR', formatter : '.importFormatter'}" visible="{= ${SchedAgreeJSONModel>NETPR_ORIGINAL} !== ${SchedAgreeJSONModel>NETPR}}"/>
-														<m:Text text="{ path: 'SchedAgreeJSONModel>ZINVALIDITA', type: 'it.aupsup.aprvschdagr.type.Date' }" visible="{= ${SchedAgreeJSONModel>NETPR_ORIGINAL} !== ${SchedAgreeJSONModel>NETPR}}"/>
-														<m:Text text="{ path: 'SchedAgreeJSONModel>ZFINVALIDATA', type: 'it.aupsup.aprvschdagr.type.Date' }" visible="{= ${SchedAgreeJSONModel>NETPR_ORIGINAL} !== ${SchedAgreeJSONModel>NETPR}}"/>
+														<m:Text text="{path : 'SchedAgreeJSONModel>NETPR', formatter : '.importFormatter'}" visible="{= ${SchedAgreeJSONModel>NETPR_ORIGINAL} !== ${SchedAgreeJSONModel>NETPR} &amp;&amp; ${SchedAgreeJSONModel>CONF_TYPE} === 'PRZ'}"/>
+														<m:Text text="{ path: 'SchedAgreeJSONModel>ZINVALIDITA', type: 'it.aupsup.aprvschdagr.type.Date' }" visible="{= ${SchedAgreeJSONModel>NETPR_ORIGINAL} !== ${SchedAgreeJSONModel>NETPR} &amp;&amp; ${SchedAgreeJSONModel>CONF_TYPE} === 'PRZ'}"/>
+														<m:Text text="{ path: 'SchedAgreeJSONModel>ZFINVALIDATA', type: 'it.aupsup.aprvschdagr.type.Date' }" visible="{= ${SchedAgreeJSONModel>NETPR_ORIGINAL} !== ${SchedAgreeJSONModel>NETPR} &amp;&amp; ${SchedAgreeJSONModel>CONF_TYPE} === 'PRZ'}"/>
 														<m:Text text="{path : 'SchedAgreeJSONModel>PEINH_ORIGINAL', formatter : '.importFormatter'}" visible="{= ${SchedAgreeJSONModel>CONF_TYPE} === 'PRZ'}"/>
 														<m:Text text="{path : 'SchedAgreeJSONModel>PEINH', formatter : '.importFormatter'}" visible="{= ${SchedAgreeJSONModel>CONF_TYPE} === 'PRZ'}"/>
 														<m:Text text="{SchedAgreeJSONModel>SCHEDMOD}"/>

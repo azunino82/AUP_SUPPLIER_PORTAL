@@ -40,16 +40,16 @@
 												<m:Column id="EINDT" minScreenWidth="Desktop" demandPopin="true">
 													<m:Label text="{i18n>EINDT}" class="columnLabelStyle"/>
 												</m:Column>
-												<m:Column id="LPEIN" minScreenWidth="Desktop" demandPopin="true">
+												<m:Column id="LPEIN" minScreenWidth="Desktop" demandPopin="true" visible="false">
 													<m:Label text="{i18n>LPEIN}" class="columnLabelStyle"/>
 												</m:Column>
 												<m:Column id="MENGE" minScreenWidth="Desktop" demandPopin="true">
 													<m:Label text="{i18n>MENGE_SCH}" class="columnLabelStyle"/>
 												</m:Column>
-												<m:Column id="WEMNG" minScreenWidth="Desktop" demandPopin="true">
+												<m:Column id="WEMNG" minScreenWidth="Desktop" demandPopin="true" visible="false">
 													<m:Label text="{i18n>WEMNG}" class="columnLabelStyle"/>
 												</m:Column>
-												<m:Column id="MNG02" minScreenWidth="Desktop" demandPopin="true">
+												<m:Column id="MNG02" minScreenWidth="Desktop" demandPopin="true" visible="false">
 													<m:Label text="{i18n>MNG02}" class="columnLabelStyle"/>
 												</m:Column>
 											</m:columns>

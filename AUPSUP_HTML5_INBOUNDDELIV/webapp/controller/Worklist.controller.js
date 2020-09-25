@@ -966,7 +966,8 @@ sap.ui.define([
 											"EXIDV2": sDelivery.EXTHUNUMB,
 											"VHILM": sDelivery.IMBALLO,
 											"BRGEW": sDelivery.PESO !== undefined ? parseFloat(sDelivery.PESO) : 0,
-											"BTVOL": sDelivery.VOLUME !== undefined ? parseFloat(sDelivery.VOLUME) : 0
+											"BTVOL": sDelivery.VOLUME !== undefined ? parseFloat(sDelivery.VOLUME) : 0,
+											"INHALT": sDelivery.CONTENT
 										};
 
 										if (gestioneEtichetteModel !== undefined && gestioneEtichetteModel.getData() !== undefined) {

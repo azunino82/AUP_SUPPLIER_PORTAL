@@ -76,9 +76,9 @@ module.exports = function () {
             if (body.exdiv !== null && body.exdiv !== undefined && body.exdiv.length > 0) {
                 var oExdiv = []
                 // eslint-disable-next-line no-redeclare
-                for (var i = 0; i < body.exdiv.length; i++) {
-                    oExdiv.push({ EXIDV: body.exdiv[i] })
-                }
+                // for (var i = 0; i < body.exdiv.length; i++) {
+                    oExdiv.push({ EXIDV: body.exdiv })
+                // }
                 exdiv = oExdiv
             }
             if (body.lifnr != null && body.lifnr !== undefined && body.lifnr !== '') {
