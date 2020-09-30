@@ -31,7 +31,7 @@ module.exports = function () {
             sql = "SELECT * FROM \"AUPSUP_DATABASE.data.tables::T_METASUPPLIER_DATA\" WHERE METAID = \'" + metaID + "\'"
         } else {
             if (metasupplierStatus !== undefined) {
-             sql = 'SELECT * FROM "AUPSUP_DATABASE.data.tables::T_METASUPPLIER_DATA" WHERE ATTIVO = ' + parseInt(metasupplierStatus)
+                sql = 'SELECT * FROM "AUPSUP_DATABASE.data.tables::T_METASUPPLIER_DATA" WHERE ATTIVO = ' + parseInt(metasupplierStatus)
             } else {
                 sql = 'SELECT * FROM "AUPSUP_DATABASE.data.tables::T_METASUPPLIER_DATA"'
             }
@@ -59,10 +59,14 @@ module.exports = function () {
 
                     function response (err, results, callback) {
                         if (err) {
-                            res.type('application/json').status(500).send({ ERROR: err })
+                            res.type('application/json').status(500).send({
+                                ERROR: err
+                            })
                             return
                         } else {
-                            res.type('application/json').status(200).send({ results: results })
+                            res.type('application/json').status(200).send({
+                                results: results
+                            })
                         }
                         callback()
                     }
@@ -100,10 +104,14 @@ module.exports = function () {
 
                     function response (err, results, callback) {
                         if (err) {
-                            res.type('application/json').status(500).send({ ERROR: err })
+                            res.type('application/json').status(500).send({
+                                ERROR: err
+                            })
                             return
                         } else {
-                            res.type('application/json').status(200).send({ results: results })
+                            res.type('application/json').status(200).send({
+                                results: results
+                            })
                         }
                         callback()
                     }
@@ -145,10 +153,71 @@ module.exports = function () {
 
                         function response (err, results, callback) {
                             if (err) {
-                                res.type('application/json').status(500).send({ ERROR: err })
+                                res.type('application/json').status(500).send({
+                                    ERROR: err
+                                })
                                 return
                             } else {
-                                res.type('application/json').status(200).send({ results: results })
+                                res.type('application/json').status(200).send({
+                                    results: results
+                                })
+                            }
+                            callback()
+                        }
+                    ], function done (err, parameters, rows) {
+                        if (err) {
+                            return console.error('Done error', err)
+                        }
+                    })
+                }
+            })
+        } else {
+            return res.status(500).send('I_METAID is Mandatory')
+        }
+    })
+
+    // LISTA dei plant dove è obbligatorio inserire le HU
+
+    app.get('/GetHuMandatoryForMetaId', function (req, res) {
+        var metaID = req.query.I_METAID
+
+        if (metaID !== undefined) {
+            const sql = "SELECT * FROM \"AUPSUP_DATABASE.data.tables::T_MANDATORY_HU_FOR_PLANT\" WHERE METAID = \'" + metaID + "\'"
+
+            hdbext.createConnection(req.tenantContainer, function (error, client) {
+                if (error) {
+                    console.error(error)
+                }
+                if (client) {
+                    async.waterfall([
+
+                        function prepare (callback) {
+                            client.prepare(sql,
+                                function (err, statement) {
+                                    callback(null, err, statement)
+                                })
+                        },
+
+                        function execute (_err, statement, callback) {
+                            statement.exec([], function (execErr, results) {
+                                callback(null, execErr, results)
+                            })
+                        },
+
+                        function response (err, results, callback) {
+                            if (err) {
+                                res.type('application/json').status(500).send({
+                                    ERROR: err
+                                })
+                                return
+                            } else {
+                                var out = []
+                                results.forEach(element => {
+                                    out.push(element.PLANT)
+                                })
+                                res.type('application/json').status(200).send({
+                                    results: out
+                                })
                             }
                             callback()
                         }
@@ -216,10 +285,14 @@ module.exports = function () {
 
                     function response (err, results, callback) {
                         if (err) {
-                            res.type('application/json').status(500).send({ ERROR: err })
+                            res.type('application/json').status(500).send({
+                                ERROR: err
+                            })
                             return
                         } else {
-                            res.type('application/json').status(200).send({ results: results })
+                            res.type('application/json').status(200).send({
+                                results: results
+                            })
                         }
                         callback()
                     }
@@ -259,10 +332,14 @@ module.exports = function () {
 
                     function response (err, results, callback) {
                         if (err) {
-                            res.type('application/json').status(500).send({ ERROR: err })
+                            res.type('application/json').status(500).send({
+                                ERROR: err
+                            })
                             return
                         } else {
-                            res.type('application/json').status(200).send({ results: results })
+                            res.type('application/json').status(200).send({
+                                results: results
+                            })
                         }
                         callback()
                     }
@@ -273,7 +350,7 @@ module.exports = function () {
                 })
             }
         })
-    })    
+    })
 
     // LISTA CONTATTI
 
@@ -303,10 +380,14 @@ module.exports = function () {
 
                     function response (err, results, callback) {
                         if (err) {
-                            res.type('application/json').status(500).send({ ERROR: err })
+                            res.type('application/json').status(500).send({
+                                ERROR: err
+                            })
                             return
                         } else {
-                            res.type('application/json').status(200).send({ results: results })
+                            res.type('application/json').status(200).send({
+                                results: results
+                            })
                         }
                         callback()
                     }
@@ -318,7 +399,7 @@ module.exports = function () {
             }
         })
     })
-        
+
     // Parse URL-encoded bodies (as sent by HTML forms)
     // app.use(express.urlencoded());
 
@@ -328,7 +409,9 @@ module.exports = function () {
     // Create Metasupplier
     app.post('/CreateMetasupplier', function (req, res) {
         const body = req.body
-        console.log({ body_in: JSON.stringify(body) })
+        console.log({
+            body_in: JSON.stringify(body)
+        })
 
         if (body !== undefined && body !== '' && body !== null && body.METAID !== undefined && body.METAID !== '') {
             var sql = 'INSERT INTO "AUPSUP_DATABASE.data.tables::T_METASUPPLIER_DATA" VALUES (?, ?, ?, ?, ?,?, ?, ?, ?, ?)'
@@ -355,37 +438,41 @@ module.exports = function () {
 
                         function response (err, results, callback) {
                             if (err) {
-                                res.type('application/json').status(500).send({ ERROR: err })
+                                res.type('application/json').status(500).send({
+                                    ERROR: err
+                                })
                                 return
                             } else {
                                 // IL MEDAID è STATO CREATO ORA SALVO LE BU se ci sono
                                 var errBU = ''
                                 if (body.BUDATA !== undefined && body.BUDATA !== null && body.BUDATA.METAID !== undefined && body.BUDATA.METAID !== '') {
-                                        sql = 'INSERT INTO "AUPSUP_DATABASE.data.tables::T_METAID_BU" VALUES (?, ?, ?)'
-                                        async.waterfall([
+                                    sql = 'INSERT INTO "AUPSUP_DATABASE.data.tables::T_METAID_BU" VALUES (?, ?, ?)'
+                                    async.waterfall([
 
-                                            function prepare (callback) {
-                                                client.prepare(sql,
-                                                    function (err, statement) {
-                                                        callback(null, err, statement)
-                                                    })
-                                            },
-    
-                                            function execute (_err, statement, callback) {
-                                                statement.exec([body.BUDATA.METAID, body.BUDATA.BU, body.BUDATA.STATO], function (execErr, results) {
-                                                    callback(null, execErr, results)
+                                        function prepare (callback) {
+                                            client.prepare(sql,
+                                                function (err, statement) {
+                                                    callback(null, err, statement)
                                                 })
-                                            },
-    
-                                            function response (err, results, callback) {
-                                                console.error({ erroreBU: err })
-                                                if (err) {
-                                                    errBU = err
-                                                    return
-                                                }
-                                                callback()
+                                        },
+
+                                        function execute (_err, statement, callback) {
+                                            statement.exec([body.BUDATA.METAID, body.BUDATA.BU, body.BUDATA.STATO], function (execErr, results) {
+                                                callback(null, execErr, results)
+                                            })
+                                        },
+
+                                        function response (err, results, callback) {
+                                            console.error({
+                                                erroreBU: err
+                                            })
+                                            if (err) {
+                                                errBU = err
+                                                return
                                             }
-                                        ])
+                                            callback()
+                                        }
+                                    ])
                                 }
 
                                 // AGGANCIO IL METAFORNITORE al FORNITORE SAP
@@ -401,15 +488,17 @@ module.exports = function () {
                                                         callback(null, err, statement)
                                                     })
                                             },
-    
+
                                             function execute (_err, statement, callback) {
                                                 statement.exec([element.METAID, element.LIFNR, element.SYSID], function (execErr, results) {
                                                     callback(null, execErr, results)
                                                 })
                                             },
-    
+
                                             function response (err, results, callback) {
-                                                console.error({ erroreSUPPLIER: err })
+                                                console.error({
+                                                    erroreSUPPLIER: err
+                                                })
                                                 if (err) {
                                                     errSupplier += err
                                                     return
@@ -418,12 +507,16 @@ module.exports = function () {
                                             }
                                         ])
                                     })
-                                }                                
+                                }
 
                                 if (errBU === '' && errSupplier === '') {
-                                    res.type('application/json').status(200).send({ results: results })
+                                    res.type('application/json').status(200).send({
+                                        results: results
+                                    })
                                 } else {
-                                    res.type('application/json').status(500).send({ ERROR: 'BU or SUPPLIER creation error' })
+                                    res.type('application/json').status(500).send({
+                                        ERROR: 'BU or SUPPLIER creation error'
+                                    })
                                 }
                             }
                             callback()
@@ -440,16 +533,16 @@ module.exports = function () {
         }
     })
 
-    // UPDATE METAFORNITORE
-    app.put('/UpdateMetasupplier', function (req, res) {
-        var metaID = req.query.I_METAID
+    // DELETE HU MANDATORY per METAID non presenti nella lista a video
+    app.post('/DeleteHUMandatoryForMetaId', function (req, res) {
         const body = req.body
-        console.log({ body_in: JSON.stringify(body) })
 
-        if (metaID !== undefined) {
+        if (body !== undefined && body.plantToDelete !== undefined && body.plantToDelete.length > 0) {
             // eslint-disable-next-line quotes
-            var sql = "UPDATE \"AUPSUP_DATABASE.data.tables::T_METASUPPLIER_DATA\" SET RAG_SOCIALE = '" + body.RAG_SOCIALE + "', INDIRIZZO = '" + body.INDIRIZZO + "', N_CIVICO = '" + body.N_CIVICO + "' , PAESE = '" + body.PAESE + "', LINGUA = '" + body.LINGUA + "', PIVA = '" + body.PIVA + "', STATO_FORNITORE = '" + body.STATO_FORNITORE + "', ATTIVO = " + parseInt(body.ATTIVO) + ", BU = '" + body.BU + "' WHERE METAID = \'" + metaID + "\'"
-            console.log({ sqlUPDATE: sql })
+            var sql = 'DELETE FROM \"AUPSUP_DATABASE.data.tables::T_MANDATORY_HU_FOR_PLANT\" WHERE PLANT NOT IN ' + body.plantToDelete + ' and METAID = \'' + body.metaid + '\''
+            console.log({
+                sqlUPDATE: sql
+            })
             hdbext.createConnection(req.tenantContainer, function (error, client) {
                 if (error) {
                     console.error(error)
@@ -472,7 +565,175 @@ module.exports = function () {
 
                         function response (err, results, callback) {
                             if (err) {
-                                res.type('application/json').status(500).send({ ERROR: err })
+                                res.type('application/json').status(500).send({
+                                    ERROR: err
+                                })
+                                return
+                            } else {
+                                res.type('application/json').status(200).send()
+                            }
+                            callback()
+                        }
+                    ], function done (err, parameters, rows) {
+                        if (err) {
+                            return console.error('Done error', err)
+                        }
+                    })
+                }
+            })
+        } else {
+            return res.status(500).send('No Plant to delete')
+        }
+    })
+
+    function upserAsynkHUMandatory (metaID, plant, hdbext, req) {
+        return new Promise((resolve, reject) => {
+            var sql = 'UPSERT \"AUPSUP_DATABASE.data.tables::T_MANDATORY_HU_FOR_PLANT\" VALUES (\'' + metaID + '\',\'' + plant + '\') WITH PRIMARY KEY'
+            hdbext.createConnection(req.tenantContainer, function (error, client) {
+                if (error) {
+                    console.error(error)
+                    reject(error)
+                }
+                if (client) {
+                    async.waterfall([
+
+                        function prepare (callback) {
+                            client.prepare(sql,
+                                function (err, statement) {
+                                    callback(null, err, statement)
+                                })
+                        },
+
+                        function execute (_err, statement, callback) {
+                            statement.exec([], function (execErr, results) {
+                                callback(null, execErr, results)
+                            })
+                        },
+
+                        function response (err, results, callback) {
+                            if (err) {
+                                reject(err)
+                            } else {
+                                resolve()
+                            }
+                            callback()
+                        }
+                    ], function done (err, parameters, rows) {
+                        if (err) {
+                            reject(error)
+                        } else {
+                            resolve()
+                        }
+                    })
+                }
+            })
+        })
+    }
+
+    async function sendHU (metaID, plants, hdbext, req) {
+        for (var j = 0; j < plants.length; j++) {
+            await upserAsynkHUMandatory(metaID, plants[j], hdbext, req)
+        }
+    }
+
+    // UPDATE HU MANDATORY per METAID
+    app.post('/UpdateHUMandatoryForMetaId', function (req, res) {
+        var body = req.body
+        var metaID = body.metaid
+        if (body !== undefined && body.plants !== undefined && body.plants.length > 0) {
+            sendHU(metaID, body.plants, hdbext, req)
+                .then((data) => {
+                    res.type('application/json').status(200).send()
+                })
+                .then(() => {
+                    res.type('application/json').status(200).send()
+                })
+        } else {
+            if (body.plants !== undefined) {
+                var sql = 'DELETE FROM "AUPSUP_DATABASE.data.tables::T_MANDATORY_HU_FOR_PLANT" WHERE METAID = \'' + metaID + '\''
+
+                hdbext.createConnection(req.tenantContainer, function (error, client) {
+                    if (error) {
+                        console.error(error)
+                    }
+                    if (client) {
+                        async.waterfall([
+    
+                            function prepare (callback) {
+                                client.prepare(sql,
+                                    function (err, statement) {
+                                        callback(null, err, statement)
+                                    })
+                            },
+    
+                            function execute (_err, statement, callback) {
+                                statement.exec([], function (execErr, results) {
+                                    callback(null, execErr, results)
+                                })
+                            },
+    
+                            function response (err, results, callback) {
+                                if (err) {
+                                    res.type('application/json').status(500).send({
+                                        ERROR: err
+                                    })
+                                } else {
+                                    res.type('application/json').status(200).send()
+                                }
+                                callback()
+                            }
+                        ], function done (err, parameters, rows) {
+                            if (err) {
+                                return console.error('Done error', err)
+                            }
+                        })
+                    }
+                })
+            } else {
+                return res.status(500).send('I_METAID and I_PLANT are Mandatory')
+            }
+        }
+    })
+
+    // UPDATE METAFORNITORE
+    app.put('/UpdateMetasupplier', function (req, res) {
+        var metaID = req.query.I_METAID
+        const body = req.body
+        console.log({
+            body_in: JSON.stringify(body)
+        })
+
+        if (metaID !== undefined) {
+            // eslint-disable-next-line quotes
+            var sql = "UPDATE \"AUPSUP_DATABASE.data.tables::T_METASUPPLIER_DATA\" SET RAG_SOCIALE = '" + body.RAG_SOCIALE + "', INDIRIZZO = '" + body.INDIRIZZO + "', N_CIVICO = '" + body.N_CIVICO + "' , PAESE = '" + body.PAESE + "', LINGUA = '" + body.LINGUA + "', PIVA = '" + body.PIVA + "', STATO_FORNITORE = '" + body.STATO_FORNITORE + "', ATTIVO = " + parseInt(body.ATTIVO) + ", BU = '" + body.BU + "' WHERE METAID = \'" + metaID + "\'"
+            console.log({
+                sqlUPDATE: sql
+            })
+            hdbext.createConnection(req.tenantContainer, function (error, client) {
+                if (error) {
+                    console.error(error)
+                }
+                if (client) {
+                    async.waterfall([
+
+                        function prepare (callback) {
+                            client.prepare(sql,
+                                function (err, statement) {
+                                    callback(null, err, statement)
+                                })
+                        },
+
+                        function execute (_err, statement, callback) {
+                            statement.exec([], function (execErr, results) {
+                                callback(null, execErr, results)
+                            })
+                        },
+
+                        function response (err, results, callback) {
+                            if (err) {
+                                res.type('application/json').status(500).send({
+                                    ERROR: err
+                                })
                                 return
                             } else {
                                 // Cancello il legame METAFORNITORE - FORNITORE SAP
@@ -493,7 +754,9 @@ module.exports = function () {
                                     },
 
                                     function response (err, results, callback) {
-                                        console.error({ erroreSUPPLIER: err })
+                                        console.error({
+                                            erroreSUPPLIER: err
+                                        })
                                         if (err) {
                                             return
                                         } else {
@@ -510,15 +773,17 @@ module.exports = function () {
                                                                         callback(null, err, statement)
                                                                     })
                                                             },
-                    
+
                                                             function execute (_err, statement, callback) {
                                                                 statement.exec([element.METAID, element.LIFNR, element.SYSID], function (execErr, results) {
                                                                     callback(null, execErr, results)
                                                                 })
                                                             },
-                    
+
                                                             function response (err, results, callback) {
-                                                                console.error({ erroreSUPPLIER: err })
+                                                                console.error({
+                                                                    erroreSUPPLIER: err
+                                                                })
                                                                 if (err) {
                                                                     return
                                                                 }
@@ -532,7 +797,9 @@ module.exports = function () {
                                         callback()
                                     }
                                 ])
-                                res.type('application/json').status(200).send({ results: results })
+                                res.type('application/json').status(200).send({
+                                    results: results
+                                })
                             }
                             callback()
                         }
@@ -551,7 +818,9 @@ module.exports = function () {
     // Create Contact
     app.post('/CreateContact', function (req, res) {
         const body = req.body
-        console.log({ body_in: JSON.stringify(body) })
+        console.log({
+            body_in: JSON.stringify(body)
+        })
 
         if (body !== undefined && body !== '' && body !== null && body.METAID !== undefined && body.METAID !== '') {
             var sql = 'INSERT INTO "AUPSUP_DATABASE.data.tables::T_METASUPPLIER_CONTACTS" VALUES (?, ?, ?, ?, ?, ?,?, ?, ?, ?)'
@@ -578,10 +847,14 @@ module.exports = function () {
 
                         function response (err, results, callback) {
                             if (err) {
-                                res.type('application/json').status(500).send({ ERROR: err })
+                                res.type('application/json').status(500).send({
+                                    ERROR: err
+                                })
                                 return
                             } else {
-                                res.type('application/json').status(200).send({ results: results })
+                                res.type('application/json').status(200).send({
+                                    results: results
+                                })
                             }
                             callback()
                         }
@@ -595,66 +868,22 @@ module.exports = function () {
         } else {
             return res.status(500).send('BODY is Mandatory')
         }
-    })    
+    })
 
     // UPDATE METAFORNITORE
     app.put('/UpdateContact', function (req, res) {
         var key = req.query.KEY
         const body = req.body
-        console.log({ body_in: JSON.stringify(body) })
+        console.log({
+            body_in: JSON.stringify(body)
+        })
 
         if (key !== undefined) {
             // eslint-disable-next-line quotes
             var sql = "UPDATE \"AUPSUP_DATABASE.data.tables::T_METASUPPLIER_CONTACTS\" SET TIPOLOGIA = '" + body.TIPOLOGIA + "', MAIL = '" + body.MAIL + "' , TEL = '" + body.TEL + "', TITOLO = '" + body.TITOLO + "', NOME = '" + body.NOME + "', COGNOME = '" + body.COGNOME + "', FAX = '" + body.FAX + "', TEL1 = '" + body.TEL1 + "' WHERE KEY = \'" + key + "\'"
-            console.log({ sqlUPDATE: sql })
-            hdbext.createConnection(req.tenantContainer, function (error, client) {
-                if (error) {
-                    console.error(error)
-                }
-                if (client) {
-                    async.waterfall([
-
-                        function prepare (callback) {   
-                            client.prepare(sql,
-                                function (err, statement) {
-                                    callback(null, err, statement)
-                                })
-                        },
-
-                        function execute (_err, statement, callback) {
-                            statement.exec([], function (execErr, results) {
-                                callback(null, execErr, results)
-                            })
-                        },
-
-                        function response (err, results, callback) {
-                            if (err) {
-                                res.type('application/json').status(500).send({ ERROR: err })
-                            } else {
-                                res.type('application/json').status(200).send({ results: results })
-                            }
-                            callback()
-                        }
-                    ], function done (err, parameters, rows) {
-                        if (err) {
-                            return console.error('Done error', err)
-                        }
-                    })
-                }
+            console.log({
+                sqlUPDATE: sql
             })
-        } else {
-            return res.status(500).send('key is Mandatory')
-        }
-    })    
-
-    // DELETE CONTACT
-    app.get('/DeleteContract', function (req, res) {
-        var key = req.query.KEY
-
-        if (key !== undefined) {
-            // eslint-disable-next-line quotes
-            var sql = "DELETE FROM \"AUPSUP_DATABASE.data.tables::T_METASUPPLIER_CONTACTS\" WHERE KEY = \'" + key + "\'"
-            console.log({ sqlUPDATE: sql })
             hdbext.createConnection(req.tenantContainer, function (error, client) {
                 if (error) {
                     console.error(error)
@@ -677,9 +906,67 @@ module.exports = function () {
 
                         function response (err, results, callback) {
                             if (err) {
-                                res.type('application/json').status(500).send({ ERROR: err })
+                                res.type('application/json').status(500).send({
+                                    ERROR: err
+                                })
                             } else {
-                                res.type('application/json').status(200).send({ results: results })
+                                res.type('application/json').status(200).send({
+                                    results: results
+                                })
+                            }
+                            callback()
+                        }
+                    ], function done (err, parameters, rows) {
+                        if (err) {
+                            return console.error('Done error', err)
+                        }
+                    })
+                }
+            })
+        } else {
+            return res.status(500).send('key is Mandatory')
+        }
+    })
+
+    // DELETE CONTACT
+    app.get('/DeleteContract', function (req, res) {
+        var key = req.query.KEY
+
+        if (key !== undefined) {
+            // eslint-disable-next-line quotes
+            var sql = "DELETE FROM \"AUPSUP_DATABASE.data.tables::T_METASUPPLIER_CONTACTS\" WHERE KEY = \'" + key + "\'"
+            console.log({
+                sqlUPDATE: sql
+            })
+            hdbext.createConnection(req.tenantContainer, function (error, client) {
+                if (error) {
+                    console.error(error)
+                }
+                if (client) {
+                    async.waterfall([
+
+                        function prepare (callback) {
+                            client.prepare(sql,
+                                function (err, statement) {
+                                    callback(null, err, statement)
+                                })
+                        },
+
+                        function execute (_err, statement, callback) {
+                            statement.exec([], function (execErr, results) {
+                                callback(null, execErr, results)
+                            })
+                        },
+
+                        function response (err, results, callback) {
+                            if (err) {
+                                res.type('application/json').status(500).send({
+                                    ERROR: err
+                                })
+                            } else {
+                                res.type('application/json').status(200).send({
+                                    results: results
+                                })
                             }
                             callback()
                         }

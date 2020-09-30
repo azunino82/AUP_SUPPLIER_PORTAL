@@ -290,7 +290,7 @@ module.exports = function () {
   app.post('/SaveTProfiliConferma', function (req, res) {
     const body = req.body
 
-    var sql = 'UPSERT \"AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA\" VALUES (\'' + body.SYSID + '\',\'' + body.PROFILO_CONTROLLO + '\',\'' + body.CAT_CONFERMA + '\',\'' + body.DESCRIZIONE + '\',\'' + body.OWNER + '\',\'' + body.TIPO_CONFERMA + '\',\'' + body.MODIFICA_PREZZO + '\',' + body.PERC_INFERIORE + ',' + body.PERC_SUPERIORE + ',\'' + body.PARZIALE_QUANTITA + '\',' + body.PERC_INFERIORE_QUANT + ',' + body.PERC_SUPERIORE_QUANT + ',\'' + body.MODIFICA_QUANTITA + '\',\'' + body.TIPO_COND_PREZZO + '\',\'' + body.TIPO_CONSEGNA_INB + '\',\'' + body.LOTTO_FORNITORE_INB + '\',\'' + body.DATA_SCADENZA_INB + '\',\'' + body.DATA_PRODUZIONE_INB + '\',\'' + body.NUMERO_SERIALE_INB + '\',\'' + body.CONFERMA_MANDATORY + '\',\'' + body.CONTROLLO_CORSO_APP + '\',' + body.ZAPPPERSUP + ',' + body.ZAPPPERINF + ',' + body.ZAPPGGSUP + ',' + body.ZAPPGGINF + ',\'' + body.NUM_INT_HU + '\',\'' + body.IS_PESO + '\',\'' + body.IS_VOLUME + '\',\'' + body.IS_CONTENT + '\',\'' + body.PACK_MAT_DEFAULT + '\',\'' + body.CAT_CONF_RIFER_NO_PROGR + '\') WITH PRIMARY KEY'
+    var sql = 'UPSERT \"AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA\" VALUES (\'' + body.SYSID + '\',\'' + body.PROFILO_CONTROLLO + '\',\'' + body.CAT_CONFERMA + '\',\'' + body.DESCRIZIONE + '\',\'' + body.OWNER + '\',\'' + body.TIPO_CONFERMA + '\',\'' + body.MODIFICA_PREZZO + '\',' + body.PERC_INFERIORE + ',' + body.PERC_SUPERIORE + ',\'' + body.PARZIALE_QUANTITA + '\',' + body.PERC_INFERIORE_QUANT + ',' + body.PERC_SUPERIORE_QUANT + ',\'' + body.MODIFICA_QUANTITA + '\',\'' + body.TIPO_COND_PREZZO + '\',\'' + body.TIPO_CONSEGNA_INB + '\',\'' + body.LOTTO_FORNITORE_INB + '\',\'' + body.DATA_SCADENZA_INB + '\',\'' + body.DATA_PRODUZIONE_INB + '\',\'' + body.NUMERO_SERIALE_INB + '\',\'' + '\',\'' + body.IS_HU_MANDATORY_INBOUND + '\',\'' + body.CONFERMA_MANDATORY + '\',\'' + body.CONTROLLO_CORSO_APP + '\',' + body.ZAPPPERSUP + ',' + body.ZAPPPERINF + ',' + body.ZAPPGGSUP + ',' + body.ZAPPGGINF + ',\'' + body.NUM_INT_HU + '\',\'' + body.IS_PESO + '\',\'' + body.IS_VOLUME + '\',\'' + body.IS_CONTENT + '\',\'' + body.PACK_MAT_DEFAULT + '\',\'' + body.CAT_CONF_RIFER_NO_PROGR + '\') WITH PRIMARY KEY'
     console.log('sql: ' + sql)
     hdbext.createConnection(req.tenantContainer, function (error, client) {
       if (error) {
@@ -658,7 +658,7 @@ module.exports = function () {
   app.post('/SaveTGestioneEtichette', function (req, res) {
     const body = req.body
 
-    var sql = 'UPSERT \"AUPSUP_DATABASE.data.tables::T_GESTIONE_ETICHETTE\" VALUES (\'' + body.SYSID + '\',\'' + body.PLANT + '\',\'' + body.MATERIALE_IMBALLO + '\',\'' + body.TIPO_MSG_HU + '\',\'' + body.APPLICAZIONE + '\',\'' + body.UDM_PESO + '\',\'' + body.UDM_VOLUME + '\') WITH PRIMARY KEY'
+    var sql = 'UPSERT \"AUPSUP_DATABASE.data.tables::T_GESTIONE_ETICHETTE\" VALUES (\'' + body.SYSID + '\',\'' + body.PLANT + '\',\'' + body.MATERIALE_IMBALLO + '\',\'' + body.TIPO_MSG_HU + '\',\'' + body.APPLICAZIONE + '\',\'' + body.UDM_PESO + '\',\'' + body.UDM_VOLUME + '\',' + body.DEFAULT_PESO + ',' + body.DEFAULT_VOLUME + ') WITH PRIMARY KEY'
     console.log('sql: ' + sql)
     hdbext.createConnection(req.tenantContainer, function (error, client) {
       if (error) {
@@ -746,7 +746,7 @@ module.exports = function () {
       }
     })
   })
-
+  
   app.post('/SaveTTexts', function (req, res) {
     const body = req.body
 
@@ -784,6 +784,52 @@ module.exports = function () {
           }
         ], function done (err, parameters, rows) {
           console.log('---->>> CLIENT END T_TEXS <<<<<-----')
+          client.close()
+          if (err) {
+            return console.error('Done error', err)
+          }
+        })
+      }
+    })
+  })
+
+  app.post('/SaveTHUException', function (req, res) {
+    const body = req.body
+
+    var sql = 'UPSERT \"AUPSUP_DATABASE.data.tables::T_MANDATORY_HU_FOR_PLANT\" VALUES (\'' + body.METAID + '\',\'' + body.PLANT + '\') WITH PRIMARY KEY'
+    console.log('sql: ' + sql)
+    hdbext.createConnection(req.tenantContainer, function (error, client) {
+      if (error) {
+        console.error('ERROR T_MANDATORY_HU_FOR_PLANT :' + stringifyObj(error))
+        return res.status(500).send('T_MANDATORY_HU_FOR_PLANT CONNECTION ERROR: ' + stringifyObj(error))
+      }
+      if (client) {
+        async.waterfall([
+
+          function prepare (callback) {
+            client.prepare(sql,
+              function (err, statement) {
+                callback(null, err, statement)
+              })
+          },
+
+          function execute (_err, statement, callback) {
+            statement.exec([], function (execErr, results) {
+              callback(null, execErr, results)
+            })
+          },
+
+          function response (err, results, callback) {
+            if (err) {
+              res.type('application/json').status(500).send({ ERROR: err })
+              return
+            } else {
+              res.type('application/json').status(200).send({ results: 'OK' })
+            }
+            callback()
+          }
+        ], function done (err, parameters, rows) {
+          console.log('---->>> CLIENT END T_MANDATORY_HU_FOR_PLANT <<<<<-----')
           client.close()
           if (err) {
             return console.error('Done error', err)
@@ -1582,6 +1628,56 @@ module.exports = function () {
           }
         ], function done (err, parameters, rows) {
           console.log('---->>> CLIENT END T_TEXTS <<<<<-----')
+          client.close()
+          if (err) {
+            return console.error('Done error', err)
+          }
+        })
+      }
+    })
+  })
+
+  app.delete('/THUException', function (req, res) {
+    var METAID = req.query.I_METAID !== undefined && req.query.I_METAID !== null && req.query.I_METAID !== '' ? req.query.I_METAID : ''
+    var PLANT = req.query.I_PLANT !== undefined && req.query.I_PLANT !== null && req.query.I_PLANT !== '' ? req.query.I_PLANT : ''
+
+    if (METAID === '' || PLANT === '') {
+      return res.status(500).send('I_METAID and I_PLANT')
+    }
+    const sql = 'DELETE FROM \"AUPSUP_DATABASE.data.tables::T_MANDATORY_HU_FOR_PLANT\" WHERE METAID=\'' + METAID + '\' AND PLANT = \'' + PLANT + '\''
+
+    hdbext.createConnection(req.tenantContainer, function (error, client) {
+      if (error) {
+        console.error('ERROR :' + stringifyObj(error))
+        return res.status(500).send('THUException CONNECTION ERROR: ' + stringifyObj(error))
+      }
+      if (client) {
+        async.waterfall([
+
+          function prepare (callback) {
+            client.prepare(sql,
+              function (err, statement) {
+                callback(null, err, statement)
+              })
+          },
+
+          function execute (_err, statement, callback) {
+            statement.exec([], function (execErr, results) {
+              callback(null, execErr, results)
+            })
+          },
+
+          function response (err, results, callback) {
+            if (err) {
+              res.type('application/json').status(500).send({ ERROR: err })
+              return
+            } else {
+              res.type('application/json').status(200).send({ results: results })
+            }
+            callback()
+          }
+        ], function done (err, parameters, rows) {
+          console.log('---->>> CLIENT END THUException <<<<<-----')
           client.close()
           if (err) {
             return console.error('Done error', err)

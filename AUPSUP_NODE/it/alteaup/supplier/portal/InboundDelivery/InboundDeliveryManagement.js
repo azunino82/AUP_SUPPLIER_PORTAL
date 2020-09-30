@@ -56,20 +56,26 @@ module.exports = function () {
             if (body.vbeln !== null && body.vbeln !== undefined && body.vbeln.length > 0) {
                 var oVbeln = []
                 // for (var i = 0; i < body.vbeln.length; i++) {
-                oVbeln.push({ VBELN: body.vbeln })
+                oVbeln.push({
+                    VBELN: body.vbeln
+                })
                 // }
                 vbeln = oVbeln
             }
             if (body.verur !== null && body.verur !== undefined && body.verur.length > 0) {
                 var oVerur = []
-                oVerur.push({ VERUR: body.verur })
+                oVerur.push({
+                    VERUR: body.verur
+                })
                 verur = oVerur
             }
             if (body.vgbel !== null && body.vgbel !== undefined && body.vgbel.length > 0) {
                 var oVgbel = []
                 // eslint-disable-next-line no-redeclare
                 for (var i = 0; i < body.vgbel.length; i++) {
-                    oVgbel.push({ VGBEL: body.vgbel[i] })
+                    oVgbel.push({
+                        VGBEL: body.vgbel[i]
+                    })
                 }
                 vgbel = oVgbel
             }
@@ -77,7 +83,9 @@ module.exports = function () {
                 var oExdiv = []
                 // eslint-disable-next-line no-redeclare
                 // for (var i = 0; i < body.exdiv.length; i++) {
-                    oExdiv.push({ EXIDV: body.exdiv })
+                oExdiv.push({
+                    EXIDV: body.exdiv
+                })
                 // }
                 exdiv = oExdiv
             }
@@ -85,7 +93,9 @@ module.exports = function () {
                 var oLifnr = []
                 // eslint-disable-next-line no-redeclare
                 for (var i = 0; i < body.lifnr.length; i++) {
-                    oLifnr.push({ LIFNR: body.lifnr[i] })
+                    oLifnr.push({
+                        LIFNR: body.lifnr[i]
+                    })
                 }
                 lifnr = oLifnr
             }
@@ -93,13 +103,17 @@ module.exports = function () {
                 var oMatnr = []
                 // eslint-disable-next-line no-redeclare
                 for (var i = 0; i < body.matnr.length; i++) {
-                    oMatnr.push({ MATNR: body.matnr[i] })
+                    oMatnr.push({
+                        MATNR: body.matnr[i]
+                    })
                 }
                 matnr = oMatnr
             }
             if (body.exdiv2 !== null && body.exdiv2 !== undefined && body.exdiv2.length > 0) {
                 var oExdiv2 = []
-                oExdiv2.push({ EXIDV2: body.exdiv2 })
+                oExdiv2.push({
+                    EXIDV2: body.exdiv2
+                })
                 exdiv2 = oExdiv2
             }
 
@@ -152,18 +166,24 @@ module.exports = function () {
             if (body.lifnr != null && body.lifnr !== undefined && body.lifnr !== '') {
                 var oLifnr = []
                 for (var i = 0; i < body.lifnr.length; i++) {
-                    oLifnr.push({ ELIFN: body.lifnr[i] })
+                    oLifnr.push({
+                        ELIFN: body.lifnr[i]
+                    })
                 }
                 lifnr = oLifnr
             }
             if (body.ebeln !== null && body.ebeln !== '' && body.ebeln !== undefined) {
-                ebeln.push({ EBELN: body.ebeln.trim() })
+                ebeln.push({
+                    EBELN: body.ebeln.trim()
+                })
             }
             if (body.ekorg !== null && body.ekorg !== undefined && body.ekorg.length > 0) {
                 var oEkorg = []
                 // eslint-disable-next-line no-redeclare
                 for (var i = 0; i < body.ekorg.length; i++) {
-                    oEkorg.push({ EKORG: body.ekorg[i] })
+                    oEkorg.push({
+                        EKORG: body.ekorg[i]
+                    })
                 }
                 ekorg = oEkorg
             }
@@ -171,7 +191,9 @@ module.exports = function () {
                 var oMatnr = []
                 // eslint-disable-next-line no-redeclare
                 for (var i = 0; i < body.matnr.length; i++) {
-                    oMatnr.push({ MATNR: body.matnr[i] })
+                    oMatnr.push({
+                        MATNR: body.matnr[i]
+                    })
                 }
                 matnr = oMatnr
             }
@@ -179,7 +201,10 @@ module.exports = function () {
                 var oWerks = []
                 // eslint-disable-next-line no-redeclare
                 for (var i = 0; i < body.werks.length; i++) {
-                    oWerks.push({ EWERK: body.werks[i], DESCR: '' })
+                    oWerks.push({
+                        EWERK: body.werks[i],
+                        DESCR: ''
+                    })
                 }
                 werks = oWerks
             }
@@ -245,10 +270,56 @@ module.exports = function () {
                                     if (!trovato) {
                                         e.push(element)
                                     }
-                                }                                
+                                }
+
+                                outArr = []
+                                for (var i = 0; i < e.length; i++) {
+                                    var object = e[i]
+                                    var arrTrovati = []
+
+                                    var trovato = false
+                                    for (var z = 0; z < outArr.length; z++) {
+                                        if (outArr[z].EBELN === object.EBELN && outArr[z].EBELP === object.EBELP && outArr[z].XBLNR === object.XBLNR) {
+                                            trovato = true
+                                            break
+                                        }
+                                    }
+
+                                    if (trovato) {
+                                        continue
+                                    }
+
+                                    for (var j = 0; j < e.length; j++) {
+                                        var elem = e[j]
+                                        if (elem.EBELN === object.EBELN && elem.EBELP === object.EBELP && elem.XBLNR === object.XBLNR) {
+                                            arrTrovati.push(elem)
+                                        }
+                                    }
+
+                                    if (arrTrovati.length === 1) {
+                                        arrTrovati[0].MENGE = (parseFloat(arrTrovati[0].MENGE) - Math.abs(parseFloat(arrTrovati[0].LFIMG)))
+                                        outArr.push(arrTrovati[0])
+                                    } else {
+                                        arrTrovati[0].MENGE = (parseFloat(arrTrovati[0].MENGE) - Math.abs(parseFloat(arrTrovati[0].LFIMG)))
+                                        outArr.push(arrTrovati[0])
+                                        for (var b = 1; b < arrTrovati.length; b++) {
+                                            if (parseFloat(arrTrovati[b - 1].MENGE) < 0) {
+                                                arrTrovati[b].MENGE = (parseFloat(arrTrovati[b].MENGE) - Math.abs(parseFloat(arrTrovati[b - 1].MENGE)))
+                                            }
+                                            //else {
+                                            //    if (parseFloat(arrTrovati[b - 1].MENGE) === 0) {
+                                            // arrTrovati[b].MENGE = (parseFloat(arrTrovati[b].MENGE) - Math.abs(parseFloat(arrTrovati[b - 1].MENGE)))
+                                            //    } else {
+                                            // arrTrovati[b].MENGE = (parseFloat(arrTrovati[b].MENGE) - Math.abs(parseFloat(arrTrovati[b - 1].MENGE)))
+                                            //    }
+                                            //}
+                                            outArr.push(arrTrovati[b])
+                                        }
+                                    }
+                                }
 
                                 return res.status(200).send({
-                                    results: e
+                                    results: outArr
                                 })
                             }
                         })

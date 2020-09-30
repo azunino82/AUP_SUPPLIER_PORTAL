@@ -988,7 +988,7 @@ sap.ui.define([
 				oIndexs = oIndexs[oIndexs.length - 1];
 				if (mod.MODIFICA_PREZZO !== undefined && mod.MODIFICA_PREZZO !== "") {
 					if ((that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].KONNR === undefined || (that.getView().getModel(
-						"SelectedPositionsJSONModel").getData()[oIndexs].KONNR === "")) || (that.getView().getModel("SelectedPositionsJSONModel").getData()[
+							"SelectedPositionsJSONModel").getData()[oIndexs].KONNR === "")) || (that.getView().getModel("SelectedPositionsJSONModel").getData()[
 							oIndexs].KTPNR === undefined || (that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].KTPNR === "00000")))
 						that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].editPrice = true;
 				}
@@ -1063,6 +1063,80 @@ sap.ui.define([
 				if (needReserarch === true)
 					that.onSearchOrders();
 			}
+		},
+
+		explodeAllSchedulations: function () {
+
+			var posizioni = that.getView().getModel("SelectedPositionsJSONModel").getData()
+			var arrPromise = [];
+
+			for (var i = 0; i < posizioni.length; i++) {
+				var mod = posizioni[i]
+
+				arrPromise.push(new Promise(
+					function (resolve, reject) {
+						// PER LE CONFERME NON PARZIALI POSSO CONFERMARE SOLO LE CONFERME CHE HANNO DELTA QUANTITA > 0
+						if (mod.profiliConferma.length > 1){
+							// se ci sono più profili di conferma da selezionare non faccio l'esplosione massiva di quella posizione
+							resolve()
+						} else {
+							mod.UPDKZ = mod.profiliConferma[0].TIPO_CONFERMA;
+							if (mod.profiliConferma[0] !== undefined && mod.profiliConferma[0].PERC_INFERIORE_QUANT !== undefined &&
+								mod.profiliConferma[0].PERC_INFERIORE_QUANT !== "")
+								mod.QuantPercDOWN = parseInt(mod.profiliConferma[0].PERC_INFERIORE_QUANT);
+							else
+								mod.QuantPercDOWN = "";
+							if (mod.profiliConferma[0] !== undefined && mod.profiliConferma[0].PERC_SUPERIORE_QUANT !== undefined &&
+								mod.profiliConferma[0].PERC_SUPERIORE_QUANT !== "")
+								mod.QuantPercUP = parseInt(mod.profiliConferma[0].PERC_SUPERIORE_QUANT);
+							else
+								mod.QuantPercUP = "";
+							// se il prezzo è già editabile dalla COND_HEADER allora non lo sovrascrivo	
+							if (!mod.editPrice) {
+								if (mod.profiliConferma[0] !== undefined && mod.profiliConferma[0].MODIFICA_PREZZO !== undefined)
+									mod.editPrice = mod.profiliConferma[0].MODIFICA_PREZZO === 'X' ? true : false;
+								mod.KSCHL = mod.profiliConferma[0].TIPO_COND_PREZZO;
+							}
+
+							if (mod.profiliConferma[0] !== undefined && mod.profiliConferma[0].ZAPPPERSUP !== undefined &&
+								mod.profiliConferma[0].ZAPPPERSUP !== "")
+								mod.QuantTollUp = parseInt(mod.profiliConferma[0].ZAPPPERSUP);
+							else
+								mod.QuantTollUp = "";
+							if (mod.profiliConferma[0] !== undefined && mod.profiliConferma[0].ZAPPPERINF !== undefined &&
+								mod.profiliConferma[0].ZAPPPERINF !== "")
+								mod.QuantTollDown = parseInt(mod.profiliConferma[0].ZAPPPERINF);
+							else
+								mod.QuantTollDown = "";
+							if (mod.profiliConferma[0] !== undefined && mod.profiliConferma[0].ZAPPGGSUP !== undefined &&
+								mod.profiliConferma[0].ZAPPGGSUP !== "")
+								mod.ggTollUp = parseInt(mod.profiliConferma[0].ZAPPGGSUP);
+							else
+								mod.ggTollUP = "";
+							if (mod.profiliConferma[0] !== undefined && mod.profiliConferma[0].ZAPPGGINF !== undefined &&
+								mod.profiliConferma[0].ZAPPGGINF !== "")
+								mod.ggTollDown = parseInt(mod.profiliConferma[0].ZAPPGGINF);
+							else
+								mod.ggTollDown = "";
+
+							that.getSchedulationsStatus(mod, mod.profiliConferma[0].CAT_CONFERMA,
+								function (oData) {
+									resolve()
+								});
+						}
+					}));
+			}
+
+			if (arrPromise.length > 0) {
+				that.showBusyDialog();
+			}
+
+			Promise.all(arrPromise).then(function () {
+				that.hideBusyDialog();
+			}, function () {
+				MessageBox.error('some confemes have more than one confirmation profile ');
+				that.hideBusyDialog();
+			});
 		},
 
 		addSchedulations: function (oEvent) {
@@ -1166,7 +1240,7 @@ sap.ui.define([
 					// AGGIUNGO LA RIGA NELLE SCHEDULAZIONI
 
 					// CALCOLO SCHEDULAZIONI COLORATE
-					that.getSchedulationsStatus(mod, selectedProfiloConfermaModel.CAT_CONFERMA);
+					that.getSchedulationsStatus(mod, selectedProfiloConfermaModel.CAT_CONFERMA, null);
 
 				}
 
@@ -1215,101 +1289,8 @@ sap.ui.define([
 				else
 					mod.ggTollDown = "";
 
-				that.getSchedulationsStatus(mod, mod.profiliConferma[0].CAT_CONFERMA);
+				that.getSchedulationsStatus(mod, mod.profiliConferma[0].CAT_CONFERMA, null);
 			}
-
-
-
-
-			/* var arrETENR = [];
-			if (mod.SchedulationsStatus !== undefined) {
-				for (var i = 0; i < mod.SchedulationsStatus.length; i++) {
-					var deltaMenge = (parseFloat(mod.SchedulationsStatus[i].MENGE) - parseFloat(mod.SchedulationsStatus[i].QTA_CONFERMATA));
-					if (deltaMenge > 0) {
-						arrETENR.push({
-							"ETENR": mod.SchedulationsStatus[i].ETENR
-						})
-					}
-				}
-			}
-
-
-			// Controllo per far apparire la PopUp solo per il primo inserimento
-			if (mod.POItemSchedulers.results.length > 0) {
-				for (var i = 0; i < mod.POItemSchedulers.results.length; i++) {
-					var ciclo = false;
-					if (mod.POItemSchedulers.results[i].SYSID === null || mod.POItemSchedulers.results[i].SYSID === undefined) {
-						// var selezionato = selectedItem.getDescription();
-						var schedulation = {
-							"ETENR": '',
-							"ETENRenabled": true,
-							"EINDT": "",
-							"MENGE": "",
-							"ETENRS": arrETENR,
-							"EBTYP": mod.POItemSchedulers.results[i].CAT_CONFERMA,
-						};
-						if (mod !== undefined && mod.POItemSchedulers.results !== undefined) {
-							mod.POItemSchedulers.results.push(schedulation);
-						} else {
-							var oSchedulationsArray = [];
-							oSchedulationsArray.push(schedulation);
-							mod.POItemSchedulers.results = oSchedulationsArray;
-						}
-						ciclo = true
-						that.getModel("SelectedPositionsJSONModel").refresh();
-						break;
-					}
-				}
-				if (ciclo === false) {
-					if (mod.profiliConferma.length > 1)
-						oSelectDialog1.open();
-					else {
-						var schedulation = {
-							"ETENR": '',
-							"ETENRenabled": true,
-							"EINDT": "",
-							"MENGE": "",
-							"ETENRS": arrETENR,
-							"EBTYP": mod.profiliConferma[0].CAT_CONFERMA,
-						};
-						if (mod !== undefined && mod.POItemSchedulers.results !== undefined) {
-							mod.POItemSchedulers.results.push(schedulation);
-						} else {
-							var oSchedulationsArray = [];
-							oSchedulationsArray.push(schedulation);
-							mod.POItemSchedulers.results = oSchedulationsArray;
-						}
-						//that.getSchedulationsStatus(mod, schedulation.EBTYP);
-						that.getModel("SelectedPositionsJSONModel").refresh();
-					}
-
-				}
-			} else {
-				if (mod.profiliConferma.length > 1)
-					oSelectDialog1.open();
-				else {
-					var schedulation = {
-						"ETENR": '',
-						"ETENRenabled": true,
-						"EINDT": "",
-						"MENGE": "",
-						"ETENRS": arrETENR,
-						"EBTYP": mod.profiliConferma[0].CAT_CONFERMA,
-					};
-					if (mod !== undefined && mod.POItemSchedulers.results !== undefined) {
-						mod.POItemSchedulers.results.push(schedulation);
-					} else {
-						var oSchedulationsArray = [];
-						oSchedulationsArray.push(schedulation);
-						mod.POItemSchedulers.results = oSchedulationsArray;
-					}
-					mod.UPDKZ = mod.profiliConferma[0].TIPO_CONFERMA;
-					// CALCOLO SCHEDULAZIONI COLORATE
-					that.getSchedulationsStatus(mod, schedulation.EBTYP);
-					that.getModel("SelectedPositionsJSONModel").refresh();
-				}
-			}
-			*/
 		},
 
 		onDeleteSchedulation: function (oEvent) {
@@ -1341,8 +1322,8 @@ sap.ui.define([
 
 						sommaQuantitaSchedulazioni = sommaQuantitaSchedulazioni + parseInt(model[i].POItemSchedulers.results[j].MENGE);
 						if ((model[i].POItemSchedulers.results[j]) && ((model[i].POItemSchedulers.results[j].EINDT == "") || (model[i].POItemSchedulers
-							.results[
-							j].MENGE == ""))) {
+								.results[
+									j].MENGE == ""))) {
 							err = that.getResourceBundle().getText("ERR_Schedulations_Mandatory");
 							contatoreRighe = contatoreRighe + 1;
 
@@ -1580,7 +1561,7 @@ sap.ui.define([
 										positionComments.EBELP = row.EBELP
 										positionComments.COMMENT = row.POItemSchedulers.results[j].COMMENT
 										positionComments.XBLNR = singleEkesModel.XBLNR
-										positionComments.COUNTER= singleEkesModel.COUNTER
+										positionComments.COUNTER = singleEkesModel.COUNTER
 										body.t_position_comment.push(positionComments)
 
 									}
@@ -1929,8 +1910,8 @@ sap.ui.define([
 					mod.POItemSchedulers.results[j].EINDT = mod.POItemSchedulers.results[j].EINDT.split('-').join('');
 					sommaQuantitaSchedulazioni = sommaQuantitaSchedulazioni + parseFloat(mod.POItemSchedulers.results[j].MENGE);
 					if ((mod.POItemSchedulers.results[j]) && ((mod.POItemSchedulers.results[j].EINDT === "") || (mod.POItemSchedulers
-						.results[
-						j].MENGE === ""))) {
+							.results[
+								j].MENGE === ""))) {
 						err = err + "\n" + that.getResourceBundle().getText("ERR_Schedulations_Mandatory");
 						break;
 					}
@@ -2035,7 +2016,7 @@ sap.ui.define([
 					if (mod.RMOData !== undefined && mod.RMOData.EkkoEkpo !== undefined && mod.RMOData.EkkoEkpo.length > 0) {
 						var EkkoEkpo = mod.RMOData.EkkoEkpo.find(x => x.STATUS === 'RC' && x.UPDKZ === '4' && x.EBELN === mod.EBELN && x.EBELP ===
 							mod
-								.EBELP);
+							.EBELP);
 						if (EkkoEkpo !== undefined)
 							trovato = true;
 					}
@@ -2070,7 +2051,7 @@ sap.ui.define([
 					if (mod.RMOData !== undefined && mod.RMOData.EkkoEkpo !== undefined && mod.RMOData.EkkoEkpo.length > 0) {
 						var EkkoEkpo = mod.RMOData.EkkoEkpo.find(x => x.STATUS === 'RC' && x.UPDKZ === '4' && x.EBELN === mod.EBELN && x.EBELP ===
 							mod
-								.EBELP);
+							.EBELP);
 						if (EkkoEkpo !== undefined)
 							trovato = true;
 					}
@@ -2130,26 +2111,8 @@ sap.ui.define([
 			});
 		},*/
 
-		getSchedulationsStatus: function (mod, ebtyp) {
-			/*var new_ekes = [];
-			mod.POItemSchedulers.results.forEach(function (aData) {
-				// 				// distruggo il binding con il modello altrimenti non funziona la cler dei dati
-				var oPositionModel = {};
-	
-				if (aData.SYSID === undefined && aData.MENGE !== null && aData.MENGE !== "" && aData.EINDT !==
-					null && aData.EINDT !== "") {
-					oPositionModel.EBELN = mod.EBELN;
-					oPositionModel.EBELP = mod.EBELP;
-					oPositionModel.MENGE = aData.MENGE;
-					oPositionModel.EINDT = aData.EINDT;
-					new_ekes.push(oPositionModel);
-				}
-			});
-	
-			if (new_ekes.length > 0) {
-				var body = {
-					"newEkes": new_ekes
-				}; */
+		getSchedulationsStatus: function (mod, ebtyp, fCompletion) {
+
 			var url = "/backend/SchedulingAgreementManagement/GetCalculatedSchedulations?I_EBELN=" +
 				mod.EBELN +
 				"&I_EBELP=" + mod.EBELP + "&I_BSTYP=" + mod.BSTYP + "&I_BSART=" + mod.BSART + "&I_EBTYP=" + ebtyp;
@@ -2211,6 +2174,7 @@ sap.ui.define([
 
 
 				}
+				fCompletion()
 			});
 			//	} 
 		},
@@ -2366,7 +2330,20 @@ sap.ui.define([
 			//	var oModelData = that.getOwnerComponent().getModel("VariantsModel");
 			//	oModelData.metadataLoaded().then(
 			//		that.onMetadataLoaded.bind(that, oModelData));
-			var columModel = { "EBELN": true, "EBELP": true, "LIFNR": true, "NAME1": true, "MATNR": true, "TXZ01": true, "IDNLF": true, "MENGE": true, "MEINS": true, "WAERS": true, "PRIMO_PERIODO": true, "SECONDO_PERIODO": false };
+			var columModel = {
+				"EBELN": true,
+				"EBELP": true,
+				"LIFNR": true,
+				"NAME1": true,
+				"MATNR": true,
+				"TXZ01": true,
+				"IDNLF": true,
+				"MENGE": true,
+				"MEINS": true,
+				"WAERS": true,
+				"PRIMO_PERIODO": true,
+				"SECONDO_PERIODO": false
+			};
 			var oModel = new JSONModel();
 			oModel.setData(columModel);
 			that.getView().setModel(oModel, "columnVisibilityModel");
@@ -2398,7 +2375,7 @@ sap.ui.define([
 			var selectedRowdata = that.getModel("OrderJSONModel").getProperty(oPath);
 
 			var currentSYSID = sap.ui.getCore().getModel("sysIdJSONModel") !== undefined && sap.ui.getCore().getModel(
-				"sysIdJSONModel").getData() !==
+					"sysIdJSONModel").getData() !==
 				undefined ? sap.ui.getCore().getModel("sysIdJSONModel").getData().SYSID : "";
 
 			that.showBusyDialog()
@@ -2460,7 +2437,7 @@ sap.ui.define([
 			var oModel = oComponent.getModel("TextsJSONModel").getData();
 
 			var currentSYSID = sap.ui.getCore().getModel("sysIdJSONModel") !== undefined && sap.ui.getCore().getModel(
-				"sysIdJSONModel").getData() !==
+					"sysIdJSONModel").getData() !==
 				undefined ? sap.ui.getCore().getModel("sysIdJSONModel").getData().SYSID : "";
 
 			var body = {}

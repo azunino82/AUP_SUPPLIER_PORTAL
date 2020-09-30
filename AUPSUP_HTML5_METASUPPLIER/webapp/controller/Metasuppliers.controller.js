@@ -18,6 +18,7 @@ sap.ui.define([
 
 			that.getUserInfo();
 			that.getCurrentSYSID();
+			that.getPlants();
 
 			// gestione delle permissions per il documentale
 			that.getDocumentCustomizingData();
@@ -74,6 +75,41 @@ sap.ui.define([
 				oView.getModel("tableModelMetasuppliers").setProperty("/bindingValue", res); //Save the key value to property
 				that._oResponsivePopover.openBy(oTarget);
 			});
+		},
+
+		getPlants: function () {
+			var url = "/backend/Utils/UtilsManagement/GetUserPlants";
+			that.ajaxGet(url, function (oData) {
+				if (oData) {
+					var oModel = new JSONModel();
+					oModel.setData(oData);
+					var oComponent = that.getOwnerComponent();
+					oComponent.setModel(oModel, "PlantsJSONModel");
+				}
+			});
+		},
+
+		addHuMandatory: function (oEvent) {
+			if (that.getView().getModel("huMandatoryJSONModel") !== undefined && that.getView().getModel("huMandatoryJSONModel").getData() !== undefined &&
+				that.getView().getModel("huMandatoryJSONModel").getData().results !== undefined) {
+				var mod = that.getView().getModel("huMandatoryJSONModel").getData()
+				mod.results.push({
+					"plant": ""
+				})
+			} else {
+				var oModel = new JSONModel();
+				var results = []
+				results.push({
+					"plant": ""
+				})
+				oModel.setData({
+					"results": results
+				});
+				that.getView().setModel(oModel, "huMandatoryJSONModel");
+			}
+			that.getView().getModel("huMandatoryJSONModel").refresh();
+
+
 		},
 
 		onChange: function (oEvent) {
@@ -356,8 +392,26 @@ sap.ui.define([
 					that.getView().addDependent(that.oModMetaSupFragment);
 				}
 				that.getBuyerBu();
+				that.getListMandatoryHUForMetaid();
 				that.oModMetaSupFragment.open();
 			}
+		},
+
+		getListMandatoryHUForMetaid: function () {
+			var url = "/backend/MetasupplierManagement/GetHuMandatoryForMetaId?I_METAID=" + that.getModel("metasupplierData").getData().METAID;
+			that.ajaxGet(url, function (oData) {
+				if (oData && oData.results) {
+					var jsonModel = new sap.ui.model.json.JSONModel();
+					jsonModel.setData(oData);
+					that.getView().setModel(jsonModel, "huMandatoryJSONModel");
+				} else {
+					var jsonModel = new sap.ui.model.json.JSONModel();
+					jsonModel.setData({
+						"results": []
+					});
+					that.getView().setModel(jsonModel, "huMandatoryJSONModel");
+				}
+			});
 		},
 
 		getBuyerBu: function () {
@@ -448,6 +502,7 @@ sap.ui.define([
 				that.oModMetaSupFragment.close();
 				that.oModMetaSupFragment.destroy();
 				that.oModMetaSupFragment = undefined;
+				that.getView().getModel("huMandatoryJSONModel").setData(null)
 			}
 		},
 		onConfirmMod: function (oEvent) {
@@ -507,6 +562,8 @@ sap.ui.define([
 									sap.m.MessageToast.show(that.getOwnerComponent().getModel("i18n").getResourceBundle().getText(
 										"metasupplierModify"));
 
+									that.saveHUMandatoryForMetaId();
+
 									if (that.oModMetaSupFragment) {
 										that.setModel(null, "metasupplierData");
 										that.handleRoutePatternMatched(null);
@@ -562,6 +619,36 @@ sap.ui.define([
 			});
 
 		},
+
+		saveHUMandatoryForMetaId: function () {
+			if (that.getView().getModel("huMandatoryJSONModel") !== undefined) {
+				var mod = that.getView().getModel("huMandatoryJSONModel").getData()
+				if (mod.results !== undefined) {
+					var metaid = that.getModel("metasupplierData").getData().METAID
+					var url = "/backend/MetasupplierManagement/UpdateHUMandatoryForMetaId"
+					var body = {
+						'metaid': metaid,
+						'plants': mod.results
+					}
+
+					that.ajaxPost(url, body, function (oData) {
+						if (mod.results.length > 0) {
+							var array = JSON.stringify(mod.results).replaceAll("\"", "\'")
+							array = array.replaceAll("[", "(")
+							array = array.replaceAll("]", ")")
+							var body = {
+								"metaid": metaid,
+								"plantToDelete": array
+							}
+							var url = "/backend/MetasupplierManagement/DeleteHUMandatoryForMetaId"
+							that.ajaxPost(url, body, function (oData) {});
+						}
+					});
+				}
+
+			}
+		},
+
 		onSelectAll: function (oEvent) {
 
 			var oTable = sap.ui.getCore().byId("idSuppliersTable");
@@ -797,7 +884,7 @@ sap.ui.define([
 
 			var lifnrStorico;
 			if (that.getView().getModel("tableModelSuppliers") !== undefined && that.getView().getModel(
-				"tableModelSuppliers").getData() !== undefined) {
+					"tableModelSuppliers").getData() !== undefined) {
 				lifnrStorico = that.getView().getModel("tableModelSuppliers").getData();
 				if (lifnrStorico && lifnrStorico.results && lifnrStorico.results.length > 0) {
 					var oldArrayLifnr = [];

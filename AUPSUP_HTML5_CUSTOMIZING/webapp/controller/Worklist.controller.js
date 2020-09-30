@@ -24,6 +24,7 @@ sap.ui.define([
     var originalGestioneEtichette = [];
     var originalNotificationContacts = [];
     var originalTexts = [];
+    var originalHuExceptions = [];
 
     return BaseController.extend("it.aupsup.customizing.controller.Worklist", {
         onInit: function () {
@@ -169,7 +170,8 @@ sap.ui.define([
                             elem.IS_VOLUME = elem.IS_VOLUME === "X" ? true : false;
                             elem.PACK_MAT_DEFAULT = elem.PACK_MAT_DEFAULT === "X" ? true : false;
                             elem.IS_CONTENT = elem.IS_CONTENT === "X" ? true : false;
-
+                            elem.IS_HU_MANDATORY_INBOUND = elem.IS_HU_MANDATORY_INBOUND === "X" ? true : false;
+                            
                         });
 
                         oModel.setData(oData);
@@ -341,6 +343,25 @@ sap.ui.define([
 
         },
 
+        getHUException: function (fCompletion) {
+
+            var url = "/backend/CustomizingManagement/GetTableData?I_TABLE=T_MANDATORY_HU_FOR_PLANT";
+            that.ajaxGet(url, function (oData) {
+                if (oData) {
+                    var oModel = new JSONModel();
+                    if (oData.results) {
+                        oModel.setData(oData);
+                        that.getView().setModel(oModel, "HuExceptionsJSONModel");
+                        originalHuExceptions = [];
+                        $.each(that.getView().getModel("HuExceptionsJSONModel").getData().results, function (index, elem) {
+                            var s_elem = JSON.stringify(elem);
+                            originalHuExceptions.push(jQuery.parseJSON(s_elem));
+                        });
+                    }
+                }
+            });
+
+        },
         getGestioneEtichette: function (fCompletion) {
 
             var url = "/backend/CustomizingManagement/GetTableData?I_TABLE=T_GESTIONE_ETICHETTE";
@@ -504,6 +525,7 @@ sap.ui.define([
                 "PACK_MAT_DEFAULT":false,
                 "CAT_CONF_RIFER_NO_PROGR":"",
                 "IS_CONTENT":false,
+                "IS_HU_MANDATORY_INBOUND":false
             });
             that.getView().getModel("ProfiliConfermaJSONModel").refresh();
         },
@@ -632,6 +654,14 @@ sap.ui.define([
             that.getView().getModel("TextsJSONModel").refresh();
         },
 
+        onAssDocumentHuExceptionsRow: function () {
+            that.getView().getModel("HuExceptionsJSONModel").getData().results.push({
+                "METAID": "",
+                "PLANT": ""
+            });
+            that.getView().getModel("HuExceptionsJSONModel").refresh();
+        },
+        
         onSaveBuyerList: function () {
             if (that.getView().getModel("BuyersJSONModel").getData().results) {
                 var promiseArr = []
@@ -742,6 +772,7 @@ sap.ui.define([
                     elem.IS_VOLUME = elem.IS_VOLUME === true ? "X" : "";
                     elem.PACK_MAT_DEFAULT = elem.PACK_MAT_DEFAULT === true ? "X" : "";
                     elem.IS_CONTENT = elem.IS_CONTENT === true ? "X" : "";
+                    elem.IS_HU_MANDATORY_INBOUND = elem.IS_HU_MANDATORY_INBOUND === true ? "X" : "";
 
                     promiseArr.push(new Promise(function (resolve, reject) {
                         that.onSaveProfiliConf(elem, function () {
@@ -871,6 +902,22 @@ sap.ui.define([
             }
         },
 
+
+        onSaveDocumentHuExceptionsList: function () {
+            if (that.getView().getModel("HuExceptionsJSONModel").getData().results) {
+                var promiseArr = []
+                $.each(that.getView().getModel("HuExceptionsJSONModel").getData().results, function (index, elem) {
+                    promiseArr.push(new Promise(function (resolve, reject) {
+                        that.onSaveHUException(elem, function () {
+                            resolve()
+                        })
+                    }))
+                })
+                Promise.all(promiseArr).then(values => {
+                    that.getHUException()
+                });
+            }
+        },
 
         onSaveNotificationMaterList: function () {
             if (that.getView().getModel("NotificationMasterJSONModel").getData().results) {
@@ -1071,6 +1118,15 @@ sap.ui.define([
             })
         },
 
+        onSaveHUException: function (elem, status, fCompletion) {
+            var url = "/backend/CustomizingManagement/SaveTHUException";
+            that.ajaxPost(url, elem, function (oData) {
+                if (oData) {
+                    fCompletion(oData);
+                }
+            })
+        },
+
         deleteBuyer: function (id, bu) {
             var url = "/backend/CustomizingManagement/TBuyers?I_USERID=" + id + "&I_BU=" + bu;
             that.ajaxDelete(url, function (oData) {
@@ -1214,6 +1270,15 @@ sap.ui.define([
             })
         },
 
+        deleteHuExceptions: function (metaid,plant) {
+            var url = "/backend/CustomizingManagement/THUException?I_METAID=" + metaid + "&I_PLANT=" + plant
+            that.ajaxDelete(url, function (oData) {
+                if (oData) {
+                    that.getHUException();
+                }
+            })
+        },
+
         deleteBuyerRow: function (oEvent) {
             var getTabledata = that.getView().getModel("BuyersJSONModel").getData().results;
             var itemPosition = oEvent.getSource().getParent().getParent().indexOfItem(oEvent.getSource().getParent());
@@ -1326,6 +1391,12 @@ sap.ui.define([
             that.deleteTexts(selctedRowdata.SYSID, selctedRowdata.BSTYP, selctedRowdata.TABLE, selctedRowdata.ID);
         },
 
+        deleteDocumentHuExceptionsRow: function (oEvent) {
+            var getTabledata = that.getView().getModel("HuExceptionsJSONModel").getData().results;
+            var itemPosition = oEvent.getSource().getParent().getParent().indexOfItem(oEvent.getSource().getParent());
+            var selctedRowdata = getTabledata[itemPosition];
+            that.deleteHuExceptions(selctedRowdata.METAID,selctedRowdata.PLANT);
+        },
         onTabChange: function (oEvent) {
             var key = oEvent.getParameters().key;
             if (key === "1") {
@@ -1378,7 +1449,10 @@ sap.ui.define([
             }
             if (key === "16") {
                 that.getDocumentManagementTypes();
-            }            
+            }      
+            if (key === "17") {
+                that.getHUException();
+            }                      
         },
 
         showBusyDialog: function () {

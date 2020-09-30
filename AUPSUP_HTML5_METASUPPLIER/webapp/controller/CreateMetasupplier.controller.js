@@ -14,7 +14,34 @@ sap.ui.define([
 			//	that.getOwnerComponent().getRouter().getRoute("RouteCreateMetasuppliers").attachPatternMatched(
 			//		that.handleRoutePatternMatched(),
 			//		this);
-			that.getBuyerBu();
+
+			var jsonModel = new sap.ui.model.json.JSONModel();
+			jsonModel.setData({
+				"results": []
+			});
+			that.getView().setModel(jsonModel, "huMandatoryJSONModel");
+
+			that.getBuyerBu();	
+		},
+
+
+		saveHUMandatoryForMetaId: function (uuid) {
+			if (that.getView().getModel("huMandatoryJSONModel") !== undefined) {
+				var mod = that.getView().getModel("huMandatoryJSONModel").getData()
+				if (mod.results !== undefined && mod.results.length > 0) {
+					var metaid = uuid
+
+					var url = "/backend/MetasupplierManagement/UpdateHUMandatoryForMetaId"
+					var body = {
+						'metaid': metaid,
+						'plants': mod.results
+					}
+
+					that.ajaxPost(url, body, function (oData) {
+
+					});
+				}
+			}
 		},
 
 		handleRoutePatternMatched: function (oEvent) {
@@ -68,9 +95,9 @@ sap.ui.define([
 			// AGGIUNGO I SUPPLIER da AGGANCIARE AL METASUPPLIER
 
 			var currentSYSID = sap.ui.getCore().getModel("sysIdJSONModel") !== undefined && sap.ui.getCore().getModel(
-				"sysIdJSONModel").getData() !==
-			undefined ? sap.ui.getCore().getModel("sysIdJSONModel").getData().SYSID : "";
-			
+					"sysIdJSONModel").getData() !==
+				undefined ? sap.ui.getCore().getModel("sysIdJSONModel").getData().SYSID : "";
+
 			var suppliers = selectedSuppliers.split(",");
 			var ArrSuppliers = [];
 			for (var i = 0; i < suppliers.length - 1; i++) {
@@ -80,7 +107,7 @@ sap.ui.define([
 				data.LIFNR = lifnr;
 				data.SYSID = currentSYSID;
 				ArrSuppliers.push(data);
-			}			
+			}
 			dataMetafornitore.SUPPLIERS = ArrSuppliers;
 
 			var url = "/backend/MetasupplierManagement/CreateMetasupplier";
@@ -93,7 +120,10 @@ sap.ui.define([
 					sap.m.MessageToast.show(that.getOwnerComponent().getModel("i18n").getResourceBundle().getText(
 						"metasupplierCreated"));
 
+					that.saveHUMandatoryForMetaId(uuid);
+
 					setTimeout(function () {
+						that.getView().getModel("huMandatoryJSONModel").setData(null)
 						that.getOwnerComponent().getRouter().navTo("RouteMetasuppliers");
 					}, 1000);
 
@@ -144,9 +174,9 @@ sap.ui.define([
 
 		},
 
-		editSupplier: function () { },
+		editSupplier: function () {},
 
-		deleteSupplier: function () { },
+		deleteSupplier: function () {},
 
 		contactsSupplier: function () {
 

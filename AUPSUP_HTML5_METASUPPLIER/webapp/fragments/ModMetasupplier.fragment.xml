@@ -1,226 +1,219 @@
-<Dialog xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:u="sap.ui.unified" xmlns:core="sap.ui.core" xmlns:fb="sap.ui.comp.filterbar"
-	xmlns:ui="sap.ui.table" xmlns:dnd="sap.ui.core.dnd" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" contentWidth="100%"
-	contentHeight="100%">
-		<Page id="p1" title="{i18n>titleModMetaSup}">
-			<content>
-				<l:VerticalLayout id="containerLayout" width="100%">
-					<VBox class="sapUiSmallMargin">
-						<f:SimpleForm id="SimpleFormChange480_12120Dual" editable="true" layout="ResponsiveGridLayout" title="" labelSpanXL="4" labelSpanL="4"
-							labelSpanM="12" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="0" emptySpanL="0" emptySpanM="0" emptySpanS="0" columnsXL="2"
-							columnsL="2" columnsM="2" singleContainerFullSize="false">
-							<f:content>
-								<core:Title text="{i18n>datiAnagraficiFornitore}"/>
-								<Label text="{i18n>ragSocialeMetafornitore}" labelFor="ragSocialeMetafornitore"/>
-								<Input id="ragSocialeMetafornitore" type="Text" value="{metasupplierData>/RAG_SOCIALE}" class="sapUiSmallMarginBottom" placeholder=""
-									maxLength="30"/>
-								<Label text="{i18n>indirizzo} / {i18n>nCivico}" labelFor="indirizzo"/>
-								<Input id="indirizzo" type="Text" value="{metasupplierData>/INDIRIZZO}" class="sapUiSmallMarginBottom" placeholder="" maxLength="50"/>
-								<!--<Label text="{i18n>nCivico}" labelFor="nCivico"/>-->
-								<Input id="nCivico" type="Text" value="{metasupplierData>/N_CIVICO}" class="sapUiSmallMarginBottom" placeholder="" maxLength="30">
-									<layoutData>
-										<l:GridData span="XL2 L3 M4 S4"/>
-									</layoutData>
-								</Input>
-								<Label text="{i18n>paeseMetafornitore} / {i18n>lingua}" labelFor="paeseMetafornitore"/>
-								<Input id="paeseMetafornitore" type="Text" value="{metasupplierData>/PAESE}" class="sapUiSmallMarginBottom" placeholder="" maxLength="3"/>
-								<!--<Label text="{i18n>lingua}" labelFor="lingua"/>-->
-								<Input id="lingua" type="Text" value="{metasupplierData>/LINGUA}" class="sapUiSmallMarginBottom" placeholder="" maxLength="1">
-									<layoutData>
-										<l:GridData span="XL2 L3 M4 S4"/>
-									</layoutData>
-								</Input>
-								<core:Title text=""/>
-								<Label text="{i18n>pivaMetafornitore}" labelFor="pivaMetafornitore"/>
-								<Input id="pivaMetafornitore" type="Text" value="{metasupplierData>/PIVA}" class="sapUiSmallMarginBottom" placeholder="" maxLength="16"/>
-								<Label text="{i18n>BU}" labelFor="BU"/>
-								<ComboBox id="BU" width="100%" selectedKey="{metasupplierData>/BU}" items="{ path: 'buyerBuJSONModel>/results', sorter: { path: 'DESCR' } }">
-									<core:Item key="{buyerBuJSONModel>CODE}" text="{buyerBuJSONModel>DESCR}"/>
-								</ComboBox>
-								<Label text="{i18n>statoMetafornitore}" labelFor="statoMetafornitore"/>
-								<ComboBox id="statoMetafornitore" value="{metasupplierData>/STATO_FORNITORE}" width="100%">
-									<core:Item key="RE" text="{i18n&gt;registrazione}"/>
-									<core:Item key="AP" text="{i18n&gt;approvato}"/>
-									<core:Item key="OB" text="{i18n&gt;obsoleto}"/>
-								</ComboBox>
-								<CheckBox id="active" text="{i18n>active}" selected="{metasupplierData>/ATTIVO}"/>
-								<Input id="sapSorgente" type="Text" visible="false" class="sapUiSmallMarginBottom"/>
-							</f:content>
-						</f:SimpleForm>
-					</VBox>
-					<VBox class="sapUiSmallMargin">
-						<f:SimpleForm editable="true" layout="ResponsiveGridLayout" title="" labelSpanXL="4" labelSpanL="4" labelSpanM="12" labelSpanS="12"
-							adjustLabelSpan="false" emptySpanXL="0" emptySpanL="0" emptySpanM="0" emptySpanS="0" columnsXL="2" columnsL="2" columnsM="2"
-							singleContainerFullSize="false">
-							<f:content>
-								<core:Title text="{i18n>RicercaFornitore}"/>
-								<Label text="{i18n>supplierName}" labelFor="ragSocialeMetafornitore"/>
-								<Input id="NAME1" type="Text" class="sapUiSmallMarginBottom"/>
-								<Label text="{i18n>iva}" labelFor="indirizzo"/>
-								<Input id="STCEG" type="Text" class="sapUiSmallMarginBottom"/>
-								<core:Title/>
-								<Label text="{i18n>purchaseOrganization}" labelFor="paeseMetafornitore"/>
-								<MultiComboBox id="EKORG" showSecondaryValues="true" items="{ path: 'PurchaseOrganizationJSONModel>/results', sorter: { path: 'PURCH_ORG' } }">
-									<core:ListItem additionalText="{PurchaseOrganizationJSONModel>PURCH_ORG}" key="{PurchaseOrganizationJSONModel>PURCH_ORG}" text="{PurchaseOrganizationJSONModel>DESCR}"/>
-								</MultiComboBox>
-								<Label class="hideLabel" text="."/>
-								<FlexBox width="100%" alignItems="Start" justifyContent="End">
-									<items>
-										<Button text="{i18n>search}" press="onSearchSupplier"/>
-										<Label class="hideLabel" text="."/>
-										<Button text="{i18n>reset}" press="onReset"/>
-									</items>
-								</FlexBox>
-							</f:content>
-						</f:SimpleForm>
-						<!--<fb:FilterBar reset="onReset" search="onSearchSupplier" showRestoreButton="true" showClearButton="true">-->
-						<!--	<fb:filterItems>-->
-						<!--		<fb:FilterItem name="ragioneSociale" id="ragioneSocialeFiltro" label="{i18n>supplierName}" mandatory="false">-->
-						<!--			<fb:control>-->
-						<!--				<Input id="NAME1" type="Text" class="sapUiSmallMarginBottom"/>-->
-						<!--			</fb:control>-->
-						<!--		</fb:FilterItem>-->
-						<!--		<fb:FilterItem name="pivaFornitore" id="pivaFornitoreFiltro" label="{i18n>iva}" mandatory="false">-->
-						<!--			<fb:control>-->
-						<!--				<Input id="STCEG" type="Text" class="sapUiSmallMarginBottom"/>-->
-						<!--			</fb:control>-->
-						<!--		</fb:FilterItem>-->
-						<!--		<fb:FilterItem name="organizzazioneAcquisti" id="organizzazioneAcquistiFiltro" label="{i18n>purchaseOrganization}" mandatory="false">-->
-						<!--			<fb:control>-->
-						<!--				<MultiComboBox id="EKORG" items="{ path: 'PurchaseOrganizationJSONModel>/results', sorter: { path: 'PURCH_ORG' } }">-->
-						<!--					<core:Item key="{PurchaseOrganizationJSONModel>PURCH_ORG}" text="{PurchaseOrganizationJSONModel>DESCR}"/>-->
-						<!--				</MultiComboBox>-->
-						<!--			</fb:control>-->
-						<!--		</fb:FilterItem>-->
-						<!--	</fb:filterItems>-->
-						<!--</fb:FilterBar>-->
-					</VBox>
-				</l:VerticalLayout>
-				<HBox renderType="Bare">
-					<!--<Table id="idTable" inset="false"-->
-					<!--	items="{ path: 'tableModelSuppliers>/results/', filters: {path: 'Rank', operator: 'EQ', value1: '0'} }">-->
-					<!--	<headerToolbar>-->
-					<!--		<Toolbar>-->
-					<!--			<Title text="" level="H2"/>-->
-					<!--			<ToolbarSpacer/>-->
-					<!--		</Toolbar>-->
-					<!--	</headerToolbar>-->
-					<!--	<columns>-->
-					<!--		<Column>-->
-					<!--			<CheckBox select="onSelectAll"/>-->
-					<!--		</Column>-->
-					<!--		<Column width="auto">-->
-					<!--			<Text text="{i18n>Supplier}"/>-->
-					<!--		</Column>-->
-					<!--		<Column width="12em">-->
-					<!--			<Text text="{i18n>ragioneSocialeFornitore}"/>-->
-					<!--		</Column>-->
-					<!--		<Column width="auto">-->
-					<!--			<Text text="{i18n>EKORG}"/>-->
-					<!--		</Column>-->
-					<!--		<Column width="auto">-->
-					<!--			<Text text="{i18n>indirizzo}"/>-->
-					<!--		</Column>-->
-					<!--		<Column width="auto">-->
-					<!--			<Text text="{i18n>pivaFornitore}"/>-->
-					<!--		</Column>-->
-					<!--	</columns>-->
-					<!--	<items>-->
-					<!--		<ColumnListItem>-->
-					<!--			<cells>-->
-					<!--				<CheckBox selected="{tableModelSuppliers>isSelected}"/>-->
-					<!--				<Text text="{tableModelSuppliers>LIFNR}"/>-->
-					<!--				<Text text="{tableModelSuppliers>NAME1}"/>-->
-					<!--				<Text text="{tableModelSuppliers>EKORG}"/>-->
-					<!--				<Text text="{tableModelSuppliers>ORT01}"/>-->
-					<!--				<Text text="{tableModelSuppliers>STCEG}"/>-->
-					<!--			</cells>-->
-					<!--		</ColumnListItem>-->
-					<!--	</items>-->
-					<!--</Table>-->
-					<ui:Table id="idTable" selectionMode="Single"
-						rows="{ path: 'tableModelSuppliers>/results', filters: {path: 'Rank', operator: 'EQ', value1: '0'} }" 
-						visibleRowCount="10">
-	
-						<ui:columns>
-							<ui:Column width="7rem">
-								<Text text="{i18n>Supplier}"/>
-								<ui:template>
-									<Text text="{tableModelSuppliers>LIFNR}"/>
-								</ui:template>
-							</ui:Column>
-							<ui:Column width="9rem">
-								<Text text="{i18n>ragioneSocialeFornitore}"/>
-								<ui:template>
-									<Text text="{tableModelSuppliers>NAME1}"/>
-								</ui:template>
-							</ui:Column>
-							<ui:Column width="6rem">
-								<Text text="{i18n>EKORG}"/>
-								<ui:template>
-									<Text text="{tableModelSuppliers>EKORG}"/>
-								</ui:template>
-							</ui:Column>
-							<ui:Column width="8rem">
-								<Text text="{i18n>indirizzo}"/>
-								<ui:template>
-									<Text text="{tableModelSuppliers>ORT01}"/>
-								</ui:template>
-							</ui:Column>
-							<ui:Column width="8rem">
-								<Text text="{i18n>pivaFornitore}"/>
-								<ui:template>
-									<Text text="{tableModelSuppliers>STCEG}"/>
-								</ui:template>
-							</ui:Column>
-						</ui:columns>
-						<ui:dragDropConfig>
-							<dnd:DragInfo groupName="moveToTable2" sourceAggregation="rows" dragStart="onDragStart"/>
-							<dnd:DropInfo groupName="moveToTable1" drop="onDropTable1"/>
-						</ui:dragDropConfig>
-					</ui:Table>
-					<VBox justifyContent="Center" class="sapUiTinyMarginBeginEnd">
-						<Button class="sapUiTinyMarginBottom" icon="sap-icon://navigation-right-arrow" tooltip="Move to selected" press="moveToTable2"/>
-						<Button icon="sap-icon://navigation-left-arrow" tooltip="Move to available" press="moveToTable1"/>
-					</VBox>
-					<ui:Table id="idTable2" selectionMode="Single"
-						rows="{ path: 'tableModelSuppliers>/results', filters: {path: 'Rank', operator: 'EQ', value1: '1'} }"
-						visibleRowCount="10">
-						<ui:columns>
-							<ui:Column>
-								<Text text="{i18n>Supplier}"/>
-								<ui:template>
-									<Text text="{tableModelSuppliers>LIFNR}" wrapping="false"/>
-								</ui:template>
-							</ui:Column>
-							<ui:Column>
-								<Text text="{i18n>ragioneSocialeFornitore}"/>
-								<ui:template>
-									<Text text="{tableModelSuppliers>NAME1}" wrapping="false"/>
-								</ui:template>
-							</ui:Column>
-							<!--<ui:Column width="6rem">-->
-							<!--	<Text text="{i18n>EKORG}"/>-->
-							<!--	<ui:template>-->
-							<!--		<Text text="{tableModelSuppliers>EKORG}"/>-->
-							<!--	</ui:template>-->
-							<!--</ui:Column>							-->
-						</ui:columns>
-						<ui:dragDropConfig>
-							<dnd:DragInfo groupName="moveToTable1" sourceAggregation="rows" dragStart="onDragStart"/>
-							<dnd:DropInfo groupName="moveToTable2" targetAggregation="rows" dropPosition="Between" drop="onDropTable2"/>
-							<dnd:DragDropInfo sourceAggregation="rows" targetAggregation="rows" dropPosition="Between" dragStart="onDragStart" drop="onDropTable2"/>
-						</ui:dragDropConfig>
-					</ui:Table>
-				</HBox>
-			</content>
-			<footer>
-				<Bar>
-					<contentRight>
-						<Button text="{i18n>Cancel}" press="onCloseMod" type="Reject"/>
-						<Button text="{i18n>Confirm}" type="Accept" press="onConfirmMod"/>
-					</contentRight>
-				</Bar>
-			</footer>
-		</Page>
+<Dialog xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:u="sap.ui.unified" xmlns:core="sap.ui.core" xmlns:fb="sap.ui.comp.filterbar" xmlns:ui="sap.ui.table" xmlns:dnd="sap.ui.core.dnd" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" contentWidth="100%" contentHeight="100%">
+	<Page id="p1" title="{i18n>titleModMetaSup}">
+		<content>
+			<l:VerticalLayout id="containerLayout" width="100%">
+				<VBox class="sapUiSmallMargin">
+					<f:SimpleForm id="SimpleFormChange480_12120Dual" editable="true" layout="ResponsiveGridLayout" title="" labelSpanXL="4" labelSpanL="4" labelSpanM="12" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="0" emptySpanL="0" emptySpanM="0" emptySpanS="0" columnsXL="2" columnsL="2" columnsM="2" singleContainerFullSize="false">
+						<f:content>
+							<core:Title text="{i18n>datiAnagraficiFornitore}" />
+							<Label text="{i18n>ragSocialeMetafornitore}" labelFor="ragSocialeMetafornitore" />
+							<Input id="ragSocialeMetafornitore" type="Text" value="{metasupplierData>/RAG_SOCIALE}" class="sapUiSmallMarginBottom" placeholder="" maxLength="30" />
+							<Label text="{i18n>indirizzo} / {i18n>nCivico}" labelFor="indirizzo" />
+							<Input id="indirizzo" type="Text" value="{metasupplierData>/INDIRIZZO}" class="sapUiSmallMarginBottom" placeholder="" maxLength="50" />
+							<!--<Label text="{i18n>nCivico}" labelFor="nCivico"/>-->
+							<Input id="nCivico" type="Text" value="{metasupplierData>/N_CIVICO}" class="sapUiSmallMarginBottom" placeholder="" maxLength="30">
+								<layoutData>
+									<l:GridData span="XL2 L3 M4 S4" />
+								</layoutData>
+							</Input>
+							<Label text="{i18n>paeseMetafornitore} / {i18n>lingua}" labelFor="paeseMetafornitore" />
+							<Input id="paeseMetafornitore" type="Text" value="{metasupplierData>/PAESE}" class="sapUiSmallMarginBottom" placeholder="" maxLength="3" />
+							<!--<Label text="{i18n>lingua}" labelFor="lingua"/>-->
+							<Input id="lingua" type="Text" value="{metasupplierData>/LINGUA}" class="sapUiSmallMarginBottom" placeholder="" maxLength="1">
+								<layoutData>
+									<l:GridData span="XL2 L3 M4 S4" />
+								</layoutData>
+							</Input>
+							<core:Title text="" />
+							<Label text="{i18n>pivaMetafornitore}" labelFor="pivaMetafornitore" />
+							<Input id="pivaMetafornitore" type="Text" value="{metasupplierData>/PIVA}" class="sapUiSmallMarginBottom" placeholder="" maxLength="16" />
+							<Label text="{i18n>BU}" labelFor="BU" />
+							<ComboBox id="BU" width="100%" selectedKey="{metasupplierData>/BU}" items="{ path: 'buyerBuJSONModel>/results', sorter: { path: 'DESCR' } }">
+								<core:Item key="{buyerBuJSONModel>CODE}" text="{buyerBuJSONModel>DESCR}" />
+							</ComboBox>
+							<Label text="{i18n>statoMetafornitore}" labelFor="statoMetafornitore" />
+							<ComboBox id="statoMetafornitore" value="{metasupplierData>/STATO_FORNITORE}" width="100%">
+								<core:Item key="RE" text="{i18n&gt;registrazione}" />
+								<core:Item key="AP" text="{i18n&gt;approvato}" />
+								<core:Item key="OB" text="{i18n&gt;obsoleto}" />
+							</ComboBox>
+							<CheckBox id="active" text="{i18n>active}" selected="{metasupplierData>/ATTIVO}" />
+							<Input id="sapSorgente" type="Text" visible="false" class="sapUiSmallMarginBottom" />
+							<Label text="{i18n>huObbligatoriaPerPlant}"/>
+							<MultiComboBox selectedKeys="{huMandatoryJSONModel>/results}" items="{ path: 'PlantsJSONModel>/results', sorter: { path: 'EWERK' } }" showSecondaryValues="true">
+								<core:ListItem key="{PlantsJSONModel>EWERK}" text="{PlantsJSONModel>DESCR}" additionalText="{PlantsJSONModel>EWERK}"/>
+							</MultiComboBox>
+						</f:content>
+					</f:SimpleForm>
+				</VBox>
+				<VBox class="sapUiSmallMargin">
+					<f:SimpleForm editable="true" layout="ResponsiveGridLayout" title="" labelSpanXL="4" labelSpanL="4" labelSpanM="12" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="0" emptySpanL="0" emptySpanM="0" emptySpanS="0" columnsXL="2" columnsL="2" columnsM="2" singleContainerFullSize="false">
+						<f:content>
+							<core:Title text="{i18n>RicercaFornitore}" />
+							<Label text="{i18n>supplierName}" labelFor="ragSocialeMetafornitore" />
+							<Input id="NAME1" type="Text" class="sapUiSmallMarginBottom" />
+							<Label text="{i18n>iva}" labelFor="indirizzo" />
+							<Input id="STCEG" type="Text" class="sapUiSmallMarginBottom" />
+							<core:Title />
+							<Label text="{i18n>purchaseOrganization}" labelFor="paeseMetafornitore" />
+							<MultiComboBox id="EKORG" showSecondaryValues="true" items="{ path: 'PurchaseOrganizationJSONModel>/results', sorter: { path: 'PURCH_ORG' } }">
+								<core:ListItem additionalText="{PurchaseOrganizationJSONModel>PURCH_ORG}" key="{PurchaseOrganizationJSONModel>PURCH_ORG}" text="{PurchaseOrganizationJSONModel>DESCR}" />
+							</MultiComboBox>
+							<Label class="hideLabel" text="." />
+							<FlexBox width="100%" alignItems="Start" justifyContent="End">
+								<items>
+									<Button text="{i18n>search}" press="onSearchSupplier" />
+									<Label class="hideLabel" text="." />
+									<Button text="{i18n>reset}" press="onReset" />
+								</items>
+							</FlexBox>
+						</f:content>
+					</f:SimpleForm>
+					<!--<fb:FilterBar reset="onReset" search="onSearchSupplier" showRestoreButton="true" showClearButton="true">-->
+					<!--	<fb:filterItems>-->
+					<!--		<fb:FilterItem name="ragioneSociale" id="ragioneSocialeFiltro" label="{i18n>supplierName}" mandatory="false">-->
+					<!--			<fb:control>-->
+					<!--				<Input id="NAME1" type="Text" class="sapUiSmallMarginBottom"/>-->
+					<!--			</fb:control>-->
+					<!--		</fb:FilterItem>-->
+					<!--		<fb:FilterItem name="pivaFornitore" id="pivaFornitoreFiltro" label="{i18n>iva}" mandatory="false">-->
+					<!--			<fb:control>-->
+					<!--				<Input id="STCEG" type="Text" class="sapUiSmallMarginBottom"/>-->
+					<!--			</fb:control>-->
+					<!--		</fb:FilterItem>-->
+					<!--		<fb:FilterItem name="organizzazioneAcquisti" id="organizzazioneAcquistiFiltro" label="{i18n>purchaseOrganization}" mandatory="false">-->
+					<!--			<fb:control>-->
+					<!--				<MultiComboBox id="EKORG" items="{ path: 'PurchaseOrganizationJSONModel>/results', sorter: { path: 'PURCH_ORG' } }">-->
+					<!--					<core:Item key="{PurchaseOrganizationJSONModel>PURCH_ORG}" text="{PurchaseOrganizationJSONModel>DESCR}"/>-->
+					<!--				</MultiComboBox>-->
+					<!--			</fb:control>-->
+					<!--		</fb:FilterItem>-->
+					<!--	</fb:filterItems>-->
+					<!--</fb:FilterBar>-->
+				</VBox>
+			</l:VerticalLayout>
+			<HBox renderType="Bare">
+				<!--<Table id="idTable" inset="false"-->
+				<!--	items="{ path: 'tableModelSuppliers>/results/', filters: {path: 'Rank', operator: 'EQ', value1: '0'} }">-->
+				<!--	<headerToolbar>-->
+				<!--		<Toolbar>-->
+				<!--			<Title text="" level="H2"/>-->
+				<!--			<ToolbarSpacer/>-->
+				<!--		</Toolbar>-->
+				<!--	</headerToolbar>-->
+				<!--	<columns>-->
+				<!--		<Column>-->
+				<!--			<CheckBox select="onSelectAll"/>-->
+				<!--		</Column>-->
+				<!--		<Column width="auto">-->
+				<!--			<Text text="{i18n>Supplier}"/>-->
+				<!--		</Column>-->
+				<!--		<Column width="12em">-->
+				<!--			<Text text="{i18n>ragioneSocialeFornitore}"/>-->
+				<!--		</Column>-->
+				<!--		<Column width="auto">-->
+				<!--			<Text text="{i18n>EKORG}"/>-->
+				<!--		</Column>-->
+				<!--		<Column width="auto">-->
+				<!--			<Text text="{i18n>indirizzo}"/>-->
+				<!--		</Column>-->
+				<!--		<Column width="auto">-->
+				<!--			<Text text="{i18n>pivaFornitore}"/>-->
+				<!--		</Column>-->
+				<!--	</columns>-->
+				<!--	<items>-->
+				<!--		<ColumnListItem>-->
+				<!--			<cells>-->
+				<!--				<CheckBox selected="{tableModelSuppliers>isSelected}"/>-->
+				<!--				<Text text="{tableModelSuppliers>LIFNR}"/>-->
+				<!--				<Text text="{tableModelSuppliers>NAME1}"/>-->
+				<!--				<Text text="{tableModelSuppliers>EKORG}"/>-->
+				<!--				<Text text="{tableModelSuppliers>ORT01}"/>-->
+				<!--				<Text text="{tableModelSuppliers>STCEG}"/>-->
+				<!--			</cells>-->
+				<!--		</ColumnListItem>-->
+				<!--	</items>-->
+				<!--</Table>-->
+				<ui:Table id="idTable" selectionMode="Single" rows="{ path: 'tableModelSuppliers>/results', filters: {path: 'Rank', operator: 'EQ', value1: '0'} }" visibleRowCount="10">
+
+					<ui:columns>
+						<ui:Column width="7rem">
+							<Text text="{i18n>Supplier}" />
+							<ui:template>
+								<Text text="{tableModelSuppliers>LIFNR}" />
+							</ui:template>
+						</ui:Column>
+						<ui:Column width="9rem">
+							<Text text="{i18n>ragioneSocialeFornitore}" />
+							<ui:template>
+								<Text text="{tableModelSuppliers>NAME1}" />
+							</ui:template>
+						</ui:Column>
+						<ui:Column width="6rem">
+							<Text text="{i18n>EKORG}" />
+							<ui:template>
+								<Text text="{tableModelSuppliers>EKORG}" />
+							</ui:template>
+						</ui:Column>
+						<ui:Column width="8rem">
+							<Text text="{i18n>indirizzo}" />
+							<ui:template>
+								<Text text="{tableModelSuppliers>ORT01}" />
+							</ui:template>
+						</ui:Column>
+						<ui:Column width="8rem">
+							<Text text="{i18n>pivaFornitore}" />
+							<ui:template>
+								<Text text="{tableModelSuppliers>STCEG}" />
+							</ui:template>
+						</ui:Column>
+					</ui:columns>
+					<ui:dragDropConfig>
+						<dnd:DragInfo groupName="moveToTable2" sourceAggregation="rows" dragStart="onDragStart" />
+						<dnd:DropInfo groupName="moveToTable1" drop="onDropTable1" />
+					</ui:dragDropConfig>
+				</ui:Table>
+				<VBox justifyContent="Center" class="sapUiTinyMarginBeginEnd">
+					<Button class="sapUiTinyMarginBottom" icon="sap-icon://navigation-right-arrow" tooltip="Move to selected" press="moveToTable2" />
+					<Button icon="sap-icon://navigation-left-arrow" tooltip="Move to available" press="moveToTable1" />
+				</VBox>
+				<ui:Table id="idTable2" selectionMode="Single" rows="{ path: 'tableModelSuppliers>/results', filters: {path: 'Rank', operator: 'EQ', value1: '1'} }" visibleRowCount="10">
+					<ui:columns>
+						<ui:Column>
+							<Text text="{i18n>Supplier}" />
+							<ui:template>
+								<Text text="{tableModelSuppliers>LIFNR}" wrapping="false" />
+							</ui:template>
+						</ui:Column>
+						<ui:Column>
+							<Text text="{i18n>ragioneSocialeFornitore}" />
+							<ui:template>
+								<Text text="{tableModelSuppliers>NAME1}" wrapping="false" />
+							</ui:template>
+						</ui:Column>
+						<!--<ui:Column width="6rem">-->
+						<!--	<Text text="{i18n>EKORG}"/>-->
+						<!--	<ui:template>-->
+						<!--		<Text text="{tableModelSuppliers>EKORG}"/>-->
+						<!--	</ui:template>-->
+						<!--</ui:Column>							-->
+					</ui:columns>
+					<ui:dragDropConfig>
+						<dnd:DragInfo groupName="moveToTable1" sourceAggregation="rows" dragStart="onDragStart" />
+						<dnd:DropInfo groupName="moveToTable2" targetAggregation="rows" dropPosition="Between" drop="onDropTable2" />
+						<dnd:DragDropInfo sourceAggregation="rows" targetAggregation="rows" dropPosition="Between" dragStart="onDragStart" drop="onDropTable2" />
+					</ui:dragDropConfig>
+				</ui:Table>
+			</HBox>
+		</content>
+		<footer>
+			<Bar>
+				<contentRight>
+					<Button text="{i18n>Cancel}" press="onCloseMod" type="Reject" />
+					<Button text="{i18n>Confirm}" type="Accept" press="onConfirmMod" />
+				</contentRight>
+			</Bar>
+		</footer>
+	</Page>
 
 </Dialog>

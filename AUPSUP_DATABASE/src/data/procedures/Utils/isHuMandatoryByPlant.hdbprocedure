@@ -1,0 +1,76 @@
+PROCEDURE "AUPSUP_DATABASE.data.procedures.Utils::isHuMandatoryByPlant"( 
+	IN userid NVARCHAR(250),
+	IN plant NVARCHAR(4),
+	IN BSTAE NVARCHAR(4), 
+	IN UPDKZ NVARCHAR(1),
+	IN LIFNR NVARCHAR(10),
+	OUT IS_MANDATORY NVARCHAR(1)
+	) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	READS SQL DATA AS
+BEGIN
+
+DECLARE metaid VARCHAR(50);
+DECLARE isMandatory NVARCHAR(1);
+DECLARE counter INTEGER;
+DECLARE IT_WERKS TABLE (EWERK NVARCHAR(4),DESCR NVARCHAR(255));
+DECLARE LIST_METAID TABLE (METAID NVARCHAR(50));
+
+	IS_MANDATORY := 'X';
+	IF userid <> '' THEN
+		SELECT COUNT(*) INTO counter FROM "AUPSUP_DATABASE.data.tables::T_USERID_METAID" WHERE USERID = :userid;
+		IF counter > 0 THEN
+			SELECT METAID INTO metaid FROM "AUPSUP_DATABASE.data.tables::T_USERID_METAID" WHERE USERID = :userid;
+			IF metaid <> '' THEN
+
+				SELECT IS_HU_MANDATORY_INBOUND INTO isMandatory FROM "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" WHERE PROFILO_CONTROLLO = :BSTAE AND TIPO_CONFERMA = :UPDKZ;
+				IF isMandatory = 'X' THEN
+					SELECT count(*) INTO counter FROM "AUPSUP_DATABASE.data.tables::T_MANDATORY_HU_FOR_PLANT" WHERE PLANT = :plant and METAID = :metaid;
+					IF counter > 0 THEN
+						IS_MANDATORY := 'X';
+					ELSE
+						IS_MANDATORY := '';
+					END IF;
+				ELSE
+					SELECT count(*) INTO counter FROM "AUPSUP_DATABASE.data.tables::T_MANDATORY_HU_FOR_PLANT" WHERE PLANT = :plant and METAID = :metaid;
+						IF counter > 0 THEN
+							IS_MANDATORY := '';
+						ELSE
+							IS_MANDATORY := 'X';
+						END IF;
+				END IF;
+			END IF;
+		ELSE
+		-- sono il buyer prendo il fornitore e cerco il plant assegnato al fornitore
+
+			IF LIFNR <> '' THEN
+				LIST_METAID = SELECT a.METAID FROM "AUPSUP_DATABASE.data.tables::T_METAID_FORN" as a INNER JOIN "AUPSUP_DATABASE.data.tables::T_METASUPPLIER_DATA" as b
+					ON a.METAID = b.METAID WHERE a.LIFNR = :LIFNR and b.ATTIVO = 1;
+						
+				SELECT count(*) into counter FROM :LIST_METAID;
+				IF counter > 0 THEN
+					SELECT IS_HU_MANDATORY_INBOUND INTO isMandatory FROM "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" WHERE PROFILO_CONTROLLO = :BSTAE AND TIPO_CONFERMA = :UPDKZ;			
+					IF isMandatory = 'X' THEN
+						SELECT count(*) INTO counter FROM "AUPSUP_DATABASE.data.tables::T_MANDATORY_HU_FOR_PLANT" WHERE PLANT = :plant and METAID IN (SELECT METAID FROM :LIST_METAID);
+						IF counter > 0 THEN
+							IS_MANDATORY := '';
+						ELSE
+							IS_MANDATORY := 'X';
+						END IF;
+					ELSE
+						SELECT count(*) INTO counter FROM "AUPSUP_DATABASE.data.tables::T_MANDATORY_HU_FOR_PLANT" WHERE PLANT = :plant and METAID IN (SELECT METAID FROM :LIST_METAID);
+							IF counter > 0 THEN
+								IS_MANDATORY := 'X';
+							ELSE
+								IS_MANDATORY := '';
+							END IF;
+					END IF;
+				END IF;
+			ELSE
+				SELECT IS_HU_MANDATORY_INBOUND INTO isMandatory FROM "AUPSUP_DATABASE.data.tables::T_PROFILI_CONFERMA" WHERE PROFILO_CONTROLLO = :BSTAE AND TIPO_CONFERMA = :UPDKZ;			
+			END IF;
+
+		END IF;
+	END IF;
+END;

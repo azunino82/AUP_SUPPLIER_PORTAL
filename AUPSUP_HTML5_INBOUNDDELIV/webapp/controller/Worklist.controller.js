@@ -627,6 +627,7 @@ sap.ui.define([
 			var oItems = oTable.getSelectedItems();
 			var oNotEditPositions = ""; //Elenco delle posizione per le quali è inibita la modifica
 			var countNotEditPositions = 0;
+			var promiseArr = []
 			for (var i = 0; i < oItems.length; i++) {
 				var oRow = that.getModel("InboundDelJSONModel").getProperty(oItems[i].getBindingContextPath());
 				var oPositionModel = JSON.parse(JSON.stringify(oRow));
@@ -636,21 +637,36 @@ sap.ui.define([
 						trovato = true;
 					}
 				});
-				if (!trovato)
-					selectedContextBinding.push(oPositionModel);
+				if (!trovato) {
+					promiseArr.push(new Promise(function (resolve, reject) {
+						var url = "/backend/Utils/UtilsManagement/isHuMandatory?I_BSTAE=" + oPositionModel.BSTAE + "&I_PLANT=" + oPositionModel.WERKS + "&I_UPDKZ=2&I_LIFNR=" + oPositionModel.LIFNR
+						that.ajaxGet(url, function (oData) {
+							if (oData) {
+								oPositionModel.isHuMandatory = oData.isMandatory !== undefined && oData.isMandatory === 'X' ? true : false
+							}
+							selectedContextBinding.push(oPositionModel)
+							resolve()
+						});
+					}))
+				}
+
 			}
 
-			var oModelSelectedPos = new JSONModel();
-			oModelSelectedPos.setData(selectedContextBinding);
-			this.getView().setModel(oModelSelectedPos,
-				"SelectedPositionsJSONModel");
+			Promise.all(promiseArr).then(values => {
+				var oModelSelectedPos = new JSONModel();
+				oModelSelectedPos.setData(selectedContextBinding);
+				this.getView().setModel(oModelSelectedPos,
+					"SelectedPositionsJSONModel");
 
-			if (!that.oConfirmPositionsFragment) {
-				that.oConfirmPositionsFragment = sap.ui.xmlfragment("it.aupsup.inboundDelivery.fragments.ConfirmPositions", this);
-				that.getView().addDependent(that.oConfirmPositionsFragment);
-			}
+				if (!that.oConfirmPositionsFragment) {
+					that.oConfirmPositionsFragment = sap.ui.xmlfragment("it.aupsup.inboundDelivery.fragments.ConfirmPositions", this);
+					that.getView().addDependent(that.oConfirmPositionsFragment);
+				}
 
-			that.oConfirmPositionsFragment.open();
+				that.oConfirmPositionsFragment.open();
+			});
+
+
 
 		},
 
@@ -696,11 +712,15 @@ sap.ui.define([
 				var gestioneEtichetteModel = that.getView().getModel("gestioneEtichetteJSONModel");
 				var udmPeso = ""
 				var udmVolume = ""
+				var defaultPeso = ""
+				var defaultVolume = ""
 				if (gestioneEtichetteModel !== undefined && gestioneEtichetteModel.getData() !== undefined) {
 					var selectedEtichetta = gestioneEtichetteModel.getData().find(x => x.PLANT === mod.WERKS);
 					if (selectedEtichetta !== undefined) {
 						udmPeso = selectedEtichetta.UDM_PESO
 						udmVolume = selectedEtichetta.UDM_VOLUME
+						defaultPeso = selectedEtichetta.DEFAULT_PESO
+						defaultVolume = selectedEtichetta.DEFAULT_VOLUME
 					}
 				}
 
@@ -720,6 +740,8 @@ sap.ui.define([
 						"QUANT": mod.QuantitaCollo,
 						"UDM_PESO": udmPeso,
 						"UDM_VOLUME": udmVolume,
+						"PESO": defaultPeso,
+						"VOLUME": defaultVolume,
 						"LOTTO": "",
 						"SCADENZA": null,
 						"editLotto": enabledLotto,
@@ -762,7 +784,7 @@ sap.ui.define([
 			for (var i = 0; i < model.length; i++) {
 
 				//	var sommaQuantitaSchedulazioni = 0;
-				if (model[i].Deliveries !== undefined && model[i].Deliveries.results) {
+				if (model[i].Deliveries !== undefined && model[i].Deliveries.results !== undefined && model[i].Deliveries.results.length > 0) {
 					var sumMenge = 0
 					for (var j = 0; j < model[i].Deliveries.results.length; j++) {
 						var mod = model[i].Deliveries.results[j]
@@ -779,8 +801,10 @@ sap.ui.define([
 								err = that.getResourceBundle().getText("ERR_Deliveries_Mandatory", [model[i].EBELN + " - " + model[i].EBELP]);
 								break;
 							}*/
+
+						// controllo obbligatorietà inserimento hu
 						if (model[i].Deliveries.results[j] && model[i].Deliveries.results[j].editQuant === true && model[i].Deliveries.results[j].QUANT === "") {
-							err = that.getResourceBundle().getText("ERR_Deliveries_Mandatory", [model[i].EBELN + " - " + model[i].EBELP]);
+							err = that.getResourceBundle().getText("ERR_Deliveries_Mandatory_Quant", [model[i].EBELN + " - " + model[i].EBELP]);
 							break;
 						}
 						if (model[i].Deliveries.results[j] && model[i].Deliveries.results[j].editImballo === true && (model[i].Deliveries.results[j].IMBALLO === undefined || model[i].Deliveries.results[j].IMBALLO === "")) {
@@ -814,13 +838,44 @@ sap.ui.define([
 					var profiloSelezionato = that.getCurrentProfiloConsegna(model[i].BSTAE);
 					var perc = (Math.abs(sumMenge) / parseFloat(model[i].MENGE)) * 100
 
-					if (perc > profiloSelezionato.PERC_SUPERIORE_QUANT && profiloSelezionato.PERC_SUPERIORE_QUANT !== 0) {
-						err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Up_Single");
-						err = err + "\n" + ordine;
-					}
-					if (perc < profiloSelezionato.PERC_INFERIORE_QUANT && profiloSelezionato.PERC_INFERIORE_QUANT !== 0) {
-						err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Down_Single");
-						err = err + "\n" + ordine;
+					if (parseInt(profiloSelezionato.PERC_SUPERIORE_QUANT) > 0 && parseInt(profiloSelezionato.PERC_INFERIORE_QUANT) > 0) {
+						if (perc >= 0) {
+							if (perc < parseInt(profiloSelezionato.PERC_SUPERIORE_QUANT)) {
+								// la percentuale di quantità è all'interno dei limiti
+							} else {
+								err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Down_Single");
+								err = err + "\n" + ordine;
+							}
+						} else {
+							if (perc < 0) {
+								if (perc > parseInt(profiloSelezionato.PERC_INFERIORE_QUANT)) {
+									// la percentuale di quantità è all'interno dei limiti
+								} else {
+									err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Up_Single");
+									err = err + "\n" + ordine;
+								}
+							}
+						}
+					} else {
+						if (parseInt(profiloSelezionato.PERC_SUPERIORE_QUANT) === 0 && perc === 100 && parseInt(profiloSelezionato.PERC_INFERIORE_QUANT) === 0) {
+
+						} else {
+							if (perc >= 100) {
+								if (perc < parseInt(profiloSelezionato.PERC_SUPERIORE_QUANT)) {
+									// la percentuale di quantità è all'interno dei limiti
+								} else {
+									err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Up_Single");
+									err = err + "\n" + ordine;
+								}
+							} else {
+								if (perc < 100) {
+									if (perc > parseInt(profiloSelezionato.PERC_INFERIORE_QUANT)) {
+										err = err + "\n" + that.getResourceBundle().getText("ERR_Quant_Perc_Down_Single");
+										err = err + "\n" + ordine;
+									}
+								}
+							}
+						}
 					}
 
 					if (err !== '') {
@@ -832,8 +887,10 @@ sap.ui.define([
 						break;
 					}
 				} else {
-					err = that.getResourceBundle().getText("ERR_Empty_Deliveries", [model[i].EBELN + " - " + model[i].EBELP]);
-					break;
+					if (model[i].isHuMandatory) {
+						err = that.getResourceBundle().getText("ERR_Deliveries_Mandatory", [model[i].EBELN + " - " + model[i].EBELP]);
+						break;
+					}
 				}
 
 			}
@@ -891,7 +948,7 @@ sap.ui.define([
 							"it_hu_detail": [],
 							"it_hu_header": [],
 							"it_item": [],
-							"it_serial_no": [ /*passare vuota per ama*/]
+							"it_serial_no": [ /*passare vuota per ama*/ ]
 						};
 
 						var model = that.getModel("SelectedPositionsJSONModel").getData();
@@ -923,7 +980,7 @@ sap.ui.define([
 										var quantTrovato = 0;
 										if (currentItemsList !== undefined && currentItemsList.length > 0) {
 											$.each(currentItemsList, function (index, sItem) {
-												if (sItem.VGBEL === item.EBELN && sItem.VGPOS === item.EBELP && sItem.ETENR === item.ETENR && sItem.LIFEXPOS === item.ETENR &&
+												if (sItem.VGBEL === item.EBELN && sItem.VGPOS === item.EBELP && sItem.ETENR === item.ETENR && sItem.LIFEXPOS === item.XBLNR &&
 													sItem.MATNR === item.MATNR && sItem.VFDAT === sDelivery.SCADENZA && sItem.LICHN === sDelivery.LOTTO) {
 													trovato = true;
 													sItem.LFIMG = parseFloat(sItem.LFIMG) + parseFloat(sDelivery.QUANT);
@@ -943,7 +1000,7 @@ sap.ui.define([
 												"LICHN": sDelivery.LOTTO,
 												"VFDAT": sDelivery.SCADENZA,
 												"HSDAT": "",
-												"LIFEXPOS": item.ETENR,
+												"LIFEXPOS": item.XBLNR,
 												"ETENR": item.ETENR
 											};
 											body.it_item.push(deliveryItem);
@@ -979,43 +1036,24 @@ sap.ui.define([
 										body.it_hu_header.push(elem_it_hu_header);
 
 									});
+								} else {
+									posNumber = posNumber + 10;
+									var deliveryItem = {
+										"RFPOS": posNumber,
+										"VGBEL": item.EBELN,
+										"VGPOS": item.EBELP,
+										"WERKS": item.WERKS,
+										"MATNR": item.MATNR,
+										"LFIMG": parseFloat(item.MENGE),
+										"VRKME": item.MEINS,
+										"LICHN": '',
+										"VFDAT": '',
+										"HSDAT": '',
+										"LIFEXPOS": item.XBLNR,
+										"ETENR": item.ETENR
+									};
+									body.it_item.push(deliveryItem);
 								}
-
-								// preparazione it_items
-								// var currentItemsList = body.it_item;
-
-								// if (item.Deliveries !== undefined && item.Deliveries.results !== undefined) {
-								// 	var currentDeliveriesList = item.Deliveries.results;
-								// 	var itemPosExt = 0;
-								// 	$.each(currentDeliveriesList, function (index, sDelivery) {
-								// 		var trovato = false;
-								// 		if (currentItemsList !== undefined && currentItemsList.length > 0) {
-								// 			$.each(currentItemsList, function (index, sItem) {
-								// 				if (sItem.VGBEL === item.EBELN && sItem.VGPOS === item.EBELP &&
-								// 					sItem.MATNR === item.MATNR && sItem.VFDAT === sDelivery.SCADENZA && sItem.LICHN === sDelivery.LOTTO) {
-								// 					trovato = true;
-								// 				}
-								// 			});
-								// 		}
-								// 		if (trovato === false) {
-								// 			itemPosExt = itemPosExt + 10;
-								// 			var deliveryItem = {
-								// 				"RFPOS": itemPosExt,
-								// 				"VGBEL": item.EBELN,
-								// 				"VGPOS": item.EBELP,
-								// 				"WERKS": item.WERKS,
-								// 				"MATNR": item.MATNR,
-								// 				"LFIMG": sDelivery.QUANT,
-								// 				"VRKME": "",
-								// 				"LICHN": sDelivery.LOTTO,
-								// 				"VFDAT": sDelivery.SCADENZA,
-								// 				"HSDAT": ""
-								// 			};
-								// 			body.it_item.push(deliveryItem);
-								// 		}
-								// 	});
-								// }
-
 							});
 						}
 
@@ -1151,7 +1189,9 @@ sap.ui.define([
 							async: false,
 							contentType: 'application/pdf',
 							success: function (data) {
-								zip.file("download_hu_" + oPositionModel.EXIDV + ".pdf", data, { binary: true });
+								zip.file("download_hu_" + oPositionModel.EXIDV + ".pdf", data, {
+									binary: true
+								});
 								resolve()
 							},
 							error: function (e) {
@@ -1165,7 +1205,9 @@ sap.ui.define([
 
 				Promise.all(promiseArr).then(values => {
 					that.hideBusyDialog();
-					zip.generateAsync({ type: "blob" })
+					zip.generateAsync({
+							type: "blob"
+						})
 						.then(function (content) {
 							// Force down of the Zip file
 							that.saveAs(content, "download.zip");
@@ -1239,7 +1281,7 @@ sap.ui.define([
 				var ekpoRow = that.getModel("InboundDelJSONModel").getData().results.EkkoEkpo[ind];
 				if (ekpoRow !== undefined) {
 					var ekesrow = that.getModel("InboundDelJSONModel").getData().results.EketEkes;
-					if (ekesrow !== undefined) { }
+					if (ekesrow !== undefined) {}
 				}
 			}
 			//Chiamata al servizio per la conferma

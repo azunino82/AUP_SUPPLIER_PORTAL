@@ -371,6 +371,49 @@ sap.ui.define([
 				that.oModMetaSupFragment = undefined;
 			}
 		},
+
+		saveHUMandatoryForMetaId: function () {
+			if (that.getView().getModel("huMandatoryJSONModel") !== undefined) {
+				var mod = that.getView().getModel("huMandatoryJSONModel").getData()
+				if (mod.results !== undefined && mod.results.length > 0) {
+					var metaid = that.getModel("metasupplierData").getData().METAID
+					var promiseArr = []
+
+					//	$.each(mod.results, function (index, elem) {
+					//		promiseArr.push(new Promise(function (resolve, reject) {
+					var url = "/backend/MetasupplierManagement/UpdateHUMandatoryForMetaId"
+					var body = {
+						'metaid': metaid,
+						'plants': mod.results
+					}
+					//		setTimeout(function () {
+					that.ajaxPost(url, body, function (oData) {
+						var array = JSON.stringify(mod.results).replaceAll("\"", "\'")
+						array = array.replaceAll("[", "(")
+						array = array.replaceAll("]", ")")
+						var body = {
+							"metaid": metaid,
+							"plantToDelete": array
+						}
+						var url = "/backend/MetasupplierManagement/DeleteHUMandatoryForMetaId"
+						that.ajaxPost(url, body, function (oData) {});
+					});
+					//		}, 1500);
+
+					//		}))
+					//	});
+					//Promise.all(promiseArr).then(values => {
+
+
+
+					//});
+
+
+				}
+
+			}
+		},
+		
 		onConfirmMod: function (oEvent) {
 
 			var trovato = false;
@@ -427,6 +470,8 @@ sap.ui.define([
 								if (oData && oData.results) {
 									sap.m.MessageToast.show(that.getOwnerComponent().getModel("i18n").getResourceBundle().getText(
 										"metasupplierModify"));
+
+										that.saveHUMandatoryForMetaId();
 
 									if (that.oModMetaSupFragment) {
 										that.setModel(null, "metasupplierData");

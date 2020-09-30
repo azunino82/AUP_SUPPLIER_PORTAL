@@ -406,6 +406,8 @@ sap.ui.define([
 									sap.m.MessageToast.show(that.getOwnerComponent().getModel("i18n").getResourceBundle().getText(
 										"metasupplierModify"));
 
+										that.saveHUMandatoryForMetaId();
+
 									if (that.oModMetaSupFragment) {
 										that.setModel(null, "metasupplierData");
 										that.handleRoutePatternMatched(null);

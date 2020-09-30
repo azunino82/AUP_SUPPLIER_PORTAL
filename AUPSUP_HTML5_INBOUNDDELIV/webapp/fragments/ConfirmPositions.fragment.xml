@@ -29,17 +29,17 @@
 									<Label text="{i18n>MENGE}"/>
 									<Text text="{path : 'SelectedPositionsJSONModel>MENGE', formatter : '.importFormatter'} - {SelectedPositionsJSONModel>MEINS}"/>
 									<Label text="{i18n>ETENR}"/>
-									<Text text="{SelectedPositionsJSONModel>ETENR}"/>
+									<Text text="{SelectedPositionsJSONModel>XBLNR}"/>
 									<Label text="{i18n>EINDT}"/>
 									<Text text="{ path: 'SelectedPositionsJSONModel>EINDT', type: 'it.aupsup.inboundDelivery.type.Date' }"/>
 
 									<core:Title text=""/>
 									<Label text="{i18n>NrColli}"/>
-									<Input value="{SelectedPositionsJSONModel>NrColli}" type="Number"/>
+									<Input value="{SelectedPositionsJSONModel>NrColli}" type="Number" editable="{SelectedPositionsJSONModel>isHuMandatory}"/>
 								    <Label text="{i18n>QuantitaCollo}"/>
-									<Input value="{SelectedPositionsJSONModel>QuantitaCollo}" type="Number"/>										
+									<Input value="{SelectedPositionsJSONModel>QuantitaCollo}" type="Number" editable="{SelectedPositionsJSONModel>isHuMandatory}"/>										
 									<Label text=" " class="hideLabel"/>
-									<Button text="{i18n>ADD}" press="onAddDeliveries"/>
+									<Button text="{i18n>ADD}" press="onAddDeliveries" enabled="{SelectedPositionsJSONModel>isHuMandatory}"/>
 
 
 								</f:content>
@@ -93,7 +93,7 @@
 													</layoutData>
 												</TextArea>	
 												<FlexBox renderType="Bare">
-													<Input value="{SelectedPositionsJSONModel>PESO}" enabled="{SelectedPositionsJSONModel>editPeso}" type="Number">
+													<Input value="{path : 'SelectedPositionsJSONModel>PESO', formatter : '.importFormatter'}" enabled="{SelectedPositionsJSONModel>editPeso}" type="Number">
 														<layoutData>
 															<FlexItemData growFactor="1" />
 														</layoutData>
@@ -105,7 +105,7 @@
 														</Text>
 												</FlexBox>		
 												<FlexBox renderType="Bare">
-												<Input value="{SelectedPositionsJSONModel>VOLUME}" enabled="{SelectedPositionsJSONModel>editVolume}" type="Number">
+												<Input value="{path : 'SelectedPositionsJSONModel>VOLUME', formatter : '.importFormatter'}" enabled="{SelectedPositionsJSONModel>editVolume}" type="Number">
 													<layoutData>
 														<FlexItemData growFactor="1" />
 													</layoutData>

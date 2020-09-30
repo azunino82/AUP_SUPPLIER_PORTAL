@@ -121,7 +121,7 @@
 								<ObjectPageSection showTitle="false">
 									<subSections>
 										<ObjectPageSubSection >
-											<m:Table id="InboundDelivHeadersTable" items="{InboundDelJSONModel>/results}" itemPress="onRowSelectionChange" mode="MultiSelect">
+											<m:Table id="InboundDelivHeadersTable" items="{InboundDelJSONModel>/results}" itemPress="onRowSelectionChange" mode="MultiSelect" growing="true" growingThreshold="50" growingScrollToLoad="false">
 												<m:headerToolbar>
 													<m:OverflowToolbar>
 														<m:content>
@@ -151,7 +151,10 @@
 													</m:Column>
 													<m:Column id="NumeroRiferimento" minScreenWidth="Desktop" demandPopin="true">
 														<m:Label text="{i18n>NumeroRiferimento}" class="columnLabelStyle" wrapping="true"/>
-													</m:Column>														
+													</m:Column>				
+													<m:Column id="NumeroProgressivoConferma" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>NumeroProgressivoConferma}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>																									
 													<m:Column id="TYPE" minScreenWidth="Desktop" demandPopin="true">
 														<m:Label text="{i18n>TYPE}" class="columnLabelStyle" wrapping="true"/>
 													</m:Column>													
@@ -175,11 +178,12 @@
 													</m:Column>
 												</m:columns>
 												<m:items>
-													<m:ColumnListItem type="Navigation" highlight="{path:'InboundDelJSONModel>Status'}" visible = "{= ${InboundDelJSONModel>MENGE} !== '0.000'}">
+													<m:ColumnListItem type="Navigation" highlight="{path:'InboundDelJSONModel>Status'}" visible = "{= ${InboundDelJSONModel>MENGE} > 0}">
 														<m:cells>
 															<m:Text text="{InboundDelJSONModel>EBELN}"/>
 															<m:Text text="{InboundDelJSONModel>EBELP}"/>
-															<m:Text text="{InboundDelJSONModel>ETENR}"/>
+															<m:Text text="{InboundDelJSONModel>XBLNR}"/>
+															<m:Text text="{InboundDelJSONModel>ETENR}"/>																
 															<m:Text text="{InboundDelJSONModel>TYPE}"/>
 															<m:Text text="{path : 'InboundDelJSONModel>MATNR', formatter : '.removeZeroBefore'}"/>
 															<m:Text text="{InboundDelJSONModel>TXZ01}"/>

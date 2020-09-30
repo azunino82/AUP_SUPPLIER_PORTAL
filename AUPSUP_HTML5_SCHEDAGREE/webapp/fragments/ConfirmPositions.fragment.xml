@@ -14,6 +14,8 @@
 						<OverflowToolbar>
 							<content>
 								<Title text="{i18n>positions}" level="H2"/>
+									<ToolbarSpacer />
+									<OverflowToolbarButton type="Transparent" icon="sap-icon://expand" press="explodeAllSchedulations" tooltip="{i18n>explodeAllSchedulation}" visible="{= ${SelectedPositionsJSONModel>profiliConferma}.length > 0}" />									
 							</content>
 						</OverflowToolbar>
 					</headerToolbar>
