@@ -15,7 +15,7 @@ BEGIN
             SELECT LENGTH(INPUT_STRING) INTO IN_STR_INT FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
 
             -- controllo se la stringa di input è convertibile in INTEGER
-            SELECT CASE WHEN :INPUT_STRING LIKE_REGEXPR '[A-Z-a-z]' THEN 0 ELSE 1 END INTO IS_INT_CONVERTIBLE FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
+            SELECT CASE WHEN :INPUT_STRING LIKE_REGEXPR '[A-Z-a-z,.!"£$%&/()=?^é*ç°§;:_#@<>ì]' THEN 0 ELSE 1 END INTO IS_INT_CONVERTIBLE FROM "AUPSUP_DATABASE.data.synonyms::DUMMY";
 
             IF IS_INT_CONVERTIBLE = 1 THEN --la stringa è convertibile in int
 

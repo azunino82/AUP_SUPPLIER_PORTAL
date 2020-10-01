@@ -24,3 +24,6 @@ cp.project.properties.json
 /AUP_SUPPLIER_PORTAL_ui_deployer/resources/*
 /AUPSUP_HTML5_METASUPPLIER/dist/*
 *.mtar
+node_modules
+*/dist/*
+*.mta
