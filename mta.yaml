@@ -247,7 +247,7 @@ resources:
       service: saas-registry
       service-plan: application
       config:
-        appId: 'AUP_SUPPLIER_PORTAL!t34981'
+        appId: 'AUP_SUPPLIER_PORTAL!t43907'
         appUrls:
           onSubscription: 'https://${org}-${space}-aup-supplier-portal-approuter.${default-domain}/callback/v1.0/tenants/{tenantId}'
           getDependencies: 'https://${org}-${space}-aup-supplier-portal-approuter.${default-domain}/callback/v1.0/dependencies'
