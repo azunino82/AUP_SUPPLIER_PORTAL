@@ -252,10 +252,10 @@ sap.ui.define([
 				if (sValue.toString().includes('.000'))
 					return sValue.toString().replace('.000', '')
 				else
-					if (sValue.toString().includes('.00'))
-						return sValue.toString().replace('.00', '')
-					else
-						return sValue.toString().replace('.', ',')
+				if (sValue.toString().includes('.00'))
+					return sValue.toString().replace('.00', '')
+				else
+					return sValue.toString().replace('.', ',')
 			}
 		},
 
@@ -290,19 +290,35 @@ sap.ui.define([
 			}
 			if (sap.ui.getCore().getConfiguration().getLanguage() !== undefined && sap.ui.getCore().getConfiguration().getLanguage() === 'it-IT') {
 				return 'I';
-			}			
+			}
 			if (sap.ui.getCore().getConfiguration().getLanguage() !== undefined && sap.ui.getCore().getConfiguration().getLanguage() === 'en') {
 				return 'E';
 			}
 			if (sap.ui.getCore().getConfiguration().getLanguage() !== undefined && sap.ui.getCore().getConfiguration().getLanguage() === 'en-EN') {
 				return 'E';
-			}			
+			}
 			if (sap.ui.getCore().getConfiguration().getLanguage() !== undefined && sap.ui.getCore().getConfiguration().getLanguage() === 'de') {
 				return 'D';
 			}
 			return 'E'
-		}
+		},
 
+		convertDateToSAPDate: function (date) {
+			if (date.includes("/")) {
+				var d = new Date(date),
+					month = '' + d.getDate(),
+					day = '' + (d.getMonth() + 1),
+					year = d.getFullYear();
+
+				if (month.length < 2)
+					month = '0' + month;
+				if (day.length < 2)
+					day = '0' + day;
+
+				return year+month+day;
+			}
+			return date
+		}
 
 
 	});

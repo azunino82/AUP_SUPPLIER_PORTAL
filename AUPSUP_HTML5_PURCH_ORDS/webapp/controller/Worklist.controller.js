@@ -1427,7 +1427,7 @@ sap.ui.define([
 												singleEkesModel.EBTYP = row.POItemSchedulers.results[j].EBTYP;
 										}
 
-										singleEkesModel.EINDT = row.POItemSchedulers.results[j].EINDT;
+										singleEkesModel.EINDT = that.convertDateToSAPDate(row.POItemSchedulers.results[j].EINDT);
 
 										if (row.POItemSchedulers.results[j].LPEIN === undefined || row.POItemSchedulers.results[j].LPEIN === "") {
 											singleEkesModel.LPEIN = "D";

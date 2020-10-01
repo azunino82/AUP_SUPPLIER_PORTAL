@@ -301,7 +301,25 @@ sap.ui.define([
 				return 'D';
 			}
 			return 'E'
+		},
+
+		convertDateToSAPDate: function (date) {
+			if (date.includes("/")) {
+				var d = new Date(date),
+					month = '' + d.getDate(),
+					day = '' + (d.getMonth() + 1),
+					year = d.getFullYear();
+
+				if (month.length < 2)
+					month = '0' + month;
+				if (day.length < 2)
+					day = '0' + day;
+
+				return year+month+day;
+			}
+			return date
 		}
+
 
 
 	});
