@@ -205,23 +205,23 @@ app.get('/callback/v1.0/dependencies', function (req, res) {
 
   xsappnames.push({
     // eslint-disable-next-line quote-props
-    'xsappname': '8f949584-36ef-40fd-9c47-d36393da7ef9-clone!b34981|lps-registry-broker!b14'
+    'xsappname': '61738b5a-8621-4976-b678-9f695858aa46-clone!b43907|lps-registry-broker!b14'
   }) // env var dell app_router
   xsappnames.push({
     // eslint-disable-next-line quote-props
-    'xsappname': 'AUP_SUPPLIER_PORTAL!t34981'
+    'xsappname': 'AUP_SUPPLIER_PORTAL!t43907'
   })
   xsappnames.push({
     // eslint-disable-next-line quote-props
-    'xsappname': '3d1e7904-5886-443c-898e-92a52e79375e!b34981|html5-apps-repo-uaa!b1685'
+    'xsappname': '3b6cf6e7-ce61-46d5-98e4-95f22a77c053!b43907|html5-apps-repo-uaa!b1685'
   }) // env var dell app_router
   xsappnames.push({
     // eslint-disable-next-line quote-props
-    'xsappname': 'c6eebb6c-f814-4b78-88a6-2b6831275167!b34981|html5-apps-repo-uaa!b1685'
+    'xsappname': '461724b1-1185-4239-975b-3b79601de741!b43907|html5-apps-repo-uaa!b1685'
   }) // env var dell FLP
   xsappnames.push({
     // eslint-disable-next-line quote-props
-    'xsappname': '26fa7f48-7c0b-4fff-9bee-5aac7457d5fa!b34981|portal-cf-service!b3664'
+    'xsappname': '64609008-1923-42d6-9fc1-5e91a319da3c!b43907|portal-cf-service!b3664'
   }) // env var dell app_router
 
   res.status(200).send(JSON.stringify(xsappnames))
