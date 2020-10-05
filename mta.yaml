@@ -99,6 +99,7 @@ modules:
       builder: grunt
       supported-platforms: []
       build-result: dist
+      ignore: ["default-env.json", "node_modules/"]   
   - name: AUPSUP_HTML5_PLANNING
     type: html5
     path: AUPSUP_HTML5_PLANNING
@@ -106,6 +107,7 @@ modules:
       builder: grunt
       supported-platforms: []
       build-result: dist
+      ignore: ["default-env.json", "node_modules/"]   
   - name: AUPSUP_NODE
     type: nodejs
     path: AUPSUP_NODE
@@ -113,6 +115,8 @@ modules:
       - name: AUPSUP_NODE_api
         properties:
           url: '${default-url}'
+    build-parameters:
+      ignore: ["default-env.json", "node_modules/"]          
     parameters:
       app-name: AUPSUP_NODE
       disk-quota: 500M
@@ -143,6 +147,7 @@ modules:
       builder: grunt
       supported-platforms: []
       build-result: dist
+      ignore: ["default-env.json", "node_modules/"]   
   - name: AUPSUP_HTML5_NONCONFORMITA
     type: html5
     path: AUPSUP_HTML5_NONCONFORMITA
@@ -150,6 +155,7 @@ modules:
       builder: grunt
       supported-platforms: []
       build-result: dist
+      ignore: ["default-env.json", "node_modules/"]   
   - name: AUPSUP_HTML5_INBOUNDDELIV
     type: html5
     path: AUPSUP_HTML5_INBOUNDDELIV
@@ -157,6 +163,7 @@ modules:
       builder: grunt
       supported-platforms: []
       build-result: dist
+      ignore: ["default-env.json", "node_modules/"]   
   - name: AUPSUP_HTML5_SCHEDAGREE
     type: html5
     path: AUPSUP_HTML5_SCHEDAGREE
@@ -164,6 +171,7 @@ modules:
       builder: grunt
       supported-platforms: []
       build-result: dist
+      ignore: ["default-env.json", "node_modules/"]   
   - name: AUPSUP_HTML5_APR_SCDAGR
     type: html5
     path: AUPSUP_HTML5_APR_SCDAGR
@@ -171,6 +179,7 @@ modules:
       builder: grunt
       supported-platforms: []
       build-result: dist
+      ignore: ["default-env.json", "node_modules/"]   
   - name: AUPSUP_HTML5_METASUPPLIER_M
     type: html5
     path: AUPSUP_HTML5_METASUPPLIER_M
@@ -178,6 +187,7 @@ modules:
       builder: grunt
       supported-platforms: []
       build-result: dist
+      ignore: ["default-env.json", "node_modules/"]   
   - name: AUPSUP_HTML5_METASUPPLIER_BM
     type: html5
     path: AUPSUP_HTML5_METASUPPLIER_BM
@@ -185,6 +195,7 @@ modules:
       builder: grunt
       supported-platforms: []
       build-result: dist
+      ignore: ["default-env.json", "node_modules/"]   
   - name: AUPSUP_HTML5_PURCH_ORDS
     type: html5
     path: AUPSUP_HTML5_PURCH_ORDS
@@ -192,6 +203,7 @@ modules:
       builder: grunt
       supported-platforms: []
       build-result: dist
+      ignore: ["default-env.json", "node_modules/"]   
   - name: AUPSUP_HTML5_CUSTOMIZING
     type: html5
     path: AUPSUP_HTML5_CUSTOMIZING
@@ -199,6 +211,7 @@ modules:
       builder: grunt
       supported-platforms: []
       build-result: dist
+      ignore: ["default-env.json", "node_modules/"]   
   - name: AUPSUP_HTML5_LOGSORDSCHED
     type: html5
     path: AUPSUP_HTML5_LOGSORDSCHED
@@ -206,6 +219,7 @@ modules:
       builder: grunt
       supported-platforms: []
       build-result: dist
+      ignore: ["default-env.json", "node_modules/"]   
 resources:
   - name: AUP_SUPPLIER_PORTAL_html5_repo_runtime
     parameters:
