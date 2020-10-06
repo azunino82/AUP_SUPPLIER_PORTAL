@@ -2733,6 +2733,7 @@ sap.ui.define([
 			var promiseArr = []
 			var zip = new JSZip()
 			this.showBusyDialog();
+			
 			for (var i = 0; i < sap.ui.getCore().byId("DownloadDocumentTable")._aSelectedPaths.length; i++) {
 				var ind = sap.ui.getCore().byId("DownloadDocumentTable")._aSelectedPaths[i].split("/");
 				ind = ind[2];
@@ -2740,26 +2741,49 @@ sap.ui.define([
 
 				promiseArr.push(new Promise(function (resolve, reject) {
 
-					var url = "/backend/DocumentManagement/DocDownload?I_DOKAR=" + selctedRowdata.DOKAR + "&I_DOKNR=" + selctedRowdata.DOKNR + "&I_DOKTL=" + selctedRowdata.DOKTL + 
+					var path = "/backend/DocumentManagement/DocDownload?I_DOKAR=" + selctedRowdata.DOKAR + "&I_DOKNR=" + selctedRowdata.DOKNR + "&I_DOKTL=" + selctedRowdata.DOKTL + 
 					"&I_DOKVR=" + selctedRowdata.DOKVR + "&I_LO_INDEX=" + selctedRowdata.LO_INDEX + "&I_LO_OBJID=" + selctedRowdata.LO_OBJID + "&I_OBJKY=" + selctedRowdata.OBJKY + 
 					"&I_DOKOB=" + selctedRowdata.DOKOB;
+					
+					try {
+						var xhr = new window.XMLHttpRequest();
+						xhr.DESCRIPTION = selctedRowdata.DESCRIPTION;
+						xhr.open('GET', path, true);
 
-					jQuery.ajax({
-						url: url,
-						method: 'GET',
-						async: false,
-						contentType: 'application/pdf',
-						success: function (data) { 
-							zip.file( selctedRowdata.DESCRIPTION, data,  {
-								binary: true
-							});
-							resolve()
-						},
-						error: function (e) {
-							reject()
+						// recent browsers
+						if ("responseType" in xhr) {
+							xhr.responseType = "arraybuffer";
 						}
-					});
 
+						// older browser
+						if (xhr.overrideMimeType) {
+							xhr.overrideMimeType("text/plain; charset=x-user-defined");
+						}
+
+						xhr.onreadystatechange = function (event) {
+							// use `xhr` and not `this`... thanks IE
+							if (xhr.readyState === 4) {
+								if (xhr.status === 200 || xhr.status === 0) {
+									try {
+										zip.file(xhr.DESCRIPTION, xhr.response || xhr.responseText, {binary:true});
+										resolve();
+									} catch (err) {
+										that.hideBusyDialog();
+										reject();
+									}
+								} else {
+									that.hideBusyDialog();
+									reject("Ajax error for " + path + " : " + this.status + " " + this.statusText);
+								}
+							}
+						};
+
+						xhr.send();
+
+					} catch (e) {
+						that.hideBusyDialog();
+						reject(e, null);
+					}
 				}))
 
 			}
@@ -2774,6 +2798,8 @@ sap.ui.define([
 						that.saveAs(content, "download.zip");
 					});
 			});
+
+			
 		},
 
 		saveAs: function (blob, filename) {
