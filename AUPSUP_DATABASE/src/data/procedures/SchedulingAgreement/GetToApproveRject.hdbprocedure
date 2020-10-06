@@ -38,16 +38,23 @@ DECLARE ET_SAG_EKPO "AUPSUP_DATABASE.data.structures.SchedulingAgreement::ET_SAG
 create local temporary table #IT_CUST_FIELDS (CUST_FIELD NVARCHAR(30),SOURCE_TABLE NVARCHAR(30),SOURCE_FIELD NVARCHAR(30));
 create local temporary table #IT_EKGRP (EKGRP NVARCHAR(3));
 create local temporary table #IT_MATNR (MATNR NVARCHAR(40));
+create local temporary table #IT_LIFNR (ELIFN NVARCHAR(10));
 
 IT_CUST_FIELDS = SELECT * FROM #IT_CUST_FIELDS;
 IT_EKGRP = SELECT * FROM #IT_EKGRP;
 IT_MATNR = SELECT * FROM #IT_MATNR;
+IT_LIFNR = SELECT * FROM #IT_LIFNR;
 
 /* prendo le organizzazioni commerciali dell'utente connesso*/
 CALL "AUPSUP_DATABASE.data.procedures.Utils::GetUserPurchaseOrgs"(:userid,:IT_EKORG);
 
-CALL "AUPSUP_DATABASE.data.procedures.Utils::GetMetasupplierList"(:userid,:out_anagrafica,:out_lifnr);
-IT_LIFNR = SELECT LIFNR AS ELIFN FROM :out_lifnr;
+-- se cerco il numero ordine diretto EBELN <> '' allora non passo i fornitori altrimenti non lo trova
+IF EBELN = '' THEN
+
+  CALL "AUPSUP_DATABASE.data.procedures.Utils::GetMetasupplierList"(:userid,:out_anagrafica,:out_lifnr);
+  IT_LIFNR = SELECT LIFNR AS ELIFN FROM :out_lifnr;
+  
+END IF;
 
 CALL "AUPSUP_DATABASE.data.procedures.Utils::GetUserPlants"(:userid,:IT_WERKS);
 
@@ -91,5 +98,6 @@ ORDER BY EKES_EINDT ASC;
 DROP TABLE #IT_CUST_FIELDS;
 DROP TABLE #IT_EKGRP;
 DROP TABLE #IT_MATNR;
-
+DROPT TABLE #IT_LIFNR;
+  
 END
