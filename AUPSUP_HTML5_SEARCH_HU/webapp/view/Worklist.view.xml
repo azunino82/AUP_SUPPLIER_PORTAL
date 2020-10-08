@@ -108,6 +108,7 @@
 																	<v:VariantItem text="{variantsJSONModel>VARIANT_NAME}" key="{variantsJSONModel>VARIANT_NAME}"></v:VariantItem>
 																</v:variantItems>
 															</v:VariantManagement>
+															<m:Button visible="false" id="headerFilterButton" tooltip="{i18n>clearFilter}" icon="sap-icon://clear-filter" press="onClearFilterTable" type="Transparent"/>
 															<m:Button icon="sap-icon://download" press="onDownloadZip" tooltip="{i18n>DownloadSelected}"/>
 															<m:Button icon="sap-icon://excel-attachment" press="onExport" tooltip="{i18n>Export_Excel}"/>
 															<m:Button icon="sap-icon://vertical-grip" visible="false" press="onColumnSelection" tooltip="{i18n>personalization}"/>
