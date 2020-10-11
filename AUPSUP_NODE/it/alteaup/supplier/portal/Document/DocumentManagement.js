@@ -348,6 +348,7 @@ module.exports = function () {
         var userId = req.user.id
         var classification = req.query.I_CLASSIFICATION !== undefined && req.query.I_CLASSIFICATION !== null ? req.query.I_CLASSIFICATION : ''
         var application = req.query.I_APPLICATION !== undefined && req.query.I_APPLICATION !== null ? req.query.I_APPLICATION : ''
+        var progressive = req.query.I_PROGRESSIVE !== undefined && req.query.I_PROGRESSIVE !== null ? req.query.I_PROGRESSIVE : '' 
         var objKey = []
         var canPlay = false
 
@@ -372,6 +373,10 @@ module.exports = function () {
             canPlay = false
             logMessage = logMessage + ' I_APPLICATION, '
         }
+        
+        if (progressive === null || progressive === undefined || progressive === '') {
+            progressive = 1
+        }
 
         // eslint-disable-next-line camelcase
         if (canPlay) {
@@ -380,7 +385,7 @@ module.exports = function () {
                     return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
                 } else {
                     hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Documents::MM00_DOCUMENT_LIST', function (_err, sp) {
-                        sp(userId, objKey, classification, application, (err, parameters, ET_DOCUMENT, O_MESSAGE) => {
+                        sp(userId, objKey, classification, application, progressive, (err, parameters, ET_DOCUMENT, O_MESSAGE) => {
                             if (err) {
                                 console.error('ERROR: ' + err)
                                 return res.status(500).send(stringifyObj(err))
@@ -510,7 +515,7 @@ module.exports = function () {
             return res.status(500).send('I_APPLICATION Mandatory')
         }
 
-        var sql = "SELECT * FROM \"AUPSUP_DATABASE.data.tables::T_DOCUMENT_MANAGEMENT\" AS a INNER JOIN \"AUPSUP_DATABASE.data.tables::T_DOCUMENT_TYPES\" AS b ON a.APPLICATION = b.APPLICATION  WHERE a.APPLICATION = \'" + application + "\'"
+        var sql = "SELECT * FROM \"AUPSUP_DATABASE.data.tables::T_DOCUMENT_MANAGEMENT\" AS a INNER JOIN \"AUPSUP_DATABASE.data.tables::T_DOCUMENT_TYPES\" AS b ON a.APPLICATION = b.APPLICATION AND a.DMS_DOC_TYPE_OUT = b.DMS_DOC_TYPE WHERE a.APPLICATION = \'" + application + "\'"
 
         hdbext.createConnection(req.tenantContainer, function (error, client) {
             if (error) {

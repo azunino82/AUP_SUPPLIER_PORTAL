@@ -1181,24 +1181,48 @@ sap.ui.define([
 					var oPositionModel = that.getModel("HUToPrintJSONModel").getProperty(oItems[i].getBindingContextPath());
 					promiseArr.push(new Promise(function (resolve, reject) {
 
-						var url = "/backend/InboundDeliveryManagement/GetHUPDF" + "?I_EXIDV=" + oPositionModel.EXIDV + "&I_WERKS=" + oPositionModel.WERKS;
+						var path = "/backend/InboundDeliveryManagement/GetHUPDF" + "?I_EXIDV=" + oPositionModel.EXIDV + "&I_WERKS=" + oPositionModel.WERKS;
+						try {
+							var xhr = new window.XMLHttpRequest();
+							xhr.EXIDV = oPositionModel.EXIDV;
+							xhr.open('GET', path, true);
 
-						jQuery.ajax({
-							url: url,
-							method: 'GET',
-							async: false,
-							contentType: 'application/pdf',
-							success: function (data) {
-								zip.file("download_hu_" + oPositionModel.EXIDV + ".pdf", data, {
-									binary: true
-								});
-								resolve()
-							},
-							error: function (e) {
-								reject()
+							// recent browsers
+							if ("responseType" in xhr) {
+								xhr.responseType = "arraybuffer";
 							}
-						});
 
+							// older browser
+							if (xhr.overrideMimeType) {
+								xhr.overrideMimeType("text/plain; charset=x-user-defined");
+							}
+
+							xhr.onreadystatechange = function (event) {
+								// use `xhr` and not `this`... thanks IE
+								if (xhr.readyState === 4) {
+									if (xhr.status === 200 || xhr.status === 0) {
+										try {
+											zip.file("download_hu_" + xhr.EXIDV + ".pdf", xhr.response || xhr.responseText, {
+												binary: true
+											});
+											resolve();
+										} catch (err) {
+											that.hideBusyDialog();
+											reject();
+										}
+									} else {
+										that.hideBusyDialog();
+										reject("Ajax error for " + path + " : " + this.status + " " + this.statusText);
+									}
+								}
+							};
+
+							xhr.send();
+
+						} catch (e) {
+							that.hideBusyDialog();
+							reject(e, null);
+						}
 					}))
 
 				}
