@@ -247,20 +247,27 @@ END IF;
                         IF cursorRow.CONF_TYPE = 'A' THEN
                             conftype:='AP';
                         END IF;                    
+     
+                        -- LOG
+                        INSERT INTO "AUPSUP_DATABASE.data.tables::T_LOGS" (SERVICE_NAME,CALLED_METHOD,DATA,STATUS,MESSAGE,LOG_TYPE,SID,USERID,LOG_DATE_TIME) VALUES ('ORDINE: ' || cursorRow.EBELN || ' ' || cursorRow.EBELP, 'POST',null,200,'TIPO OPERAZIONE: ' || TIPO_OPERAZIONE || ' ' || 'CONF TYPE: ' || cursorRow.CONF_TYPE ,'I','',:userid,:V_CURRENT_TIMESTAMP);    
                         
                         IF (TIPO_OPERAZIONE = 'QUA') THEN
-                            SELECT COUNT(*) INTO counter FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" as a WHERE EBELN=cursorRow.EBELN AND EBELP = cursorRow.EBELP AND STATUS = 'RC'
+                            SELECT COUNT(*) INTO counter FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKES_EKET" as a WHERE a.EBELN=cursorRow.EBELN AND a.EBELP = cursorRow.EBELP AND STATUS = 'RC'
                             AND a.CONF_TYPE = :TIPO_OPERAZIONE;
+
+                            INSERT INTO "AUPSUP_DATABASE.data.tables::T_LOGS" (SERVICE_NAME,CALLED_METHOD,DATA,STATUS,MESSAGE,LOG_TYPE,SID,USERID,LOG_DATE_TIME) VALUES ('ORDINE: ' || cursorRow.EBELN || ' ' || cursorRow.EBELP, 'POST',null,200,'TIPO OPERAZIONE: ' || TIPO_OPERAZIONE || ' ' || 'CONF TYPE: ' || cursorRow.CONF_TYPE || ' QUA COUNTER: ' || :counter || ' cursorRow.CREATION_DATE: ' || cursorRow.CREATION_DATE,'I','',:userid,:V_CURRENT_TIMESTAMP);    
 
                             IF counter = 0 THEN
                                 --- se non ci sono righe rifiutate e approvate canbio stato
                                 UPDATE "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKKO_EKPO" SET STATUS = :conftype, MODIFY_STATUS_DATE = :V_CURRENT_TIMESTAMP 
-                                WHERE EBELN = cursorRow.EBELN AND EBELP = cursorRow.EBELP AND CREATION_DATE = cursorRow.CREATION_DATE
+                                WHERE EBELN = cursorRow.EBELN AND EBELP = cursorRow.EBELP
                                 and CREATION_DATE = cursorRow.CREATION_DATE AND
                                 CONF_TYPE = :TIPO_OPERAZIONE AND DATS_IS_VALID(MODIFY_STATUS_DATE) = 0; -- la data è null o ''	            
 
                             END IF;	
                         ELSE
+
+                            INSERT INTO "AUPSUP_DATABASE.data.tables::T_LOGS" (SERVICE_NAME,CALLED_METHOD,DATA,STATUS,MESSAGE,LOG_TYPE,SID,USERID,LOG_DATE_TIME) VALUES ('PRZ: ORDINE: ' || cursorRow.EBELN || ' ' || cursorRow.EBELP, 'POST',null,200,'TIPO OPERAZIONE: ' || TIPO_OPERAZIONE || ' ' || 'CONF TYPE: ' || cursorRow.CONF_TYPE,'I','',:userid,:V_CURRENT_TIMESTAMP);    
                                  
                             UPDATE "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKKO_EKPO" SET STATUS = :conftype, MODIFY_STATUS_DATE = :V_CURRENT_TIMESTAMP,
                             COMMENT = (SELECT COMMENT FROM "AUPSUP_DATABASE.data.tables::T_APPROVE_SAG_EKKO_EKPO" WHERE EBELN = cursorRow.EBELN AND EBELP = cursorRow.EBELP and 
@@ -270,6 +277,8 @@ END IF;
                             CONF_TYPE = :TIPO_OPERAZIONE AND DATS_IS_VALID(MODIFY_STATUS_DATE) = 0; -- la data è null o ''	
                                   
                         END IF;	
+
+
                     END;
                 END FOR;
             END;        
