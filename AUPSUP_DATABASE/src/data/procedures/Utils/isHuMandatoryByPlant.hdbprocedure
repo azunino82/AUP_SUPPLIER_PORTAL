@@ -28,16 +28,16 @@ DECLARE LIST_METAID TABLE (METAID NVARCHAR(50));
 				IF isMandatory = 'X' THEN
 					SELECT count(*) INTO counter FROM "AUPSUP_DATABASE.data.tables::T_MANDATORY_HU_FOR_PLANT" WHERE PLANT = :plant and METAID = :metaid;
 					IF counter > 0 THEN
-						IS_MANDATORY := 'X';
-					ELSE
 						IS_MANDATORY := '';
+					ELSE
+						IS_MANDATORY := 'X';
 					END IF;
 				ELSE
 					SELECT count(*) INTO counter FROM "AUPSUP_DATABASE.data.tables::T_MANDATORY_HU_FOR_PLANT" WHERE PLANT = :plant and METAID = :metaid;
 						IF counter > 0 THEN
-							IS_MANDATORY := '';
-						ELSE
 							IS_MANDATORY := 'X';
+						ELSE
+							IS_MANDATORY := '';
 						END IF;
 				END IF;
 			END IF;
