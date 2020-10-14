@@ -373,10 +373,12 @@ module.exports = function () {
             canPlay = false
             logMessage = logMessage + ' I_APPLICATION, '
         }
-        
+
         if (progressive === null || progressive === undefined || progressive === '') {
             progressive = 1
-        }
+        } 
+
+
 
         // eslint-disable-next-line camelcase
         if (canPlay) {
@@ -385,7 +387,8 @@ module.exports = function () {
                     return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
                 } else {
                     hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Documents::MM00_DOCUMENT_LIST', function (_err, sp) {
-                        sp(userId, objKey, classification, application, progressive, (err, parameters, ET_DOCUMENT, O_MESSAGE) => {
+                       // sp(userId, objKey, classification, application, (err, parameters, ET_DOCUMENT, O_MESSAGE) => {
+                        sp(userId, objKey, classification, application, progressive, (err, parameters, ET_DOCUMENT, O_MESSAGE) => { 
                             if (err) {
                                 console.error('ERROR: ' + err)
                                 return res.status(500).send(stringifyObj(err))
