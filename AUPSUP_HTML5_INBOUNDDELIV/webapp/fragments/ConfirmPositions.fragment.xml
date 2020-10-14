@@ -93,11 +93,7 @@
 													</layoutData>
 												</TextArea>	
 												<FlexBox renderType="Bare">
-													<Input value="{path : 'SelectedPositionsJSONModel>PESO', formatter : '.importFormatter'}" enabled="{SelectedPositionsJSONModel>editPeso}" type="Number">
-														<layoutData>
-															<FlexItemData growFactor="1" />
-														</layoutData>
-													</Input>
+													<Input value="{SelectedPositionsJSONModel>PESO}" enabled="{SelectedPositionsJSONModel>editPeso}" type="Number"/>
 														<Text text = "{SelectedPositionsJSONModel>UDM_PESO}" width="2rem" class="spaceLabel">
 															<layoutData>
 																<FlexItemData growFactor="1" />
@@ -105,11 +101,7 @@
 														</Text>
 												</FlexBox>		
 												<FlexBox renderType="Bare">
-												<Input value="{path : 'SelectedPositionsJSONModel>VOLUME', formatter : '.importFormatter'}" enabled="{SelectedPositionsJSONModel>editVolume}" type="Number">
-													<layoutData>
-														<FlexItemData growFactor="1" />
-													</layoutData>
-												</Input>
+												<Input value="{SelectedPositionsJSONModel>VOLUME}" enabled="{SelectedPositionsJSONModel>editVolume}" type="Number"/>
 												<Text text = "{SelectedPositionsJSONModel>UDM_VOLUME}" width="2rem" class="spaceLabel">
 													<layoutData>
 														<FlexItemData growFactor="1" />

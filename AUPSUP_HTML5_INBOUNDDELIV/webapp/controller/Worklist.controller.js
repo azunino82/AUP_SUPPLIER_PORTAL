@@ -717,10 +717,10 @@ sap.ui.define([
 				if (gestioneEtichetteModel !== undefined && gestioneEtichetteModel.getData() !== undefined) {
 					var selectedEtichetta = gestioneEtichetteModel.getData().find(x => x.PLANT === mod.WERKS);
 					if (selectedEtichetta !== undefined) {
-						udmPeso = selectedEtichetta.UDM_PESO
-						udmVolume = selectedEtichetta.UDM_VOLUME
-						defaultPeso = selectedEtichetta.DEFAULT_PESO
-						defaultVolume = selectedEtichetta.DEFAULT_VOLUME
+						udmPeso = selectedEtichetta.UDM_PESO !== undefined && selectedEtichetta.UDM_PESO !== null ? selectedEtichetta.UDM_PESO : ''
+						udmVolume = selectedEtichetta.UDM_VOLUME !== undefined && selectedEtichetta.UDM_VOLUME !== null ? selectedEtichetta.UDM_VOLUME : ''
+						defaultPeso = selectedEtichetta.DEFAULT_PESO !== undefined && selectedEtichetta.DEFAULT_PESO !== null ? selectedEtichetta.DEFAULT_PESO : 0
+						defaultVolume = selectedEtichetta.DEFAULT_VOLUME !== undefined && selectedEtichetta.DEFAULT_VOLUME !== null ? selectedEtichetta.DEFAULT_VOLUME : 0
 					}
 				}
 
@@ -1013,7 +1013,8 @@ sap.ui.define([
 											"MATNR": item.MATNR,
 											"WERKS": item.WERKS,
 											"TMENG": sDelivery.QUANT,
-											"VRKME": item.MEINS
+											"VRKME": item.MEINS,
+											"LGORT": item.LGORT
 										};
 										body.it_hu_detail.push(huDetail);
 
