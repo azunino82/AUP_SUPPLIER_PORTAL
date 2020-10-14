@@ -49,7 +49,7 @@ IT_LIFNR = SELECT * FROM #IT_LIFNR;
 CALL "AUPSUP_DATABASE.data.procedures.Utils::GetUserPurchaseOrgs"(:userid,:IT_EKORG);
 
 -- se cerco il numero ordine diretto EBELN <> '' allora non passo i fornitori altrimenti non lo trova
-IF I_EBELP = '' THEN
+IF EBELN = '' THEN
 
   CALL "AUPSUP_DATABASE.data.procedures.Utils::GetMetasupplierList"(:userid,:out_anagrafica,:out_lifnr);
   IT_LIFNR = SELECT LIFNR AS ELIFN FROM :out_lifnr;
@@ -98,6 +98,6 @@ ORDER BY EKES_EINDT ASC;
 DROP TABLE #IT_CUST_FIELDS;
 DROP TABLE #IT_EKGRP;
 DROP TABLE #IT_MATNR;
-DROP TABLE #IT_LIFNR;
+DROPT TABLE #IT_LIFNR;
   
 END
