@@ -773,6 +773,8 @@ sap.ui.define([
                     elem.PACK_MAT_DEFAULT = elem.PACK_MAT_DEFAULT === true ? "X" : "";
                     elem.IS_CONTENT = elem.IS_CONTENT === true ? "X" : "";
                     elem.IS_HU_MANDATORY_INBOUND = elem.IS_HU_MANDATORY_INBOUND === true ? "X" : "";
+                    elem.CAT_CONF_RIFER_NO_PROGR = elem.CAT_CONF_RIFER_NO_PROGR === null || elem.CAT_CONF_RIFER_NO_PROGR === undefined ? '' : elem.CAT_CONF_RIFER_NO_PROGR
+
 
                     promiseArr.push(new Promise(function (resolve, reject) {
                         that.onSaveProfiliConf(elem, function () {
