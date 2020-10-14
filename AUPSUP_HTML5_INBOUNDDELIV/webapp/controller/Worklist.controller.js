@@ -1001,7 +1001,8 @@ sap.ui.define([
 												"VFDAT": sDelivery.SCADENZA,
 												"HSDAT": "",
 												"LIFEXPOS": item.XBLNR,
-												"ETENR": item.ETENR
+												"ETENR": item.ETENR,
+												"LGORT": item.LGORT
 											};
 											body.it_item.push(deliveryItem);
 										}
@@ -1013,8 +1014,7 @@ sap.ui.define([
 											"MATNR": item.MATNR,
 											"WERKS": item.WERKS,
 											"TMENG": sDelivery.QUANT,
-											"VRKME": item.MEINS,
-											"LGORT": item.LGORT
+											"VRKME": item.MEINS
 										};
 										body.it_hu_detail.push(huDetail);
 
@@ -1051,7 +1051,8 @@ sap.ui.define([
 										"VFDAT": '',
 										"HSDAT": '',
 										"LIFEXPOS": item.XBLNR,
-										"ETENR": item.ETENR
+										"ETENR": item.ETENR,
+										"LGORT": item.LGORT
 									};
 									body.it_item.push(deliveryItem);
 								}
