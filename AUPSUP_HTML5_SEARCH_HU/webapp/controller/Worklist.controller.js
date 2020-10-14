@@ -427,11 +427,13 @@ sap.ui.define([
 			},
 
 			onItemPrintHU: function (oEvent) {
-				var oPath = oEvent.getSource().getBindingContext('HUJSONModel').sPath
-				var selctedRowdata = that.getView().getModel("HUJSONModel").getProperty(oPath);
-	
+				var getTabledata = that.getView().getModel("HUJSONModel").getData().results;
+				var itemPosition = oEvent.getSource().getParent().getParent().indexOfItem(oEvent.getSource().getParent());
+				var selctedRowdata = getTabledata[itemPosition];
+				//MessageToast.show("TODO Print " + selctedRowdata.EXIDV); 
+
 				var url = "/backend/InboundDeliveryManagement/GetHUPDF" + "?I_EXIDV=" + selctedRowdata.EXIDV + "&I_WERKS=" + selctedRowdata.WERKS;
-	
+
 				that._pdfViewer = new PDFViewer();
 				that._pdfViewer.setShowDownloadButton(false);
 				that._pdfViewer.attachSourceValidationFailed(function (oControlEvent) {
@@ -441,7 +443,7 @@ sap.ui.define([
 				that._pdfViewer.setSource(url);
 				that._pdfViewer.open();
 				that.onCloseOrderPositions();
-	
+
 			},
 			saveAs: function (blob, filename) {
 				if (typeof navigator.msSaveOrOpenBlob !== 'undefined') {
