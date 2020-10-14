@@ -32,10 +32,10 @@
 																</m:OverflowToolbar>
 															</m:headerToolbar>
 															<m:columns>
-																<m:Column id="USERID" minScreenWidth="Desktop" demandPopin="true" width="10em">
+																<m:Column id="USERID" minScreenWidth="Desktop" demandPopin="true" width="15em">
 																	<m:Label text="{i18n>USERID}" class="columnLabelStyle" />
 																</m:Column>
-																<m:Column id="BU" minScreenWidth="Desktop" demandPopin="true" width="10em">
+																<m:Column id="BU" minScreenWidth="Desktop" demandPopin="true" width="8em">
 																	<m:Label text="{i18n>BU}" class="columnLabelStyle" />
 																</m:Column>
 																<m:Column id="SYSID" minScreenWidth="Desktop" demandPopin="true" width="8em">
