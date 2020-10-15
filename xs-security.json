@@ -2,7 +2,6 @@
 	"xsappname": "AUP_SUPPLIER_PORTAL",
 	"tenant-mode": "shared",
 	"description": "Security profile of called application",
-	"access_token_validity":180,
 	"scopes": [
 		{
 			"name": "$XSAPPNAME.Callback",
