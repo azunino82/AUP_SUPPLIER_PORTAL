@@ -1073,7 +1073,7 @@ module.exports = function () {
                               if (sched.EBELP === position.EBELP && ekkoekpo.EBELN === sched.EBELN) {
                                 var trovato = false
                                 position.ConfermeQuantita.forEach(el => {
-                                  if (el.EBELN === element.EBELN && el.EBELP === sched.EBELP && el.COUNTER === sched.COUNTER && el.status === sched.STATUS && el.comment === sched.COMMENT) {
+                                  if (el.EBELN === element.EBELN && el.EBELP === sched.EBELP && el.COUNTER === sched.COUNTER && el.status === sched.STATUS && el.comment === sched.COMMENT && el.conf_date === sched.EINDT) {
                                     trovato = true
                                   }
                                 })
