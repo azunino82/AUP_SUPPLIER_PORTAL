@@ -1,1 +1,15 @@
 /* Enter your custom styles here */
+
+.sizeTitle {
+    width: 100%;
+    text-align: center;
+    padding-top: 1rem !important;
+}
+
+.buttonColor {
+    background-color: green;
+}
+
+.maxWidth {
+    min-width: 100% !important;
+}
