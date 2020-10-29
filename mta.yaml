@@ -7,8 +7,6 @@ modules:
   - name: AUP_SUPPLIER_PORTAL_appRouter
     type: approuter.nodejs
     path: AUP_SUPPLIER_PORTAL_appRouter
-    env:
-      SESSION_TIMEOUT: 40    
     parameters:
       disk-quota: 256M
       memory: 256M
@@ -23,6 +21,7 @@ modules:
           identityzone: sap-provisioning
       TENANT_HOST_PATTERN: '^(.*)-${space}-aup-supplier-portal-approuter.cfapps.eu10.hana.ondemand.com'
       SEND_XFRAMEOPTIONS: false
+      SESSION_TIMEOUT: 60
       destinations: '[ { "forwardAuthToken" : true, "name" : "Backend", "url" : "https://${org}-${space}-aupsup-node.cfapps.eu10.hana.ondemand.com", "timeout" : 120000 } ]'
   - name: AUP_SUPPLIER_PORTAL_ui_deployer
     type: com.sap.html5.application-content
