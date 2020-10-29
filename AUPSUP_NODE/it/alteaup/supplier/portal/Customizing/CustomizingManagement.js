@@ -566,7 +566,7 @@ module.exports = function () {
   app.post('/SaveTDocumentManagement', function (req, res) {
     const body = req.body
 
-    var sql = 'UPSERT \"AUPSUP_DATABASE.data.tables::T_DOCUMENT_MANAGEMENT\" VALUES (\'' + body.SYSID + '\',\'' + body.APPLICATION + '\',\'' + body.CLASSIFICATION + '\',\'' + body.PROGRESSIVE + '\',\'' + body.DOC_IN + '\',\'' + body.DOC_OUT + '\',\'' + body.ARCHIVE_LINK_ACTIVE + '\',\'' + body.DMS_ACTIVE + '\',\'' + body.DMS_DOC_TYPE_IN + '\',\'' + body.DMS_VERSION_IN + '\',\'' + body.DMS_STATUS_IN + '\',\'' + body.DMS_DOC_TYPE_OUT + '\',\'' + body.DMS_VERSION_OUT + '\',\'' + body.DMS_STATUS_OUT + '\',\'' + body.DMS_DOC_OBJ + '\') WITH PRIMARY KEY'
+    var sql = 'UPSERT \"AUPSUP_DATABASE.data.tables::T_DOCUMENT_MANAGEMENT\" VALUES (\'' + body.SYSID + '\',\'' + body.APPLICATION + '\',\'' + body.CLASSIFICATION + '\',\'' + body.PROGRESSIVE + '\',\'' + body.DOC_IN + '\',\'' + body.DOC_OUT + '\',\'' + body.ARCHIVE_LINK_ACTIVE + '\',\'' + body.DMS_ACTIVE + '\',\'' + body.DMS_DOC_TYPE_IN + '\',\'' + body.DMS_VERSION_IN + '\',\'' + body.DMS_STATUS_IN + '\',\'' + body.DMS_DOC_TYPE_OUT + '\',\'' + body.DMS_VERSION_OUT + '\',\'' + body.DMS_STATUS_OUT + '\',\'' + body.DMS_DOC_OBJ + '\',\'' + body.STOR_CAT + '\') WITH PRIMARY KEY'
     console.log('sql: ' + sql)
     hdbext.createConnection(req.tenantContainer, function (error, client) {
       if (error) {
