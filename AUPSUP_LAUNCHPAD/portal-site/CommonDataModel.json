@@ -74,6 +74,10 @@
 					"id": "AUPSUP_HTML5_LOGSORDSCHED",
 					"appId": "it.aupsup.logsordsched",
 					"vizId": "LogsOrdPurch-Display"
+				}, {
+					"id": "AUPSUP_HTML5_DOC_MANAG",
+					"appId": "it.aupsup.docmanagement",
+					"vizId": "DocManagement-Display"
 				}]
 			}
 		}],
