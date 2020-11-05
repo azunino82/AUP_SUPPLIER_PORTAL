@@ -1,0 +1,69 @@
+<Dialog xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" xmlns:u="sap.ui.unified" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:table="sap.ui.table" xmlns:smartFilterBar="sap.ui.comp.smartfilterbar" xmlns:fb="sap.ui.comp.filterbar" xmlns:smartTable="sap.ui.comp.smarttable" contentWidth="100%" contentHeight="100%" title="{i18n>documentDetail}">
+	<NavContainer id="navCon">
+		<Page id="p1">
+			<content>
+				<Table id="DocumentDetailTable" width="auto" items="{ path: 'DocumentDetailJSONModel>/results' }">
+					<columns>
+						<Column id="OBJECT" minScreenWidth="Desktop" demandPopin="true">
+							<Label text="{i18n>object}" class="columnLabelStyle" wrapping="true" />
+						</Column>
+						<Column id="DOC_TYPE" minScreenWidth="Desktop" demandPopin="true">
+							<Label text="{i18n>docType}" class="columnLabelStyle" wrapping="true" />
+						</Column>
+						<Column id="DOC_TYPE_DESCR" minScreenWidth="Desktop" demandPopin="true">
+							<Label text="{i18n>docTypeDescr}" class="columnLabelStyle" wrapping="true" />
+						</Column>
+						<Column id="VERSION" minScreenWidth="Desktop" demandPopin="true">
+							<Label text="{i18n>version}" class="columnLabelStyle" wrapping="true" />
+						</Column>
+						<Column id="CREATION_DATE" minScreenWidth="Desktop" demandPopin="true">
+							<Label text="{i18n>creationDate}" class="columnLabelStyle" wrapping="true" />
+						</Column>
+						<Column id="DOWNLOAD_DATE" minScreenWidth="Desktop" demandPopin="true">
+							<Label text="{i18n>downloadDate}" class="columnLabelStyle" wrapping="true" />
+						</Column>
+						<Column id="VERSION_STATE" minScreenWidth="Desktop" demandPopin="true">
+							<Label text="{i18n>versionState}" class="columnLabelStyle" wrapping="true" />
+						</Column>
+						<Column id="WORKFLOW" minScreenWidth="Desktop" demandPopin="true">
+							<Label text="{i18n>workflow}" class="columnLabelStyle" wrapping="true" />
+						</Column>
+						<Column id="UPLOAD_DATE" minScreenWidth="Desktop" demandPopin="true">
+							<Label text="{i18n>uploadDate}" class="columnLabelStyle" wrapping="true" />
+						</Column>
+						<Column id="UPLOAD_EXP_DATE" minScreenWidth="Desktop" demandPopin="true">
+							<Label text="{i18n>uploadExpireDate}" class="columnLabelStyle" wrapping="true" />
+						</Column>
+						<Column minScreenWidth="Desktop" demandPopin="true" width="3rem"></Column>
+						<Column minScreenWidth="Desktop" demandPopin="true" width="3rem"></Column>
+					</columns>
+					<items>
+						<ColumnListItem>
+							<cells>
+								<Text text="{DocumentDetailJSONModel>OBJECT}" />
+								<Text text="{DocumentDetailJSONModel>DOC_TYPE}" />
+								<Text text="{= ${DocumentDetailJSONModel>DOC_TYPE} === 'TMA' ? ${i18n>TMA} : ${DocumentDetailJSONModel>DOC_TYPE} === 'OFF' ? ${i18n>OFF} : ${DocumentDetailJSONModel>DOC_TYPE} === 'MAT' ? ${i18n>MAT} : ${DocumentDetailJSONModel>DOC_TYPE} === 'ALL' ? ${i18n>ALL} : ${DocumentDetailJSONModel>DOC_TYPE} === 'R8D' ? ${i18n>R8D} : ${DocumentDetailJSONModel>DOC_TYPE} === 'ADD' ? ${i18n>R8D} : '' }" />
+								<Text text="{DocumentDetailJSONModel>VERSION}" />
+								<Text text="{ path: 'DocumentDetailJSONModel>CREATION_DATE', type: 'it.aupsup.docmanagement.type.Date' }" />
+								<Text text="{ path: 'DocumentDetailJSONModel>DOWNLOAD_DATE', type: 'it.aupsup.docmanagement.type.Date' }" />
+								<Text text="{= ${DocumentDetailJSONModel>VERSION_STATE} === 'A' ? ${i18n>attivo} : ${DocumentDetailJSONModel>VERSION_STATE} === 'I' ? ${i18n>inattivo} : ''}" />
+								<Text text="{= ${DocumentDetailJSONModel>WORKFLOW} === 'RF' ? ${i18n>rifiutato} : ${DocumentDetailJSONModel>WORKFLOW} === 'AP' ? ${i18n>approvato} : ${DocumentDetailJSONModel>WORKFLOW} === 'IA' ? ${i18n>inApprovazione} : ''}" />
+								<Text text="{ path: 'DocumentDetailJSONModel>UPLOAD_DATE', type: 'it.aupsup.docmanagement.type.Date' }" />
+								<Text text="{ path: 'DocumentDetailJSONModel>UPLOAD_EXP_DATE', type: 'it.aupsup.docmanagement.type.Date' }" />
+								<u:FileUploader class="pickingUploader" visible="{DocumentDetailJSONModel>IS_UPLOAD}" sameFilenameAllowed="true" change="onItemUpload" fileType="xlsx,docx,pdf,txt,doc,xls" iconFirst="true" buttonOnly="true" typeMissmatch="onTypeMissmatch" maximumFileSize="5" fileSizeExceed="onFileSizeExceed" iconOnly="true" icon="sap-icon://upload" tooltip="upload doc" />
+								<Button icon="sap-icon://download" press="onItemDownload" visible="{DocumentDetailJSONModel>IS_DOWNLOAD}" iconOnly="true"/>
+							</cells>
+						</ColumnListItem>
+					</items>
+
+				</Table>
+			</content>
+			<footer>
+				<Toolbar>
+					<ToolbarSpacer />
+					<Button text="{i18n>close}" press="onClosedocumentDetailFragment" type="Reject" />
+				</Toolbar>
+			</footer>
+		</Page>
+	</NavContainer>
+</Dialog>

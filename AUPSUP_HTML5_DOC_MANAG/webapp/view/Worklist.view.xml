@@ -1,0 +1,188 @@
+<mvc:View controllerName="it.aupsup.docmanagement.controller.Worklist" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.uxap" xmlns:layout="sap.ui.layout" xmlns:m="sap.m" xmlns:table="sap.ui.table" xmlns:core="sap.ui.core" xmlns:fb="sap.ui.comp.filterbar" xmlns:personal="sap.uxap.sample.SharedBlocks.personal" xmlns:form="sap.ui.layout.form" xmlns:u="sap.ui.unified">
+	<m:Shell id="shell" appWidthLimited="false">
+		<m:App id="app">
+			<m:pages>
+				<m:Page id="worklist">
+					<m:customHeader>
+						<m:Bar>
+							<m:contentLeft>
+								<m:Text text="{userapi>/firstname} {userapi>/lastname}"></m:Text>
+							</m:contentLeft>
+							<m:contentMiddle>
+								<m:Text text="{i18n>title}" class="sapMTitle sapMTitleStyleAuto sapMTitleMaxWidth"></m:Text>
+							</m:contentMiddle>
+						</m:Bar>
+					</m:customHeader>
+					<m:content>
+						<ObjectPageLayout id="ObjectPageLayout" headerContentPinnable="true" showFooter="true">
+							<headerContent>
+								<fb:FilterBar clear="onClearFilters" search="onSearch" showRestoreButton="false" showClearButton="true" showClearOnFB="true">
+									<fb:filterItems>
+										<fb:FilterItem name="Metasupplier" label="{i18n>METASUP}">
+											<fb:control>
+												<m:MultiComboBox selectedKeys="{MetasupplierJSONModel>/METAID}" selectionChange="onChangeMetasupplier" items="{ path: 'MetasupplierJSONModel>/results', sorter: { path: 'METAID' } }">
+													<core:Item key="{MetasupplierJSONModel>METAID}" text="{MetasupplierJSONModel>DESCR}" />
+												</m:MultiComboBox>
+											</fb:control>
+										</fb:FilterItem>
+										<fb:FilterItem name="Lifnr" label="{i18n>supplier}">
+											<fb:control>
+												<m:MultiComboBox selectionChange="onChangeMetalifnr" items="{ path: 'lifnrJSONModel>/', sorter: { path: 'LIFNR' } }">
+													<core:Item key="{lifnrJSONModel>LIFNR}" text="{lifnrJSONModel>DESCR}" />
+												</m:MultiComboBox>
+											</fb:control>
+										</fb:FilterItem>
+										<fb:FilterItem name="DocType" label="{i18n>docType}">
+											<fb:control>
+												<m:MultiComboBox selectedKeys="{filterDocumentJSONModel>/docType}" items="{ path: 'docTypeJSONModel>/', sorter: { path: 'code' } }">
+													<core:Item key="{docTypeJSONModel>code}" text="{docTypeJSONModel>descr}" />
+												</m:MultiComboBox>
+											</fb:control>
+										</fb:FilterItem>
+										<fb:FilterItem name="DocTipologia" label="{i18n>DocTipologia}">
+											<fb:control>
+												<m:MultiComboBox selectedKeys="{filterDocumentJSONModel>/docTipology}" items="{ path: 'docTipologiaJSONModel>/', sorter: { path: 'code' } }" showSecondaryValues="true">
+													<core:ListItem key="{docTipologiaJSONModel>code}" text="{docTipologiaJSONModel>descr}" additionalText="{docTipologiaJSONModel>code}" />
+												</m:MultiComboBox>
+											</fb:control>
+										</fb:FilterItem>
+										<fb:FilterItem name="VersionState" label="{i18n>versionState}">
+											<fb:control>
+												<m:MultiComboBox selectedKeys="{filterDocumentJSONModel>/versionState}" items="{ path: 'versionStateJSONModel>/', sorter: { path: 'code' } }">
+													<core:Item key="{versionStateJSONModel>code}" text="{versionStateJSONModel>descr}" />
+												</m:MultiComboBox>
+											</fb:control>
+										</fb:FilterItem>
+										<fb:FilterItem name="version" label="{i18n>version}">
+											<fb:control>
+												<m:CheckBox selected="{filterDocumentJSONModel>/version}" />
+											</fb:control>
+										</fb:FilterItem>
+									</fb:filterItems>
+
+								</fb:FilterBar>
+							</headerContent>
+							<sections>
+								<ObjectPageSection title="{i18n>generalSection}">
+									<subSections>
+										<ObjectPageSubSection>
+											<m:Table id="generalDocTable" items="{DocumentJSONModel>/GeneralDoc/results}" itemPress="onRowSelectionChange" growing="true" growingThreshold="50" growingScrollToLoad="true">
+												<m:headerToolbar>
+													<m:OverflowToolbar>
+														<m:content></m:content>
+													</m:OverflowToolbar>
+												</m:headerToolbar>
+												<m:columns>
+													<m:Column id="OBJECT" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>object}" class="columnLabelStyle" wrapping="true" />
+													</m:Column>
+													<m:Column id="DOC_TYPE" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>docType}" class="columnLabelStyle" wrapping="true" />
+													</m:Column>
+													<m:Column id="DOC_TYPE_DESCR" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>docTypeDescr}" class="columnLabelStyle" wrapping="true" />
+													</m:Column>
+													<m:Column id="VERSION" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>version}" class="columnLabelStyle" wrapping="true" />
+													</m:Column>
+													<m:Column id="CREATION_DATE" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>creationDate}" class="columnLabelStyle" wrapping="true" />
+													</m:Column>
+													<m:Column id="DOWNLOAD_DATE" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>downloadDate}" class="columnLabelStyle" wrapping="true" />
+													</m:Column>
+													<m:Column id="VERSION_STATE" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>versionState}" class="columnLabelStyle" wrapping="true" />
+													</m:Column>
+													<m:Column id="WORKFLOW" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>workflow}" class="columnLabelStyle" wrapping="true" />
+													</m:Column>
+													<m:Column id="UPLOAD_DATE" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>uploadDate}" class="columnLabelStyle" wrapping="true" />
+													</m:Column>
+													<m:Column id="UPLOAD_EXP_DATE" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>uploadExpireDate}" class="columnLabelStyle" wrapping="true" />
+													</m:Column>
+													<m:Column id="END_DATE_DOC" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>docValidityDate}" class="columnLabelStyle" wrapping="true" />
+													</m:Column>
+													<m:Column minScreenWidth="Desktop" demandPopin="true" width="3rem"></m:Column>
+													<m:Column minScreenWidth="Desktop" demandPopin="true" width="3rem"></m:Column>
+												</m:columns>
+												<m:items>
+													<m:ColumnListItem>
+														<m:cells>
+															<m:Text text="{= ${DocumentJSONModel>OBJECT} === 'G' ? ${i18n>Generale} : ''}" />
+															<m:Text text="{DocumentJSONModel>DOC_TYPE}" />
+															<m:Text text="{= ${DocumentJSONModel>DOC_TYPE} === 'DUR' ? ${i18n>DUR} : ${DocumentJSONModel>DOC_TYPE} === 'COND' ? ${i18n>COND} : ${DocumentJSONModel>DOC_TYPE} === 'REI' ? ${i18n>REI} : ${DocumentJSONModel>DOC_TYPE} === 'LMI' ? ${i18n>LMI} : ${DocumentJSONModel>DOC_TYPE} === 'VAL' ? ${i18n>VAL} : '' }" />
+															<m:Text text="{DocumentJSONModel>VERSION}" />
+															<m:Text text="{ path: 'DocumentJSONModel>CREATION_DATE', type: 'it.aupsup.docmanagement.type.Date' }" />
+															<m:Text text="{ path: 'DocumentJSONModel>DOWNLOAD_DATE', type: 'it.aupsup.docmanagement.type.Date' }" />
+															<m:Text text="{= ${DocumentJSONModel>VERSION_STATE} === 'A' ? ${i18n>attivo} : ${DocumentJSONModel>VERSION_STATE} === 'I' ? ${i18n>inattivo} : ''}" />
+															<m:Text text="{= ${DocumentJSONModel>WORKFLOW} === 'RF' ? ${i18n>rifiutato} : ${DocumentJSONModel>WORKFLOW} === 'AP' ? ${i18n>approvato} : ${DocumentJSONModel>WORKFLOW} === 'IA' ? ${i18n>inApprovazione} : ''}" />
+															<m:Text text="{ path: 'DocumentJSONModel>UPLOAD_DATE', type: 'it.aupsup.docmanagement.type.Date' }" />
+															<m:Text text="{ path: 'DocumentJSONModel>UPLOAD_EXP_DATE', type: 'it.aupsup.docmanagement.type.Date' }" />
+															<m:Text text="{ path: 'DocumentJSONModel>END_DATE_DOC', type: 'it.aupsup.docmanagement.type.Date' }" />
+															<u:FileUploader id="uploadDocBtn" class="pickingUploader" visible="{DocumentJSONModel>IS_UPLOAD}" sameFilenameAllowed="true" change="onItemUpload" fileType="xlsx,docx,pdf,txt,doc,xls" iconFirst="true" buttonOnly="true" typeMissmatch="onTypeMissmatch" maximumFileSize="5" fileSizeExceed="onFileSizeExceed" iconOnly="true" icon="sap-icon://upload" tooltip="upload doc"/>
+															<m:Button icon="sap-icon://download" press="onItemDownload" iconOnly="true" visible="{DocumentJSONModel>IS_DOWNLOAD}" />
+														</m:cells>
+													</m:ColumnListItem>
+												</m:items>
+											</m:Table>
+										</ObjectPageSubSection>
+									</subSections>
+								</ObjectPageSection>
+								<ObjectPageSection title="{i18n>processSection}">
+									<subSections>
+										<ObjectPageSubSection title="">
+											<m:Table id="processDocumentTable" items="{DocumentJSONModel>/ProcessDoc/results}" itemPress="onRowSelectionProcessItem" growing="true" growingThreshold="50" growingScrollToLoad="true">
+												<m:headerToolbar>
+													<m:OverflowToolbar>
+														<m:content></m:content>
+													</m:OverflowToolbar>
+												</m:headerToolbar>
+												<m:columns>
+													<m:Column id="OBJ" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>object}" class="columnLabelStyle" wrapping="true" />
+													</m:Column>
+													<m:Column id="TO_READ" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>toRead}" class="columnLabelStyle" wrapping="true" />
+													</m:Column>
+													<m:Column id="READ" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>read}" class="columnLabelStyle" wrapping="true" />
+													</m:Column>
+													<m:Column id="TO_UPLOAD" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>toUpload}" class="columnLabelStyle" wrapping="true" />
+													</m:Column>
+													<m:Column id="UPLOADED" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>uploaded}" class="columnLabelStyle" wrapping="true" />
+													</m:Column>
+													<m:Column id="EXP_DATE" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>expDate}" class="columnLabelStyle" wrapping="true" />
+													</m:Column>
+												</m:columns>
+												<m:items>
+													<m:ColumnListItem type="Navigation" highlight="{path:'DocumentJSONModel>OBJECT', formatter:'.onSetDocumentColor'}">
+														<m:cells>
+															<m:Text text="{DocumentJSONModel>OBJECT}" />
+															<m:Text text="{DocumentJSONModel>TO_READ}" />
+															<m:Text text="{DocumentJSONModel>READ}" />
+															<m:Text text="{DocumentJSONModel>TO_UPLOAD}" />
+															<m:Text text="{DocumentJSONModel>UPLOADED}" />
+															<m:Text text="{ path: 'DocumentJSONModel>EXP_DATE', type: 'it.aupsup.docmanagement.type.Date' }" />
+														</m:cells>
+													</m:ColumnListItem>
+												</m:items>
+											</m:Table>
+										</ObjectPageSubSection>
+									</subSections>
+								</ObjectPageSection>
+							</sections>
+							<footer></footer>
+						</ObjectPageLayout>
+					</m:content>
+				</m:Page>
+			</m:pages>
+		</m:App>
+	</m:Shell>
+</mvc:View>

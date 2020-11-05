@@ -90,21 +90,57 @@
 				"async": true,
 				"viewPath": "it.aupsup.docmanagement.view",
 				"controlAggregation": "pages",
-				"controlId": "app",
+				"controlId": "idAppControl",
 				"clearControlAggregation": false
 			},
-			"routes": [{
-				"name": "RouteApp",
-				"pattern": "RouteApp",
-				"target": ["TargetApp"]
-			}],
+			"routes": [
+				{
+					"pattern": "",
+					"name": "worklist",
+					"greedy": false,
+					"target": [
+						"worklist"
+					]
+				},
+				{
+					"name": "object",
+					"pattern": "object/{orderID}",
+					"titleTarget": "",
+					"greedy": false,
+					"target": [
+						"object"
+					]
+				},
+				{
+					"name": "detail",
+					"pattern": "detail/{datas}",
+					"titleTarget": "",
+					"greedy": false,
+					"target": [
+						"detail"
+					]
+				}
+			],
 			"targets": {
-				"TargetApp": {
+				"worklist": {
+					"viewLevel": 1,
+					"viewName": "Worklist"
+				},
+				"object": {
+					"viewName": "OrderPositions",
+					"viewLevel": 2
+				},
+				"detail": {
+					"viewLevel": 3,
+					"viewName": "OrderPositionDetail"
+				},
+				"OrderPositions": {
 					"viewType": "XML",
-					"transition": "slide",
-					"clearControlAggregation": false,
-					"viewId": "App",
-					"viewName": "App"
+					"viewName": "OrderPositions"
+				},
+				"OrderPositionDetail": {
+					"viewType": "XML",
+					"viewName": "OrderPositionDetail"
 				}
 			}
 		}

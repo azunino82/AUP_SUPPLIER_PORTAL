@@ -1,7 +1,7 @@
 sap.ui.define([
 	"sap/ui/core/UIComponent",
 	"sap/ui/Device",
-	"it/aupsup/docmanagement/AUPSUP_HTML5_DOC_MANAG/model/models"
+	"it/aupsup/docmanagement/model/models"
 ], function (UIComponent, Device, models) {
 	"use strict";
 
