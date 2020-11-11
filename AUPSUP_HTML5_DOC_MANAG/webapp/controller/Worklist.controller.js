@@ -559,6 +559,12 @@ sap.ui.define([
 
 		},
 
+		onApprove:function(oEvent){
+			var oPath = oEvent.getSource().getParent().getBindingContext("SchedAgreeJSONModel").sPath;
+			var mod = that.getModel("SchedAgreeJSONModel").getProperty(oPath);
+			MessageToast.show(that.getResourceBundle().getText("OK_approvata"));
+		},
+
 		getMetasupplier: function () {
 			var url = "/backend/Utils/UtilsManagement/GetMetasupplierList";
 			that.ajaxGet(url, function (oData) {
