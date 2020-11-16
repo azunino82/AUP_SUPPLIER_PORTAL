@@ -201,7 +201,7 @@
 																						<m:Text text="{path : 'DocumentsJSONModel>new_end_date', type: 'it.aupsup.logsordsched.type.Date' }"/>
 																						<m:Text text="{path : 'DocumentsJSONModel>insert_date', type: 'it.aupsup.logsordsched.type.Timestamp' }"/>
 																						<m:Text text="{path : 'DocumentsJSONModel>approve_date', type: 'it.aupsup.logsordsched.type.Timestamp'}"/>
-																						<m:Text text="{= ${DocumentsJSONModel>confirmDirectToSap} === 'X' ? ${i18n>automatica} : ${DocumentsJSONModel>status} === 'RC' ? ${i18n>daElaborare} : ${DocumentsJSONModel>status} === 'AP' || ${DocumentsJSONModel>status} === 'OK' ? ${i18n>approvata} : ${DocumentsJSONModel>status} === 'RF' ? ${i18n>rifiutata} : ''  }"/>
+																						<m:Text text="{= ${DocumentsJSONModel>confirmDirectToSap} === 'X' ? ${i18n>automatica} : ${DocumentsJSONModel>status} === 'RC' ? ${i18n>daElaborare} : ${DocumentsJSONModel>status} === 'AP' || ${DocumentsJSONModel>status} === 'OK' ? ${i18n>approvata} : ${DocumentsJSONModel>status} === 'RF' ? ${i18n>rifiutata} : ${DocumentsJSONModel>status} === 'SK' ? ${i18n>skippata} : '' }"/>
 																						<m:Button icon="sap-icon://notification-2" press="handleTextPopoverPress" visible="{= ${DocumentsJSONModel>comment} !== '' &amp;&amp; ${DocumentsJSONModel>comment} !== null }"/>
 																					</m:cells>
 																				</m:ColumnListItem>
@@ -255,7 +255,7 @@
 																						<m:Text text="{path : 'DocumentsJSONModel>conf_quant', formatter : '.importFormatter'}"/>
 																						<m:Text text="{path : 'DocumentsJSONModel>insert_date', type: 'it.aupsup.logsordsched.type.Timestamp'}"/>
 																						<m:Text text="{path : 'DocumentsJSONModel>approve_date', type: 'it.aupsup.logsordsched.type.Timestamp'}"/>
-																						<m:Text text="{= ${DocumentsJSONModel>status} === 'RC' ? ${i18n>daElaborare} : ${DocumentsJSONModel>status} === 'AP' ? ${i18n>approvata} : ${DocumentsJSONModel>status} === 'RF' ? ${i18n>rifiutata} : ''  }"/>
+																						<m:Text text="{= ${DocumentsJSONModel>status} === 'RC' ? ${i18n>daElaborare} : ${DocumentsJSONModel>status} === 'AP' ? ${i18n>approvata} : ${DocumentsJSONModel>status} === 'RF' ? ${i18n>rifiutata} : ${DocumentsJSONModel>status} === 'SK' ? ${i18n>skippata} : '' }"/>
 																						<m:Button icon="sap-icon://notification-2" press="handleTextPopoverPress" visible="{= ${DocumentsJSONModel>comment} !== '' &amp;&amp; ${DocumentsJSONModel>comment} !== null }"/>
 																					</m:cells>
 																				</m:ColumnListItem>

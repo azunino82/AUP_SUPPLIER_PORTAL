@@ -14,6 +14,7 @@ module.exports = function () {
   var app = express.Router()
   var schedulerODALuve
   var schedulerSAGLuve
+  var schedulerCLR_ORDLuve
 
   const bodyParser = require('body-parser')
 
@@ -125,6 +126,37 @@ module.exports = function () {
     })
   }
 
+  const promiseCallCRL_ORDUpdate = (tenantContainer) => {
+    return new Promise((resolve, reject) => {
+      try {
+        hdbext.createConnection(tenantContainer, (err, client) => {
+          if (err) {
+            console.log('SCHEDULER ERROR: ' + stringifyObj(err))
+            // eslint-disable-next-line prefer-promise-reject-errors
+            reject()
+          } else {
+            hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Schedulers::ClearConfirms', function (_err, sp) {
+              sp((err, parameters, returns) => {
+                if (err) {
+                  console.error('SCHEDULER CRL_ORD LUVE ERROR: ' + stringifyObj(err))
+                  // eslint-disable-next-line prefer-promise-reject-errors
+                  reject()
+                } else {
+                  console.log('SCHEDULER CRL_ORD LUVE OOOK')
+                  resolve()
+                }
+              })
+            })
+          }
+        })
+      } catch (error) {
+        console.log('JOB CRL_ORD LUVE ERROR EXCEPT ' + error)
+        // eslint-disable-next-line prefer-promise-reject-errors
+        reject()
+      }
+    })
+  }
+
   // JOB START & STOP
   app.get('/JobUpdateStatus', function (req, res) {
     var record
@@ -154,7 +186,9 @@ module.exports = function () {
 
           function response (err, results, callback) {
             if (err) {
-              return res.type('application/json').status(500).send({ ERROR: err })
+              return res.type('application/json').status(500).send({
+                ERROR: err
+              })
             } else {
               console.log('SCHEDULER: ' + JSON.stringify(results))
               if (results !== null && results.length > 0) {
@@ -218,6 +252,35 @@ module.exports = function () {
                       }
                     }
                   }
+
+                  if (record && record.SCHEDULER_STATUS === 'X' && record.APPLICATION === 'CLR_ORD') {
+                    console.log('SCHEDULER schedulerCLR_ORDLuve: ' + schedulerCLR_ORDLuve)
+                    console.log('SCHEDULER CLR_ORD STARTING ')
+                    if (schedulerCLR_ORDLuve === undefined) {
+                      console.log('SCHEDULER schedulerCLR_ORDLuve NOT EXIST')
+                      schedulerCLR_ORDLuve = cron.schedule(record.SCHEDULER_TIME_REPEAT, async () => promiseCallCRL_ORDUpdate(req.tenantContainer))
+                      schedulerCLR_ORDLuve.start()
+                      console.log('SCHEDULER CLR_ORD STARTED')
+                    } else {
+                      console.log('SCHEDULER schedulerCLR_ORDLuve ALREADY EXIST')
+                      schedulerCLR_ORDLuve.stop()
+                      schedulerCLR_ORDLuve.destroy()
+                      schedulerCLR_ORDLuve = cron.schedule(record.SCHEDULER_TIME_REPEAT, async () => promiseCallCRL_ORDUpdate(req.tenantContainer))
+                      schedulerCLR_ORDLuve.start()
+                      console.log('SCHEDULER CLR_ORD STARTED')
+                    }
+                  } else {
+                    if (record && record.SCHEDULER_STATUS === '' && record.APPLICATION === 'L') {
+                      console.log('SCHEDULER CLR_ORD STOPPING')
+                      if (schedulerCLR_ORDLuve !== undefined) {
+                        console.log('SCHEDULER CLR_ORD STOP')
+                        schedulerCLR_ORDLuve.stop()
+                        console.log('SCHEDULER CLR_ORD STOPPED')
+                      } else {
+                        console.log('CAN NOT STOP CLR_ORD UNDEFINED')
+                      }
+                    }
+                  }
                 })
               }
             }
@@ -245,34 +308,55 @@ module.exports = function () {
       return res.status(500).send('I_BSTYP mandatory ')
     }
 
-    hdbext.createConnection(req.tenantContainer, (err, client) => {
-      if (err) {
-        return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
-      } else {
-        hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Schedulers::UpdateTask', function (_err, sp) {
-          sp(bstyp, (err, parameters, returns) => {
-            if (err) {
-              console.error('ERROR: ' + err)
-              return res.status(500).send(stringifyObj(err))
-            } else {
-              for (let index = 0; index < returns.length; index++) {
-                const element = returns[index]
-                if (bstyp === 'F') {
-                  element.APPLICAZIONE = 'ODA'
-                  element.EVENT = 'NOR'
+    if (bstyp === 'F' || bstyp === 'L') {
+      hdbext.createConnection(req.tenantContainer, (err, client) => {
+        if (err) {
+          return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
+        } else {
+          hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Schedulers::UpdateTask', function (_err, sp) {
+            sp(bstyp, (err, parameters, returns) => {
+              if (err) {
+                console.error('ERROR: ' + err)
+                return res.status(500).send(stringifyObj(err))
+              } else {
+                for (let index = 0; index < returns.length; index++) {
+                  const element = returns[index]
+                  if (bstyp === 'F') {
+                    element.APPLICAZIONE = 'ODA'
+                    element.EVENT = 'NOR'
+                  }
+                  if (bstyp === 'L') {
+                    element.APPLICAZIONE = 'P_CONS'
+                    element.EVENT = 'NPC'
+                  }
                 }
-                if (bstyp === 'L') {
-                  element.APPLICAZIONE = 'P_CONS'
-                  element.EVENT = 'NPC'
-                }
+                sendMail(req.tenantContainer, returns)
+                return res.status(200).send('ok')
               }
-              sendMail(req.tenantContainer, returns)
-              return res.status(200).send('ok')
-            }
+            })
           })
-        })
-      }
-    })
+        }
+      })
+    }
+
+    if (bstyp === 'CLR_ORD') {
+      hdbext.createConnection(req.tenantContainer, (err, client) => {
+        if (err) {
+          return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
+        } else {
+          hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Schedulers::ClearConfirms', function (_err, sp) {
+            sp((err, parameters, returns) => {
+              if (err) {
+                console.error('SCHEDULER CRL_ORD LUVE ERROR: ' + stringifyObj(err))
+                return res.status(500).send({ error: stringifyObj(err) })
+              } else {
+                return res.status(200).send('ok')
+              }
+            })
+          })
+        }
+      })
+    }
   })
 
   function sendMail (tenantContainer, confirms) {
@@ -361,7 +445,9 @@ module.exports = function () {
                               body = body.replace('EBELN', element.EBELN)
                               body = body.replace('EBELP', element.EBELP)
                               body = body.replace('MATNR', element.MATNR)
-                              bodyLines.push({ LINE: body })
+                              bodyLines.push({
+                                LINE: body
+                              })
                             }
 
                             var sql = 'SELECT * FROM \"AUPSUP_DATABASE.data.tables::T_NOTIF_PORTAL_LINKS\" WHERE APP = \'' + element.APPLICAZIONE + '\' and EVENT = \'' + element.EVENT + '\''
@@ -374,11 +460,15 @@ module.exports = function () {
                               } else {
                                 if (results && results[0]) {
                                   // SPAZIO VUOTO
-                                  bodyLines.push({ LINE: '' })
+                                  bodyLines.push({
+                                    LINE: ''
+                                  })
                                   var link = results[0].LINK
                                   link = link.replace('EBELN', element.EBELN)
                                   link = link.replace('EBELP', element.EBELP)
-                                  bodyLines.push({ LINE: link })
+                                  bodyLines.push({
+                                    LINE: link
+                                  })
                                 }
                               }
 
