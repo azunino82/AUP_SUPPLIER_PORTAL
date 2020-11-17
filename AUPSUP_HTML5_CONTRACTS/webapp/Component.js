@@ -1,11 +1,11 @@
 sap.ui.define([
 	"sap/ui/core/UIComponent",
 	"sap/ui/Device",
-	"it/aupsup/contracts/AUPSUP_HTML5_CONTRACTS/model/models"
+	"it/aupsup/contracts/model/models"
 ], function (UIComponent, Device, models) {
 	"use strict";
 
-	return UIComponent.extend("it.aupsup.contracts.AUPSUP_HTML5_CONTRACTS.Component", {
+	return UIComponent.extend("it.aupsup.contracts.Component", {
 
 		metadata: {
 			manifest: "json"

@@ -1,7 +1,7 @@
 {
 	"_version": "1.12.0",
 	"sap.app": {
-		"id": "it.aupsup.contracts.AUPSUP_HTML5_CONTRACTS",
+		"id": "it.aupsup.contracts",
 		"type": "application",
 		"i18n": "i18n/i18n.properties",
 		"applicationVersion": {
@@ -20,7 +20,7 @@
 						"parameters": {},
 						"additionalParameters": "allowed"
 					},
-					"semanticObject": "Contracts",
+					"semanticObject": "PurchaseOrders",
 					"action": "Display",
 					"title": "{{appTitle}}",
 					"icon": "sap-icon://customer-order-entry"
@@ -28,7 +28,6 @@
 			}
 		}
 	},
-
 	"sap.ui": {
 		"fullWidth": true,
 		"technology": "UI5",
@@ -46,14 +45,13 @@
 			"phone": true
 		}
 	},
-
 	"sap.ui5": {
 		"config": {
 			"fullWidth": true
 		},
 		"flexEnabled": false,
 		"rootView": {
-			"viewName": "it.aupsup.contracts.AUPSUP_HTML5_CONTRACTS.view.App",
+			"viewName": "it.aupsup.contracts.view.App",
 			"type": "XML",
 			"async": true,
 			"id": "App"
@@ -74,37 +72,62 @@
 			"i18n": {
 				"type": "sap.ui.model.resource.ResourceModel",
 				"settings": {
-					"bundleName": "it.aupsup.contracts.AUPSUP_HTML5_CONTRACTS.i18n.i18n"
+					"bundleName": "it.aupsup.contracts.i18n.i18n"
 				}
 			}
 		},
 		"resources": {
-			"css": [{
-				"uri": "css/style.css"
-			}]
+			"css": [
+				{
+					"uri": "css/style.css"
+				}
+			]
 		},
 		"routing": {
 			"config": {
 				"routerClass": "sap.m.routing.Router",
 				"viewType": "XML",
 				"async": true,
-				"viewPath": "it.aupsup.contracts.AUPSUP_HTML5_CONTRACTS.view",
+				"viewPath": "it.aupsup.contracts.view",
 				"controlAggregation": "pages",
-				"controlId": "app",
+				"controlId": "idAppControl",
 				"clearControlAggregation": false
 			},
-			"routes": [{
-				"name": "RouteApp",
-				"pattern": "RouteApp",
-				"target": ["TargetApp"]
-			}],
+			"routes": [
+				{
+					"pattern": "",
+					"name": "worklist",
+					"greedy": false,
+					"target": [
+						"worklist"
+					]
+				},
+				{
+					"name": "detail",
+					"pattern": "detail/{datas}",
+					"titleTarget": "",
+					"greedy": false,
+					"target": [
+						"detail"
+					]
+				}
+			],
 			"targets": {
-				"TargetApp": {
+				"worklist": {
+					"viewLevel": 1,
+					"viewName": "Worklist"
+				},
+				"detail": {
+					"viewLevel": 2,
+					"viewName": "OrderPositionDetail"
+				},
+				"OrderPositions": {
 					"viewType": "XML",
-					"transition": "slide",
-					"clearControlAggregation": false,
-					"viewId": "App",
-					"viewName": "App"
+					"viewName": "OrderPositions"
+				},
+				"OrderPositionDetail": {
+					"viewType": "XML",
+					"viewName": "OrderPositionDetail"
 				}
 			}
 		}

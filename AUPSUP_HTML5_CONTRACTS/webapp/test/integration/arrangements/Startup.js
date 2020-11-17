@@ -3,7 +3,7 @@ sap.ui.define([
 ], function (Opa5) {
 	"use strict";
 
-	return Opa5.extend("it.aupsup.contracts.AUPSUP_HTML5_CONTRACTS.test.integration.arrangements.Startup", {
+	return Opa5.extend("it.aupsup.purchords.test.integration.arrangements.Startup", {
 
 		iStartMyApp: function (oOptionsParameter) {
 			var oOptions = oOptionsParameter || {};
@@ -14,7 +14,7 @@ sap.ui.define([
 			// start the app UI component
 			this.iStartMyUIComponent({
 				componentConfig: {
-					name: "it.aupsup.contracts.AUPSUP_HTML5_CONTRACTS",
+					name: "it.aupsup.purchords",
 					async: true
 				},
 				hash: oOptions.hash,

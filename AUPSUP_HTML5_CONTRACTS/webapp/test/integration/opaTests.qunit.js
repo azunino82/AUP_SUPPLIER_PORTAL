@@ -5,7 +5,7 @@ sap.ui.getCore().attachInit(function () {
 	"use strict";
 
 	sap.ui.require([
-		"it/aupsup/contracts/AUPSUP_HTML5_CONTRACTS/test/integration/AllJourneys"
+		"it/aupsup/purchords/test/integration/AllJourneys"
 	], function () {
 		QUnit.start();
 	});

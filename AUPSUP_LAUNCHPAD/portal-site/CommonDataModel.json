@@ -80,7 +80,7 @@
 					"vizId": "DocManagement-Display"
 				}, {
 					"id": "AUPSUP_HTML5_CONTRACTS",
-					"appId": "it.aupsup.contracts.AUPSUP_HTML5_CONTRACTS",
+					"appId": "it.aupsup.contracts",
 					"vizId": "Contracts-Display"
 				}]
 			}

@@ -1,7 +1,7 @@
 /*global QUnit*/
 
 sap.ui.define([
-	"it/aupsup/contracts/AUPSUP_HTML5_CONTRACTS/controller/App.controller"
+	"it/aupsup/purchords/controller/App.controller"
 ], function (Controller) {
 	"use strict";
 
