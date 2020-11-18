@@ -4,7 +4,7 @@ sap.ui.define([
 	"sap/m/MessageBox",
 	"sap/ui/model/Filter",
 	"sap/ui/model/Sorter",
-	"it/aupsup/contracts/js/Date",
+	"it/aupsup/contracts/js/Date"
 ], function (BaseController, JSONModel, MessageBox, Filter, Sorter,Datef) {
 	"use strict";
 

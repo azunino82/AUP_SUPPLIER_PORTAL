@@ -20,7 +20,7 @@
 						"parameters": {},
 						"additionalParameters": "allowed"
 					},
-					"semanticObject": "PurchaseOrders",
+					"semanticObject": "Contracts",
 					"action": "Display",
 					"title": "{{appTitle}}",
 					"icon": "sap-icon://customer-order-entry"
