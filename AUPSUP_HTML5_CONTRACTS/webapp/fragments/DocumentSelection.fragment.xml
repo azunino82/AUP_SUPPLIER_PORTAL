@@ -1,0 +1,52 @@
+<Dialog xmlns:f="sap.ui.layout.form"
+	xmlns:core="sap.ui.core"
+	xmlns:u="sap.ui.unified"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m"
+	xmlns:table="sap.ui.table"
+	xmlns:smartFilterBar="sap.ui.comp.smartfilterbar"
+	xmlns:fb="sap.ui.comp.filterbar"
+	xmlns:smartTable="sap.ui.comp.smarttable" contentWidth="100%" contentHeight="100%" title="{i18n>positionConfirmation}">
+	<NavContainer id="navCon">
+		<Page id="p1">
+			<content>
+				<fb:FilterBar clear="onClearMaterialSearchFilters" search="onSearchDocList" showRestoreButton="false" showClearButton="true" showClearOnFB="true">
+					<fb:filterItems>
+						<fb:FilterItem name="DocType" label="{i18n>DocType}">
+							<fb:control>
+								<ComboBox selectedKey="{filterDocListJSONModel>/DocType}" width="auto" items="{ path: 'CustomDocJSONModel>/', sorter: { path: 'DMS_DOC_TYPE' } }">
+									<core:Item key="{CustomDocJSONModel>DMS_DOC_TYPE}" text="{CustomDocJSONModel>DMS_DOC_TYPE} - {CustomDocJSONModel>DMS_DOC_TYPE_DESCR}"/>
+								</ComboBox>
+							</fb:control>
+						</fb:FilterItem>
+					</fb:filterItems>
+				</fb:FilterBar>
+				<Table id="DownloadDocumentTable" width="auto" mode="MultiSelect" items="{ path: 'DocumentListJSONModel>/results' }">
+					<columns>
+						<Column>
+							<Text text="{i18n>DESCRIPTION}"/>
+						</Column>		
+						<Column hAlign="End">
+							<Text text=""/>
+						</Column>						
+					</columns>
+					<items textAlign="Center">
+						<ColumnListItem>
+							<cells>
+								<Text text="{DocumentListJSONModel>DESCRIPTION}"/>
+								<Button icon="sap-icon://download" press="onDocumentDownload"/>
+							</cells>
+						</ColumnListItem>
+					</items>
+				</Table>
+			</content>
+			<footer>
+				<Toolbar>
+					<ToolbarSpacer/>
+					<Button text="{i18n>close}" press="onClosedocumentListFragment" type="Reject"/>
+					<Button text="{i18n>DownloadSel}" press="onDownloadSelDoc" type="Accept"/>
+				</Toolbar>
+			</footer>
+		</Page>		
+	</NavContainer>
+</Dialog>

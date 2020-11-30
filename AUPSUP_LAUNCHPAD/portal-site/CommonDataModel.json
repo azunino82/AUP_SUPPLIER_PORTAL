@@ -78,6 +78,10 @@
 					"id": "AUPSUP_HTML5_DOC_MANAG",
 					"appId": "it.aupsup.docmanagement",
 					"vizId": "DocManagement-Display"
+				}, {
+					"id": "AUPSUP_HTML5_CONTRACTS",
+					"appId": "it.aupsup.contracts",
+					"vizId": "Contracts-Display"
 				}]
 			}
 		}],

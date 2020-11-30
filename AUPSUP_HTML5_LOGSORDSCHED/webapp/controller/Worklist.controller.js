@@ -16,6 +16,11 @@ sap.ui.define([
 ], function (BaseController, Filter, FilterOperator, JSONModel, MessageBox, MessageToast, Sorter, DateF, TimestampFormatter, Formatter, Export, ExportTypeCSV, Dialog,Fragment) {
     "use strict";
     var that;
+
+    Number.prototype.pad = function(n) {
+        return new Array(n).join('0').slice((n || 2) * -1) + this;
+    }
+
     return BaseController.extend("it.aupsup.logsordsched.controller.Worklist", {
 
 		/**
@@ -161,6 +166,15 @@ sap.ui.define([
                 var day = body.createEindtTo.getDate().toString();
                 day = day.length > 1 ? day : '0' + day;
                 jsonBody.createEindtTo = year + month + day;
+            }
+
+            // add 0 before ebelp
+            if(jsonBody.ebelp !== undefined && jsonBody.ebelp !== ''){
+                if(jsonBody.ebelp.length !== 5){
+                	while(jsonBody.ebelp.length < 5){
+					  jsonBody.ebelp = '0' + jsonBody.ebelp
+					}
+                }
             }
 
             that.showBusyDialog();
@@ -416,9 +430,9 @@ sap.ui.define([
                         that.getModel("filterOrdersJSONModel").getData().ebtyp = outArr[0].CAT_CONFERMA;
                     }
                     // se ho 1 solo profilo conferma metto invisibile la combobox della worklist
-                    if (outArr.length <= 1) {
+                  /*  if (outArr.length <= 1) {
                         that.getView().byId("comboProfiliConferma").setVisible(false);
-                    }
+                    }*/
 
                     var oModel = new JSONModel();
                     oModel.setData({

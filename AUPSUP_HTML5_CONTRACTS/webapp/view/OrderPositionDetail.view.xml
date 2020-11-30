@@ -1,0 +1,172 @@
+<mvc:View controllerName="it.aupsup.contracts.controller.OrderPositionDetail" 
+	xmlns:mvc="sap.ui.core.mvc" 
+	xmlns="sap.uxap" 
+	xmlns:layout="sap.ui.layout" 
+	xmlns:m="sap.m" 
+	xmlns:table="sap.ui.table" 
+	xmlns:f="sap.f" 
+	xmlns:core="sap.ui.core" 
+	xmlns:personal="sap.uxap.sample.SharedBlocks.personal" 
+	xmlns:form="sap.ui.layout.form">
+	<m:Shell id="shell" appWidthLimited="false">
+		<m:App id="app">
+			<m:pages>
+				<m:Page id="detail">
+					<m:customHeader>
+						<m:Bar>
+							<m:contentLeft>
+								<m:Text text="{OrderPrositionJSONModel>/EBELN}/{OrderPrositionJSONModel>/EBELP}"></m:Text>
+							</m:contentLeft>
+							<m:contentMiddle>
+								<m:Text text="{i18n>appTitle}" class="sapMTitle sapMTitleStyleAuto sapMTitleMaxWidth"></m:Text>
+							</m:contentMiddle>
+						</m:Bar>
+					</m:customHeader>
+					<ObjectPageLayout id="ObjectPageLayout">
+						<headerContent>
+							<layout:HorizontalLayout>
+								<m:VBox class="sapUiSmallMargin">
+									<m:ObjectAttribute title="{i18n>MATNR}" text="{ path: 'OrderPrositionJSONModel>/MATNR', formatter : '.removeZeroBefore' }"/>
+									<!--Materiale-->
+									<m:ObjectAttribute title="{i18n>TXZ01}" text="{ path: 'OrderPrositionJSONModel>/TXZ01' }"/>
+									<!--Testo Breve-->
+									<m:ObjectAttribute title="{i18n>IDNLF}" text="{ path: 'OrderPrositionJSONModel>/IDNLF' }"/>
+									<!--Codice Materiale usato dal fornitore-->
+									<m:ObjectAttribute title="{i18n>MENGE}" text="{ path: 'OrderPrositionJSONModel>/MENGE', formatter : '.importFormatter' }"/>
+									<!--Quantità-->
+									<m:ObjectAttribute title="{i18n>NETPR}" text="{ path: 'OrderPrositionJSONModel>/NETPR', formatter : '.importFormatter' }"/>
+									<!--prezzo-->									
+									<m:ObjectAttribute title="{i18n>PEINH}" text="{ path: 'OrderPrositionJSONModel>/PEINH', formatter : '.importFormatter' }"/>
+									<!--Unità di prezzo-->
+									<m:ObjectAttribute title="{i18n>ORIG_NETPR}" text="{ path: 'OrderPrositionJSONModel>/ORIG_NETPR', formatter : '.importFormatter' }"/>
+										<!--prezzo-->									
+									<m:ObjectAttribute title="{i18n>ORIG_PEINH}" text="{ path: 'OrderPrositionJSONModel>/ORIG_PEINH', formatter : '.importFormatter' }"/>									
+								</m:VBox >
+							</layout:HorizontalLayout>
+						</headerContent>
+						<sections>
+							<ObjectPageSection title="{i18n>schedules}">
+								<subSections>
+									<ObjectPageSubSection title="">
+										<m:Table id="ShedulersTable" items="{OrderPrositionJSONModel>/results/Schedulations}">
+											<m:headerToolbar>
+												<m:OverflowToolbar>
+													<m:content>
+														<m:Title text="{i18n>schedules}" level="H2"/>
+													</m:content>
+												</m:OverflowToolbar>
+											</m:headerToolbar>
+											<m:columns>
+												<m:Column id="SYSID" visible="false" minScreenWidth="Desktop" demandPopin="true">
+													<m:Label text="{i18n>SYSID}" class="columnLabelStyle" wrapping="true"/>
+												</m:Column>
+												<m:Column id="EBELN" visible="false" minScreenWidth="Desktop" demandPopin="true">
+													<m:Label text="{i18n>EBELN}" class="columnLabelStyle" wrapping="true"/>
+												</m:Column>
+												<m:Column id="EBELP" visible="false" minScreenWidth="Desktop" demandPopin="true">
+													<m:Label text="{i18n>EBELP}" class="columnLabelStyle" wrapping="true"/>
+												</m:Column>
+												<m:Column id="ETENR" minScreenWidth="Desktop" demandPopin="true">
+													<m:Label text="{i18n>ETENR}" class="columnLabelStyle" wrapping="true"/>
+												</m:Column>
+												<m:Column id="EINDT" minScreenWidth="Desktop" demandPopin="true">
+													<m:Label text="{i18n>EINDT}" class="columnLabelStyle" wrapping="true"/>
+												</m:Column>
+												<m:Column id="LPEIN" minScreenWidth="Desktop" demandPopin="true">
+													<m:Label text="{i18n>LPEIN}" class="columnLabelStyle" wrapping="true"/>
+												</m:Column>
+												<m:Column id="MENGE" minScreenWidth="Desktop" demandPopin="true">
+													<m:Label text="{i18n>MENGE}" class="columnLabelStyle" wrapping="true"/>
+												</m:Column>
+												<!--<m:Column id="WEMNG" minScreenWidth="Desktop" demandPopin="true">-->
+												<!--	<m:Label text="{i18n>WEMNG}" class="columnLabelStyle" wrapping="true"/>-->
+												<!--</m:Column>-->
+												<m:Column id="MNG02" visible="false" minScreenWidth="Desktop" demandPopin="true">
+													<m:Label text="{i18n>MNG02}" class="columnLabelStyle" wrapping="true"/>
+												</m:Column>
+											</m:columns>
+											<m:items>
+												<m:ColumnListItem>
+													<m:cells>
+														<m:Text text="{OrderPrositionJSONModel>SYSID}"/>
+														<m:Text text="{OrderPrositionJSONModel>EBELN}"/>
+														<m:Text text="{OrderPrositionJSONModel>EBELP}"/>
+														<m:Text text="{OrderPrositionJSONModel>ETENR}"/>
+														<m:Text text="{ path: 'OrderPrositionJSONModel>EINDT', type: 'it.aupsup.contracts.type.Date' }"/>
+														<m:Text text="{OrderPrositionJSONModel>LPEIN}"/>
+														<m:Text text="{path : 'OrderPrositionJSONModel>MENGE', formatter : '.importFormatter'}"/>
+														<!--<m:Text text="{OrderPrositionJSONModel>WEMNG}"/>-->
+														<m:Text text="{path : 'OrderPrositionJSONModel>MNG02', formatter : '.importFormatter'}"/>
+													</m:cells>
+												</m:ColumnListItem>
+											</m:items>
+										</m:Table>
+									</ObjectPageSubSection>
+								</subSections>
+							</ObjectPageSection>
+							<ObjectPageSection title="{i18n>confirmations}">
+								<subSections>
+									<ObjectPageSubSection title="">
+										<m:Table id="ConfirmationsTable" items="{OrderPrositionJSONModel>/results/Confirms}">
+											<m:headerToolbar>
+												<m:OverflowToolbar>
+													<m:content>
+														<m:Title text="{i18n>confirmations}" level="H2"/>
+													</m:content>
+												</m:OverflowToolbar>
+											</m:headerToolbar>
+											<m:columns>
+												<m:Column visible="false" minScreenWidth="Desktop" demandPopin="true">
+													<m:Label text="{i18n>SYSID}" class="columnLabelStyle" wrapping="true"/>
+												</m:Column>
+												<m:Column visible="false" minScreenWidth="Desktop" demandPopin="true">
+													<m:Label text="{i18n>EBELN}" class="columnLabelStyle" wrapping="true"/>
+												</m:Column>
+												<m:Column visible="false" minScreenWidth="Desktop" demandPopin="true">
+													<m:Label text="{i18n>EBELP}" class="columnLabelStyle" wrapping="true"/>
+												</m:Column>
+												<m:Column minScreenWidth="Desktop" demandPopin="true">
+													<m:Label text="{i18n>NUMINTCONF}" class="columnLabelStyle" wrapping="true"/>
+												</m:Column>
+												<m:Column minScreenWidth="Desktop" demandPopin="true">
+													<m:Label text="{i18n>EINDT}" class="columnLabelStyle" wrapping="true"/>
+												</m:Column>
+												<m:Column minScreenWidth="Desktop" demandPopin="true">
+													<m:Label text="{i18n>LPEIN}" class="columnLabelStyle" wrapping="true"/>
+												</m:Column>
+												<m:Column minScreenWidth="Desktop" demandPopin="true">
+													<m:Label text="{i18n>MENGE}" class="columnLabelStyle" wrapping="true"/>
+												</m:Column>
+												<m:Column visible="false" minScreenWidth="Desktop" demandPopin="true">
+													<m:Label text="{i18n>DABMG}" class="columnLabelStyle" wrapping="true"/>
+												</m:Column>
+												<m:Column visible="false" minScreenWidth="Desktop" demandPopin="true">
+													<m:Label text="{i18n>MNG02}" class="columnLabelStyle" wrapping="true"/>
+												</m:Column>
+											</m:columns>
+											<m:items>
+												<m:ColumnListItem>
+													<m:cells>
+														<m:Text text="{OrderPrositionJSONModel>SYSID}"/>
+														<m:Text text="{OrderPrositionJSONModel>EBELN}"/>
+														<m:Text text="{OrderPrositionJSONModel>EBELP}"/>
+														<m:Text text="{OrderPrositionJSONModel>ETENS}"/>
+														<m:Text text="{ path: 'OrderPrositionJSONModel>EINDT', type: 'it.aupsup.contracts.type.Date' }"/>
+														<m:Text text="{OrderPrositionJSONModel>LPEIN}"/>
+														<m:Text text="{path : 'OrderPrositionJSONModel>MENGE', formatter : '.importFormatter'}"/>
+														<m:Text text="{OrderPrositionJSONModel>DABMG}"/>
+														<m:Text text="{OrderPrositionJSONModel>ESTKZ}"/>
+													</m:cells>
+												</m:ColumnListItem>
+											</m:items>
+										</m:Table>
+									</ObjectPageSubSection>
+								</subSections>
+							</ObjectPageSection>
+						</sections>
+					</ObjectPageLayout>
+				</m:Page>
+			</m:pages>
+		</m:App>
+	</m:Shell>
+</mvc:View>

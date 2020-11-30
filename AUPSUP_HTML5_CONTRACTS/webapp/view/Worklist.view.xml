@@ -1,0 +1,216 @@
+<mvc:View controllerName="it.aupsup.contracts.controller.Worklist" 
+	xmlns:mvc="sap.ui.core.mvc" 
+	xmlns="sap.uxap" 
+	xmlns:layout="sap.ui.layout" 
+	xmlns:m="sap.m" 
+	xmlns:table="sap.ui.table" 
+	xmlns:core="sap.ui.core" 
+	xmlns:personal="sap.uxap.sample.SharedBlocks.personal" 
+	xmlns:form="sap.ui.layout.form" 
+	xmlns:fb="sap.ui.comp.filterbar">
+	<m:Shell id="shell" appWidthLimited="false">
+		<m:App id="app">
+			<m:pages>
+				<m:Page id="worklist">
+					<m:customHeader>
+						<m:Bar>
+							<m:contentLeft>
+								<m:Text text="{userapi>/firstname} {userapi>/lastname}"></m:Text>
+							</m:contentLeft>
+							<m:contentMiddle>
+								<m:Text text="{i18n>title}" class="sapMTitle sapMTitleStyleAuto sapMTitleMaxWidth"></m:Text>
+							</m:contentMiddle>
+						</m:Bar>
+					</m:customHeader>
+					<m:content>
+						<ObjectPageLayout id="ObjectPageLayout" headerContentPinnable="true" showFooter="true">
+							<headerContent>
+								<fb:FilterBar clear="onClearFilters" search="onSearchOrders" showRestoreButton="false" showClearButton="true" showClearOnFB="true">
+									<fb:filterItems>
+										<fb:FilterItem name="Documento" label="{i18n>EBELN}">
+											<fb:control>
+												<m:Input value="{filterOrdersJSONModel>/ebeln}" submit="onSearchOrders"/>
+											</fb:control>
+										</fb:FilterItem>
+										<fb:FilterItem name="Metasupplier" label="{i18n>METASUP}" visible="{= ${VisibilityJSONModel>/isBuyer} === true || ${VisibilityJSONModel>/isPlanner} === true || ${VisibilityJSONModel>/isAdministrator} === true }">
+											<fb:control>
+												<m:MultiComboBox selectedKeys="{MetasupplierJSONModel>/METAID}" selectionChange="onChangeMetasupplier" items="{ path: 'MetasupplierJSONModel>/results', sorter: { path: 'METAID' } }">
+													<core:Item key="{MetasupplierJSONModel>METAID}" text="{MetasupplierJSONModel>DESCR}"/>
+												</m:MultiComboBox>
+											</fb:control>
+										</fb:FilterItem>
+										<fb:FilterItem name="Cond.Pag" label="{i18n>ZTERM}" visible="false">
+											<fb:control>
+												<m:Input value="{filterOrdersJSONModel>/ZTERM}" submit="onSearchOrders"/>
+											</fb:control>
+										</fb:FilterItem>
+										<fb:FilterItem name="Incoterm" label="{i18n>INCO1}" visible="false">
+											<fb:control>
+												<m:Input value="{filterOrdersJSONModel>/INCO1}" submit="onSearchOrders"/>
+											</fb:control>
+										</fb:FilterItem>
+										<fb:FilterItem name="Lifnr" label="{i18n>supplier}" visible="{= ${VisibilityJSONModel>/isBuyer} === true || ${VisibilityJSONModel>/isPlanner} === true || ${VisibilityJSONModel>/isAdministrator} === true }">
+											<fb:control>
+												<m:MultiComboBox selectionChange="onChangeMetalifnr" showSecondaryValues="true" items="{ path: 'lifnrJSONModel>/', sorter: { path: 'LIFNR' } }">
+													<core:ListItem key="{lifnrJSONModel>LIFNR}" text="{lifnrJSONModel>DESCR}" additionalText="{lifnrJSONModel>LIFNR}"/>
+												</m:MultiComboBox>
+											</fb:control>
+										</fb:FilterItem>
+										<fb:FilterItem name="Matnr" label="{i18n>MATNR}">
+											<fb:control>
+												<m:Input type="Text" value="{filterOrdersJSONModel>/MatnrDesc}" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="handleMatnr" class="sapUiSmallMarginBottom" submit="onSearchOrders"/>
+											</fb:control>
+										</fb:FilterItem>
+										<fb:FilterItem name="Ekorg" label="{i18n>purchaseOrganization}" visible="{= ${VisibilityJSONModel>/isBuyer} === true || ${VisibilityJSONModel>/isPlanner} === true || ${VisibilityJSONModel>/isAdministrator} === true }">
+											<fb:control>
+												<m:MultiComboBox selectedKeys="{filterOrdersJSONModel>/ekorg}" items="{ path: 'PurchaseOrganizationJSONModel>/results', sorter: { path: 'PURCH_ORG' } }">
+													<core:Item key="{PurchaseOrganizationJSONModel>PURCH_ORG}" text="{PurchaseOrganizationJSONModel>DESCR}"/>
+												</m:MultiComboBox>
+											</fb:control>
+										</fb:FilterItem>
+										<fb:FilterItem name="GrAcq" label="{i18n>EKGRP}" visible="{= ${VisibilityJSONModel>/isBuyer} === true || ${VisibilityJSONModel>/isPlanner} === true || ${VisibilityJSONModel>/isAdministrator} === true }">
+											<fb:control>
+												<m:MultiComboBox selectedKeys="{filterOrdersJSONModel>/ekgrp}" items="{ path: 'PurchaseGroupJSONModel>/results', sorter: { path: 'CODE' } }" showSecondaryValues="true">
+													<core:ListItem key="{PurchaseGroupJSONModel>CODE}" text="{PurchaseGroupJSONModel>DESCR}" additionalText="{PurchaseGroupJSONModel>CODE}"/>
+												</m:MultiComboBox>
+											</fb:control>
+										</fb:FilterItem>
+										<fb:FilterItem name="Plant" label="{i18n>WERKS}">
+											<fb:control>
+												<m:MultiComboBox selectedKeys="{filterOrdersJSONModel>/werks}" visible="true" items="{ path: 'PlantsJSONModel>/results', sorter: { path: 'EWERK' } }" showSecondaryValues="true">
+													<core:ListItem key="{PlantsJSONModel>EWERK}" text="{PlantsJSONModel>DESCR}" additionalText="{PlantsJSONModel>EWERK}"/>
+												</m:MultiComboBox>
+											</fb:control>
+										</fb:FilterItem>
+										<fb:FilterItem name="RangeDateEketEkeh" label="{i18n>RangeDateEketEkeh}">
+											<fb:control>
+												<m:DateRangeSelection dateValue="{path:'filterOrdersJSONModel>/eindtFrom'}" valueFormat="YYYYMMdd" displayFormat="dd MMM yyyy" secondDateValue="{path:'filterOrdersJSONModel>/eindtTo'}"/>
+											</fb:control>
+										</fb:FilterItem>
+									</fb:filterItems>
+
+								</fb:FilterBar>
+							</headerContent>
+							<sections>
+								<ObjectPageSection showTitle="false">
+									<subSections>
+										<ObjectPageSubSection >
+											<m:Table id="OrderHeadersTable" items="{ path: 'OrderJSONModel>/results', sorter: { path: 'STATUS_PRIORITY', ascending: true }}" itemPress="onRowSelectionChange" growing="true" growingThreshold="50" growingScrollToLoad="false">
+												<m:headerToolbar>
+													<m:OverflowToolbar>
+														<m:content>
+															<m:Title text="{i18n>title}" level="H2"/>
+
+															<m:ToolbarSpacer/>
+															<m:Button visible="false" id="headerFilterButton" tooltip="{i18n>clearFilter}" icon="sap-icon://clear-filter" press="onClearFilter" type="Transparent"/>
+															<m:HBox alignItems="Center" id="comboProfiliConferma">
+																<m:Label text="{i18n>CAT_CONS}" class="labelSpace"/>
+																<m:ComboBox selectedKey="{ListProfiliConfermaJSONModel>/CAT_CONFERMA}" width="auto" change="onChangeProfiloConsegna" items="{ path: 'ListProfiliConfermaJSONModel>/results', sorter: { path: 'CAT_CONFERMA' } }">
+																	<core:Item key="{ListProfiliConfermaJSONModel>CAT_CONFERMA}" text="{ListProfiliConfermaJSONModel>CAT_CONFERMA} - {ListProfiliConfermaJSONModel>DESCRIZIONE}"/>
+																</m:ComboBox>
+															</m:HBox>
+															<m:Button icon="sap-icon://legend" press="onLegend" tooltip="{i18n>Legend}"/>
+															<m:Button icon="sap-icon://excel-attachment" press="onExport" tooltip="{i18n>Export_Excel}"/>
+															<m:Button icon="sap-icon://vertical-grip" visible="true" press="onColumnSelection" tooltip="{i18n>personalization}"/>
+														</m:content>
+													</m:OverflowToolbar>
+												</m:headerToolbar>
+												<m:columns>
+													<m:Column width="3rem">
+														<m:CheckBox select="onSelectAll" visible="{= ${VisibilityJSONModel>/isSupplierD} === false}"/>
+													</m:Column>
+													<m:Column id="EBELN" visible="{columnVisibilityModel>/EBELN}" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>orderNumber}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column id="EBELP" visible="{columnVisibilityModel>/EBELP}" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>EBELP}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column id="LIFNR" visible="{columnVisibilityModel>/LIFNR}" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>LIFNR}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column id="NAME1" visible="{columnVisibilityModel>/NAME1}" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>supplierName}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column id="PLANT_DESCR" visible="{columnVisibilityModel>/PLANT_DESCR}" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>PLANT_DESCR}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column id="MATNR" visible="{columnVisibilityModel>/MATNR}" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>MATNR}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column id="TXZ01" visible="{columnVisibilityModel>/TXZ01}" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>TXZ01}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column id="IDNLF" visible="{columnVisibilityModel>/IDNLF}" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>IDNLF}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column id="MENGE" visible="{columnVisibilityModel>/MENGE}" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>MENGE}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column id="MEINS" visible="{columnVisibilityModel>/MEINS}" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>MEINS}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column id="WAERS" visible="{columnVisibilityModel>/WAERS}" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>WAERS}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column id="EKET_EKEH_EINDT" visible="{columnVisibilityModel>/EKET_EKEH_EINDT}" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>RangeDateEketEkeh}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column id="PRIMO_PERIODO" visible="{columnVisibilityModel>/PRIMO_PERIODO}" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>PRIMO_PERIODO}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column id="SECONDO_PERIODO" visible="{columnVisibilityModel>/SECONDO_PERIODO}" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>SECONDO_PERIODO}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column id="TESTS" minScreenWidth="Desktop" demandPopin="true">
+													</m:Column>
+													<m:Column id="DOWNLOAD" minScreenWidth="Desktop" demandPopin="true">
+													</m:Column>
+												</m:columns>
+												<m:items>
+													<m:ColumnListItem type="Navigation" highlight="{path:'OrderJSONModel>STATUS', formatter:'.onSetSchedulationStatus'}">
+														<m:cells>
+															<m:CheckBox selected="{OrderJSONModel>isSelected}" editable= "{= ${OrderJSONModel>SKIP_NO_CONFERME} !== true}"/>
+															<m:Text text="{OrderJSONModel>EBELN}"/>
+															<m:Text text="{OrderJSONModel>EBELP}"/>
+															<m:Text text="{path : 'OrderJSONModel>LIFNR', formatter : '.removeZeroBefore'}"/>
+															<m:Text text="{OrderJSONModel>NAME1}"/>
+															<m:Text text="{OrderJSONModel>WERKS} / {OrderJSONModel>PLANT_DESCR}"/>
+															<m:Text text="{path : 'OrderJSONModel>MATNR', formatter : '.removeZeroBefore'}"/>
+															<m:Text text="{OrderJSONModel>TXZ01}"/>
+															<m:Text text="{OrderJSONModel>IDNLF}"/>
+															<m:Text text="{path : 'OrderJSONModel>MENGE', formatter : '.importFormatter'}"/>
+															<m:Text text="{OrderJSONModel>MEINS}"/>
+															<m:Text text="{OrderJSONModel>WAERS}"/>
+															<m:Text text="{ path: 'OrderJSONModel>EKET_EKEH_EINDT', type: 'it.aupsup.contracts.type.Date' }"/>
+															<m:Text text="{path : 'OrderJSONModel>PRIMO_PERIODO', formatter : '.importFormatter'}"  visible="{= ${OrderJSONModel>PRIMO_PERIODO} !== '100'}"/>
+															<m:Text text="{path : 'OrderJSONModel>SECONDO_PERIODO', formatter : '.importFormatter'}"/>
+															<m:Button icon="sap-icon://document-text" press="onGetTexts"/>
+															<m:Button icon="sap-icon://download" press="onItemDownload"/>
+														</m:cells>
+													</m:ColumnListItem>
+												</m:items>
+												<m:dependents>
+													<m:PDFViewer id="myPDFViewer" sourceValidationFailed="onSourceValidationFailed" showDownloadButton="false">
+														<m:layoutData>
+															<m:FlexItemData growFactor="1"/>
+														</m:layoutData>
+													</m:PDFViewer>
+												</m:dependents>
+											</m:Table>
+										</ObjectPageSubSection>
+									</subSections>
+								</ObjectPageSection>
+							</sections>
+							<footer>
+								<m:Toolbar >
+									<m:ToolbarSpacer/>
+									<m:Button type="Accept" text="{i18n>Confirm}" press="onConfirmPositions" visible="{= ${VisibilityJSONModel>/isSupplierD} === false}"/>
+								</m:Toolbar>
+							</footer>
+						</ObjectPageLayout>
+					</m:content>
+				</m:Page>
+			</m:pages>
+		</m:App>
+	</m:Shell>
+</mvc:View>

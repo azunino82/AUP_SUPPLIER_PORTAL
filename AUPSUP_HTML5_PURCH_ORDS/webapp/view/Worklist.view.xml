@@ -155,6 +155,9 @@
 													<m:Column id="EKET_EKEH_EINDT" visible="{columnVisibilityModel>/EKET_EKEH_EINDT}" minScreenWidth="Desktop" demandPopin="true">
 														<m:Label text="{i18n>RangeDateEketEkeh}" class="columnLabelStyle" wrapping="true"/>
 													</m:Column>
+													<m:Column id="LAST_EKES_EINDT" visible="{columnVisibilityModel>/LAST_EKES_EINDT}" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>lastEkesDate}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>													
 													<m:Column id="PRIMO_PERIODO" visible="{columnVisibilityModel>/PRIMO_PERIODO}" minScreenWidth="Desktop" demandPopin="true">
 														<m:Label text="{i18n>PRIMO_PERIODO}" class="columnLabelStyle" wrapping="true"/>
 													</m:Column>
@@ -182,6 +185,7 @@
 															<m:Text text="{OrderJSONModel>MEINS}"/>
 															<m:Text text="{OrderJSONModel>WAERS}"/>
 															<m:Text text="{ path: 'OrderJSONModel>EKET_EKEH_EINDT', type: 'it.aupsup.purchords.type.Date' }"/>
+															<m:Text text="{ path: 'OrderJSONModel>LAST_EKES_EINDT', type: 'it.aupsup.purchords.type.Date' }"/>
 															<m:Text text="{path : 'OrderJSONModel>PRIMO_PERIODO', formatter : '.importFormatter'}"  visible="{= ${OrderJSONModel>PRIMO_PERIODO} !== '100'}"/>
 															<m:Text text="{path : 'OrderJSONModel>SECONDO_PERIODO', formatter : '.importFormatter'}"/>
 															<m:Button icon="sap-icon://document-text" press="onGetTexts"/>

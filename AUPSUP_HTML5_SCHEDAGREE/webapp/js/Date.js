@@ -7,7 +7,7 @@ sap.ui.define([
 	return SimpleType.extend("it.aupsup.schedulingagreement.type.Date", {
 
 		formatValue: function (sDate) {
-
+	
 			var oFromFormat = sap.ui.core.format.DateFormat.getDateTimeInstance({
 				pattern: "yyyyMMdd"
 			});

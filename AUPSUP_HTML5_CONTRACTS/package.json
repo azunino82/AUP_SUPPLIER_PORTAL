@@ -1,0 +1,11 @@
+{
+  "name": "AUPSUP_HTML5_CONTRACTS",
+  "description": "",
+  "devDependencies": {
+    "@sap/grunt-sapui5-bestpractice-build": "1.4.6",
+    "@sap/grunt-sapui5-bestpractice-test": "2.0.2"
+  },
+  "scripts": {
+    "test": "grunt unit_and_integration_tests"
+  }
+}
