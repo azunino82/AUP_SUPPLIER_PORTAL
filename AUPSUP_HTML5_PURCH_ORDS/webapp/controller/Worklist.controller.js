@@ -860,12 +860,37 @@ sap.ui.define([
 					template: {
 						content: "{SECONDO_PERIODO}"
 					}
-				}, {
+				},
+				/* {
 					name: that.getResourceBundle().getText("RangeDateEketEkeh"),
 					template: {
 						content: {
 							path: "EKET_EKEH_EINDT",
 							formatter: function (sDate) {
+								var oFromFormat = sap.ui.core.format.DateFormat.getDateTimeInstance({
+									pattern: "yyyyMMdd"
+								});
+								var oDate = oFromFormat.parse(sDate, true);
+								var oToFormat = sap.ui.core.format.DateFormat.getDateTimeInstance({
+									pattern: "dd MMM yyyy"
+								});
+								if (sDate === "00000000") {
+									return ""; // or whatever special case
+								} else {
+									var sResult = oToFormat.format(oDate);
+									return sResult;
+								}
+							}
+						}
+					}
+				},
+				*/ {
+					name: that.getResourceBundle().getText("lastEkesDate"),
+					template: {
+						content: {
+							path: "LAST_EKES_EINDT",
+							formatter: function (sDate) {
+
 								var oFromFormat = sap.ui.core.format.DateFormat.getDateTimeInstance({
 									pattern: "yyyyMMdd"
 								});
@@ -2224,6 +2249,7 @@ sap.ui.define([
 				var hText = columnHeader[i].getAggregation("header") !== null ? columnHeader[i].getAggregation("header").getProperty("text") : "";
 				var columnObject = {};
 				columnObject.column = hText;
+				if(hText !== '')
 				openAssetColumns.push(columnObject);
 			}
 			var oModel1 = new sap.ui.model.json.JSONModel({
@@ -2242,8 +2268,7 @@ sap.ui.define([
 			oList.bindItems(oBindingInfo);
 			var footer = new sap.m.Bar({
 				contentLeft: [],
-				contentMiddle: [
-					new sap.m.Button({
+				contentMiddle: [new sap.m.Button({
 						text: that.getResourceBundle().getText("Comfirm"),
 						press: function () {
 							that.onSavePersonalization();
@@ -2254,6 +2279,7 @@ sap.ui.define([
 							that.onCancelPersonalization();
 						}
 					})
+
 				]
 
 			});
@@ -2271,7 +2297,7 @@ sap.ui.define([
 					var v = table[j].getProperty("visible");
 					if (v === true) {
 						if (a.indexOf(Text) > -1) {
-							var firstItem = oList1.getItems()[j];
+							var firstItem = oList1.getItems()[j-1];
 							oList1.setSelectedItem(firstItem, true);
 						}
 					}
@@ -2303,6 +2329,8 @@ sap.ui.define([
 			for (var j = 0; j < table.length; j++) {
 				var idColonna = "";
 				var Text = table[j].getHeader() !== null ? table[j].getHeader().getProperty("text") : "";
+				if(Text ==='')
+				continue 
 				var Column = table[j].getId();
 				if (Column !== null && Column !== undefined) {
 					idColonna = Column.split("--");
@@ -2325,6 +2353,7 @@ sap.ui.define([
 
 		},
 
+
 		onGetOdataColumns: function () {
 			// Implementare il servizio che in AMA è stato creato come "VariantsService.xsodata", inserire poi il model nel Manifest
 
@@ -2332,6 +2361,7 @@ sap.ui.define([
 			//	oModelData.metadataLoaded().then(
 			//		that.onMetadataLoaded.bind(that, oModelData));
 			var columModel = {
+				"CHECK":true,
 				"EBELN": true,
 				"EBELP": true,
 				"LIFNR": true,
@@ -2343,7 +2373,8 @@ sap.ui.define([
 				"MEINS": true,
 				"WAERS": true,
 				"PRIMO_PERIODO": true,
-				"SECONDO_PERIODO": false
+				"SECONDO_PERIODO": false,
+				"EKET_EKEH_EINDT": false
 			};
 			var oModel = new JSONModel();
 			oModel.setData(columModel);

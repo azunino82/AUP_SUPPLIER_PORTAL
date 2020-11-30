@@ -775,66 +775,119 @@ sap.ui.define([
 				// column definitions with column name and binding info for the content
 
 				columns: [{
-					name: that.getResourceBundle().getText("EBELN"),
-					template: {
-						content: "{EBELN}"
+						name: that.getResourceBundle().getText("EBELN"),
+						template: {
+							content: "{EBELN}"
+						}
+					}, {
+						name: that.getResourceBundle().getText("EBELP"),
+						template: {
+							content: "{EBELP}"
+						}
+					}, {
+						name: that.getResourceBundle().getText("LIFNR"),
+						template: {
+							content: "{LIFNR}"
+						}
+					}, {
+						name: that.getResourceBundle().getText("supplierName"),
+						template: {
+							content: "{NAME1}"
+						}
+					}, {
+						name: that.getResourceBundle().getText("MATNR"),
+						template: {
+							content: "{MATNR}"
+						}
+					}, {
+						name: that.getResourceBundle().getText("TXZ01"),
+						template: {
+							content: "{TXZ01}"
+						}
+					}, {
+						name: that.getResourceBundle().getText("IDNLF"),
+						template: {
+							content: "{IDNLF}"
+						}
+					}, {
+						name: that.getResourceBundle().getText("MENGE"),
+						template: {
+							content: "{MENGE}"
+						}
+					}, {
+						name: that.getResourceBundle().getText("MEINS"),
+						template: {
+							content: "{MEINS}"
+						}
+					}, {
+						name: that.getResourceBundle().getText("WAERS"),
+						template: {
+							content: "{WAERS}"
+						}
+					}, {
+						name: that.getResourceBundle().getText("PRIMO_PERIODO"),
+						template: {
+							content: "{PRIMO_PERIODO}"
+						}
+					}, {
+						name: that.getResourceBundle().getText("SECONDO_PERIODO"),
+						template: {
+							content: "{SECONDO_PERIODO}"
+						}
+					},
+					/*{
+						name: that.getResourceBundle().getText("lastEkesDate"),
+						template: {
+							content: {
+								path: "LAST_EKES_EINDT",
+								formatter: function (sDate) {
+
+									if(sDate === null || lastEkesDate === undefined){
+										return that.getResourceBundle().getText("noConfirms")
+									}
+
+									var oFromFormat = sap.ui.core.format.DateFormat.getDateTimeInstance({
+										pattern: "yyyyMMdd"
+									});
+									var oDate = oFromFormat.parse(sDate, true);
+									var oToFormat = sap.ui.core.format.DateFormat.getDateTimeInstance({
+										pattern: "dd MMM yyyy"
+									});
+									if (sDate === "00000000") {
+										return ""; // or whatever special case
+									} else {
+										var sResult = oToFormat.format(oDate);
+										return sResult;
+									}
+								}
+							}
+						}
+					}*/
+					{
+						name: that.getResourceBundle().getText("lastEkesDate"),
+						template: {
+							content: {
+								path: "LAST_EKES_EINDT",
+								formatter: function (sDate) {
+
+									var oFromFormat = sap.ui.core.format.DateFormat.getDateTimeInstance({
+										pattern: "yyyyMMdd"
+									});
+									var oDate = oFromFormat.parse(sDate, true);
+									var oToFormat = sap.ui.core.format.DateFormat.getDateTimeInstance({
+										pattern: "dd MMM yyyy"
+									});
+									if (sDate === "00000000") {
+										return ""; // or whatever special case
+									} else {
+										var sResult = oToFormat.format(oDate);
+										return sResult;
+									}
+								}
+							}
+						}
 					}
-				}, {
-					name: that.getResourceBundle().getText("EBELP"),
-					template: {
-						content: "{EBELP}"
-					}
-				}, {
-					name: that.getResourceBundle().getText("LIFNR"),
-					template: {
-						content: "{LIFNR}"
-					}
-				}, {
-					name: that.getResourceBundle().getText("supplierName"),
-					template: {
-						content: "{NAME1}"
-					}
-				}, {
-					name: that.getResourceBundle().getText("MATNR"),
-					template: {
-						content: "{MATNR}"
-					}
-				}, {
-					name: that.getResourceBundle().getText("TXZ01"),
-					template: {
-						content: "{TXZ01}"
-					}
-				}, {
-					name: that.getResourceBundle().getText("IDNLF"),
-					template: {
-						content: "{IDNLF}"
-					}
-				}, {
-					name: that.getResourceBundle().getText("MENGE"),
-					template: {
-						content: "{MENGE}"
-					}
-				}, {
-					name: that.getResourceBundle().getText("MEINS"),
-					template: {
-						content: "{MEINS}"
-					}
-				}, {
-					name: that.getResourceBundle().getText("WAERS"),
-					template: {
-						content: "{WAERS}"
-					}
-				}, {
-					name: that.getResourceBundle().getText("PRIMO_PERIODO"),
-					template: {
-						content: "{PRIMO_PERIODO}"
-					}
-				}, {
-					name: that.getResourceBundle().getText("SECONDO_PERIODO"),
-					template: {
-						content: "{SECONDO_PERIODO}"
-					}
-				}]
+				]
 			});
 
 			// download exported file
@@ -1194,7 +1247,7 @@ sap.ui.define([
 					// AGGIUNGO LA RIGA NELLE SCHEDULAZIONI
 
 					// CALCOLO SCHEDULAZIONI COLORATE
-					that.getSchedulationsStatus(mod, selectedProfiloConfermaModel.CAT_CONFERMA,null);
+					that.getSchedulationsStatus(mod, selectedProfiloConfermaModel.CAT_CONFERMA, null);
 
 				}
 
@@ -1243,7 +1296,7 @@ sap.ui.define([
 				else
 					mod.ggTollDown = "";
 
-				that.getSchedulationsStatus(mod, mod.profiliConferma[0].CAT_CONFERMA,null);
+				that.getSchedulationsStatus(mod, mod.profiliConferma[0].CAT_CONFERMA, null);
 			}
 
 
@@ -2147,7 +2200,7 @@ sap.ui.define([
 
 
 		getSchedulationsStatus: function (mod, ebtyp, fCompletion) {
-		
+
 			var url = "/backend/SchedulingAgreementManagement/GetCalculatedSchedulations?I_EBELN=" +
 				mod.EBELN +
 				"&I_EBELP=" + mod.EBELP + "&I_BSTYP=" + mod.BSTYP + "&I_BSART=" + mod.BSART + "&I_EBTYP=" + ebtyp;
@@ -2259,6 +2312,7 @@ sap.ui.define([
 				var hText = columnHeader[i].getAggregation("header") !== null ? columnHeader[i].getAggregation("header").getProperty("text") : "";
 				var columnObject = {};
 				columnObject.column = hText;
+				if(hText !== '')
 				openAssetColumns.push(columnObject);
 			}
 			var oModel1 = new sap.ui.model.json.JSONModel({
@@ -2306,7 +2360,7 @@ sap.ui.define([
 					var v = table[j].getProperty("visible");
 					if (v === true) {
 						if (a.indexOf(Text) > -1) {
-							var firstItem = oList1.getItems()[j];
+							var firstItem = oList1.getItems()[j-1];
 							oList1.setSelectedItem(firstItem, true);
 						}
 					}
@@ -2338,6 +2392,8 @@ sap.ui.define([
 			for (var j = 0; j < table.length; j++) {
 				var idColonna = "";
 				var Text = table[j].getHeader() !== null ? table[j].getHeader().getProperty("text") : "";
+				if(Text ==='')
+				continue 
 				var Column = table[j].getId();
 				if (Column !== null && Column !== undefined) {
 					idColonna = Column.split("--");
@@ -2367,6 +2423,7 @@ sap.ui.define([
 			//	oModelData.metadataLoaded().then(
 			//		that.onMetadataLoaded.bind(that, oModelData));
 			var columModel = {
+				"CHECK":true,
 				"EBELN": true,
 				"EBELP": true,
 				"LIFNR": true,
@@ -2378,7 +2435,8 @@ sap.ui.define([
 				"MEINS": true,
 				"WAERS": true,
 				"PRIMO_PERIODO": true,
-				"SECONDO_PERIODO": true
+				"SECONDO_PERIODO": true,
+				"LAST_EKES_EINDT":false
 			};
 			var oModel = new JSONModel();
 			oModel.setData(columModel);

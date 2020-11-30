@@ -8,6 +8,10 @@ sap.ui.define([
 
 		formatValue: function (sDate) {
 
+			if(sDate === null){
+				return ('No conf')
+			}
+
 			var oFromFormat = sap.ui.core.format.DateFormat.getDateTimeInstance({
 				pattern: "yyyyMMdd"
 			});
