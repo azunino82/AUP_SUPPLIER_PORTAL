@@ -989,7 +989,7 @@ sap.ui.define([
 				oIndexs = oIndexs[oIndexs.length - 1];
 				if (mod.MODIFICA_PREZZO !== undefined && mod.MODIFICA_PREZZO !== "") {
 					if ((that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].KONNR === undefined || (that.getView().getModel(
-						"SelectedPositionsJSONModel").getData()[oIndexs].KONNR === "")) || (that.getView().getModel("SelectedPositionsJSONModel").getData()[
+							"SelectedPositionsJSONModel").getData()[oIndexs].KONNR === "")) || (that.getView().getModel("SelectedPositionsJSONModel").getData()[
 							oIndexs].KTPNR === undefined || (that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].KTPNR === "00000")))
 						that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].editPrice = true;
 				}
@@ -1323,8 +1323,8 @@ sap.ui.define([
 
 						sommaQuantitaSchedulazioni = sommaQuantitaSchedulazioni + parseInt(model[i].POItemSchedulers.results[j].MENGE);
 						if ((model[i].POItemSchedulers.results[j]) && ((model[i].POItemSchedulers.results[j].EINDT == "") || (model[i].POItemSchedulers
-							.results[
-							j].MENGE == ""))) {
+								.results[
+									j].MENGE == ""))) {
 							err = that.getResourceBundle().getText("ERR_Schedulations_Mandatory");
 							contatoreRighe = contatoreRighe + 1;
 
@@ -1387,7 +1387,8 @@ sap.ui.define([
 							"notaReject": "",
 							"confirmType": "",
 							"t_herder_comment": [],
-							"t_position_comment": []
+							"t_position_comment": [],
+							"spras": that.getLanguage()
 						};
 						var ekpoRow = that.getModel("SelectedPositionsJSONModel").getData();
 						if (ekpoRow !== undefined) {
@@ -1625,6 +1626,7 @@ sap.ui.define([
 
 								var headerComments = {};
 								headerComments.EBELN = row.EBELN;
+								headerComments.EBELP = row.EBELP;
 								headerComments.COMMENT = row.HEADER_COMMENT;
 								body.t_herder_comment.push(headerComments);
 
@@ -1911,8 +1913,8 @@ sap.ui.define([
 					mod.POItemSchedulers.results[j].EINDT = mod.POItemSchedulers.results[j].EINDT.split('-').join('');
 					sommaQuantitaSchedulazioni = sommaQuantitaSchedulazioni + parseFloat(mod.POItemSchedulers.results[j].MENGE);
 					if ((mod.POItemSchedulers.results[j]) && ((mod.POItemSchedulers.results[j].EINDT === "") || (mod.POItemSchedulers
-						.results[
-						j].MENGE === ""))) {
+							.results[
+								j].MENGE === ""))) {
 						err = err + "\n" + that.getResourceBundle().getText("ERR_Schedulations_Mandatory");
 						break;
 					}
@@ -2017,7 +2019,7 @@ sap.ui.define([
 					if (mod.RMOData !== undefined && mod.RMOData.EkkoEkpo !== undefined && mod.RMOData.EkkoEkpo.length > 0) {
 						var EkkoEkpo = mod.RMOData.EkkoEkpo.find(x => x.STATUS === 'RC' && x.UPDKZ === '4' && x.EBELN === mod.EBELN && x.EBELP ===
 							mod
-								.EBELP);
+							.EBELP);
 						if (EkkoEkpo !== undefined)
 							trovato = true;
 					}
@@ -2052,7 +2054,7 @@ sap.ui.define([
 					if (mod.RMOData !== undefined && mod.RMOData.EkkoEkpo !== undefined && mod.RMOData.EkkoEkpo.length > 0) {
 						var EkkoEkpo = mod.RMOData.EkkoEkpo.find(x => x.STATUS === 'RC' && x.UPDKZ === '4' && x.EBELN === mod.EBELN && x.EBELP ===
 							mod
-								.EBELP);
+							.EBELP);
 						if (EkkoEkpo !== undefined)
 							trovato = true;
 					}
@@ -2376,7 +2378,7 @@ sap.ui.define([
 			var selectedRowdata = that.getModel("OrderJSONModel").getProperty(oPath);
 
 			var currentSYSID = sap.ui.getCore().getModel("sysIdJSONModel") !== undefined && sap.ui.getCore().getModel(
-				"sysIdJSONModel").getData() !==
+					"sysIdJSONModel").getData() !==
 				undefined ? sap.ui.getCore().getModel("sysIdJSONModel").getData().SYSID : "";
 
 			that.showBusyDialog()
@@ -2438,7 +2440,7 @@ sap.ui.define([
 			var oModel = oComponent.getModel("TextsJSONModel").getData();
 
 			var currentSYSID = sap.ui.getCore().getModel("sysIdJSONModel") !== undefined && sap.ui.getCore().getModel(
-				"sysIdJSONModel").getData() !==
+					"sysIdJSONModel").getData() !==
 				undefined ? sap.ui.getCore().getModel("sysIdJSONModel").getData().SYSID : "";
 
 			var body = {}
@@ -2550,7 +2552,11 @@ sap.ui.define([
 					oComponent.setModel(oModel, "CustomDocJSONModel");
 
 					oModel = new JSONModel();
-					oModel.setData({ "DocType": "", "EBELN": selctedRowdata.EBELN, "EBELP": selctedRowdata.EBELP });
+					oModel.setData({
+						"DocType": "",
+						"EBELN": selctedRowdata.EBELN,
+						"EBELP": selctedRowdata.EBELP
+					});
 					var oComponent = that.getOwnerComponent();
 					oComponent.setModel(oModel, "filterDocListJSONModel");
 
@@ -2694,10 +2700,10 @@ sap.ui.define([
 				success: function (data) {
 					that.hideBusyDialog();
 					//if (data && data.results && data.results.length > 0) {
-						var oModel = new JSONModel();
-						oModel.setData(data);
-						var oComponent = that.getOwnerComponent();
-						oComponent.setModel(oModel, "DocumentListJSONModel");
+					var oModel = new JSONModel();
+					oModel.setData(data);
+					var oComponent = that.getOwnerComponent();
+					oComponent.setModel(oModel, "DocumentListJSONModel");
 					//}
 				}
 			})
@@ -2708,9 +2714,9 @@ sap.ui.define([
 			var selctedRowdata = that.getOwnerComponent().getModel("DocumentListJSONModel").getProperty(path.sPath);
 
 			if (selctedRowdata !== undefined) {
-			 var url = "/backend/DocumentManagement/DocDownload?I_DOKAR=" + selctedRowdata.DOKAR + "&I_DOKNR=" + selctedRowdata.DOKNR + "&I_DOKTL=" + selctedRowdata.DOKTL + 
-					  "&I_DOKVR=" + selctedRowdata.DOKVR + "&I_LO_INDEX=" + selctedRowdata.LO_INDEX + "&I_LO_OBJID=" + selctedRowdata.LO_OBJID + "&I_OBJKY=" + selctedRowdata.OBJKY + 
-					  "&I_DOKOB=" + selctedRowdata.DOKOB;
+				var url = "/backend/DocumentManagement/DocDownload?I_DOKAR=" + selctedRowdata.DOKAR + "&I_DOKNR=" + selctedRowdata.DOKNR + "&I_DOKTL=" + selctedRowdata.DOKTL +
+					"&I_DOKVR=" + selctedRowdata.DOKVR + "&I_LO_INDEX=" + selctedRowdata.LO_INDEX + "&I_LO_OBJID=" + selctedRowdata.LO_OBJID + "&I_OBJKY=" + selctedRowdata.OBJKY +
+					"&I_DOKOB=" + selctedRowdata.DOKOB;
 				// NB: questa chiamata fetch funziona SOLO su portale non con webide preview
 				fetch(url)
 					.then(resp => resp.blob())
@@ -2728,12 +2734,12 @@ sap.ui.define([
 					.catch(() => console.log("some error during download process"));
 			}
 		},
-		
-		onDownloadSelDoc: function (){
+
+		onDownloadSelDoc: function () {
 			var promiseArr = []
 			var zip = new JSZip()
 			this.showBusyDialog();
-			
+
 			for (var i = 0; i < sap.ui.getCore().byId("DownloadDocumentTable")._aSelectedPaths.length; i++) {
 				var ind = sap.ui.getCore().byId("DownloadDocumentTable")._aSelectedPaths[i].split("/");
 				ind = ind[2];
@@ -2741,10 +2747,10 @@ sap.ui.define([
 
 				promiseArr.push(new Promise(function (resolve, reject) {
 
-					var path = "/backend/DocumentManagement/DocDownload?I_DOKAR=" + selctedRowdata.DOKAR + "&I_DOKNR=" + selctedRowdata.DOKNR + "&I_DOKTL=" + selctedRowdata.DOKTL + 
-					"&I_DOKVR=" + selctedRowdata.DOKVR + "&I_LO_INDEX=" + selctedRowdata.LO_INDEX + "&I_LO_OBJID=" + selctedRowdata.LO_OBJID + "&I_OBJKY=" + selctedRowdata.OBJKY + 
-					"&I_DOKOB=" + selctedRowdata.DOKOB;
-					
+					var path = "/backend/DocumentManagement/DocDownload?I_DOKAR=" + selctedRowdata.DOKAR + "&I_DOKNR=" + selctedRowdata.DOKNR + "&I_DOKTL=" + selctedRowdata.DOKTL +
+						"&I_DOKVR=" + selctedRowdata.DOKVR + "&I_LO_INDEX=" + selctedRowdata.LO_INDEX + "&I_LO_OBJID=" + selctedRowdata.LO_OBJID + "&I_OBJKY=" + selctedRowdata.OBJKY +
+						"&I_DOKOB=" + selctedRowdata.DOKOB;
+
 					try {
 						var xhr = new window.XMLHttpRequest();
 						xhr.DESCRIPTION = selctedRowdata.DESCRIPTION;
@@ -2765,7 +2771,9 @@ sap.ui.define([
 							if (xhr.readyState === 4) {
 								if (xhr.status === 200 || xhr.status === 0) {
 									try {
-										zip.file(xhr.DESCRIPTION, xhr.response || xhr.responseText, {binary:true});
+										zip.file(xhr.DESCRIPTION, xhr.response || xhr.responseText, {
+											binary: true
+										});
 										resolve();
 									} catch (err) {
 										that.hideBusyDialog();
@@ -2799,7 +2807,7 @@ sap.ui.define([
 					});
 			});
 
-			
+
 		},
 
 		saveAs: function (blob, filename) {

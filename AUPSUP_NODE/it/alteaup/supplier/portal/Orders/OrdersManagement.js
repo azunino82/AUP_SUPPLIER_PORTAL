@@ -343,6 +343,11 @@ module.exports = function () {
             var t_position_comment = []
             var skipAppBuyer = []
             var userid = req.user.id
+            var spras = body.spras
+
+            if (spras === undefined || spras === null || spras === '') {
+                spras = 'I'
+            }
 
             if (body.ekko !== null && body.ekko !== undefined && body.ekko.length > 0) {
                 ekko = body.ekko
@@ -388,7 +393,7 @@ module.exports = function () {
                             client.close()
                             return res.status(500).send(stringifyObj(_err))
                         }
-                        sp(userid, ekko, ekpo, ekes, skipAppBuyer, t_herder_comment, t_position_comment, (err, parameters, results) => {
+                        sp(userid, ekko, ekpo, ekes, skipAppBuyer, t_herder_comment, t_position_comment, spras, (err, parameters, results) => {
                             console.log('---->>> CLIENT END ConfirmOrders <<<<<-----')
                             client.close()
                             if (err) {
@@ -416,6 +421,7 @@ module.exports = function () {
         var userid = req.user.id
         var confirmTypes = []
         var tipoOperazione = '' // -- QUA o PRZ
+        var spras = 'I';
 
         var mailArr = []
 
@@ -426,6 +432,10 @@ module.exports = function () {
 
             if (body.tipoOperazione !== null && body.tipoOperazione !== undefined && body.tipoOperazione !== '') {
                 tipoOperazione = body.tipoOperazione
+            }
+
+            if (body.spras !== undefined && body.spras !== null && body.spras !== '' ) {
+                spras = body.spras
             }
 
             if (body.confirmType !== null && body.confirmType !== undefined && body.confirmType !== '') {
@@ -508,7 +518,7 @@ module.exports = function () {
                                 client.close()
                                 return res.status(500).send(stringifyObj(_err))
                             }
-                            sp(userid, confirmTypes, tipoOperazione, notaReject, (err, parameters, results) => {
+                            sp(userid, confirmTypes, tipoOperazione, notaReject, spras, (err, parameters, results) => {
                                 console.log('---->>> CLIENT END ConfirmReject <<<<<-----')
                                 client.close()
                                 if (err) {

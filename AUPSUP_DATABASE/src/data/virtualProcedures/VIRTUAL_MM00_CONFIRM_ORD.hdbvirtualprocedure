@@ -2,6 +2,7 @@ VIRTUAL PROCEDURE "AUPSUP_DATABASE.data.virtualProcedures::VIRTUAL_MM00_CONFIRM_
 IN IT_EKES "AUPSUP_DATABASE.data.structures.Orders::EKES_ConfirmOrds",
 IN IT_EKKO "AUPSUP_DATABASE.data.structures.Orders::EKKO_ConfirmOrds",
 IN IT_EKPO "AUPSUP_DATABASE.data.structures.Orders::EKPO_ConfirmOrds",
+IN IT_SPRAS NVARCHAR(1),
 OUT ET_RETURN "AUPSUP_DATABASE.data.structures.Orders::ERETURNStructure"
 )
 CONFIGURATION '{

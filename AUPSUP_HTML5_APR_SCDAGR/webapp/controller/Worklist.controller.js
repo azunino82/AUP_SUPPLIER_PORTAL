@@ -372,6 +372,24 @@ sap.ui.define([
 						});
 					}
 
+					// Distinct sulle righe mostrate a video per ebeln e ebelp
+					// non la faccio a DB perchè c'è anche la data in chiave
+					var distinctArray = []
+					oData.results.EkkoEkpo.forEach(old => {
+						var trovato = false;
+						distinctArray.forEach(element => {
+							if(old.EBELN === element.EBELN && old.EBELP === element.EBELP && (old.CONF_TYPE==='QUA' && element.CONF_TYPE==='QUA')){
+								trovato = true;
+							}
+						});
+						if(!trovato){
+							distinctArray.push(old);
+						}
+					});
+
+					outArr.results.EkkoEkpo = distinctArray;
+
+
 					var oModel = new JSONModel();
 					oModel.setData(outArr);
 					that.getView().setModel(oModel, "SchedAgreeJSONModel");
@@ -540,7 +558,8 @@ sap.ui.define([
 			var body = {
 				"confirmType": [],
 				"notaReject": sText,
-				"tipoOperazione": "QUA"
+				"tipoOperazione": "QUA",
+				"spras": that.getLanguage()
 			};
 
 			if (posToApprove !== undefined && posToApprove.length > 0) {
@@ -626,7 +645,8 @@ sap.ui.define([
 			var body = {
 				"confirmType": [],
 				"notaReject": notaReject,
-				"tipoOperazione": "PRZ"
+				"tipoOperazione": "PRZ",
+				"spras": that.getLanguage()
 			};
 
 			var oModel = that.getModel("SchedAgreeJSONModel").getData().results.EkkoEkpo;

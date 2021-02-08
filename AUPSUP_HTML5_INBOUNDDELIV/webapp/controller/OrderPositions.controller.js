@@ -550,7 +550,8 @@ sap.ui.define([
 								"ZCUSTOM10": ""
 							}],
 							"ekpo": [],
-							"userid": that.getCurrentUserId()
+							"userid": that.getCurrentUserId(),
+							"spras": that.getLanguage()
 						};
 						var ekpoRow = that.getModel("SelectedPositionsJSONModel").getData();
 						if (ekpoRow !== undefined) {

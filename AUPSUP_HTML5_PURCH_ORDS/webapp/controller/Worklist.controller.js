@@ -191,11 +191,23 @@ sap.ui.define([
 
 			}
 
+			$(window).on("beforeunload", function (event) {
+				// se ho aperto il fragment delle conferme cancello i log
+				if (that.oConfirmPositionsFragment) {
+					that.onDeleteLocks();
+				}
+			})
+
 
 		},
 		onAfterRendering: function () {
 			that.getUserInfo();
 		},
+
+		onExit: function () {
+			that.onDeleteLocks();
+		},
+
 		onClick: function (oID) {
 			$('#' + oID).click(function (oEvent) { //Attach Table Header Element Event
 				var oTarget = oEvent.currentTarget; //Get hold of Header Element
@@ -801,113 +813,115 @@ sap.ui.define([
 				// column definitions with column name and binding info for the content
 
 				columns: [{
-					name: that.getResourceBundle().getText("EBELN"),
-					template: {
-						content: "{EBELN}"
-					}
-				}, {
-					name: that.getResourceBundle().getText("EBELP"),
-					template: {
-						content: "{EBELP}"
-					}
-				}, {
-					name: that.getResourceBundle().getText("LIFNR"),
-					template: {
-						content: "{LIFNR}"
-					}
-				}, {
-					name: that.getResourceBundle().getText("supplierName"),
-					template: {
-						content: "{NAME1}"
-					}
-				}, {
-					name: that.getResourceBundle().getText("MATNR"),
-					template: {
-						content: "{MATNR}"
-					}
-				}, {
-					name: that.getResourceBundle().getText("TXZ01"),
-					template: {
-						content: "{TXZ01}"
-					}
-				}, {
-					name: that.getResourceBundle().getText("IDNLF"),
-					template: {
-						content: "{IDNLF}"
-					}
-				}, {
-					name: that.getResourceBundle().getText("MENGE"),
-					template: {
-						content: "{MENGE}"
-					}
-				}, {
-					name: that.getResourceBundle().getText("MEINS"),
-					template: {
-						content: "{MEINS}"
-					}
-				}, {
-					name: that.getResourceBundle().getText("WAERS"),
-					template: {
-						content: "{WAERS}"
-					}
-				}, {
-					name: that.getResourceBundle().getText("PRIMO_PERIODO"),
-					template: {
-						content: "{PRIMO_PERIODO}"
-					}
-				}, {
-					name: that.getResourceBundle().getText("SECONDO_PERIODO"),
-					template: {
-						content: "{SECONDO_PERIODO}"
-					}
-				},
-				/* {
-					name: that.getResourceBundle().getText("RangeDateEketEkeh"),
-					template: {
-						content: {
-							path: "EKET_EKEH_EINDT",
-							formatter: function (sDate) {
-								var oFromFormat = sap.ui.core.format.DateFormat.getDateTimeInstance({
-									pattern: "yyyyMMdd"
-								});
-								var oDate = oFromFormat.parse(sDate, true);
-								var oToFormat = sap.ui.core.format.DateFormat.getDateTimeInstance({
-									pattern: "dd MMM yyyy"
-								});
-								if (sDate === "00000000") {
-									return ""; // or whatever special case
-								} else {
-									var sResult = oToFormat.format(oDate);
-									return sResult;
+						name: that.getResourceBundle().getText("EBELN"),
+						template: {
+							content: "{EBELN}"
+						}
+					}, {
+						name: that.getResourceBundle().getText("EBELP"),
+						template: {
+							content: "{EBELP}"
+						}
+					}, {
+						name: that.getResourceBundle().getText("LIFNR"),
+						template: {
+							content: "{LIFNR}"
+						}
+					}, {
+						name: that.getResourceBundle().getText("supplierName"),
+						template: {
+							content: "{NAME1}"
+						}
+					}, {
+						name: that.getResourceBundle().getText("MATNR"),
+						template: {
+							content: "{MATNR}"
+						}
+					}, {
+						name: that.getResourceBundle().getText("TXZ01"),
+						template: {
+							content: "{TXZ01}"
+						}
+					}, {
+						name: that.getResourceBundle().getText("IDNLF"),
+						template: {
+							content: "{IDNLF}"
+						}
+					}, {
+						name: that.getResourceBundle().getText("MENGE"),
+						template: {
+							content: "{MENGE}"
+						}
+					}, {
+						name: that.getResourceBundle().getText("MEINS"),
+						template: {
+							content: "{MEINS}"
+						}
+					}, {
+						name: that.getResourceBundle().getText("WAERS"),
+						template: {
+							content: "{WAERS}"
+						}
+					}, {
+						name: that.getResourceBundle().getText("PRIMO_PERIODO"),
+						template: {
+							content: "{PRIMO_PERIODO}"
+						}
+					}, {
+						name: that.getResourceBundle().getText("SECONDO_PERIODO"),
+						template: {
+							content: "{SECONDO_PERIODO}"
+						}
+					},
+					/* {
+						name: that.getResourceBundle().getText("RangeDateEketEkeh"),
+						template: {
+							content: {
+								path: "EKET_EKEH_EINDT",
+								formatter: function (sDate) {
+									var oFromFormat = sap.ui.core.format.DateFormat.getDateTimeInstance({
+										pattern: "yyyyMMdd"
+									});
+									var oDate = oFromFormat.parse(sDate, true);
+									var oToFormat = sap.ui.core.format.DateFormat.getDateTimeInstance({
+										pattern: "dd MMM yyyy"
+									});
+									if (sDate === "00000000") {
+										return ""; // or whatever special case
+									} else {
+										var sResult = oToFormat.format(oDate);
+										return sResult;
+									}
 								}
 							}
 						}
-					}
-				},
-				*/ {
-					name: that.getResourceBundle().getText("lastEkesDate"),
-					template: {
-						content: {
-							path: "LAST_EKES_EINDT",
-							formatter: function (sDate) {
+					},
+					*/
+					{
+						name: that.getResourceBundle().getText("lastEkesDate"),
+						template: {
+							content: {
+								path: "LAST_EKES_EINDT",
+								formatter: function (sDate) {
 
-								var oFromFormat = sap.ui.core.format.DateFormat.getDateTimeInstance({
-									pattern: "yyyyMMdd"
-								});
-								var oDate = oFromFormat.parse(sDate, true);
-								var oToFormat = sap.ui.core.format.DateFormat.getDateTimeInstance({
-									pattern: "dd MMM yyyy"
-								});
-								if (sDate === "00000000") {
-									return ""; // or whatever special case
-								} else {
-									var sResult = oToFormat.format(oDate);
-									return sResult;
+									var oFromFormat = sap.ui.core.format.DateFormat.getDateTimeInstance({
+										pattern: "yyyyMMdd"
+									});
+									var oDate = oFromFormat.parse(sDate, true);
+									var oToFormat = sap.ui.core.format.DateFormat.getDateTimeInstance({
+										pattern: "dd MMM yyyy"
+									});
+									if (sDate === "00000000") {
+										return ""; // or whatever special case
+									} else {
+										var sResult = oToFormat.format(oDate);
+										return sResult;
+									}
 								}
 							}
 						}
 					}
-				}]
+				]
 			});
 
 			// download exported file
@@ -939,7 +953,7 @@ sap.ui.define([
 				return;
 			}
 			//	var oItems = oTable.getSelectedItems();
-			var oNotEditPositions = ""; //Elenco delle posizione per le quali è inibita la modifica
+			var oNotEditPositions = []; //Elenco delle posizione per le quali è inibita la modifica
 			var countNotEditPositions = 0;
 			var positionsArray = [];
 			// //MODIFICA LS
@@ -952,55 +966,124 @@ sap.ui.define([
 				}
 			});
 
-			var url = "/backend/SchedulingAgreementManagement/GetSelectedConferme";
 			var body = {
-				"ordPos": positionsArray
-			};
-			this.showBusyDialog();
+				"itemList": []
+			}
+			// CERCO GLI ORDINI LOCKATI
+			var url = "/backend/Utils/UtilsManagement/getLocks";
+			positionsArray.forEach(element => {
+				body.itemList.push({
+					"EBELN": element.EBELN,
+					"EBELP": element.EBELP
+				})
+			});
+
 			that.ajaxPost(url, body, function (oData) {
-				that.hideBusyDialog();
-				if (oData) {
-					var oModelSelectedPos = new JSONModel();
-					oModelSelectedPos.setData(oData);
-					that.getView().setModel(
-						oModelSelectedPos,
-						"SelectedPositionsJSONModel");
+				var outArr = [];
+				if (oData && oData.results && oData.results.length > 0) {
+					// HO TROVATO ALCUNI ORDINI LOCKATI
+					positionsArray.forEach(position => {
+						var trovato = false;
+						oData.results.forEach(lockedItem => {
+							if (position.EBELN === lockedItem.EBELN && position.EBELP === lockedItem.EBELP) {
+								trovato = true;
+								oNotEditPositions.push(position);
+							}
+						});
+						if (!trovato) {
+							outArr.push(position)
+						}
+					});
+				} else {
+					outArr = positionsArray
 				}
+
+				// CERCO LE SCHEDULAZIONI PER I SOLI ORDINI NON LOCKATI
+				if (outArr.length > 0) {
+					that.showBusyDialog();
+
+					new Promise(
+						function (resolve, reject) {
+							var url = "/backend/SchedulingAgreementManagement/GetSelectedConferme";
+							body = {
+								"ordPos": outArr
+							};
+							that.ajaxPost(url, body, function (oData) {
+
+								if (oData) {
+									var oModelSelectedPos = new JSONModel();
+									oModelSelectedPos.setData(oData);
+									that.getView().setModel(
+										oModelSelectedPos,
+										"SelectedPositionsJSONModel");
+									resolve()
+								}
+							})
+
+						}).then(function () {
+						that.hideBusyDialog();
+						if (!that.oConfirmPositionsFragment) {
+							that.oConfirmPositionsFragment = sap.ui.xmlfragment(
+								"it.aupsup.purchords.fragments.ConfirmPositions",
+								that);
+							that.getView().addDependent(that.oConfirmPositionsFragment);
+
+							// blocco il bottone di ESC
+							that.oConfirmPositionsFragment.attachBrowserEvent("keydown", function (oEvent) {
+								if (oEvent.keyCode === 27) {
+									oEvent.stopPropagation();
+									oEvent.preventDefault();
+								}
+							});
+
+						}
+						that.oConfirmPositionsFragment.open();
+
+						// MOSTRO L ELENCO DEGLI ORDINI LOCKATI
+						if (outArr.length > 0 && oNotEditPositions.length > 0) {
+							var ordiniPosizioniLockate = ""
+							oNotEditPositions.forEach(element => {
+								ordiniPosizioniLockate = ordiniPosizioniLockate + " " + element.EBELN + "-" + element.EBELP;
+							});
+							MessageBox.warning(that.getResourceBundle().getText("positionNotConfirmable", ordiniPosizioniLockate), {
+								icon: MessageBox.Icon.WARNING,
+								title: "Warning",
+							});
+						}
+
+						// LOCKO GLI ORDINI
+						url = "/backend/Utils/UtilsManagement/setLocks";
+						body = {}
+						body.itemList = [];
+						outArr.forEach(element => {
+							body.itemList.push({
+								"EBELN": element.EBELN,
+								"EBELP": element.EBELP
+							})
+						});
+						that.ajaxPost(url, body, function (oData) {
+							// ordini lockati !!
+						})
+					}, function () {
+						that.hideBusyDialog();
+					});
+				} else {
+					// TUTTI GLI ORDINI SONO LOCKATI
+					MessageBox.warning(that.getResourceBundle().getText("allPositionNotConfirmable"), {
+						icon: MessageBox.Icon.WARNING,
+						title: "Warning",
+					});
+				}
+
 			})
-			// fine modifiche LS
-			// TODO DA GESTIRE 2020 LS
-			// if (countNotEditPositions === positionRows.length) {
-			// 	MessageBox.error(that.getResourceBundle().getText("allPositionNotConfirmable"), {
-			// 		icon: MessageBox.Icon.ERROR,
-			// 		title: "Error",
-			// 	});
-			// 	return;
-			// }
 
-			// var oModelSelectedPos = new JSONModel();
-			// oModelSelectedPos.setData(selectedContextBinding);
-			// that.getView().setModel(
-			// 	oModelSelectedPos,
-			// 	"SelectedPositionsJSONModel");
+		},
 
-			if (!that.oConfirmPositionsFragment) {
-				that.oConfirmPositionsFragment = sap.ui.xmlfragment(
-					"it.aupsup.purchords.fragments.ConfirmPositions",
-					this);
-				that.getView().addDependent(that.oConfirmPositionsFragment);
-			}
-
-			that.oConfirmPositionsFragment.open();
-
-			// PROMISE PER avere le RMO di tutte le posizioni selezionate:
-			// se promise è RESOLVE allor faccio riga 401 - 407
-
-			if (oNotEditPositions != "") {
-				MessageBox.warning(that.getResourceBundle().getText("positionNotConfirmable", oNotEditPositions), {
-					icon: MessageBox.Icon.WARNING,
-					title: "Warning",
-				});
-			}
+		onlyPositiveNumber: function (oEvent) {
+			var _oInput = oEvent.getSource();
+			var val = _oInput.getValue();	
+			val = val.replace(/[^0-9\.]/g,'');
+			_oInput.setValue(val);
 		},
 
 		onChoseType: function (oEvent) {
@@ -1014,7 +1097,7 @@ sap.ui.define([
 				oIndexs = oIndexs[oIndexs.length - 1];
 				if (mod.MODIFICA_PREZZO !== undefined && mod.MODIFICA_PREZZO !== "") {
 					if ((that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].KONNR === undefined || (that.getView().getModel(
-						"SelectedPositionsJSONModel").getData()[oIndexs].KONNR === "")) || (that.getView().getModel("SelectedPositionsJSONModel").getData()[
+							"SelectedPositionsJSONModel").getData()[oIndexs].KONNR === "")) || (that.getView().getModel("SelectedPositionsJSONModel").getData()[
 							oIndexs].KTPNR === undefined || (that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].KTPNR === "00000")))
 						that.getView().getModel("SelectedPositionsJSONModel").getData()[oIndexs].editPrice = true;
 				}
@@ -1081,6 +1164,26 @@ sap.ui.define([
 			}
 		},
 
+		onDeleteLocks: function () {
+			// CANCELLO LE POSIZIONE ORDINE LOCKATE
+			var oModel = that.getView().getModel("SelectedPositionsJSONModel") !== undefined && that.getView().getModel("SelectedPositionsJSONModel").getData() !== undefined ? that.getView().getModel("SelectedPositionsJSONModel").getData() : undefined;
+			if (oModel && oModel.length > 0) {
+
+				var url = "/backend/Utils/UtilsManagement/unlockItems";
+				var body = {}
+				body.itemList = [];
+				oModel.forEach(element => {
+					body.itemList.push({
+						"EBELN": element.EBELN,
+						"EBELP": element.EBELP
+					})
+				});
+				that.ajaxPost(url, body, function (oData) {
+					// ordini lockati !!
+				})
+			}
+		},
+
 		onCloseOrderPositions: function (needReserarch) {
 			if (this.oConfirmPositionsFragment) {
 				this.oConfirmPositionsFragment.close();
@@ -1088,6 +1191,7 @@ sap.ui.define([
 				this.oConfirmPositionsFragment = undefined;
 				if (needReserarch === true)
 					that.onSearchOrders();
+				that.onDeleteLocks();
 			}
 		},
 
@@ -1348,8 +1452,8 @@ sap.ui.define([
 
 						sommaQuantitaSchedulazioni = sommaQuantitaSchedulazioni + parseInt(model[i].POItemSchedulers.results[j].MENGE);
 						if ((model[i].POItemSchedulers.results[j]) && ((model[i].POItemSchedulers.results[j].EINDT == "") || (model[i].POItemSchedulers
-							.results[
-							j].MENGE == ""))) {
+								.results[
+									j].MENGE == ""))) {
 							err = that.getResourceBundle().getText("ERR_Schedulations_Mandatory");
 							contatoreRighe = contatoreRighe + 1;
 
@@ -1408,11 +1512,12 @@ sap.ui.define([
 							"ekko": [],
 							"ekpo": [],
 							"ekes": [],
-							"skipAppBuyer": [],
+							"skipAppBuyer": [], 
 							"notaReject": "",
 							"confirmType": "",
 							"t_herder_comment": [],
-							"t_position_comment": []
+							"t_position_comment": [],
+							"spras": that.getLanguage()
 						};
 						var ekpoRow = that.getModel("SelectedPositionsJSONModel").getData();
 						if (ekpoRow !== undefined) {
@@ -1650,6 +1755,7 @@ sap.ui.define([
 
 								var headerComments = {};
 								headerComments.EBELN = row.EBELN;
+								headerComments.EBELP = row.EBELP;
 								headerComments.COMMENT = row.HEADER_COMMENT;
 								body.t_herder_comment.push(headerComments);
 
@@ -1936,8 +2042,8 @@ sap.ui.define([
 					mod.POItemSchedulers.results[j].EINDT = mod.POItemSchedulers.results[j].EINDT.split('-').join('');
 					sommaQuantitaSchedulazioni = sommaQuantitaSchedulazioni + parseFloat(mod.POItemSchedulers.results[j].MENGE);
 					if ((mod.POItemSchedulers.results[j]) && ((mod.POItemSchedulers.results[j].EINDT === "") || (mod.POItemSchedulers
-						.results[
-						j].MENGE === ""))) {
+							.results[
+								j].MENGE === ""))) {
 						err = err + "\n" + that.getResourceBundle().getText("ERR_Schedulations_Mandatory");
 						break;
 					}
@@ -2042,7 +2148,7 @@ sap.ui.define([
 					if (mod.RMOData !== undefined && mod.RMOData.EkkoEkpo !== undefined && mod.RMOData.EkkoEkpo.length > 0) {
 						var EkkoEkpo = mod.RMOData.EkkoEkpo.find(x => x.STATUS === 'RC' && x.UPDKZ === '4' && x.EBELN === mod.EBELN && x.EBELP ===
 							mod
-								.EBELP);
+							.EBELP);
 						if (EkkoEkpo !== undefined)
 							trovato = true;
 					}
@@ -2077,7 +2183,7 @@ sap.ui.define([
 					if (mod.RMOData !== undefined && mod.RMOData.EkkoEkpo !== undefined && mod.RMOData.EkkoEkpo.length > 0) {
 						var EkkoEkpo = mod.RMOData.EkkoEkpo.find(x => x.STATUS === 'RC' && x.UPDKZ === '4' && x.EBELN === mod.EBELN && x.EBELP ===
 							mod
-								.EBELP);
+							.EBELP);
 						if (EkkoEkpo !== undefined)
 							trovato = true;
 					}
@@ -2249,8 +2355,8 @@ sap.ui.define([
 				var hText = columnHeader[i].getAggregation("header") !== null ? columnHeader[i].getAggregation("header").getProperty("text") : "";
 				var columnObject = {};
 				columnObject.column = hText;
-				if(hText !== '')
-				openAssetColumns.push(columnObject);
+				if (hText !== '')
+					openAssetColumns.push(columnObject);
 			}
 			var oModel1 = new sap.ui.model.json.JSONModel({
 				list: openAssetColumns
@@ -2297,7 +2403,7 @@ sap.ui.define([
 					var v = table[j].getProperty("visible");
 					if (v === true) {
 						if (a.indexOf(Text) > -1) {
-							var firstItem = oList1.getItems()[j-1];
+							var firstItem = oList1.getItems()[j - 1];
 							oList1.setSelectedItem(firstItem, true);
 						}
 					}
@@ -2329,8 +2435,8 @@ sap.ui.define([
 			for (var j = 0; j < table.length; j++) {
 				var idColonna = "";
 				var Text = table[j].getHeader() !== null ? table[j].getHeader().getProperty("text") : "";
-				if(Text ==='')
-				continue 
+				if (Text === '')
+					continue
 				var Column = table[j].getId();
 				if (Column !== null && Column !== undefined) {
 					idColonna = Column.split("--");
@@ -2361,7 +2467,7 @@ sap.ui.define([
 			//	oModelData.metadataLoaded().then(
 			//		that.onMetadataLoaded.bind(that, oModelData));
 			var columModel = {
-				"CHECK":true,
+				"CHECK": true,
 				"EBELN": true,
 				"EBELP": true,
 				"LIFNR": true,
@@ -2407,7 +2513,7 @@ sap.ui.define([
 			var selectedRowdata = that.getModel("OrderJSONModel").getProperty(oPath);
 
 			var currentSYSID = sap.ui.getCore().getModel("sysIdJSONModel") !== undefined && sap.ui.getCore().getModel(
-				"sysIdJSONModel").getData() !==
+					"sysIdJSONModel").getData() !==
 				undefined ? sap.ui.getCore().getModel("sysIdJSONModel").getData().SYSID : "";
 
 			that.showBusyDialog()
@@ -2469,7 +2575,7 @@ sap.ui.define([
 			var oModel = oComponent.getModel("TextsJSONModel").getData();
 
 			var currentSYSID = sap.ui.getCore().getModel("sysIdJSONModel") !== undefined && sap.ui.getCore().getModel(
-				"sysIdJSONModel").getData() !==
+					"sysIdJSONModel").getData() !==
 				undefined ? sap.ui.getCore().getModel("sysIdJSONModel").getData().SYSID : "";
 
 			var body = {}
@@ -2581,7 +2687,11 @@ sap.ui.define([
 					oComponent.setModel(oModel, "CustomDocJSONModel");
 
 					oModel = new JSONModel();
-					oModel.setData({ "DocType": "", "EBELN": selctedRowdata.EBELN, "EBELP": selctedRowdata.EBELP });
+					oModel.setData({
+						"DocType": "",
+						"EBELN": selctedRowdata.EBELN,
+						"EBELP": selctedRowdata.EBELP
+					});
 					var oComponent = that.getOwnerComponent();
 					oComponent.setModel(oModel, "filterDocListJSONModel");
 
@@ -2725,10 +2835,10 @@ sap.ui.define([
 				success: function (data) {
 					that.hideBusyDialog();
 					//if (data && data.results && data.results.length > 0) {
-						var oModel = new JSONModel();
-						oModel.setData(data);
-						var oComponent = that.getOwnerComponent();
-						oComponent.setModel(oModel, "DocumentListJSONModel");
+					var oModel = new JSONModel();
+					oModel.setData(data);
+					var oComponent = that.getOwnerComponent();
+					oComponent.setModel(oModel, "DocumentListJSONModel");
 					//}
 				}
 			})
@@ -2739,9 +2849,9 @@ sap.ui.define([
 			var selctedRowdata = that.getOwnerComponent().getModel("DocumentListJSONModel").getProperty(path.sPath);
 
 			if (selctedRowdata !== undefined) {
-			 var url = "/backend/DocumentManagement/DocDownload?I_DOKAR=" + selctedRowdata.DOKAR + "&I_DOKNR=" + selctedRowdata.DOKNR + "&I_DOKTL=" + selctedRowdata.DOKTL + 
-					  "&I_DOKVR=" + selctedRowdata.DOKVR + "&I_LO_INDEX=" + selctedRowdata.LO_INDEX + "&I_LO_OBJID=" + selctedRowdata.LO_OBJID + "&I_OBJKY=" + selctedRowdata.OBJKY + 
-					  "&I_DOKOB=" + selctedRowdata.DOKOB;
+				var url = "/backend/DocumentManagement/DocDownload?I_DOKAR=" + selctedRowdata.DOKAR + "&I_DOKNR=" + selctedRowdata.DOKNR + "&I_DOKTL=" + selctedRowdata.DOKTL +
+					"&I_DOKVR=" + selctedRowdata.DOKVR + "&I_LO_INDEX=" + selctedRowdata.LO_INDEX + "&I_LO_OBJID=" + selctedRowdata.LO_OBJID + "&I_OBJKY=" + selctedRowdata.OBJKY +
+					"&I_DOKOB=" + selctedRowdata.DOKOB;
 				// NB: questa chiamata fetch funziona SOLO su portale non con webide preview
 				fetch(url)
 					.then(resp => resp.blob())
@@ -2759,12 +2869,12 @@ sap.ui.define([
 					.catch(() => console.log("some error during download process"));
 			}
 		},
-		
-		onDownloadSelDoc: function (){
+
+		onDownloadSelDoc: function () {
 			var promiseArr = []
 			var zip = new JSZip()
 			this.showBusyDialog();
-			
+
 			for (var i = 0; i < sap.ui.getCore().byId("DownloadDocumentTable")._aSelectedPaths.length; i++) {
 				var ind = sap.ui.getCore().byId("DownloadDocumentTable")._aSelectedPaths[i].split("/");
 				ind = ind[2];
@@ -2772,10 +2882,10 @@ sap.ui.define([
 
 				promiseArr.push(new Promise(function (resolve, reject) {
 
-					var path = "/backend/DocumentManagement/DocDownload?I_DOKAR=" + selctedRowdata.DOKAR + "&I_DOKNR=" + selctedRowdata.DOKNR + "&I_DOKTL=" + selctedRowdata.DOKTL + 
-					"&I_DOKVR=" + selctedRowdata.DOKVR + "&I_LO_INDEX=" + selctedRowdata.LO_INDEX + "&I_LO_OBJID=" + selctedRowdata.LO_OBJID + "&I_OBJKY=" + selctedRowdata.OBJKY + 
-					"&I_DOKOB=" + selctedRowdata.DOKOB;
-					
+					var path = "/backend/DocumentManagement/DocDownload?I_DOKAR=" + selctedRowdata.DOKAR + "&I_DOKNR=" + selctedRowdata.DOKNR + "&I_DOKTL=" + selctedRowdata.DOKTL +
+						"&I_DOKVR=" + selctedRowdata.DOKVR + "&I_LO_INDEX=" + selctedRowdata.LO_INDEX + "&I_LO_OBJID=" + selctedRowdata.LO_OBJID + "&I_OBJKY=" + selctedRowdata.OBJKY +
+						"&I_DOKOB=" + selctedRowdata.DOKOB;
+
 					try {
 						var xhr = new window.XMLHttpRequest();
 						xhr.DESCRIPTION = selctedRowdata.DESCRIPTION;
@@ -2796,7 +2906,9 @@ sap.ui.define([
 							if (xhr.readyState === 4) {
 								if (xhr.status === 200 || xhr.status === 0) {
 									try {
-										zip.file(xhr.DESCRIPTION, xhr.response || xhr.responseText, {binary:true});
+										zip.file(xhr.DESCRIPTION, xhr.response || xhr.responseText, {
+											binary: true
+										});
 										resolve();
 									} catch (err) {
 										that.hideBusyDialog();
@@ -2830,7 +2942,7 @@ sap.ui.define([
 					});
 			});
 
-			
+
 		},
 
 		saveAs: function (blob, filename) {
@@ -2906,5 +3018,6 @@ sap.ui.define([
 			}
 		}
 	});
+
 
 });
