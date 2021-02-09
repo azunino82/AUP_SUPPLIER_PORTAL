@@ -156,7 +156,7 @@ module.exports = function () {
                                 var t_eket = []
                                 var t_ekeh = []
                                 var t_ekek = []
-                                console.log('OUT_POS_ORDERS: ' + stringifyObj(err))
+                                console.log('OUT_POS_ORDERS: ' + OUT_POS_ORDERS.length)
                                 if (OUT_POS_ORDERS !== undefined && OUT_POS_ORDERS !== null && OUT_POS_ORDERS.length > 0) {
                                     for (var i = 0; i < OUT_POS_ORDERS.length; i++) {
                                         var objectCopy = OUT_POS_ORDERS[i]

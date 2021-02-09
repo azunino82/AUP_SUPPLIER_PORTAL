@@ -959,7 +959,7 @@ sap.ui.define([
 				return;
 			}
 			//	var oItems = oTable.getSelectedItems();
-			var oNotEditPositions = ""; //Elenco delle posizione per le quali è inibita la modifica
+			var oNotEditPositions = []; //Elenco delle posizione per le quali è inibita la modifica
 			var countNotEditPositions = 0;
 			var positionsArray = [];
 			// //MODIFICA LS
@@ -984,7 +984,7 @@ sap.ui.define([
 				})
 			});
 
-			that.ajaxPost(url, body, function (oData) {
+			that.ajaxPost(url, body, function (oData) { 
 				var outArr = [];
 				if (oData && oData.results && oData.results.length > 0) {
 					// HO TROVATO ALCUNI ORDINI LOCKATI
