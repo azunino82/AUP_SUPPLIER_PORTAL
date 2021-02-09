@@ -33,9 +33,9 @@
 									<!--<Input required="{SelectedPositionsJSONModel>editMode}" value="{SelectedPositionsJSONModel>MENGE}" enabled="{SelectedPositionsJSONModel>editMode}" type="Number"/> -->
 									<core:Title text="" />
 									<Label text="{i18n>NETPR}" />
-									<Input required="{SelectedPositionsJSONModel>editPrice}" value="{SelectedPositionsJSONModel>NETPR}" enabled="{SelectedPositionsJSONModel>editPrice}" type="Number" />
+									<Input required="{SelectedPositionsJSONModel>editPrice}" value="{SelectedPositionsJSONModel>NETPR}" enabled="{SelectedPositionsJSONModel>editPrice}" liveChange="onlyPositiveNumber" />
 									<Label text="{i18n>PEINH}" />
-									<Input required="{SelectedPositionsJSONModel>editPrice}" value="{SelectedPositionsJSONModel>PEINH}" enabled="{SelectedPositionsJSONModel>editPrice}" type="Number" />
+									<Input required="{SelectedPositionsJSONModel>editPrice}" value="{SelectedPositionsJSONModel>PEINH}" enabled="{SelectedPositionsJSONModel>editPrice}" liveChange="onlyPositiveNumber" />
 									<Label text="{i18n>COMMENT}" />
 									<TextArea growing="true" value="{SelectedPositionsJSONModel>HEADER_COMMENT}" rows="3" enabled="{SelectedPositionsJSONModel>editPrice}">
 										<layoutData>
@@ -128,7 +128,7 @@
 									<ColumnListItem visible="{= ${SelectedPositionsJSONModel>SYSID} === undefined}">
 										<cells>
 											<DatePicker enabled="{= ${SelectedPositionsJSONModel>SYSID} === undefined}" displayFormat="dd MMM yyyy" valueFormat="YYYYMMdd" value="{path:'SelectedPositionsJSONModel>EINDT'}" />
-											<Input enabled="{= ${SelectedPositionsJSONModel>SYSID} === undefined}" value="{SelectedPositionsJSONModel>MENGE}" type="Number" />
+											<Input enabled="{= ${SelectedPositionsJSONModel>SYSID} === undefined}" value="{SelectedPositionsJSONModel>MENGE}"  liveChange="onlyPositiveNumber" />
 											<ComboBox width="10rem" enabled="{SelectedPositionsJSONModel>ETENRenabled}" selectedKey="{SelectedPositionsJSONModel>ETENR}" items="{SelectedPositionsJSONModel>ETENRS}">
 												<core:Item key="{SelectedPositionsJSONModel>ETENR}" text="{SelectedPositionsJSONModel>ETENR}" />
 											</ComboBox>

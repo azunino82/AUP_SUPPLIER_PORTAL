@@ -103,7 +103,7 @@
 
 															<m:ToolbarSpacer/>
 															<m:Button visible="false" id="headerFilterButton" tooltip="{i18n>clearFilter}" icon="sap-icon://clear-filter" press="onClearFilter" type="Transparent"/>
-															<m:HBox alignItems="Center" id="comboProfiliConferma">
+															<m:HBox alignItems="Center" id="comboProfiliConferma" visible="false">
 																<m:Label text="{i18n>CAT_CONS}" class="labelSpace"/>
 																<m:ComboBox selectedKey="{ListProfiliConfermaJSONModel>/CAT_CONFERMA}" width="auto" change="onChangeProfiloConsegna" items="{ path: 'ListProfiliConfermaJSONModel>/results', sorter: { path: 'CAT_CONFERMA' } }">
 																	<core:Item key="{ListProfiliConfermaJSONModel>CAT_CONFERMA}" text="{ListProfiliConfermaJSONModel>CAT_CONFERMA} - {ListProfiliConfermaJSONModel>DESCRIZIONE}"/>
