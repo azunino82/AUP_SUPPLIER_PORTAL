@@ -191,11 +191,42 @@ sap.ui.define([
 
 			}
 
+			$(window).on("beforeunload", function (event) {
+				// se ho aperto il fragment delle conferme cancello i log
+				if (that.oConfirmPositionsFragment) {
+					that.onDeleteLocks();
+				}
+			})
 
 		},
 		onAfterRendering: function () {
 			that.getUserInfo();
 		},
+
+		onExit: function () {
+			that.onDeleteLocks();
+		},
+
+		onDeleteLocks: function () {
+			// CANCELLO LE POSIZIONE ORDINE LOCKATE
+			var oModel = that.getView().getModel("SelectedPositionsJSONModel") !== undefined && that.getView().getModel("SelectedPositionsJSONModel").getData() !== undefined ? that.getView().getModel("SelectedPositionsJSONModel").getData() : undefined;
+			if (oModel && oModel.length > 0) {
+
+				var url = "/backend/Utils/UtilsManagement/unlockItems";
+				var body = {}
+				body.itemList = [];
+				oModel.forEach(element => {
+					body.itemList.push({
+						"EBELN": element.EBELN,
+						"EBELP": element.EBELP
+					})
+				});
+				that.ajaxPost(url, body, function (oData) {
+					// ordini lockati !!
+				})
+			}
+		},
+
 		onClick: function (oID) {
 			$('#' + oID).click(function (oEvent) { //Attach Table Header Element Event
 				var oTarget = oEvent.currentTarget; //Get hold of Header Element
@@ -914,7 +945,7 @@ sap.ui.define([
 				return;
 			}
 			//	var oItems = oTable.getSelectedItems();
-			var oNotEditPositions = ""; //Elenco delle posizione per le quali è inibita la modifica
+			var oNotEditPositions = []; //Elenco delle posizione per le quali è inibita la modifica
 			var countNotEditPositions = 0;
 			var positionsArray = [];
 			// //MODIFICA LS
@@ -927,55 +958,117 @@ sap.ui.define([
 				}
 			});
 
-			var url = "/backend/SchedulingAgreementManagement/GetSelectedConferme";
 			var body = {
-				"ordPos": positionsArray
-			};
-			this.showBusyDialog();
+				"itemList": []
+			}
+			// CERCO GLI ORDINI LOCKATI
+			var url = "/backend/Utils/UtilsManagement/getLocks";
+			positionsArray.forEach(element => {
+				body.itemList.push({
+					"EBELN": element.EBELN,
+					"EBELP": element.EBELP
+				})
+			});
+
 			that.ajaxPost(url, body, function (oData) {
-				that.hideBusyDialog();
-				if (oData) {
-					var oModelSelectedPos = new JSONModel();
-					oModelSelectedPos.setData(oData);
-					that.getView().setModel(
-						oModelSelectedPos,
-						"SelectedPositionsJSONModel");
+				var outArr = [];
+				if (oData && oData.results && oData.results.length > 0) {
+					// HO TROVATO ALCUNI ORDINI LOCKATI
+					positionsArray.forEach(position => {
+						var trovato = false;
+						oData.results.forEach(lockedItem => {
+							if (position.EBELN === lockedItem.EBELN && position.EBELP === lockedItem.EBELP) {
+								trovato = true;
+								oNotEditPositions.push(position);
+							}
+						});
+						if (!trovato) {
+							outArr.push(position)
+						}
+					});
+				} else {
+					outArr = positionsArray
 				}
+
+				// CERCO LE SCHEDULAZIONI PER I SOLI ORDINI NON LOCKATI
+				if (outArr.length > 0) {
+					that.showBusyDialog();
+
+					new Promise(
+						function (resolve, reject) {
+							var url = "/backend/SchedulingAgreementManagement/GetSelectedConferme";
+							body = {
+								"ordPos": outArr
+							};
+							that.ajaxPost(url, body, function (oData) {
+
+								if (oData) {
+									var oModelSelectedPos = new JSONModel();
+									oModelSelectedPos.setData(oData);
+									that.getView().setModel(
+										oModelSelectedPos,
+										"SelectedPositionsJSONModel");
+									resolve()
+								}
+							})
+
+						}).then(function () {
+						that.hideBusyDialog();
+						if (!that.oConfirmPositionsFragment) {
+							that.oConfirmPositionsFragment = sap.ui.xmlfragment(
+								"it.aupsup.purchords.fragments.ConfirmPositions",
+								that);
+							that.getView().addDependent(that.oConfirmPositionsFragment);
+
+							// blocco il bottone di ESC
+							that.oConfirmPositionsFragment.attachBrowserEvent("keydown", function (oEvent) {
+								if (oEvent.keyCode === 27) {
+									oEvent.stopPropagation();
+									oEvent.preventDefault();
+								}
+							});
+
+						}
+						that.oConfirmPositionsFragment.open();
+
+						// MOSTRO L ELENCO DEGLI ORDINI LOCKATI
+						if (outArr.length > 0 && oNotEditPositions.length > 0) {
+							var ordiniPosizioniLockate = ""
+							oNotEditPositions.forEach(element => {
+								ordiniPosizioniLockate = ordiniPosizioniLockate + " " + element.EBELN + "-" + element.EBELP;
+							});
+							MessageBox.warning(that.getResourceBundle().getText("positionNotConfirmable", ordiniPosizioniLockate), {
+								icon: MessageBox.Icon.WARNING,
+								title: "Warning",
+							});
+						}
+
+						// LOCKO GLI ORDINI
+						url = "/backend/Utils/UtilsManagement/setLocks";
+						body = {}
+						body.itemList = [];
+						outArr.forEach(element => {
+							body.itemList.push({
+								"EBELN": element.EBELN,
+								"EBELP": element.EBELP
+							})
+						});
+						that.ajaxPost(url, body, function (oData) {
+							// ordini lockati !!
+						})
+					}, function () {
+						that.hideBusyDialog();
+					});
+				} else {
+					// TUTTI GLI ORDINI SONO LOCKATI
+					MessageBox.warning(that.getResourceBundle().getText("allPositionNotConfirmable"), {
+						icon: MessageBox.Icon.WARNING,
+						title: "Warning",
+					});
+				}
+
 			})
-			// fine modifiche LS
-			// TODO DA GESTIRE 2020 LS
-			// if (countNotEditPositions === positionRows.length) {
-			// 	MessageBox.error(that.getResourceBundle().getText("allPositionNotConfirmable"), {
-			// 		icon: MessageBox.Icon.ERROR,
-			// 		title: "Error",
-			// 	});
-			// 	return;
-			// }
 
-			// var oModelSelectedPos = new JSONModel();
-			// oModelSelectedPos.setData(selectedContextBinding);
-			// that.getView().setModel(
-			// 	oModelSelectedPos,
-			// 	"SelectedPositionsJSONModel");
-
-			if (!that.oConfirmPositionsFragment) {
-				that.oConfirmPositionsFragment = sap.ui.xmlfragment(
-					"it.aupsup.contracts.fragments.ConfirmPositions",
-					this);
-				that.getView().addDependent(that.oConfirmPositionsFragment);
-			}
-
-			that.oConfirmPositionsFragment.open();
-
-			// PROMISE PER avere le RMO di tutte le posizioni selezionate:
-			// se promise è RESOLVE allor faccio riga 401 - 407
-
-			if (oNotEditPositions != "") {
-				MessageBox.warning(that.getResourceBundle().getText("positionNotConfirmable", oNotEditPositions), {
-					icon: MessageBox.Icon.WARNING,
-					title: "Warning",
-				});
-			}
 		},
 
 		onChoseType: function (oEvent) {
@@ -1056,6 +1149,13 @@ sap.ui.define([
 			}
 		},
 
+		onlyPositiveNumber: function (oEvent) {
+			var _oInput = oEvent.getSource();
+			var val = _oInput.getValue();	
+			val = val.replace(/[^0-9\.]/g,'');
+			_oInput.setValue(val);
+		},		
+
 		onCloseOrderPositions: function (needReserarch) {
 			if (this.oConfirmPositionsFragment) {
 				this.oConfirmPositionsFragment.close();
@@ -1063,6 +1163,7 @@ sap.ui.define([
 				this.oConfirmPositionsFragment = undefined;
 				if (needReserarch === true)
 					that.onSearchOrders();
+				that.onDeleteLocks();
 			}
 		},
 
