@@ -186,12 +186,52 @@ sap.ui.define([
 
 			}
 
+			$(window).on("beforeunload", function (event) {
+				// se ho aperto il fragment delle conferme cancello i log
+				if (that.oConfirmPositionsFragment) {
+					that.onDeleteLocks();
+				}
+			})
 
 
 		},
+
+		onDeleteLocks: function () {
+			// CANCELLO LE POSIZIONE ORDINE LOCKATE
+			var oModel = that.getView().getModel("SelectedPositionsJSONModel") !== undefined && that.getView().getModel("SelectedPositionsJSONModel").getData() !== undefined ? that.getView().getModel("SelectedPositionsJSONModel").getData() : undefined;
+			if (oModel && oModel.length > 0) {
+
+				var url = "/backend/Utils/UtilsManagement/unlockItems";
+				var body = {}
+				body.itemList = [];
+				oModel.forEach(element => {
+					body.itemList.push({
+						"EBELN": element.EBELN,
+						"EBELP": element.EBELP
+					})
+				});
+				that.ajaxPost(url, body, function (oData) {
+					// ordini lockati !!
+				})
+			}
+		},
+
+		onlyPositiveNumber: function (oEvent) {
+			var _oInput = oEvent.getSource();
+			var val = _oInput.getValue();
+			val = val.replace(/[^0-9\.]/g, '');
+			_oInput.setValue(val);
+		},
+
 		onAfterRendering: function () {
 			that.getUserInfo();
 		},
+
+		onExit: function () {
+			console.log("EXITTT")
+			that.onDeleteLocks();
+		},
+
 		onClick: function (oID) {
 			$('#' + oID).click(function (oEvent) { //Attach Table Header Element Event
 				var oTarget = oEvent.currentTarget; //Get hold of Header Element
@@ -932,55 +972,117 @@ sap.ui.define([
 				}
 			});
 
-			var url = "/backend/SchedulingAgreementManagement/GetSelectedConferme";
 			var body = {
-				"ordPos": positionsArray
-			};
-			this.showBusyDialog();
+				"itemList": []
+			}
+			// CERCO GLI ORDINI LOCKATI
+			var url = "/backend/Utils/UtilsManagement/getLocks";
+			positionsArray.forEach(element => {
+				body.itemList.push({
+					"EBELN": element.EBELN,
+					"EBELP": element.EBELP
+				})
+			});
+
 			that.ajaxPost(url, body, function (oData) {
-				that.hideBusyDialog();
-				if (oData) {
-					var oModelSelectedPos = new JSONModel();
-					oModelSelectedPos.setData(oData);
-					that.getView().setModel(
-						oModelSelectedPos,
-						"SelectedPositionsJSONModel");
+				var outArr = [];
+				if (oData && oData.results && oData.results.length > 0) {
+					// HO TROVATO ALCUNI ORDINI LOCKATI
+					positionsArray.forEach(position => {
+						var trovato = false;
+						oData.results.forEach(lockedItem => {
+							if (position.EBELN === lockedItem.EBELN && position.EBELP === lockedItem.EBELP) {
+								trovato = true;
+								oNotEditPositions.push(position);
+							}
+						});
+						if (!trovato) {
+							outArr.push(position)
+						}
+					});
+				} else {
+					outArr = positionsArray
 				}
+
+				// CERCO LE SCHEDULAZIONI PER I SOLI ORDINI NON LOCKATI
+				if (outArr.length > 0) {
+					that.showBusyDialog();
+
+					new Promise(
+						function (resolve, reject) {
+							var url = "/backend/SchedulingAgreementManagement/GetSelectedConferme";
+							body = {
+								"ordPos": outArr
+							};
+							that.ajaxPost(url, body, function (oData) {
+
+								if (oData) {
+									var oModelSelectedPos = new JSONModel();
+									oModelSelectedPos.setData(oData);
+									that.getView().setModel(
+										oModelSelectedPos,
+										"SelectedPositionsJSONModel");
+									resolve()
+								}
+							})
+
+						}).then(function () {
+						that.hideBusyDialog();
+						if (!that.oConfirmPositionsFragment) {
+							that.oConfirmPositionsFragment = sap.ui.xmlfragment(
+								"it.aupsup.schedulingagreement.fragments.ConfirmPositions",
+								that);
+							that.getView().addDependent(that.oConfirmPositionsFragment);
+
+							// blocco il bottone di ESC
+							that.oConfirmPositionsFragment.attachBrowserEvent("keydown", function (oEvent) {
+								if (oEvent.keyCode === 27) {
+									oEvent.stopPropagation();
+									oEvent.preventDefault();
+								}
+							});
+
+						}
+						that.oConfirmPositionsFragment.open();
+
+						// MOSTRO L ELENCO DEGLI ORDINI LOCKATI
+						if (outArr.length > 0 && oNotEditPositions.length > 0) {
+							var ordiniPosizioniLockate = ""
+							oNotEditPositions.forEach(element => {
+								ordiniPosizioniLockate = ordiniPosizioniLockate + " " + element.EBELN + "-" + element.EBELP;
+							});
+							MessageBox.warning(that.getResourceBundle().getText("positionNotConfirmable", ordiniPosizioniLockate), {
+								icon: MessageBox.Icon.WARNING,
+								title: "Warning",
+							});
+						}
+
+						// LOCKO GLI ORDINI
+						url = "/backend/Utils/UtilsManagement/setLocks";
+						body = {}
+						body.itemList = [];
+						outArr.forEach(element => {
+							body.itemList.push({
+								"EBELN": element.EBELN,
+								"EBELP": element.EBELP
+							})
+						});
+						that.ajaxPost(url, body, function (oData) {
+							// ordini lockati !!
+						})
+					}, function () {
+						that.hideBusyDialog();
+					});
+				} else {
+					// TUTTI GLI ORDINI SONO LOCKATI
+					MessageBox.warning(that.getResourceBundle().getText("allPositionNotConfirmable"), {
+						icon: MessageBox.Icon.WARNING,
+						title: "Warning",
+					});
+				}
+
 			})
-			// fine modifiche LS
-			// TODO DA GESTIRE 2020 LS
-			// if (countNotEditPositions === positionRows.length) {
-			// 	MessageBox.error(that.getResourceBundle().getText("allPositionNotConfirmable"), {
-			// 		icon: MessageBox.Icon.ERROR,
-			// 		title: "Error",
-			// 	});
-			// 	return;
-			// }
 
-			// var oModelSelectedPos = new JSONModel();
-			// oModelSelectedPos.setData(selectedContextBinding);
-			// that.getView().setModel(
-			// 	oModelSelectedPos,
-			// 	"SelectedPositionsJSONModel");
-
-			if (!that.oConfirmPositionsFragment) {
-				that.oConfirmPositionsFragment = sap.ui.xmlfragment(
-					"it.aupsup.schedulingagreement.fragments.ConfirmPositions",
-					this);
-				that.getView().addDependent(that.oConfirmPositionsFragment);
-			}
-
-			that.oConfirmPositionsFragment.open();
-
-			// PROMISE PER avere le RMO di tutte le posizioni selezionate:
-			// se promise è RESOLVE allor faccio riga 401 - 407
-
-			if (oNotEditPositions != "") {
-				MessageBox.warning(that.getResourceBundle().getText("positionNotConfirmable", oNotEditPositions), {
-					icon: MessageBox.Icon.WARNING,
-					title: "Warning",
-				});
-			}
 		},
 
 		onChoseType: function (oEvent) {
@@ -1066,6 +1168,7 @@ sap.ui.define([
 				this.oConfirmPositionsFragment = undefined;
 				if (needReserarch === true)
 					that.onSearchOrders();
+				that.onDeleteLocks();
 			}
 		},
 
@@ -1486,7 +1589,8 @@ sap.ui.define([
 							"notaReject": "",
 							"confirmType": "",
 							"t_herder_comment": [],
-							"t_position_comment": []
+							"t_position_comment": [],
+							"spras": that.getLanguage()
 						};
 						var ekpoRow = that.getModel("SelectedPositionsJSONModel").getData();
 						if (ekpoRow !== undefined) {
@@ -1725,6 +1829,7 @@ sap.ui.define([
 
 								var headerComments = {};
 								headerComments.EBELN = row.EBELN;
+								headerComments.EBELP = row.EBELP;
 								headerComments.COMMENT = row.HEADER_COMMENT;
 								body.t_herder_comment.push(headerComments);
 
@@ -1813,27 +1918,27 @@ sap.ui.define([
 		},
 
 		/*onChangeProfiloConsegna: function (oEvent) {
-			var sObjectId = that.getModel("OrderJSONModel").getData().EBELN;
-			var selectedKey = oEvent.getSource().getSelectedItem().getKey();
-	
-			var profiliConsegna = that.getModel("ListProfiliConfermaJSONModel").getData().results;
-			var profiloSelezionato = [];
-			if (profiliConsegna != undefined) {
-				profiloSelezionato = profiliConsegna.find(x => x.CAT_CONFERMA === selectedKey);
-			}
-	
-			that.loadObject(sObjectId, profiloSelezionato !== undefined ? profiloSelezionato.PROFILO_CONTROLLO : "", selectedKey, function (
-				oData) {
-				that.hideBusyDialog();
-				if (oData === null || oData === undefined) {
-	
-				} else {
-					that._completeInit("Display", oData, function () {
-	
-					});
+				var sObjectId = that.getModel("OrderJSONModel").getData().EBELN;
+				var selectedKey = oEvent.getSource().getSelectedItem().getKey();
+		
+				var profiliConsegna = that.getModel("ListProfiliConfermaJSONModel").getData().results;
+				var profiloSelezionato = [];
+				if (profiliConsegna != undefined) {
+					profiloSelezionato = profiliConsegna.find(x => x.CAT_CONFERMA === selectedKey);
 				}
-			});
-		},*/
+		
+				that.loadObject(sObjectId, profiloSelezionato !== undefined ? profiloSelezionato.PROFILO_CONTROLLO : "", selectedKey, function (
+					oData) {
+					that.hideBusyDialog();
+					if (oData === null || oData === undefined) {
+		
+					} else {
+						that._completeInit("Display", oData, function () {
+		
+						});
+					}
+				});
+			},*/
 		onPrintPDFOrder: function () {
 			var ebeln = that.getView().getModel("OrderJSONModel").getData().EBELN;
 			var url = "/SupplierPortal_OrdersManagement/xsOdata/GetOrderPDF.xsjs?I_USERID=" + this.getCurrentUserId() + "&I_EBELN=" + ebeln +
@@ -2312,8 +2417,8 @@ sap.ui.define([
 				var hText = columnHeader[i].getAggregation("header") !== null ? columnHeader[i].getAggregation("header").getProperty("text") : "";
 				var columnObject = {};
 				columnObject.column = hText;
-				if(hText !== '')
-				openAssetColumns.push(columnObject);
+				if (hText !== '')
+					openAssetColumns.push(columnObject);
 			}
 			var oModel1 = new sap.ui.model.json.JSONModel({
 				list: openAssetColumns
@@ -2360,7 +2465,7 @@ sap.ui.define([
 					var v = table[j].getProperty("visible");
 					if (v === true) {
 						if (a.indexOf(Text) > -1) {
-							var firstItem = oList1.getItems()[j-1];
+							var firstItem = oList1.getItems()[j - 1];
 							oList1.setSelectedItem(firstItem, true);
 						}
 					}
@@ -2392,8 +2497,8 @@ sap.ui.define([
 			for (var j = 0; j < table.length; j++) {
 				var idColonna = "";
 				var Text = table[j].getHeader() !== null ? table[j].getHeader().getProperty("text") : "";
-				if(Text ==='')
-				continue 
+				if (Text === '')
+					continue
 				var Column = table[j].getId();
 				if (Column !== null && Column !== undefined) {
 					idColonna = Column.split("--");
@@ -2423,7 +2528,7 @@ sap.ui.define([
 			//	oModelData.metadataLoaded().then(
 			//		that.onMetadataLoaded.bind(that, oModelData));
 			var columModel = {
-				"CHECK":true,
+				"CHECK": true,
 				"EBELN": true,
 				"EBELP": true,
 				"LIFNR": true,
@@ -2436,7 +2541,7 @@ sap.ui.define([
 				"WAERS": true,
 				"PRIMO_PERIODO": true,
 				"SECONDO_PERIODO": true,
-				"LAST_EKES_EINDT":false
+				"LAST_EKES_EINDT": false
 			};
 			var oModel = new JSONModel();
 			oModel.setData(columModel);

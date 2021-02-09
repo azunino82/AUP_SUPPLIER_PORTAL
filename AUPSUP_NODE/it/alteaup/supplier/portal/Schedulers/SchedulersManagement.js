@@ -15,6 +15,7 @@ module.exports = function () {
   var schedulerODALuve
   var schedulerSAGLuve
   var schedulerCLR_ORDLuve
+  var schedulerCLR_LOCKSLuve
 
   const bodyParser = require('body-parser')
 
@@ -157,6 +158,56 @@ module.exports = function () {
     })
   }
 
+  const promiseCallCLR_LOCKSUpdate = (tenantContainer) => { 
+    return new Promise((resolve, reject) => {
+      try {
+        const sql = 'DELETE FROM \"AUPSUP_DATABASE.data.tables::T_LOCKS\"'
+
+        hdbext.createConnection(tenantContainer, function (error, client) {
+          if (error) {
+            console.error('ERROR T_LOCKS :' + stringifyObj(error))
+            reject()
+          }
+          if (client) {
+            async.waterfall([
+    
+              function prepare (callback) {
+                client.prepare(sql,
+                  function (err, statement) {
+                    callback(null, err, statement)
+                  })
+              },
+    
+              function execute (_err, statement, callback) {
+                statement.exec([], function (execErr, results) {
+                  callback(null, execErr, results)
+                })
+              },
+    
+              function response (err, results, callback) {
+                if (err) {
+                  reject()
+                } else {
+                  resolve()
+                }
+                callback()
+              }
+            ], function done (err, parameters, rows) {
+              console.log('---->>> CLIENT END T_AVVISI_QUALITA <<<<<-----')
+              client.close()
+              if (err) {
+                reject()
+              }
+            })
+          }
+        })
+      } catch (error) {
+        console.log('JOB T_LOCKS LUVE ERROR EXCEPT ' + error)
+        reject()
+      }
+    })
+  }
+
   // JOB START & STOP
   app.get('/JobUpdateStatus', function (req, res) {
     var record
@@ -270,7 +321,7 @@ module.exports = function () {
                       console.log('SCHEDULER CLR_ORD STARTED')
                     }
                   } else {
-                    if (record && record.SCHEDULER_STATUS === '' && record.APPLICATION === 'L') {
+                    if (record && record.SCHEDULER_STATUS === '' && record.APPLICATION === 'CLR_ORD') {
                       console.log('SCHEDULER CLR_ORD STOPPING')
                       if (schedulerCLR_ORDLuve !== undefined) {
                         console.log('SCHEDULER CLR_ORD STOP')
@@ -278,6 +329,35 @@ module.exports = function () {
                         console.log('SCHEDULER CLR_ORD STOPPED')
                       } else {
                         console.log('CAN NOT STOP CLR_ORD UNDEFINED')
+                      }
+                    }
+                  }
+
+                  if (record && record.SCHEDULER_STATUS === 'X' && record.APPLICATION === 'CLR_LOCKS') {
+                    console.log('SCHEDULER schedulerCLR_LOCKSLuve: ' + schedulerCLR_LOCKSLuve)
+                    console.log('SCHEDULER CLR_LOCKS STARTING ')
+                    if (schedulerCLR_LOCKSLuve === undefined) {
+                      console.log('SCHEDULER schedulerCLR_LOCKSLuve NOT EXIST')
+                      schedulerCLR_LOCKSLuve = cron.schedule(record.SCHEDULER_TIME_REPEAT, async () => promiseCallCLR_LOCKSUpdate(req.tenantContainer))
+                      schedulerCLR_LOCKSLuve.start()
+                      console.log('SCHEDULER CLR_LOCKS STARTED')
+                    } else {
+                      console.log('SCHEDULER schedulerCLR_LOCKSLuve ALREADY EXIST')
+                      schedulerCLR_LOCKSLuve.stop()
+                      schedulerCLR_LOCKSLuve.destroy()
+                      schedulerCLR_LOCKSLuve = cron.schedule(record.SCHEDULER_TIME_REPEAT, async () => promiseCallCLR_LOCKSUpdate(req.tenantContainer))
+                      schedulerCLR_LOCKSLuve.start()
+                      console.log('SCHEDULER CLR_LOCKS STARTED')
+                    }
+                  } else {
+                    if (record && record.SCHEDULER_STATUS === '' && record.APPLICATION === 'CLR_LOCKS') {
+                      console.log('SCHEDULER CLR_LOCKS STOPPING')
+                      if (schedulerCLR_LOCKSLuve !== undefined) {
+                        console.log('SCHEDULER CLR_LOCKS STOP')
+                        schedulerCLR_LOCKSLuve.stop()
+                        console.log('SCHEDULER CLR_LOCKS STOPPED')
+                      } else {
+                        console.log('CAN NOT STOP CLR_LOCKS UNDEFINED')
                       }
                     }
                   }
@@ -353,6 +433,49 @@ module.exports = function () {
                 return res.status(200).send('ok')
               }
             })
+          })
+        }
+      })
+    }
+
+    if (bstyp === 'CLR_LOCKS') {
+      const sql = 'DELETE FROM \"AUPSUP_DATABASE.data.tables::T_LOCKS\"'
+
+      hdbext.createConnection(req.tenantContainer, function (error, client) {
+        if (error) {
+          console.error('ERROR T_LOCKS :' + stringifyObj(error))
+          return res.status(500).send({ error: stringifyObj(error) })
+        }
+        if (client) {
+          async.waterfall([
+  
+            function prepare (callback) {
+              client.prepare(sql,
+                function (err, statement) {
+                  callback(null, err, statement)
+                })
+            },
+  
+            function execute (_err, statement, callback) {
+              statement.exec([], function (execErr, results) {
+                callback(null, execErr, results)
+              })
+            },
+  
+            function response (err, results, callback) {
+              if (err) {
+                return res.status(500).send({ error: stringifyObj(error) })
+              } else {
+                return res.status(200).send('ok')
+              }
+              callback()
+            }
+          ], function done (err, parameters, rows) {
+            console.log('---->>> CLIENT END T_LOCKS <<<<<-----')
+            client.close()
+            if (err) {
+              return res.status(500).send({ error: stringifyObj(error) })
+            }
           })
         }
       })

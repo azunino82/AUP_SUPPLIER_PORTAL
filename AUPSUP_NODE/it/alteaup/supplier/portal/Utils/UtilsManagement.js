@@ -160,29 +160,33 @@ module.exports = function () {
       if (client) {
         async.waterfall([
 
-          function prepare (callback) {
+          function prepare(callback) {
             client.prepare(sql,
               function (err, statement) {
                 callback(null, err, statement)
               })
           },
 
-          function execute (_err, statement, callback) {
+          function execute(_err, statement, callback) {
             statement.exec([], function (execErr, results) {
               callback(null, execErr, results)
             })
           },
 
-          function response (err, results, callback) {
+          function response(err, results, callback) {
             if (err) {
-              res.type('application/json').status(500).send({ ERROR: err })
+              res.type('application/json').status(500).send({
+                ERROR: err
+              })
               return
             } else {
-              res.type('application/json').status(200).send({ results: results })
+              res.type('application/json').status(200).send({
+                results: results
+              })
             }
             callback()
           }
-        ], function done (err, parameters, rows) {
+        ], function done(err, parameters, rows) {
           console.log('---->>> CLIENT END T_AVVISI_QUALITA <<<<<-----')
           client.close()
           if (err) {
@@ -206,29 +210,33 @@ module.exports = function () {
       if (client) {
         async.waterfall([
 
-          function prepare (callback) {
+          function prepare(callback) {
             client.prepare(sql,
               function (err, statement) {
                 callback(null, err, statement)
               })
           },
 
-          function execute (_err, statement, callback) {
+          function execute(_err, statement, callback) {
             statement.exec([], function (execErr, results) {
               callback(null, execErr, results)
             })
           },
 
-          function response (err, results, callback) {
+          function response(err, results, callback) {
             if (err) {
-              res.type('application/json').status(500).send({ ERROR: err })
+              res.type('application/json').status(500).send({
+                ERROR: err
+              })
               return
             } else {
-              res.type('application/json').status(200).send({ results: results })
+              res.type('application/json').status(200).send({
+                results: results
+              })
             }
             callback()
           }
-        ], function done (err, parameters, rows) {
+        ], function done(err, parameters, rows) {
           console.log('---->>> CLIENT END T_BCKND_SYSTEMS <<<<<-----')
           client.close()
           if (err) {
@@ -394,29 +402,33 @@ module.exports = function () {
       if (client) {
         async.waterfall([
 
-          function prepare (callback) {
+          function prepare(callback) {
             client.prepare(sql,
               function (err, statement) {
                 callback(null, err, statement)
               })
           },
 
-          function execute (_err, statement, callback) {
+          function execute(_err, statement, callback) {
             statement.exec([], function (execErr, results) {
               callback(null, execErr, results)
             })
           },
 
-          function response (err, results, callback) {
+          function response(err, results, callback) {
             if (err) {
-              res.type('application/json').status(500).send({ ERROR: err })
+              res.type('application/json').status(500).send({
+                ERROR: err
+              })
               return
             } else {
-              res.type('application/json').status(200).send({ results: results })
+              res.type('application/json').status(200).send({
+                results: results
+              })
             }
             callback()
           }
-        ], function done (err, parameters, rows) {
+        ], function done(err, parameters, rows) {
           console.log('---->>> CLIENT END T_GESTIONE_ETICHETTE <<<<<-----')
           client.close()
           if (err) {
@@ -460,22 +472,24 @@ module.exports = function () {
                   }
                   if (client) {
                     async.waterfall([
-                      function prepare (callback) {
+                      function prepare(callback) {
                         client.prepare(sql,
                           function (err, statement) {
                             callback(null, err, statement)
                           })
                       },
 
-                      function execute (_err, statement, callback) {
+                      function execute(_err, statement, callback) {
                         statement.exec([], function (execErr, results) {
                           callback(null, execErr, results)
                         })
                       },
 
-                      function response (err, results, callback) {
+                      function response(err, results, callback) {
                         if (err) {
-                          res.type('application/json').status(500).send({ ERROR: err })
+                          res.type('application/json').status(500).send({
+                            ERROR: err
+                          })
                         } else {
                           console.log('T_TEXTS FOUND :' + stringifyObj(results))
                           // eslint-disable-next-line camelcase
@@ -493,7 +507,14 @@ module.exports = function () {
                                 for (let index = 0; index < results.length; index++) {
                                   const testo = results[index]
                                   if (element.ID !== testo.ID && testo.TABLE === 'EKKO') {
-                                    t_header.push({ EBELN: element.EBELN, EBELP: element.EBELP, ID: testo.ID, DESCRIPTION: testo.DESCRIPTION, TESTO: '', COMMENTABLE: testo.COMMENTABLE === 'X' })
+                                    t_header.push({
+                                      EBELN: element.EBELN,
+                                      EBELP: element.EBELP,
+                                      ID: testo.ID,
+                                      DESCRIPTION: testo.DESCRIPTION,
+                                      TESTO: '',
+                                      COMMENTABLE: testo.COMMENTABLE === 'X'
+                                    })
                                   }
                                 }
                               }
@@ -502,7 +523,16 @@ module.exports = function () {
                             for (let index = 0; index < results.length; index++) {
                               const testo = results[index]
                               if (testo.TABLE === 'EKKO') {
-                                t_header.push({ EBELN: ebeln, EBELP: ebelp, ID: testo.ID, DESCRIPTION: testo.DESCRIPTION, TESTO: '', COMMENTABLE: testo.COMMENTABLE === 'X', TABLE: 'EKKO', COMMENT: '' })
+                                t_header.push({
+                                  EBELN: ebeln,
+                                  EBELP: ebelp,
+                                  ID: testo.ID,
+                                  DESCRIPTION: testo.DESCRIPTION,
+                                  TESTO: '',
+                                  COMMENTABLE: testo.COMMENTABLE === 'X',
+                                  TABLE: 'EKKO',
+                                  COMMENT: ''
+                                })
                               }
                             }
                           }
@@ -522,7 +552,14 @@ module.exports = function () {
                                 for (let index = 0; index < results.length; index++) {
                                   const testo = results[index]
                                   if (element.ID !== testo.ID && testo.TABLE === 'EKPO') {
-                                    t_pos.push({ EBELN: element.EBELN, EBELP: element.EBELP, ID: testo.ID, DESCRIPTION: testo.DESCRIPTION, TESTO: '', COMMENTABLE: testo.COMMENTABLE === 'X' })
+                                    t_pos.push({
+                                      EBELN: element.EBELN,
+                                      EBELP: element.EBELP,
+                                      ID: testo.ID,
+                                      DESCRIPTION: testo.DESCRIPTION,
+                                      TESTO: '',
+                                      COMMENTABLE: testo.COMMENTABLE === 'X'
+                                    })
                                   }
                                 }
                               }
@@ -532,7 +569,16 @@ module.exports = function () {
                               for (let index = 0; index < results.length; index++) {
                                 const testo = results[index]
                                 if (testo.TABLE === 'EKPO') {
-                                  t_pos.push({ EBELN: ebeln, EBELP: ebelp, ID: testo.ID, DESCRIPTION: testo.DESCRIPTION, TESTO: '', COMMENTABLE: testo.COMMENTABLE === 'X', TABLE: 'EKPO', COMMENT: '' })
+                                  t_pos.push({
+                                    EBELN: ebeln,
+                                    EBELP: ebelp,
+                                    ID: testo.ID,
+                                    DESCRIPTION: testo.DESCRIPTION,
+                                    TESTO: '',
+                                    COMMENTABLE: testo.COMMENTABLE === 'X',
+                                    TABLE: 'EKPO',
+                                    COMMENT: ''
+                                  })
                                 }
                               }
                             }
@@ -547,22 +593,24 @@ module.exports = function () {
                             if (client) {
                               async.waterfall([
 
-                                function prepare (callback) {
+                                function prepare(callback) {
                                   client.prepare(sql,
                                     function (err, statement) {
                                       callback(null, err, statement)
                                     })
                                 },
 
-                                function execute (_err, statement, callback) {
+                                function execute(_err, statement, callback) {
                                   statement.exec([], function (execErr, results) {
                                     callback(null, execErr, results)
                                   })
                                 },
 
-                                function response (err, listaCommentiPrecedenti, callback) {
+                                function response(err, listaCommentiPrecedenti, callback) {
                                   if (err) {
-                                    res.type('application/json').status(500).send({ ERROR: err })
+                                    res.type('application/json').status(500).send({
+                                      ERROR: err
+                                    })
                                     return
                                   } else {
                                     for (let index = 0; index < listaCommentiPrecedenti.length; index++) {
@@ -583,11 +631,15 @@ module.exports = function () {
                                   }
 
                                   return res.status(200).send({
-                                    header_texts: { results: t_header },
-                                    pos_texts: { results: t_pos }
+                                    header_texts: {
+                                      results: t_header
+                                    },
+                                    pos_texts: {
+                                      results: t_pos
+                                    }
                                   })
                                 }
-                              ], function done (err, parameters, rows) {
+                              ], function done(err, parameters, rows) {
                                 console.log('---->>> CLIENT END T_GESTIONE_ETICHETTE <<<<<-----')
                                 client.close()
                                 if (err) {
@@ -599,7 +651,7 @@ module.exports = function () {
                         }
                         callback()
                       }
-                    ], function done (err, parameters, rows) {
+                    ], function done(err, parameters, rows) {
                       console.log('---->>> CLIENT END T_AVVISI_QUALITA <<<<<-----')
                       client.close()
                       if (err) {
@@ -634,29 +686,33 @@ module.exports = function () {
       if (client) {
         async.waterfall([
 
-          function prepare (callback) {
+          function prepare(callback) {
             client.prepare(sql,
               function (err, statement) {
                 callback(null, err, statement)
               })
           },
 
-          function execute (_err, statement, callback) {
+          function execute(_err, statement, callback) {
             statement.exec([], function (execErr, results) {
               callback(null, execErr, results)
             })
           },
 
-          function response (err, results, callback) {
+          function response(err, results, callback) {
             if (err) {
-              res.type('application/json').status(500).send({ ERROR: err })
+              res.type('application/json').status(500).send({
+                ERROR: err
+              })
               return
             } else {
-              res.type('application/json').status(200).send({ results: 'OK' })
+              res.type('application/json').status(200).send({
+                results: 'OK'
+              })
             }
             callback()
           }
-        ], function done (err, parameters, rows) {
+        ], function done(err, parameters, rows) {
           console.log('---->>> CLIENT END T_TEXTS_COMMENT <<<<<-----')
           client.close()
           if (err) {
@@ -682,7 +738,9 @@ module.exports = function () {
     if (body.ekgrp !== null && body.ekgrp !== undefined && body.ekgrp.length > 0) {
       var oEkgrp = []
       for (var i = 0; i < body.ekgrp.length; i++) {
-        oEkgrp.push({ CODE: body.ekgrp[i] })
+        oEkgrp.push({
+          CODE: body.ekgrp[i]
+        })
       }
       ekgrp = oEkgrp
     }
@@ -691,7 +749,9 @@ module.exports = function () {
       var oEknam = []
       // eslint-disable-next-line no-redeclare
       for (var i = 0; i < body.eknam.length; i++) {
-        oEknam.push({ DESCR: body.eknam[i] })
+        oEknam.push({
+          DESCR: body.eknam[i]
+        })
       }
       eknam = oEknam
     }
@@ -742,7 +802,9 @@ module.exports = function () {
       if (body.matnr !== null && body.matnr !== undefined) {
         // var oMatnr = []
         // for (var i = 0; i < body.matnr.length; i++) {
-        matnr.push({ CODE: body.matnr })
+        matnr.push({
+          CODE: body.matnr
+        })
         // }
         // matnr = oMatnr
       }
@@ -751,7 +813,9 @@ module.exports = function () {
         // var oMaktx = []
         // eslint-disable-next-line no-redeclare
         // for (var i = 0; i < body.maktx.length; i++) {
-        maktx.push({ DESCR: body.maktx })
+        maktx.push({
+          DESCR: body.maktx
+        })
         // }
         //  maktx = oMaktx
       }
@@ -800,7 +864,9 @@ module.exports = function () {
       if (body.lifnr !== null && body.lifnr !== undefined && body.lifnr !== '') {
         var oLifnr = []
         for (var i = 0; i < body.lifnr.length; i++) {
-          oLifnr.push({ LIFNR: body.lifnr[i] })
+          oLifnr.push({
+            LIFNR: body.lifnr[i]
+          })
         }
         lifnr = oLifnr
       }
@@ -809,7 +875,9 @@ module.exports = function () {
         var oEkorg = []
         // eslint-disable-next-line no-redeclare
         for (var i = 0; i < body.ekorg.length; i++) {
-          oEkorg.push({ EKORG: body.ekorg[i] })
+          oEkorg.push({
+            EKORG: body.ekorg[i]
+          })
         }
         ekorg = oEkorg
       }
@@ -999,7 +1067,9 @@ module.exports = function () {
                   console.error('ERROR: ' + err)
                   return res.status(500).send(stringifyObj(err))
                 } else {
-                  var results = { results: [] }
+                  var results = {
+                    results: []
+                  }
                   for (let index = 0; index < ET_APPROVE_EKKO_EKPO.length; index++) {
                     var obj = {}
                     var element = ET_APPROVE_EKKO_EKPO[index]
@@ -1112,6 +1182,114 @@ module.exports = function () {
     }
   })
 
+  app.post('/getLocks', function (req, res) {
+    const body = req.body
+
+    console.log('INPUT BODY ==========> ' + JSON.stringify(body))
+
+    if (body !== undefined && body !== '' && body !== null) {
+      var userid = req.user.id
+      var itemList = body.itemList
+
+      hdbext.createConnection(req.tenantContainer, (err, client) => {
+        if (err) {
+          return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
+        } else {
+          hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Utils::GetLocks', function (_err, sp) {
+            if (_err) {
+              console.error('ERROR CONNECTION getLocks: ' + stringifyObj(_err))
+              return res.status(500).send('getLocks CONNECTION ERROR: ' + stringifyObj(_err))
+            }
+            sp(userid, itemList, (err, parameters, results) => {
+              console.log('---->>> CLIENT END <<<<<-----')
+              client.close()
+              if (err) {
+                console.error('ERROR: ' + stringifyObj(err))
+                return res.status(500).send(stringifyObj(err))
+              } else {
+                return res.status(200).send({
+                  results: results
+                })
+              }
+            })
+          })
+        }
+      })
+    }
+  })
+
+  app.post('/setLocks', function (req, res) {
+    const body = req.body
+
+    console.log('INPUT BODY ==========> ' + JSON.stringify(body))
+
+    if (body !== undefined && body !== '' && body !== null) {
+      var userid = req.user.id
+      var itemList = body.itemList
+
+      hdbext.createConnection(req.tenantContainer, (err, client) => {
+        if (err) {
+          return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
+        } else {
+          hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Utils::SetLocks', function (_err, sp) {
+            if (_err) {
+              console.error('ERROR CONNECTION setLocks: ' + stringifyObj(_err))
+              return res.status(500).send('setLocks CONNECTION ERROR: ' + stringifyObj(_err))
+            }
+            sp(userid, itemList, (err, parameters, results) => {
+              console.log('---->>> CLIENT END <<<<<-----')
+              client.close()
+              if (err) {
+                console.error('ERROR: ' + stringifyObj(err))
+                return res.status(500).send(stringifyObj(err))
+              } else {
+                return res.status(200).send({
+                  results: results
+                })
+              }
+            })
+          })
+        }
+      })
+    }
+  })
+
+  app.post('/unlockItems', function (req, res) {
+    const body = req.body
+
+    console.log('INPUT BODY ==========> ' + JSON.stringify(body))
+
+    if (body !== undefined && body !== '' && body !== null) {
+      var userid = req.user.id
+      var itemList = body.itemList
+
+      hdbext.createConnection(req.tenantContainer, (err, client) => {
+        if (err) {
+          return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
+        } else {
+          hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Utils::UnlockItems', function (_err, sp) {
+            if (_err) {
+              console.error('ERROR CONNECTION unlock: ' + stringifyObj(_err))
+              return res.status(500).send('unlock CONNECTION ERROR: ' + stringifyObj(_err))
+            }
+            sp(userid, itemList, (err, parameters, results) => {
+              console.log('---->>> CLIENT END <<<<<-----')
+              client.close()
+              if (err) {
+                console.error('ERROR: ' + stringifyObj(err))
+                return res.status(500).send(stringifyObj(err))
+              } else {
+                return res.status(200).send({
+                  results: results
+                })
+              }
+            })
+          })
+        }
+      })
+    }
+  })
+
   // CONTATORE TILES
 
   app.get('/GetCounter', function (req, res) {
@@ -1140,7 +1318,9 @@ module.exports = function () {
   app.use(express.json())
 
   app.post('/', function (req, res) {
-    return res.status(200).send({ POST: true })
+    return res.status(200).send({
+      POST: true
+    })
   })
 
   return app
