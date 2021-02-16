@@ -9,7 +9,14 @@
 	<NavContainer id="navCon">
 		<Page id="p1">
 			<content>
-				<List id="positionsList" items="{SelectedPositionsJSONModel>/}" includeItemInSelection="true">
+				<List id="positionsList" items="{path: 'SelectedPositionsJSONModel>/', sorter: [
+					{
+						path: 'EBELN', 
+						descending: false
+					}, {
+						path: 'EBELP', 
+						descending: false
+					}]}" includeItemInSelection="true">
 					<headerToolbar>
 						<OverflowToolbar>
 							<content>
