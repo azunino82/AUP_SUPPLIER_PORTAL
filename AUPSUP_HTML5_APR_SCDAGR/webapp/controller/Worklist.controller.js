@@ -375,7 +375,7 @@ sap.ui.define([
 					// Distinct sulle righe mostrate a video per ebeln e ebelp
 					// non la faccio a DB perchè c'è anche la data in chiave
 					var distinctArray = []
-					oData.results.EkkoEkpo.forEach(old => {
+					outArr.results.EkkoEkpo.forEach(old => {
 						var trovato = false;
 						distinctArray.forEach(element => {
 							if(old.EBELN === element.EBELN && old.EBELP === element.EBELP && (old.CONF_TYPE==='QUA' && element.CONF_TYPE==='QUA')){
