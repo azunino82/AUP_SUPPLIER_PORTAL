@@ -101,6 +101,36 @@ sap.ui.define([
 
         },
 
+        onChangeMetasupplier: function (oEvent) {
+
+			var selectedKeyArray = oEvent.oSource.getSelectedKeys();
+			var metaIdlist = that.getModel("MetasupplierJSONModel").getData().results;
+			var selectedMetaid = "";
+			var lifnr = [];
+			var slifnr = [];
+			if (selectedKeyArray != undefined) {
+				for (var i = 0; i < selectedKeyArray.length; i++) {
+					if (metaIdlist != undefined) {
+						selectedMetaid = metaIdlist.find(x => x.METAID === selectedKeyArray[i]);
+						if (selectedMetaid !== undefined) {
+							if (selectedMetaid.LIFNR != undefined) {
+								for (var j = 0; j < selectedMetaid.LIFNR.length; j++) {
+									lifnr.push(selectedMetaid.LIFNR[j]);
+									slifnr.push(selectedMetaid.LIFNR[j].LIFNR);
+								}
+							}
+						}
+					}
+				}
+			}
+
+			var oModelLF = new JSONModel();
+			oModelLF.setData(lifnr);
+			that.getView().setModel(oModelLF, "lifnrJSONModel");
+			that.getModel("filterOrdersJSONModel").getData().lifnr = slifnr;
+
+		},
+
         onOrderPress: function (oEvent) {
             var oPath = oEvent.getSource().getParent().getParent().getBindingContext("DocumentsJSONModel").sPath;
             var mod = this.getView().getModel("DocumentsJSONModel").getProperty(oPath);

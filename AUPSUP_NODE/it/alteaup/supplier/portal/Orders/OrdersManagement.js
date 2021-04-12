@@ -8,6 +8,7 @@
 var express = require('express')
 var stringifyObj = require('stringify-object')
 var hdbext = require('@sap/hdbext')
+var async = require('async')
 
 module.exports = function () {
     var app = express.Router()
@@ -21,6 +22,98 @@ module.exports = function () {
     )
 
     app.use(bodyParser.json())
+
+    // CHECK IF USE CAN OPEN ORDER
+    app.get('/CheckAuthority', function (req, res) {
+        // Buyer and planner skip check authorities
+        var skipSupplier = false
+        if (req.authInfo.scopes !== null && req.authInfo.scopes !== undefined && req.authInfo.scopes !== '') {
+            req.authInfo.scopes.forEach(element => {
+                console.log('ELEMENT: ' + element)
+                if (element.includes('Z_RL_BUYER') || element.includes('Z_RL_ADMINISTRATOR') || element.includes('Z_RL_PLANNER')) {
+                    res.type('application/json').status(200).send({
+                        enabled: true
+                    })
+                    skipSupplier = true
+                }
+            })
+        }
+
+        if (!skipSupplier) {
+            var ebeln = req.query.I_EBELN !== undefined && req.query.I_EBELN !== null && req.query.I_EBELN !== '' ? req.query.I_EBELN : ''
+            var userid = req.user.id
+            if (ebeln !== '') {
+                const sql = 'SELECT USERID FROM \"AUPSUP_DATABASE.data.tables::T_USERID_METAID\" WHERE METAID IN (SELECT METAID FROM \"AUPSUP_DATABASE.data.tables::T_METAID_FORN\" WHERE LIFNR IN (SELECT LIFNR FROM \"AUPSUP_DATABASE.data.tables::ET_SAG_EKKO\" WHERE EBELN=\'' + ebeln + '\'))'
+
+                hdbext.createConnection(req.tenantContainer, function (error, client) {
+                    if (error) {
+                        console.error('ERROR CheckAuthority :' + stringifyObj(error))
+                        return res.status(500).send('CheckAuthority CONNECTION ERROR: ' + stringifyObj(error))
+                    }
+                    if (client) {
+                        async.waterfall([
+
+                            function prepare(callback) {
+                                client.prepare(sql,
+                                    function (err, statement) {
+                                        callback(null, err, statement)
+                                    })
+                            },
+
+                            function execute(_err, statement, callback) {
+                                statement.exec([], function (execErr, results) {
+                                    callback(null, execErr, results)
+                                })
+                            },
+
+                            function response(err, results, callback) {
+                                if (err) {
+                                    res.type('application/json').status(500).send({
+                                        ERROR: err
+                                    })
+                                    return
+                                } else {
+                                    if (results !== null && results !== undefined && results.length > 0) {
+                                        var trovato = false
+                                        results.forEach(element => {
+                                            if (element.USERID === userid) {
+                                                trovato = true
+                                            }
+                                        })
+
+                                        if (trovato) {
+                                            res.type('application/json').status(200).send({
+                                                enabled: true
+                                            })
+                                        } else {
+                                            res.type('application/json').status(200).send({
+                                                enabled: false
+                                            })
+                                        }
+                                    } else {
+                                        res.type('application/json').status(200).send({
+                                            enabled: false
+                                        })
+                                    }
+                                }
+                                callback()
+                            }
+                        ], function done(err, parameters, rows) {
+                            console.log('---->>> CLIENT END CheckAuthority <<<<<-----')
+                            client.close()
+                            if (err) {
+                                return console.error('Done error', err)
+                            }
+                        })
+                    }
+                })
+            } else {
+                return res.status(500).send({
+                    error: 'I_EBELN mandatory'
+                })
+            }
+        }
+    })
 
     // GET PURCHASE ORDS
     app.post('/GetOrders', function (req, res) {
@@ -65,7 +158,7 @@ module.exports = function () {
                     })
                 }
                 lifnr = oLifnr
-            }            
+            }
 
             if (body.eindtFrom !== null && body.eindtFrom !== undefined && body.eindtFrom !== '') {
                 eindtFrom = body.eindtFrom
@@ -73,7 +166,7 @@ module.exports = function () {
 
             if (body.eindtTo !== null && body.eindtTo !== undefined && body.eindtTo !== '') {
                 eindtTo = body.eindtTo
-            }            
+            }
 
             if (body.spras !== null && body.spras !== undefined && body.spras !== '') {
                 spras = body.spras
@@ -421,7 +514,7 @@ module.exports = function () {
         var userid = req.user.id
         var confirmTypes = []
         var tipoOperazione = '' // -- QUA o PRZ
-        var spras = 'I';
+        var spras = 'I'
 
         var mailArr = []
 
@@ -434,7 +527,7 @@ module.exports = function () {
                 tipoOperazione = body.tipoOperazione
             }
 
-            if (body.spras !== undefined && body.spras !== null && body.spras !== '' ) {
+            if (body.spras !== undefined && body.spras !== null && body.spras !== '') {
                 spras = body.spras
             }
 
@@ -475,14 +568,24 @@ module.exports = function () {
                                 if (element.LIST_XBLNR === undefined) {
                                     element.LIST_XBLNR = []
                                 }
-                                element.LIST_XBLNR.push({ XBLNR: body.confirmType[i].XBLNR, EINDT: body.confirmType[i].EINDT, MENGE: body.confirmType[i].MENGE, COUNTER: body.confirmType[i].COUNTER })
+                                element.LIST_XBLNR.push({
+                                    XBLNR: body.confirmType[i].XBLNR,
+                                    EINDT: body.confirmType[i].EINDT,
+                                    MENGE: body.confirmType[i].MENGE,
+                                    COUNTER: body.confirmType[i].COUNTER
+                                })
                             }
                             break
                         }
                     }
 
                     if (!trovato) {
-                        var listaXBLNR = [{ XBLNR: body.confirmType[i].XBLNR, EINDT: body.confirmType[i].EINDT, MENGE: body.confirmType[i].MENGE, COUNTER: body.confirmType[i].COUNTER }]
+                        var listaXBLNR = [{
+                            XBLNR: body.confirmType[i].XBLNR,
+                            EINDT: body.confirmType[i].EINDT,
+                            MENGE: body.confirmType[i].MENGE,
+                            COUNTER: body.confirmType[i].COUNTER
+                        }]
                         mailArr.push({
                             EBELN: body.confirmType[i].EBELN,
                             EBELP: body.confirmType[i].EBELP,
@@ -549,7 +652,7 @@ module.exports = function () {
         }
     })
 
-    function sendMail (req, res, confirms, notaReject) {
+    function sendMail(req, res, confirms, notaReject) {
         var lifnrs = '('
         for (let index = 0; index < confirms.length; index++) {
             var element = confirms[index]
@@ -562,163 +665,241 @@ module.exports = function () {
         console.log('LIFNR ' + lifnrs)
 
         confirms.forEach(element => {
-            var sql = 'SELECT * FROM \"AUPSUP_DATABASE.data.tables::T_NOTIF_MASTER\" WHERE APPLICAZIONE = \'' + element.APPLICAZIONE + '\' and EVENTO = \'' + element.EVENT + '\''
-            console.log('sql T_NOTIF_MASTER' + sql)
-            hdbext.createConnection(req.tenantContainer, function (error, client) {
-                if (error) {
-                    console.error('ERROR T_NOTIF_MASTER :' + stringifyObj(error))
-                    client.close()
-                    //   return res.status(500).send('T_NOTIF_MASTER CONNECTION 1 ERROR: ' + stringifyObj(error))
-                } else {
-                    client.exec(sql, function (error, results) {
-                        console.log('RESULTS T_NOTIF_MASTER: ' + stringifyObj(results))
-                        if (error) {
-                            console.err('Error during direct statement execution T_NOTIF_MASTER: ' + error)
-                            client.close()
-                            //   return res.status(500).send('T_NOTIF_MASTER CONNECTION 2 ERROR: ' + stringifyObj(error))
-                        } else {
-                            /* if (results && results[0]) {
-                                 var flusso = results[0].FLUSSO
-                                 var tipoStruttura = results[0].TIPO_STRUTTURA
-                                 var applicazione = results[0].APPLICAZIONE
-                                 var evento = results[0].EVENTO
-                                 var direzione = results[0].DIREZIONE
-                             } */
-
-                            sql = 'SELECT METAID FROM \"AUPSUP_DATABASE.data.tables::T_METAID_FORN\" WHERE LIFNR IN ' + lifnrs
-                            console.log('sql lista metafornitori: ' + sql)
-                            client.exec(sql, function (error, results) {
-                                if (error) {
-                                    console.error('Error during direct statement execution T_METAID_FORN: ' + stringifyObj(error))
-                                    client.close()
-                                    //  return res.status(500).send('T_NOTIF_MASTER T_METAID_FORN 2 ERROR: ' + stringifyObj(error))
-                                } else {
-                                    console.log('RESULTS T_METAID_FORN: ' + stringifyObj(results))
-                                    var listMETAIDS = '('
-                                    for (let index = 0; index < results.length; index++) {
-                                        var elemMETAID = results[index]
-                                        if (listMETAIDS.indexOf(elemMETAID.METAID) < 0) {
-                                            listMETAIDS = listMETAIDS + '\'' + elemMETAID.METAID + '\','
-                                        }
+            var getNotifMaster = new Promise((resolve, reject) => {
+                var sql = 'SELECT METAID FROM \"AUPSUP_DATABASE.data.tables::T_METAID_FORN\" WHERE LIFNR = \'' + element.LIFNR + '\''
+                console.log('sql lista metafornitori: ' + sql)
+                hdbext.createConnection(req.tenantContainer, function (error, client) {
+                    if (error) {
+                        console.error('ERROR T_NOTIF_MASTER :' + stringifyObj(error))
+                        client.close()
+                        reject(error)
+                    } else {
+                        client.exec(sql, function (error, results) {
+                            if (error) {
+                                console.error('Error during direct statement execution T_METAID_FORN: ' + stringifyObj(error))
+                                client.close()
+                                reject(error)
+                            } else {
+                                client.close()
+                                console.log('RESULTS T_METAID_FORN: ' + stringifyObj(results))
+                                var listMETAIDS = '('
+                                for (let index = 0; index < results.length; index++) {
+                                    var elemMETAID = results[index]
+                                    if (listMETAIDS.indexOf(elemMETAID.METAID) < 0) {
+                                        listMETAIDS = listMETAIDS + '\'' + elemMETAID.METAID + '\','
                                     }
-                                    listMETAIDS = listMETAIDS + ')'
-                                    listMETAIDS = listMETAIDS.replace(',)', ')')
-                                    console.log('listMETAIDS: ' + listMETAIDS)
-                                    // FLUSSO PROC
-                                    sql = 'SELECT MAIL AS RECEIVER,\'U\' as REC_TYPE,null as REC_ID,null as REPLY_DOC,null as REC_DATE,null as PROXY_ID,null as RETRN_CODE,null as EXPRESS,null as COPY,null as BLIND_COPY,null as NO_FORWARD,null as NO_PRINT,null as TO_ANSWER,null as TO_DO_EXPL,null as TO_DO_GRP,null as COM_TYPE,null as LFDNR,null as FAX,null as COUNTRY,null as SPOOL_ID,null as NOTIF_DEL,null as NOTIF_READ,null as NOTIF_NDEL,null as SAP_BODY FROM "AUPSUP_DATABASE.data.tables::T_METASUPPLIER_CONTACTS" WHERE METAID IN ' + listMETAIDS + ' AND TIPOLOGIA = \'02\''
-                                    console.log('sql MAIL: ' + sql)
-                                    client.exec(sql, function (error, results) {
-                                        console.log('LISTA MAIL: ' + stringifyObj(results))
-                                        if (error) {
-                                            console.error('Error during direct statement execution T_METASUPPLIER_CONTACTS: ' + error)
-                                            client.close()
-                                            //  return res.status(500).send('T_NOTIF_MASTER T_METASUPPLIER_CONTACTS ERROR: ' + stringifyObj(error))
-                                        } else {
-                                            var emailList = results
+                                }
+                                listMETAIDS = listMETAIDS + ')'
+                                listMETAIDS = listMETAIDS.replace(',)', ')')
+                                console.log('listMETAIDS: ' + listMETAIDS)
+                                // FLUSSO PROC
+                                resolve(listMETAIDS)
+                            }
+                        })
+                    }
+                })
+            })
 
-                                            var cc = {
-                                                RECEIVER: req.user.id,
-                                                REC_TYPE: 'U',
-                                                REC_ID: null,
-                                                REPLY_DOC: null,
-                                                REC_DATE: null,
-                                                PROXY_ID: null,
-                                                RETRN_CODE: null,
-                                                EXPRESS: null,
-                                                COPY: 'X', // CC
-                                                BLIND_COPY: null,
-                                                NO_FORWARD: null,
-                                                NO_PRINT: null,
-                                                TO_ANSWER: null,
-                                                TO_DO_EXPL: null,
-                                                TO_DO_GRP: null,
-                                                COM_TYPE: null,
-                                                LFDNR: null,
-                                                FAX: null,
-                                                COUNTRY: null,
-                                                SPOOL_ID: null,
-                                                NOTIF_DEL: null,
-                                                NOTIF_READ: null,
-                                                NOTIF_NDEL: null,
-                                                SAP_BODY: null
-                                            }
+            getNotifMaster.then((listMETAIDS) => {
+                if (listMETAIDS !== null) {
+                    console.log('Promise getNotifMaster END, listMETAIDS length: ' + listMETAIDS)
+                    var getEmailListPromise = new Promise((resolve, reject) => {
+                        hdbext.createConnection(req.tenantContainer, function (error, client) {
+                            if (error) {
+                                console.error('ERROR T_NOTIF_MASTER :' + stringifyObj(error))
+                                client.close()
+                                reject(error)
+                            } else {
+                                var sql = 'SELECT MAIL AS RECEIVER,\'U\' as REC_TYPE,null as REC_ID,null as REPLY_DOC,null as REC_DATE,null as PROXY_ID,null as RETRN_CODE,null as EXPRESS,null as COPY,null as BLIND_COPY,null as NO_FORWARD,null as NO_PRINT,null as TO_ANSWER,null as TO_DO_EXPL,null as TO_DO_GRP,null as COM_TYPE,null as LFDNR,null as FAX,null as COUNTRY,null as SPOOL_ID,null as NOTIF_DEL,null as NOTIF_READ,null as NOTIF_NDEL,null as SAP_BODY FROM "AUPSUP_DATABASE.data.tables::T_METASUPPLIER_CONTACTS" WHERE METAID IN ' + listMETAIDS + ' AND TIPOLOGIA = \'02\''
+                                console.log('sql MAIL: ' + sql)
+                                client.exec(sql, function (error, results) {
+                                    console.log('LISTA MAIL: ' + stringifyObj(results))
+                                    if (error) {
+                                        console.error('Error during direct statement execution T_METASUPPLIER_CONTACTS: ' + error)
+                                        client.close()
+                                        reject(error)
+                                    } else {
+                                        client.close()
+                                        var emailList = results
 
-                                            emailList.push(cc)
+                                        var cc = {
+                                            RECEIVER: req.user.id,
+                                            REC_TYPE: 'U',
+                                            REC_ID: null,
+                                            REPLY_DOC: null,
+                                            REC_DATE: null,
+                                            PROXY_ID: null,
+                                            RETRN_CODE: null,
+                                            EXPRESS: null,
+                                            COPY: 'X', // CC
+                                            BLIND_COPY: null,
+                                            NO_FORWARD: null,
+                                            NO_PRINT: null,
+                                            TO_ANSWER: null,
+                                            TO_DO_EXPL: null,
+                                            TO_DO_GRP: null,
+                                            COM_TYPE: null,
+                                            LFDNR: null,
+                                            FAX: null,
+                                            COUNTRY: null,
+                                            SPOOL_ID: null,
+                                            NOTIF_DEL: null,
+                                            NOTIF_READ: null,
+                                            NOTIF_NDEL: null,
+                                            SAP_BODY: null
+                                        }
 
-                                            sql = 'SELECT (SELECT TEXT FROM \"AUPSUP_DATABASE.data.tables::T_NOTIF_TEXT\" WHERE TEXT_TYPE = \'MAIL_BODY\' AND' +
-                                                ' EVENT = \'' + element.EVENT + '\' AND APP = \'' + element.APPLICAZIONE + '\') AS BODY, (SELECT TEXT FROM \"AUPSUP_DATABASE.data.tables::T_NOTIF_TEXT\" WHERE ' +
-                                                'TEXT_TYPE = \'MAIL_SUBJ\' AND EVENT = \'' + element.EVENT + '\' AND APP = \'' + element.APPLICAZIONE + '\') AS SUBJ FROM \"AUPSUP_DATABASE.data.synonyms::DUMMY\"'
-                                            console.log('sql T_NOTIF_TEXT: ' + sql)
-                                            client.exec(sql, function (error, results) {
-                                                console.log('RESULTS T_NOTIF_TEXT: ' + stringifyObj(results))
-                                                if (error) {
-                                                    console.error('Error during direct statement execution T_NOTIF_TEXT: ' + error)
-                                                    client.close()
-                                                    //  return res.status(500).send('T_NOTIF_TEXT ERROR: ' + stringifyObj(error))
+                                        emailList.push(cc)
+
+                                        resolve(emailList)
+                                    }
+                                })
+                            }
+                        })
+                    })
+
+                    getEmailListPromise.then((emailList) => {
+                        if (emailList !== null && emailList.length > 0) {
+                            console.log('Promise getEmailListPromise END, emailList length: ' + emailList.length)
+                            var getNotifText = new Promise((resolve, reject) => {
+                                hdbext.createConnection(req.tenantContainer, function (error, client) {
+                                    if (error) {
+                                        console.error('ERROR T_NOTIF_MASTER :' + stringifyObj(error))
+                                        client.close()
+                                        reject(error)
+                                    } else {
+                                        var sql = 'SELECT (SELECT TEXT FROM \"AUPSUP_DATABASE.data.tables::T_NOTIF_TEXT\" WHERE TEXT_TYPE = \'MAIL_BODY\' AND' +
+                                            ' EVENT = \'' + element.EVENT + '\' AND APP = \'' + element.APPLICAZIONE + '\') AS BODY, (SELECT TEXT FROM \"AUPSUP_DATABASE.data.tables::T_NOTIF_TEXT\" WHERE ' +
+                                            'TEXT_TYPE = \'MAIL_SUBJ\' AND EVENT = \'' + element.EVENT + '\' AND APP = \'' + element.APPLICAZIONE + '\') AS SUBJ FROM \"AUPSUP_DATABASE.data.synonyms::DUMMY\"'
+                                        console.log('sql T_NOTIF_TEXT: ' + sql)
+                                        client.exec(sql, function (error, results) {
+                                            console.log('RESULTS T_NOTIF_TEXT: ' + stringifyObj(results))
+                                            if (error) {
+                                                console.error('Error during direct statement execution T_NOTIF_TEXT: ' + error)
+                                                client.close()
+                                                //  return res.status(500).send('T_NOTIF_TEXT ERROR: ' + stringifyObj(error))
+                                            } else {
+                                                client.close()
+                                                if (results && results.length > 0) {
+                                                    resolve(results)
                                                 } else {
-                                                    if (results && results.length > 0) {
-                                                        var subject = results[0].SUBJ
-                                                        var body = results[0].BODY
-                                                        var bodyLines = []
-                                                        if (body !== undefined) {
-                                                            body = body.replace('EBELN', element.EBELN)
-                                                            body = body.replace('EBELP', element.EBELP)
-                                                            body = body.replace('MATNR', element.MATNR)
-                                                            bodyLines.push({ LINE: body })
-                                                        }
-
-                                                        if (element.LIST_XBLNR !== undefined) {
-                                                            // SPAZIO VUOTO
-                                                            bodyLines.push({ LINE: '' })
-                                                            element.LIST_XBLNR.forEach(single => {
-                                                                if (single.XBLNR !== undefined && single.XBLNR !== '' && single.EINDT !== undefined && single.EINDT !== '') { bodyLines.push({ LINE: 'Data ' + single.EINDT + ' Schedulazione: ' + single.XBLNR + ' Quantita: ' + single.MENGE }) }
-                                                            })
-                                                        }
-
-                                                        if (element.APPLICAZIONE.indexOf('PRZ') > 0) {
-                                                            var line = 'Prezzo ' + element.NETPR + ' Unità di Prezzo ' + element.PEINH
-                                                            if (element.BSTYP === 'L') { line = line + ' Inizio Validità: ' + element.ZINVALIDITA + ' Fine Validità: ' + element.ZFINVALIDATA }
-                                                            bodyLines.push({ LINE: line })
-                                                        }
-
-                                                        var sql = 'SELECT * FROM \"AUPSUP_DATABASE.data.tables::T_NOTIF_PORTAL_LINKS\" WHERE APP = \'' + element.APPLICAZIONE + '\' and EVENT = \'' + element.EVENT + '\''
-                                                        console.log('sql T_NOTIF_PORTAL_LINKS' + sql)
-                                                        client.exec(sql, function (error, results) {
-                                                            if (error) {
-                                                                console.error('Error during direct statement execution T_NOTIF_PORTAL_LINKS: ' + stringifyObj(error))
-                                                                client.close()
-                                                                //  return res.status(500).send('T_NOTIF_PORTAL_LINKS ERROR: ' + stringifyObj(error))
-                                                            } else {
-                                                                if (results && results[0]) {
-                                                                    // SPAZIO VUOTO
-                                                                    bodyLines.push({ LINE: '' })
-                                                                    var link = results[0].LINK
-                                                                    link = link.replace('EBELN', element.EBELN)
-                                                                    link = link.replace('EBELP', element.EBELP)
-                                                                    bodyLines.push({ LINE: link })
-                                                                }
-                                                            }
-
-                                                            if (notaReject !== undefined && notaReject !== '' && element.CONF_TYPE === 'R') {
-                                                                bodyLines.push({ LINE: '' })
-                                                                bodyLines.push({ LINE: 'Note: ' + notaReject })
-                                                            }
-
-                                                            hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Utils::SendMail', function (_err, sp) {
-                                                                sp(req.user.id, subject, bodyLines, emailList, (err) => {
-                                                                    if (err) {
-                                                                        console.error('ERROR: ' + stringifyObj(err))
-                                                                        // return res.status(500).send(stringifyObj(err))
-                                                                    } else {
-                                                                        // return res.status(200).send('OK')
-                                                                    }
-                                                                })
-                                                            })
-                                                        })
-                                                    }
+                                                    reject(results)
                                                 }
+                                            }
+                                        })
+                                    }
+                                })
+                            })
+
+                            getNotifText.then((results) => {
+                                if (results !== null && results.length > 0) {
+                                    console.log('Promise getNotifText END, results length: ' + results.length)
+
+                                    var subject = results[0].SUBJ
+                                    var body = results[0].BODY
+                                    var bodyLines = []
+                                    if (body !== undefined) {
+                                        body = body.replace('EBELN', element.EBELN)
+                                        body = body.replace('EBELP', element.EBELP)
+                                        body = body.replace('MATNR', element.MATNR)
+                                        bodyLines.push({
+                                            LINE: body
+                                        })
+                                    }
+
+                                    if (element.LIST_XBLNR !== undefined) {
+                                        // SPAZIO VUOTO
+                                        bodyLines.push({
+                                            LINE: ''
+                                        })
+                                        element.LIST_XBLNR.forEach(single => {
+                                            if (single.XBLNR !== undefined && single.XBLNR !== '' && single.EINDT !== undefined && single.EINDT !== '') {
+                                                bodyLines.push({
+                                                    LINE: 'Data ' + single.EINDT + ' Schedulazione: ' + single.XBLNR + ' Quantita: ' + single.MENGE
+                                                })
+                                            }
+                                        })
+                                    }
+
+                                    if (element.APPLICAZIONE.indexOf('PRZ') > 0) {
+                                        var line = 'Prezzo ' + element.NETPR + ' Unità di Prezzo ' + element.PEINH
+                                        if (element.BSTYP === 'L') {
+                                            line = line + ' Inizio Validità: ' + element.ZINVALIDITA + ' Fine Validità: ' + element.ZFINVALIDATA
+                                        }
+                                        bodyLines.push({
+                                            LINE: line
+                                        })
+                                    }
+
+                                    var getLink = new Promise((resolve, reject) => {
+                                        hdbext.createConnection(req.tenantContainer, function (error, client) {
+                                            if (error) {
+                                                console.error('ERROR T_NOTIF_MASTER :' + stringifyObj(error))
+                                                client.close()
+                                                reject(error)
+                                            } else {
+                                                var sql = 'SELECT * FROM \"AUPSUP_DATABASE.data.tables::T_NOTIF_PORTAL_LINKS\" WHERE APP = \'' + element.APPLICAZIONE + '\' and EVENT = \'' + element.EVENT + '\''
+                                                console.log('sql T_NOTIF_PORTAL_LINKS' + sql)
+                                                client.exec(sql, function (error, results) {
+                                                    if (error) {
+                                                        console.error('Error during direct statement execution T_NOTIF_PORTAL_LINKS: ' + stringifyObj(error))
+                                                        client.close()
+                                                        reject(error)
+                                                    } else {
+                                                        client.close()
+                                                        if (results && results[0]) {
+                                                            resolve(results)
+                                                        } else {
+                                                            reject(results)
+                                                        }
+                                                    }
+                                                })
+                                            }
+                                        })
+                                    })
+
+                                    getLink.then((results) => {
+                                        if (results !== null && results.length > 0) {
+                                            console.log('Promise getLink END, results length: ' + results.length)
+                                            // SPAZIO VUOTO
+                                            bodyLines.push({
+                                                LINE: ''
+                                            })
+                                            var link = results[0].LINK
+                                            link = link.replace('EBELN', element.EBELN)
+                                            link = link.replace('EBELP', element.EBELP)
+                                            bodyLines.push({
+                                                LINE: link
                                             })
                                         }
+
+                                        if (notaReject !== undefined && notaReject !== '' && element.CONF_TYPE === 'R') {
+                                            bodyLines.push({
+                                                LINE: ''
+                                            })
+                                            bodyLines.push({
+                                                LINE: 'Note: ' + notaReject
+                                            })
+                                        }
+
+                                        hdbext.createConnection(req.tenantContainer, function (error, client) {
+                                            if (error) {
+                                                console.error('ERROR T_NOTIF_MASTER :' + stringifyObj(error))
+                                                client.close()
+                                            } else {
+                                                hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Utils::SendMail', function (_err, sp) {
+                                                    sp(req.user.id, subject, bodyLines, emailList, (err) => {
+                                                        if (err) {
+                                                            console.error('ERROR: ' + stringifyObj(err))
+                                                            // return res.status(500).send(stringifyObj(err))
+                                                        } else {
+                                                            // return res.status(200).send('OK')
+                                                        }
+                                                        client.close()
+                                                    })
+                                                })
+                                            }
+                                        })
                                     })
                                 }
                             })
