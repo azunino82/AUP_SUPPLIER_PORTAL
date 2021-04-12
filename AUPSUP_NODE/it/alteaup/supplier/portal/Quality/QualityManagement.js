@@ -35,6 +35,7 @@ module.exports = function () {
         var matnr = []
         var idnlf = []
         var ernam = []
+        var stat = []
         var spras = 'I'
         var qmnum = []
         var userid = req.user.id
@@ -51,6 +52,13 @@ module.exports = function () {
        if (body.ernam != null && body.ernam !== undefined && body.ernam !== '') {
            ernam.push({ ERNAM: body.ernam })
        }
+       if (body.stat !== null && body.stat !== undefined && body.stat.length > 0) {
+            var oStat = [] 
+            for (var i = 0; i < body.stat.length; i++) {
+                oStat.push({ STAT: body.stat[i] })
+            }
+            stat = oStat
+        }  
        if (body.mawerk !== null && body.mawerk !== undefined && body.mawerk.length > 0) {
            var oMawerk = [] 
            for (var i = 0; i < body.mawerk.length; i++) {
@@ -80,7 +88,7 @@ module.exports = function () {
             return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
             } else {
             hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Quality::MM00_NOTIFICATION_LIST', function (_err, sp) {
-                sp(userid, qmnum, qmart, mawerk, lifnum, matnr, idnlf, spras, ernam, (err, parameters, ET_NOTIF_VIQMEL, ET_NOTIF_VIQMFE, ET_NOTIF_VIQMUR, ET_NOTIF_VIQMSM, ET_NOTIF_VIQMMA) => {
+                sp(userid, qmnum, qmart, mawerk, lifnum, matnr, idnlf, spras, ernam, stat, (err, parameters, ET_NOTIF_VIQMEL, ET_NOTIF_VIQMFE, ET_NOTIF_VIQMUR, ET_NOTIF_VIQMSM, ET_NOTIF_VIQMMA) => {
                 if (err) {
                     console.error('ERROR: ' + err)
                     return res.status(500).send(stringifyObj(err))
