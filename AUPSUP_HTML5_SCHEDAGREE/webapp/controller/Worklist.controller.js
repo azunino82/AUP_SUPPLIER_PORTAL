@@ -34,6 +34,22 @@ sap.ui.define([
 
 			if (orderToOpen) {
 				Promise.all([
+
+					new Promise(function (resolve, reject) {
+						var json = JSON.parse(orderToOpen)
+						var url = "/backend/OrdersManagement/CheckAuthority?I_EBELN=" + json.orderId;
+
+						that.ajaxGet(url, function (oData) { // funzione generica su BaseController
+							if (oData) {
+								if (oData.enabled)
+									resolve(true);
+								else
+									resolve(false);
+							} else
+								resolve(false);
+						});
+
+					}),
 					new Promise(function (resolve, reject) {
 
 						var url = "/backend/Utils/UtilsManagement/GetUserPlants";
@@ -45,8 +61,8 @@ sap.ui.define([
 								//	that.getView().setModel(oModel, "PlantsJSONModel");
 								var oComponent = that.getOwnerComponent();
 								oComponent.setModel(oModel, "PlantsJSONModel");
-								resolve();
 							}
+							resolve();
 						});
 
 					}),
@@ -60,24 +76,34 @@ sap.ui.define([
 								// that.getView().setModel(oModel, "PurchaseOrganizationJSONModel");
 								var oComponent = that.getOwnerComponent();
 								oComponent.setModel(oModel, "PurchaseOrganizationJSONModel");
-								resolve();
 							}
+							resolve();
 						});
 
-					}),
+					})
 				]).then(function (values) {
-					var json = JSON.parse(orderToOpen)
-					json.spras = that.getLanguage();
-					json.isUpdateData = '';
+					if (values !== undefined && values.length > 0) {
+						var canNavigate = false;
+						values.forEach(element => {
+							if (element !== undefined)
+								canNavigate = element
+						});
+						if (canNavigate) {
+							var json = JSON.parse(orderToOpen)
+							json.spras = that.getLanguage();
+							json.isUpdateData = '';
 
-					var oRouter = sap.ui.core.UIComponent.getRouterFor(that);
-					oRouter.navTo("detail", {
-						datas: JSON.stringify(json)
-					});
-
+							var oRouter = sap.ui.core.UIComponent.getRouterFor(that);
+							oRouter.navTo("detail", {
+								datas: JSON.stringify(json)
+							});
+						} else {
+							MessageBox.error(that.getResourceBundle().getText("cantOpenOrder"));
+							return
+						}
+					}
 				});
 			}
-
 
 			// questo meccanismo serve per navigare sull'ordine selezionato da RMO. funziona solo sul portale pubblicato non in preview da webide
 			if (this.getOwnerComponent().getComponentData() != undefined) {
@@ -89,6 +115,22 @@ sap.ui.define([
 				Promise.all([
 					new Promise(function (resolve, reject) {
 
+						var json = JSON.parse(startupParams.objectId[0])
+						var url = "/backend/OrdersManagement/CheckAuthority?I_EBELN=" + json.orderId;
+
+						that.ajaxGet(url, function (oData) { // funzione generica su BaseController
+							if (oData) {
+								if (oData.enabled)
+									resolve(true);
+								else
+									resolve(false);
+							} else
+								resolve(false);
+						});
+
+					}),
+					new Promise(function (resolve, reject) {
+
 						var url = "/backend/Utils/UtilsManagement/GetUserPlants";
 
 						that.ajaxGet(url, function (oData) { // funzione generica su BaseController
@@ -98,8 +140,8 @@ sap.ui.define([
 								//	that.getView().setModel(oModel, "PlantsJSONModel");
 								var oComponent = that.getOwnerComponent();
 								oComponent.setModel(oModel, "PlantsJSONModel");
-								resolve();
 							}
+							resolve();
 						});
 
 					}),
@@ -113,20 +155,32 @@ sap.ui.define([
 								// that.getView().setModel(oModel, "PurchaseOrganizationJSONModel");
 								var oComponent = that.getOwnerComponent();
 								oComponent.setModel(oModel, "PurchaseOrganizationJSONModel");
-								resolve();
 							}
+							resolve();
 						});
 
-					}),
+					})
 				]).then(function (values) {
-					var json = JSON.parse(startupParams.objectId[0])
-					json.spras = that.getLanguage();
-					json.isUpdateData = 'X';
+					if (values !== undefined && values.length > 0) {
+						var canNavigate = false;
+						values.forEach(element => {
+							if (element !== undefined)
+								canNavigate = element
+						});
+						if (canNavigate) {
+							var json = JSON.parse(startupParams.objectId[0])
+							json.spras = that.getLanguage();
+							json.isUpdateData = 'X';
 
-					var oRouter = sap.ui.core.UIComponent.getRouterFor(that);
-					oRouter.navTo("detail", {
-						datas: JSON.stringify(json)
-					});
+							var oRouter = sap.ui.core.UIComponent.getRouterFor(that);
+							oRouter.navTo("detail", {
+								datas: JSON.stringify(json)
+							});
+						} else {
+							MessageBox.error(that.getResourceBundle().getText("cantOpenOrder"));
+							return
+						}
+					}
 
 				});
 
@@ -984,7 +1038,7 @@ sap.ui.define([
 				})
 			});
 
-			that.ajaxPost(url, body, function (oData) { 
+			that.ajaxPost(url, body, function (oData) {
 				var outArr = [];
 				if (oData && oData.results && oData.results.length > 0) {
 					// HO TROVATO ALCUNI ORDINI LOCKATI
