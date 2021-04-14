@@ -52,10 +52,10 @@ module.exports = function () {
        if (body.ernam != null && body.ernam !== undefined && body.ernam !== '') {
            ernam.push({ ERNAM: body.ernam })
        }
-       if (body.stat !== null && body.stat !== undefined && body.stat.length > 0) {
+       if (body.status !== null && body.status !== undefined && body.status.length > 0) {
             var oStat = [] 
-            for (var i = 0; i < body.stat.length; i++) {
-                oStat.push({ STAT: body.stat[i] })
+            for (var i = 0; i < body.status.length; i++) {
+                oStat.push({ STAT: body.status[i] })
             }
             stat = oStat
         }  

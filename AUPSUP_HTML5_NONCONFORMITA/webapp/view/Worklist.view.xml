@@ -58,15 +58,7 @@
 													<core:Item key="{avvisiQualitaJSONModel>TIPO_AVVISO}" text="{avvisiQualitaJSONModel>TIPO_AVVISO}"/>
 												</m:ComboBox>
 											</fb:control>
-										</fb:FilterItem>
-										<fb:FilterItem name="Status" label="{i18n>status}" visible="false">
-											<fb:control>
-												<m:ComboBox selectedKey="{filterNCJSONModel>/status}" id="status" width="100%"
-													items="{ path: 'statusJSONModel>/', sorter: { path: 'Descr' } }">
-													<core:Item key="{statusJSONModel>Code}" text="{statusJSONModel>Descr}"/>
-												</m:ComboBox>
-											</fb:control>
-										</fb:FilterItem>
+										</fb:FilterItem>										
 										<fb:FilterItem name="Matnr" label="{i18n>MATNR}">
 											<fb:control>
 												<m:Input type="Text" value="{filterNCJSONModel>/MatnrDesc}" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="handleMatnr"
@@ -81,6 +73,14 @@
 										<fb:FilterItem name="Ernam" label="{i18n>ERNAM_TEXT}">
 											<fb:control>
 												<m:Input value="{filterNCJSONModel>/ernam}" class="sapUiSmallMarginBottom"/>
+											</fb:control>
+										</fb:FilterItem>
+										<fb:FilterItem name="Status" label="{i18n>status}" visible="true"> 
+											<fb:control>
+												<m:MultiComboBox selectedKeys="{filterNCJSONModel>/status}" id="status" width="100%"
+													items="{ path: 'statusJSONModel>/results', sorter: { path: 'DESCRIPTION' } }">
+													<core:ListItem key="{statusJSONModel>STATUS_CODE}" text="{statusJSONModel>DESCRIPTION}"/>
+												</m:MultiComboBox>
 											</fb:control>
 										</fb:FilterItem>
 									</fb:filterItems>
@@ -143,6 +143,12 @@
 													<m:Column id="XBLNR" minScreenWidth="Desktop" demandPopin="true">
 														<m:Label text="{i18n>XBLNR}" class="columnLabelStyle" wrapping="true"/>
 													</m:Column>
+													<m:Column id="STAT" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>REVLV}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
+													<m:Column id="STATUSDESCR" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>STATUSDESCR}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>
 
 
 													<m:Column minScreenWidth="Desktop" demandPopin="true" hAlign="End" width="3em"/>
@@ -167,6 +173,8 @@
 															<m:Text text="{NCJSONModel>IDNLF}"/>
 															<m:Text text="{NCJSONModel>SERIALNR}"/>
 															<m:Text text="{NCJSONModel>XBLNR}"/>
+															<m:Text text="{NCJSONModel>STAT}"/>
+															<m:Text text="{NCJSONModel>StatusDescr}"/>
 
 
 															<m:Button icon="sap-icon://display" press="onDetails"/>
