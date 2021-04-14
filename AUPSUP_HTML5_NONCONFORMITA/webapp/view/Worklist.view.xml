@@ -51,7 +51,7 @@
 										<!--		</m:ComboBox>-->
 										<!--	</fb:control>-->
 										<!--</fb:FilterItem>-->
-										<fb:FilterItem name="TipoAvviso" label="{i18n>tipoAvviso}">
+										<fb:FilterItem name="TipoAvviso" label="{i18n>tipoAvviso}" visible="false">
 											<fb:control>
 												<m:ComboBox selectedKey="{filterNCJSONModel>/qmart}" id="tipoAvviso" width="100%"
 													items="{ path: 'avvisiQualitaJSONModel>/results', sorter: { path: 'TIPO_AVVISO' } }" selectionChange="onChangeTipoAvviso">
@@ -143,9 +143,6 @@
 													<m:Column id="XBLNR" minScreenWidth="Desktop" demandPopin="true">
 														<m:Label text="{i18n>XBLNR}" class="columnLabelStyle" wrapping="true"/>
 													</m:Column>
-													<m:Column id="STAT" minScreenWidth="Desktop" demandPopin="true">
-														<m:Label text="{i18n>REVLV}" class="columnLabelStyle" wrapping="true"/>
-													</m:Column>
 													<m:Column id="STATUSDESCR" minScreenWidth="Desktop" demandPopin="true">
 														<m:Label text="{i18n>STATUSDESCR}" class="columnLabelStyle" wrapping="true"/>
 													</m:Column>
@@ -173,7 +170,6 @@
 															<m:Text text="{NCJSONModel>IDNLF}"/>
 															<m:Text text="{NCJSONModel>SERIALNR}"/>
 															<m:Text text="{NCJSONModel>XBLNR}"/>
-															<m:Text text="{NCJSONModel>STAT}"/>
 															<m:Text text="{NCJSONModel>StatusDescr}"/>
 
 

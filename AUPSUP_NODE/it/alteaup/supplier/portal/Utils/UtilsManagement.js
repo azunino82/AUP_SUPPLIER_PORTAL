@@ -160,20 +160,20 @@ module.exports = function () {
       if (client) {
         async.waterfall([
 
-          function prepare(callback) {
+          function prepare (callback) {
             client.prepare(sql,
               function (err, statement) {
                 callback(null, err, statement)
               })
           },
 
-          function execute(_err, statement, callback) {
+          function execute (_err, statement, callback) {
             statement.exec([], function (execErr, results) {
               callback(null, execErr, results)
             })
           },
 
-          function response(err, results, callback) {
+          function response (err, results, callback) {
             if (err) {
               res.type('application/json').status(500).send({
                 ERROR: err
@@ -186,7 +186,7 @@ module.exports = function () {
             }
             callback()
           }
-        ], function done(err, parameters, rows) {
+        ], function done (err, parameters, rows) {
           console.log('---->>> CLIENT END T_AVVISI_QUALITA <<<<<-----')
           client.close()
           if (err) {
@@ -197,56 +197,56 @@ module.exports = function () {
     })
   })
 
-    // GET STATO LIST - QUALITà
+  // GET STATO LIST - QUALITà
 
-    app.get('/GetStatusQualita', function (req, res) {
-      var langu = req.query.I_LANGU !== undefined && req.query.I_LANGU !== null && req.query.I_LANGU !== '' ? req.query.I_LANGU : ''
-      const sql = 'SELECT * FROM \"AUPSUP_DATABASE.data.tables::T_QUALITY_STATUS\" AS a INNER JOIN \"AUPSUP_DATABASE.data.tables::T_AVVISI_QUALITA\" as b ON a.TIPO_AVVISO = b.TIPO_AVVISO where a.LANGUAGE = \''+ langu + '\''
-  
-      hdbext.createConnection(req.tenantContainer, function (error, client) {
-        if (error) {
-          console.error('ERROR T_STATO_QUALITA :' + stringifyObj(error))
-          return res.status(500).send('GetUserBU CONNECTION ERROR: ' + stringifyObj(error))
-        }
-        if (client) {
-          async.waterfall([
-  
-            function prepare(callback) {
-              client.prepare(sql,
-                function (err, statement) {
-                  callback(null, err, statement)
-                })
-            },
-  
-            function execute(_err, statement, callback) {
-              statement.exec([], function (execErr, results) {
-                callback(null, execErr, results)
+  app.get('/GetStatusQualita', function (req, res) {
+    var langu = req.query.I_LANGU !== undefined && req.query.I_LANGU !== null && req.query.I_LANGU !== '' ? req.query.I_LANGU : ''
+    const sql = 'SELECT * FROM \"AUPSUP_DATABASE.data.tables::T_QUALITY_STATUS\" WHERE LANGUAGE = \'' + langu + '\''
+
+    hdbext.createConnection(req.tenantContainer, function (error, client) {
+      if (error) {
+        console.error('ERROR T_QUALITY_STATUS :' + stringifyObj(error))
+        return res.status(500).send('GetUserBU CONNECTION ERROR: ' + stringifyObj(error))
+      }
+      if (client) {
+        async.waterfall([
+
+          function prepare (callback) {
+            client.prepare(sql,
+              function (err, statement) {
+                callback(null, err, statement)
               })
-            },
-  
-            function response(err, results, callback) {
-              if (err) {
-                res.type('application/json').status(500).send({
-                  ERROR: err
-                })
-                return
-              } else {
-                res.type('application/json').status(200).send({
-                  results: results
-                })
-              }
-              callback()
-            }
-          ], function done(err, parameters, rows) {
-            console.log('---->>> CLIENT END T_AVVISI_QUALITA <<<<<-----')
-            client.close()
+          },
+
+          function execute (_err, statement, callback) {
+            statement.exec([], function (execErr, results) {
+              callback(null, execErr, results)
+            })
+          },
+
+          function response (err, results, callback) {
             if (err) {
-              return console.error('Done error', err)
+              res.type('application/json').status(500).send({
+                ERROR: err
+              })
+              return
+            } else {
+              res.type('application/json').status(200).send({
+                results: results
+              })
             }
-          })
-        }
-      })
+            callback()
+          }
+        ], function done (err, parameters, rows) {
+          console.log('---->>> CLIENT END T_QUALITY_STATUS <<<<<-----')
+          client.close()
+          if (err) {
+            return console.error('Done error', err)
+          }
+        })
+      }
     })
+  })
 
   // GET CORRECT SYSID
 
@@ -261,20 +261,20 @@ module.exports = function () {
       if (client) {
         async.waterfall([
 
-          function prepare(callback) {
+          function prepare (callback) {
             client.prepare(sql,
               function (err, statement) {
                 callback(null, err, statement)
               })
           },
 
-          function execute(_err, statement, callback) {
+          function execute (_err, statement, callback) {
             statement.exec([], function (execErr, results) {
               callback(null, execErr, results)
             })
           },
 
-          function response(err, results, callback) {
+          function response (err, results, callback) {
             if (err) {
               res.type('application/json').status(500).send({
                 ERROR: err
@@ -287,7 +287,7 @@ module.exports = function () {
             }
             callback()
           }
-        ], function done(err, parameters, rows) {
+        ], function done (err, parameters, rows) {
           console.log('---->>> CLIENT END T_BCKND_SYSTEMS <<<<<-----')
           client.close()
           if (err) {
@@ -453,20 +453,20 @@ module.exports = function () {
       if (client) {
         async.waterfall([
 
-          function prepare(callback) {
+          function prepare (callback) {
             client.prepare(sql,
               function (err, statement) {
                 callback(null, err, statement)
               })
           },
 
-          function execute(_err, statement, callback) {
+          function execute (_err, statement, callback) {
             statement.exec([], function (execErr, results) {
               callback(null, execErr, results)
             })
           },
 
-          function response(err, results, callback) {
+          function response (err, results, callback) {
             if (err) {
               res.type('application/json').status(500).send({
                 ERROR: err
@@ -479,7 +479,7 @@ module.exports = function () {
             }
             callback()
           }
-        ], function done(err, parameters, rows) {
+        ], function done (err, parameters, rows) {
           console.log('---->>> CLIENT END T_GESTIONE_ETICHETTE <<<<<-----')
           client.close()
           if (err) {
@@ -523,20 +523,20 @@ module.exports = function () {
                   }
                   if (client) {
                     async.waterfall([
-                      function prepare(callback) {
+                      function prepare (callback) {
                         client.prepare(sql,
                           function (err, statement) {
                             callback(null, err, statement)
                           })
                       },
 
-                      function execute(_err, statement, callback) {
+                      function execute (_err, statement, callback) {
                         statement.exec([], function (execErr, results) {
                           callback(null, execErr, results)
                         })
                       },
 
-                      function response(err, results, callback) {
+                      function response (err, results, callback) {
                         if (err) {
                           res.type('application/json').status(500).send({
                             ERROR: err
@@ -644,20 +644,20 @@ module.exports = function () {
                             if (client) {
                               async.waterfall([
 
-                                function prepare(callback) {
+                                function prepare (callback) {
                                   client.prepare(sql,
                                     function (err, statement) {
                                       callback(null, err, statement)
                                     })
                                 },
 
-                                function execute(_err, statement, callback) {
+                                function execute (_err, statement, callback) {
                                   statement.exec([], function (execErr, results) {
                                     callback(null, execErr, results)
                                   })
                                 },
 
-                                function response(err, listaCommentiPrecedenti, callback) {
+                                function response (err, listaCommentiPrecedenti, callback) {
                                   if (err) {
                                     res.type('application/json').status(500).send({
                                       ERROR: err
@@ -690,7 +690,7 @@ module.exports = function () {
                                     }
                                   })
                                 }
-                              ], function done(err, parameters, rows) {
+                              ], function done (err, parameters, rows) {
                                 console.log('---->>> CLIENT END T_GESTIONE_ETICHETTE <<<<<-----')
                                 client.close()
                                 if (err) {
@@ -702,7 +702,7 @@ module.exports = function () {
                         }
                         callback()
                       }
-                    ], function done(err, parameters, rows) {
+                    ], function done (err, parameters, rows) {
                       console.log('---->>> CLIENT END T_AVVISI_QUALITA <<<<<-----')
                       client.close()
                       if (err) {
@@ -737,20 +737,20 @@ module.exports = function () {
       if (client) {
         async.waterfall([
 
-          function prepare(callback) {
+          function prepare (callback) {
             client.prepare(sql,
               function (err, statement) {
                 callback(null, err, statement)
               })
           },
 
-          function execute(_err, statement, callback) {
+          function execute (_err, statement, callback) {
             statement.exec([], function (execErr, results) {
               callback(null, execErr, results)
             })
           },
 
-          function response(err, results, callback) {
+          function response (err, results, callback) {
             if (err) {
               res.type('application/json').status(500).send({
                 ERROR: err
@@ -763,7 +763,7 @@ module.exports = function () {
             }
             callback()
           }
-        ], function done(err, parameters, rows) {
+        ], function done (err, parameters, rows) {
           console.log('---->>> CLIENT END T_TEXTS_COMMENT <<<<<-----')
           client.close()
           if (err) {
