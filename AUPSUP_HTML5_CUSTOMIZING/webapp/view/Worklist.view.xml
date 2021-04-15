@@ -344,19 +344,19 @@
 																		<form:content>
 																			<core:Title text="" />
 																			<m:Label text="{i18n>SYSID}" />
-																			<m:Input value="{ProfiliConfermaJSONModel>SYSID}" enabled="{= ${ProfiliConfermaJSONModel>SYSID} === ''}" />
+																			<m:Input value="{ProfiliConfermaJSONModel>SYSID}" enabled="{= ${ProfiliConfermaJSONModel>SYSID} === ''}" maxLength="30" />
 																			<m:Label text="{i18n>PROFILO_CONTROLLO}" />
-																			<m:Input value="{ProfiliConfermaJSONModel>PROFILO_CONTROLLO}" enabled="{= ${ProfiliConfermaJSONModel>PROFILO_CONTROLLO} === ''}" />
+																			<m:Input value="{ProfiliConfermaJSONModel>PROFILO_CONTROLLO}" enabled="{= ${ProfiliConfermaJSONModel>PROFILO_CONTROLLO} === ''}" maxLength="4" />
 																			<core:Title text="" />
 																			<m:Label text="{i18n>CAT_CONFERMA}" />
-																			<m:Input value="{ProfiliConfermaJSONModel>CAT_CONFERMA}" enabled="{= ${ProfiliConfermaJSONModel>CAT_CONFERMA} === ''}" />
+																			<m:Input value="{ProfiliConfermaJSONModel>CAT_CONFERMA}" enabled="{= ${ProfiliConfermaJSONModel>CAT_CONFERMA} === ''}" maxLength="2" />
 																			<m:Label text="{i18n>DESCRIZIONE}" />
-																			<m:Input value="{ProfiliConfermaJSONModel>DESCRIZIONE}" />
+																			<m:Input value="{ProfiliConfermaJSONModel>DESCRIZIONE}" maxLength="50" />
 																			<core:Title text="" />
 																			<m:Label text="{i18n>OWNER}" />
-																			<m:Input value="{ProfiliConfermaJSONModel>OWNER}" />
+																			<m:Input value="{ProfiliConfermaJSONModel>OWNER}" maxLength="1" />
 																			<m:Label text="{i18n>TIPO_CONFERMA}" />
-																			<m:Input value="{ProfiliConfermaJSONModel>TIPO_CONFERMA}" />
+																			<m:Input value="{ProfiliConfermaJSONModel>TIPO_CONFERMA}" maxLength="1" />
 																			<core:Title text="" />
 																			<m:Label text="{i18n>MODIFICA_PREZZO}" />
 																			<m:CheckBox selected="{ProfiliConfermaJSONModel>MODIFICA_PREZZO}" />
@@ -374,9 +374,9 @@
 																			<m:Input value="{ProfiliConfermaJSONModel>PERC_SUPERIORE_QUANT}" />
 																			<core:Title text="" />
 																			<m:Label text="{i18n>TIPO_COND_PREZZO}" />
-																			<m:Input value="{ProfiliConfermaJSONModel>TIPO_COND_PREZZO}" />
+																			<m:Input value="{ProfiliConfermaJSONModel>TIPO_COND_PREZZO}" maxLength="4"/>
 																			<m:Label text="{i18n>TIPO_CONSEGNA_INB}" />
-																			<m:Input value="{ProfiliConfermaJSONModel>TIPO_CONSEGNA_INB}" />
+																			<m:Input value="{ProfiliConfermaJSONModel>TIPO_CONSEGNA_INB}" maxLength="4" />
 																			<core:Title text="" />
 																			<m:Label text="{i18n>LOTTO_FORNITORE_INB}" />
 																			<m:CheckBox selected="{ProfiliConfermaJSONModel>LOTTO_FORNITORE_INB}" />
@@ -409,7 +409,7 @@
 																			<m:Input value="{ProfiliConfermaJSONModel>ZAPPGGINF}" />
 																			<core:Title text="" />
 																			<m:Label text="{i18n>CAT_CONF_RIFER_NO_PROGR}" />
-																			<m:Input value="{ProfiliConfermaJSONModel>CAT_CONF_RIFER_NO_PROGR}" />
+																			<m:Input value="{ProfiliConfermaJSONModel>CAT_CONF_RIFER_NO_PROGR}" maxLength="2" />
 
 																			<core:Title text="" />
 																			<m:Label text="{i18n>NUM_INT_HU}" />

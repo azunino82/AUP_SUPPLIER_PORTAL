@@ -177,7 +177,8 @@
 															<m:Button icon="sap-icon://print" press="onPrint" tooltip="Print"/>
 															<u:FileUploader class="pickingUploader" sameFilenameAllowed="true" change="onItemUpload" fileType="xlsx,docx,pdf,txt,doc,xls"
 																iconFirst="true" buttonOnly="true" typeMissmatch="onTypeMissmatch" maximumFileSize="5" fileSizeExceed="onFileSizeExceed" iconOnly="true"
-																icon="sap-icon://upload" tooltip="upload" style="Transparent"/>
+																icon="sap-icon://upload" tooltip="upload" style="Transparent"
+																visible="{= ${NCJSONModel>isCompleted} !== 'X'}"/>
 															<m:Button icon="sap-icon://download" press="onItemDownload" type="{path:'NCJSONModel>color', formatter: 'COLOR.formatter.getColor'}"/>
 														</m:cells>
 													</m:ColumnListItem>
