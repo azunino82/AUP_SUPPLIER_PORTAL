@@ -425,6 +425,52 @@ module.exports = function () {
     })
   })
 
+  app.post('/SaveTStatoAvvisiQualita', function (req, res) {
+    const body = req.body
+
+    var sql = 'UPSERT \"AUPSUP_DATABASE.data.tables::T_QUALITY_STATUS\" VALUES (\'' + body.STATUS_CODE + '\',\'' + body.LANGUAGE + '\',\'' + body.DESCRIPTION + '\') WITH PRIMARY KEY'
+    console.log('sql: ' + sql)
+    hdbext.createConnection(req.tenantContainer, function (error, client) {
+      if (error) {
+        console.error('ERROR T_QUALITY_STATUS :' + stringifyObj(error))
+        return res.status(500).send('T_QUALITY_STATUS CONNECTION ERROR: ' + stringifyObj(error))
+      }
+      if (client) {
+        async.waterfall([
+
+          function prepare (callback) {
+            client.prepare(sql,
+              function (err, statement) {
+                callback(null, err, statement)
+              })
+          },
+
+          function execute (_err, statement, callback) {
+            statement.exec([], function (execErr, results) {
+              callback(null, execErr, results)
+            })
+          },
+
+          function response (err, results, callback) {
+            if (err) {
+              res.type('application/json').status(500).send({ ERROR: err })
+              return
+            } else {
+              res.type('application/json').status(200).send({ results: 'OK' })
+            }
+            callback()
+          }
+        ], function done (err, parameters, rows) {
+          console.log('---->>> CLIENT END T_QUALITY_STATUS <<<<<-----')
+          client.close()
+          if (err) {
+            return console.error('Done error', err)
+          }
+        })
+      }
+    })
+  })
+  
   app.post('/SaveTMatriceCriticita', function (req, res) {
     const body = req.body
 
@@ -1225,6 +1271,55 @@ module.exports = function () {
           }
         ], function done (err, parameters, rows) {
           console.log('---->>> CLIENT END T_AVVISI_QUALITA <<<<<-----')
+          client.close()
+          if (err) {
+            return console.error('Done error', err)
+          }
+        })
+      }
+    })
+  })
+
+  app.delete('/TStatoAvvisiQualita', function (req, res) {
+    var STATUS_CODE = req.query.I_STATUS_CODE !== undefined && req.query.I_STATUS_CODE !== null && req.query.I_STATUS_CODE !== '' ? req.query.I_STATUS_CODE : ''
+    var LANGUAGE = req.query.I_LANGUAGE !== undefined && req.query.I_LANGUAGE !== null && req.query.I_LANGUAGE !== '' ? req.query.I_LANGUAGE : ''
+    if (STATUS_CODE === '' || LANGUAGE === '') {
+      return res.status(500).send('LANGUAGE and STATUS_CODE are Mandatory')
+    }
+    const sql = 'DELETE FROM \"AUPSUP_DATABASE.data.tables::T_QUALITY_STATUS\" WHERE STATUS_CODE=\'' + STATUS_CODE + '\' AND LANGUAGE = \'' + LANGUAGE + '\''
+
+    hdbext.createConnection(req.tenantContainer, function (error, client) {
+      if (error) {
+        console.error('ERROR :' + stringifyObj(error))
+        return res.status(500).send('TStatoAvvisiQualita CONNECTION ERROR: ' + stringifyObj(error))
+      }
+      if (client) {
+        async.waterfall([
+
+          function prepare (callback) {
+            client.prepare(sql,
+              function (err, statement) {
+                callback(null, err, statement)
+              })
+          },
+
+          function execute (_err, statement, callback) {
+            statement.exec([], function (execErr, results) {
+              callback(null, execErr, results)
+            })
+          },
+
+          function response (err, results, callback) {
+            if (err) {
+              res.type('application/json').status(500).send({ ERROR: err })
+              return
+            } else {
+              res.type('application/json').status(200).send({ results: results })
+            }
+            callback()
+          }
+        ], function done (err, parameters, rows) {
+          console.log('---->>> CLIENT END T_QUALITY_STATUS <<<<<-----')
           client.close()
           if (err) {
             return console.error('Done error', err)

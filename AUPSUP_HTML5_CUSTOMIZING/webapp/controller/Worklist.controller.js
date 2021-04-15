@@ -25,6 +25,7 @@ sap.ui.define([
     var originalNotificationContacts = [];
     var originalTexts = [];
     var originalHuExceptions = [];
+    var originalStatoAvvisiQta = [];
 
     return BaseController.extend("it.aupsup.customizing.controller.Worklist", {
         onInit: function () {
@@ -171,7 +172,7 @@ sap.ui.define([
                             elem.PACK_MAT_DEFAULT = elem.PACK_MAT_DEFAULT === "X" ? true : false;
                             elem.IS_CONTENT = elem.IS_CONTENT === "X" ? true : false;
                             elem.IS_HU_MANDATORY_INBOUND = elem.IS_HU_MANDATORY_INBOUND === "X" ? true : false;
-                            
+
                         });
 
                         oModel.setData(oData);
@@ -243,6 +244,26 @@ sap.ui.define([
 
         },
 
+        getStatoAvvisiQta: function (fCompletion) {
+
+            var url = "/backend/CustomizingManagement/GetTableData?I_TABLE=T_QUALITY_STATUS";
+            that.ajaxGet(url, function (oData) {
+                if (oData) {
+                    var oModel = new JSONModel();
+                    if (oData.results) {
+                        oModel.setData(oData);
+                        that.getView().setModel(oModel, "StatoAvvisiQtaJSONModel");
+                        originalStatoAvvisiQta = [];
+                        $.each(that.getView().getModel("StatoAvvisiQtaJSONModel").getData().results, function (index, elem) {
+                            var s_elem = JSON.stringify(elem);
+                            originalStatoAvvisiQta.push(jQuery.parseJSON(s_elem));
+                        });
+
+                    }
+                }
+            });
+
+        },
         getMatriceCriticita: function (fCompletion) {
 
             var url = "/backend/CustomizingManagement/GetTableData?I_TABLE=T_MATRICE_CRITICITA";
@@ -519,13 +540,13 @@ sap.ui.define([
                 "ZAPPPERINF": 0,
                 "ZAPPGGSUP": 0,
                 "ZAPPGGINF": 0,
-                "NUM_INT_HU":false,
-                "IS_PESO":false,
-                "IS_VOLUME":false,
-                "PACK_MAT_DEFAULT":false,
-                "CAT_CONF_RIFER_NO_PROGR":"",
-                "IS_CONTENT":false,
-                "IS_HU_MANDATORY_INBOUND":false
+                "NUM_INT_HU": false,
+                "IS_PESO": false,
+                "IS_VOLUME": false,
+                "PACK_MAT_DEFAULT": false,
+                "CAT_CONF_RIFER_NO_PROGR": "",
+                "IS_CONTENT": false,
+                "IS_HU_MANDATORY_INBOUND": false
             });
             that.getView().getModel("ProfiliConfermaJSONModel").refresh();
         },
@@ -544,6 +565,15 @@ sap.ui.define([
                 "APPLICAZIONE": ""
             });
             that.getView().getModel("AvvisiQtaJSONModel").refresh();
+        },
+
+        onAddStatoAvvisiQtaRow: function () {
+            that.getView().getModel("StatoAvvisiQtaJSONModel").getData().results.push({
+                "STATUS_CODE": "",
+                "LANGUAGE": "",
+                "DESCRIPTION": ""
+            });
+            that.getView().getModel("StatoAvvisiQtaJSONModel").refresh();
         },
 
         onAddMatriceCriticitaRow: function () {
@@ -606,7 +636,7 @@ sap.ui.define([
             that.getView().getModel("DocumentManagementJSONModel").refresh();
         },
 
-        
+
         onAssDocumentManagementTypesRow: function () {
             that.getView().getModel("DocumentManagementTypesJSONModel").getData().results.push({
                 "APPLICATION": "",
@@ -625,8 +655,8 @@ sap.ui.define([
                 "MATERIALE_IMBALLO": "",
                 "TIPO_MSG_HU": "",
                 "APPLICAZIONE": "",
-                "UDM_PESO":"",
-                "UDM_VOLUME":""
+                "UDM_PESO": "",
+                "UDM_VOLUME": ""
             });
             that.getView().getModel("GestioneEtichetteJSONModel").refresh();
         },
@@ -661,7 +691,7 @@ sap.ui.define([
             });
             that.getView().getModel("HuExceptionsJSONModel").refresh();
         },
-        
+
         onSaveBuyerList: function () {
             if (that.getView().getModel("BuyersJSONModel").getData().results) {
                 var promiseArr = []
@@ -817,6 +847,22 @@ sap.ui.define([
                 })
                 Promise.all(promiseArr).then(values => {
                     that.getAvvisiQta()
+                });
+            }
+        },
+
+        onSaveStatoAvvisiQtaList: function () {
+            if (that.getView().getModel("StatoAvvisiQtaJSONModel").getData().results) {
+                var promiseArr = []
+                $.each(that.getView().getModel("StatoAvvisiQtaJSONModel").getData().results, function (index, elem) {
+                    promiseArr.push(new Promise(function (resolve, reject) {
+                        that.onSaveStatoAvvisiQta(elem, function () {
+                            resolve()
+                        })
+                    }))
+                })
+                Promise.all(promiseArr).then(values => {
+                    that.getStatoAvvisiQta()
                 });
             }
         },
@@ -1052,6 +1098,14 @@ sap.ui.define([
             })
         },
 
+        onSaveStatoAvvisiQta: function (elem, fCompletion) {
+            var url = "/backend/CustomizingManagement/SaveTStatoAvvisiQualita";
+            that.ajaxPost(url, elem, function (oData) {
+                if (oData) {
+                    fCompletion(oData);
+                }
+            })
+        },
         onSaveMatriceCriticita: function (elem, fCompletion) {
             var url = "/backend/CustomizingManagement/SaveTMatriceCriticita";
             that.ajaxPost(url, elem, function (oData) {
@@ -1149,7 +1203,7 @@ sap.ui.define([
 
         deleteMetaIDSupplier: function (id, lifnr) {
             var currentSYSID = sap.ui.getCore().getModel("sysIdJSONModel") !== undefined && sap.ui.getCore().getModel(
-                "sysIdJSONModel").getData() !==
+                    "sysIdJSONModel").getData() !==
                 undefined ? sap.ui.getCore().getModel("sysIdJSONModel").getData().SYSID : "";
 
             var url = "/backend/CustomizingManagement/TMetaIdForn?I_METAID=" + id + "&I_LIFNR=" + lifnr + "&I_SYSID=" + currentSYSID
@@ -1191,15 +1245,22 @@ sap.ui.define([
                 }
             })
         },
+        deleteStatoAvvisiQta: function (status_Code, language) {
+            var url = "/backend/CustomizingManagement/TStatoAvvisiQualita?I_STATUS_CODE=" + status_Code + "&I_LANGUAGE=" + language
+            that.ajaxDelete(url, function (oData) {
+                if (oData) {
+                    that.getStatoAvvisiQta();
+                }
+            })
+        },
         deleteAvvisiQta: function (sysid, tav) {
-            var url = "/backend/CustomizingManagement/TAvvisiQualita?I_TIPO_AVVISO=" + tav + "&I_SYSID=" + sysid
+            var url = "/backend/CustomizingManagement/TStatoAvvisiQualita?I_TIPO_AVVISO=" + tav + "&I_SYSID=" + sysid
             that.ajaxDelete(url, function (oData) {
                 if (oData) {
                     that.getAvvisiQta();
                 }
             })
         },
-
         deleteMatriceCriticita: function (renge, scost) {
             var url = "/backend/CustomizingManagement/TMatriceCriticita?I_RANGE_PERC=" + renge + "&I_SCOSTAMENTO_GG=" + scost
             that.ajaxDelete(url, function (oData) {
@@ -1272,7 +1333,7 @@ sap.ui.define([
             })
         },
 
-        deleteHuExceptions: function (metaid,plant) {
+        deleteHuExceptions: function (metaid, plant) {
             var url = "/backend/CustomizingManagement/THUException?I_METAID=" + metaid + "&I_PLANT=" + plant
             that.ajaxDelete(url, function (oData) {
                 if (oData) {
@@ -1336,6 +1397,12 @@ sap.ui.define([
             var selctedRowdata = getTabledata[itemPosition];
             that.deleteAvvisiQta(selctedRowdata.SYSID, selctedRowdata.TIPO_AVVISO);
         },
+        deleteStatoAvvisiQtaRow: function (oEvent) {
+            var getTabledata = that.getView().getModel("StatoAvvisiQtaJSONModel").getData().results;
+            var itemPosition = oEvent.getSource().getParent().getParent().indexOfItem(oEvent.getSource().getParent());
+            var selctedRowdata = getTabledata[itemPosition];
+            that.deleteStatoAvvisiQta(selctedRowdata.STATUS_CODE, selctedRowdata.LANGUAGE);
+        },
         deleteMatriceCriticitaRow: function (oEvent) {
             var getTabledata = that.getView().getModel("MatriceCriticitaJSONModel").getData().results;
             var itemPosition = oEvent.getSource().getParent().getParent().indexOfItem(oEvent.getSource().getParent());
@@ -1397,7 +1464,7 @@ sap.ui.define([
             var getTabledata = that.getView().getModel("HuExceptionsJSONModel").getData().results;
             var itemPosition = oEvent.getSource().getParent().getParent().indexOfItem(oEvent.getSource().getParent());
             var selctedRowdata = getTabledata[itemPosition];
-            that.deleteHuExceptions(selctedRowdata.METAID,selctedRowdata.PLANT);
+            that.deleteHuExceptions(selctedRowdata.METAID, selctedRowdata.PLANT);
         },
         onTabChange: function (oEvent) {
             var key = oEvent.getParameters().key;
@@ -1451,10 +1518,14 @@ sap.ui.define([
             }
             if (key === "16") {
                 that.getDocumentManagementTypes();
-            }      
+            }
             if (key === "17") {
                 that.getHUException();
-            }                      
+            }
+            if (key === "18") {
+                that.getStatoAvvisiQta();
+            }
+
         },
 
         showBusyDialog: function () {

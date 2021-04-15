@@ -246,6 +246,7 @@ module.exports = function () {
         var ernam = []
         var spras = 'I'
         var qmnum = []
+        var stat = []
         var userid = req.user.id
 
         if (req.query.I_QMNUM !== null && req.query.I_QMNUM !== '') {
@@ -294,7 +295,7 @@ module.exports = function () {
                                     return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
                                 } else {
                                 hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Quality::MM00_NOTIFICATION_LIST', function (_err, sp) {
-                                    sp(userid, qmnum, qmart, mawerk, lifnum, matnr, idnlf, spras, ernam, (err, parameters, ET_NOTIF_VIQMEL, ET_NOTIF_VIQMFE, ET_NOTIF_VIQMUR, ET_NOTIF_VIQMSM, ET_NOTIF_VIQMMA) => {
+                                    sp(userid, qmnum, qmart, mawerk, lifnum, matnr, idnlf, spras, ernam, stat, (err, parameters, ET_NOTIF_VIQMEL, ET_NOTIF_VIQMFE, ET_NOTIF_VIQMUR, ET_NOTIF_VIQMSM, ET_NOTIF_VIQMMA) => {
                                         if (err) {
                                             console.error('ERROR: ' + err)
                                             return res.status(500).send(stringifyObj(err))
