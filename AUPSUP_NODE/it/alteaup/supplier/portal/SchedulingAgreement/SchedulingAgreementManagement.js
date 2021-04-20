@@ -43,13 +43,9 @@ module.exports = function () {
             var ebtyp = 'AB'
 
             if (body.bstyp !== null && body.bstyp !== undefined && body.bstyp !== '') {
-                var oBstyp = []
-                for (var i = 0; i < body.bstyp.length; i++) {
-                    oBstyp.push({
-                        BSTYP: body.bstyp[i]
-                    })
-                }
-                bstyp = oBstyp
+                bstyp.push({
+                    BSTYP: body.bstyp.trim()
+                })
             }
 
             if (bstyp.length === 0) {

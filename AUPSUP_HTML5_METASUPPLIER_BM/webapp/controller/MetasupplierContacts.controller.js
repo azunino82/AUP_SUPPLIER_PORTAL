@@ -26,6 +26,10 @@ sap.ui.define([
 
 		handleRoutePatternMatched: function (oEvent) {
 
+			if(!oEvent){
+				return
+			}
+
 			template = null;
 			contactType = [];
 			metaid = oEvent.getParameter("arguments").metaid;
@@ -60,46 +64,6 @@ sap.ui.define([
 
 			});
 
-			/*	var filters = [];
-				var filter = new sap.ui.model.Filter({
-					path: "METAID",
-					operator: "EQ",
-					value1: metaid
-				});
-	
-				filters.push(filter);
-				var oModel = that.getOwnerComponent().getModel();
-				oModel.read("/MetasupplierDataSet", {
-					filters: filters,
-					success: function (oDataRes, oResponse) {
-	
-						if (oDataRes.results.length !== 0) {
-							var jsonModel = new sap.ui.model.json.JSONModel();
-							if (oDataRes.results[0].ATTIVO === 1) {
-								oDataRes.results[0].STATO = that.getOwnerComponent().getModel("i18n").getResourceBundle().getText(
-									"active");
-								oDataRes.results[0].ICON = "Success";
-							} else {
-								oDataRes.results[0].STATO = that.getOwnerComponent().getModel("i18n").getResourceBundle().getText(
-									"active");
-								oDataRes.results[0].ICON = "Error";
-							}
-	
-							jsonModel.setData(oDataRes.results[0]);
-	
-							that.getView().setModel(jsonModel, "metasupplierData");
-							getContacts();
-							that.getSupplierList();
-	
-						} else {
-							sap.m.MessageBox.error(that.getOwnerComponent().getModel("i18n").getResourceBundle().getText(
-								"noMetasupplierFoundForUser"));
-						}
-	
-					},
-					error: function (oError) {}
-				}); */
-
 			function getContacts() {
 				if (that.getOwnerComponent().getModel("user") !== undefined)
 					user = that.getOwnerComponent().getModel("user").getData()[0];
@@ -124,38 +88,6 @@ sap.ui.define([
 
 				});
 
-				/*var filters = [];
-
-				var filter = new sap.ui.model.Filter({
-					path: "ATTIVO",
-					operator: "EQ",
-					value1: 1
-				}); 
-
-				filters.push(filter);
-
-				template = {
-					"settings": {
-						"Sections": []
-					}
-				};
-
-				oModel.read("/ContactTypeSet", {
-					filters: filters,
-					success: function (oDataRes, oResponse) {
-						contactType = [];
-						for (var x = 0; x < oDataRes.results.length; x++) {
-							contactType.push({
-								key: oDataRes.results[x].TIPOLOGIA,
-								value: oDataRes.results[x].DESCRIZIONE,
-								data: []
-							});
-
-						}
-						that.getContact();
-					},
-					error: function (oError) {}
-				}); */
 			}
 
 		},
