@@ -29,6 +29,7 @@ sap.ui.define([
 			var startupParams = undefined;
 			that.onGetOdataColumns();
 			that.getCurrentSYSID();
+			that.getGlobalCustomizing();
 
 			// chiamata proveniente da planning
 			var orderToOpen = that.getUrlParameter('orderPos');

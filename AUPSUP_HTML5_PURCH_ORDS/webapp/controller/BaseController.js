@@ -318,7 +318,22 @@ sap.ui.define([
 				return year+month+day;
 			}
 			return date
-		}
+		},
+
+		
+		getGlobalCustomizing: function () {
+
+			var url = "/backend/CustomizingManagement/GetCustomizingGlobalValues?I_APPID=PURCH_ORD";
+			this.ajaxGet(url, function (oData) {
+				if (oData && oData.results && oData.results.length > 0) {
+					var custModel = new JSONModel(oData);
+					sap.ui.getCore().setModel(custModel, "globalCustomizingJSONModel");
+				} else {
+					return null;
+				}
+			});
+
+		},
 
 
 	});

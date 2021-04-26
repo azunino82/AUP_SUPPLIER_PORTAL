@@ -470,7 +470,7 @@ module.exports = function () {
       }
     })
   })
-  
+
   app.post('/SaveTMatriceCriticita', function (req, res) {
     const body = req.body
 
@@ -792,7 +792,7 @@ module.exports = function () {
       }
     })
   })
-  
+
   app.post('/SaveTTexts', function (req, res) {
     const body = req.body
 
@@ -1780,6 +1780,65 @@ module.exports = function () {
         })
       }
     })
+  })
+
+  app.get('/GetCustomizingGlobalValues', function (req, res) {
+    var appId = req.query.I_APPID !== undefined && req.query.I_APPID !== null && req.query.I_APPID !== '' ? req.query.I_APPID : ''
+    if (appId === '') {
+      return res.status(500).send('I_APPID Mandatory')
+    } else {
+      const sql = 'SELECT * FROM \"AUPSUP_DATABASE.data.tables::T_CUSTOMIZING_GLOBAL_CONFIG\" WHERE APP_ID = \'' + appId + '\''
+
+      try {
+        hdbext.createConnection(req.tenantContainer, function (error, client) {
+          if (error) {
+            console.error('ERROR :' + stringifyObj(error))
+            return res.status(500).send('T_CUSTOMIZING_GLOBAL_CONFIG CONNECTION ERROR: ' + stringifyObj(error))
+          }
+          if (client) {
+            async.waterfall([
+
+              function prepare (callback) {
+                client.prepare(sql,
+                  function (err, statement) {
+                    callback(null, err, statement)
+                  })
+              },
+
+              function execute (_err, statement, callback) {
+                try {
+                  statement.exec([], function (execErr, results) {
+                    callback(null, execErr, results)
+                  })
+                } catch (exc) {
+                  return res.status(500).send('T_CUSTOMIZING_GLOBAL_CONFIG ERROR: ' + stringifyObj(exc))
+                }
+              },
+
+              function response (err, results, callback) {
+                if (err) {
+                  res.type('application/json').status(500).send({ ERROR: err })
+                  return
+                } else {
+                  if (results !== undefined && results !== null && results.length > 0) {
+                    res.type('application/json').status(200).send({ results: results })
+                  }
+                }
+                callback()
+              }
+            ], function done (err, parameters, rows) {
+              console.log('---->>> CLIENT END T_CUSTOMIZING_GLOBAL_CONFIG <<<<<-----')
+              client.close()
+              if (err) {
+                return console.error('Done error', err)
+              }
+            })
+          }
+        })
+      } catch (exc) {
+        return res.status(500).send('T_CUSTOMIZING_GLOBAL_CONFIG ERROR: ' + stringifyObj(exc))
+      }
+    }
   })
 
   // Parse JSON bodies (as sent by API clients)
