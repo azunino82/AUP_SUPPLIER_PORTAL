@@ -208,7 +208,7 @@
 							<footer>
 								<m:Toolbar >
 									<m:ToolbarSpacer/>
-									<m:Button type="Accept" text="{i18n>ConfirmOrdAckn}" press="onConfirmOrderAckn" visible="{= ${VisibilityJSONModel>/isSupplierD} === false}"/>
+									<m:Button type="Accept" text="{i18n>ConfirmOrdAckn}" press="onConfirmOrderAckn" visible="{= ${VisibilityJSONModel>/isSupplierD} === false &amp;&amp; ${globalCustomizingJSONModel>/ORD_ACKN} === true}"/>
 									<m:Button type="Accept" text="{i18n>Confirm}" press="onConfirmPositions" visible="{= ${VisibilityJSONModel>/isSupplierD} === false}"/>
 								</m:Toolbar>
 							</footer>

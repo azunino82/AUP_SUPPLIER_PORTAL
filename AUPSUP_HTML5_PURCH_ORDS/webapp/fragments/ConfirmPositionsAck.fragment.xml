@@ -1,0 +1,70 @@
+<Dialog xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" xmlns:u="sap.ui.unified" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:table="sap.ui.table" xmlns:smartFilterBar="sap.ui.comp.smartfilterbar" xmlns:smartTable="sap.ui.comp.smarttable" contentWidth="100%" contentHeight="100%" title="{i18n>positionConfirmation}">
+	<NavContainer id="navConAck">
+		<Page id="p1Ack">
+			<content>
+                <Table width="auto" items="{ path: 'SelectedOrdersAckJSONModel>/' }" growing="true" growingThreshold="4" growingScrollToLoad="false">
+                    <headerToolbar>
+                        <OverflowToolbar>
+                            <Title text="{i18n>orders}" level="H2" />
+                            <ToolbarSpacer />
+                            <Button icon="sap-icon://legend" press="onLegend" tooltip="{i18n>Legend}" visible="false" />
+                        </OverflowToolbar>
+                    </headerToolbar>
+                    <columns>
+                        <Column>
+                            <Text text="{i18n>ebeln}" />
+                        </Column>
+                        <Column>
+                            <Text text="{i18n>labnr}" />
+                        </Column>
+                    </columns>
+                    <items textAlign="Center">
+                        <ColumnListItem>
+                            <cells>
+                                <Text text="{SelectedOrdersAckJSONModel>EBELN}" />
+                                <Input value="{SelectedOrdersAckJSONModel>LABNR}" change="onChangeLabnrOrder" type="Number" />
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+                <Table width="auto" items="{ path: 'SelectedPositionsAckJSONModel>/' }" growing="true" growingThreshold="4" growingScrollToLoad="false">
+                    <headerToolbar>
+                        <OverflowToolbar>
+                            <Title text="{i18n>ordersPositions}" level="H2" />
+                            <ToolbarSpacer />
+                            <Button icon="sap-icon://legend" press="onLegend" tooltip="{i18n>Legend}" visible="false" />
+                        </OverflowToolbar>
+                    </headerToolbar>
+                    <columns>
+                        <Column>
+                            <Text text="{i18n>ebeln}" />
+                        </Column>
+                        <Column>
+                            <Text text="{i18n>ebelp}" />
+                        </Column>
+                        <Column>
+                            <Text text="{i18n>labnr}" />
+                        </Column>
+                    </columns>
+                    <items textAlign="Center">
+                        <ColumnListItem>
+                            <cells>
+                                <Text text="{SelectedPositionsAckJSONModel>EBELN}" />
+                                <Text text="{SelectedPositionsAckJSONModel>EBELP}" />
+                                <Input value="{SelectedPositionsAckJSONModel>LABNR}" type="Number" />
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+            </content>
+            <footer>
+				<Toolbar>
+					<ToolbarSpacer />
+					<Button text="{i18n>close}" press="onCloseOrderPositionsAck" type="Reject" />
+					<Button text="{i18n>Confirm}" press="onConfirmPositionsDialogAck" type="Accept" />
+				</Toolbar>
+			</footer>
+		</Page>
+	</NavContainer>
+</Dialog>
+    

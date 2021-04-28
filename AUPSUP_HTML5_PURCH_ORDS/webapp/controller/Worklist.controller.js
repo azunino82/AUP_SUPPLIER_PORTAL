@@ -1133,6 +1133,97 @@ sap.ui.define([
 
 		},
 
+		onConfirmOrderAckn: function (oEvent) {
+			// clear del modello
+			if (that.getView().getModel("SelectedOrdersAckJSONModel") !== undefined)
+				that.getView().getModel("SelectedOrdersAckJSONModel").setData(null);
+			if (that.getView().getModel("SelectedPositionsAckJSONModel") !== undefined)
+				that.getView().getModel("SelectedPositionsAckJSONModel").setData(null);
+
+			var aIndices = 0;
+			var positionRows = that.getModel("OrderJSONModel").getData().results;
+			if (positionRows !== undefined && positionRows.length > 0) {
+				positionRows.forEach(function (elem) {
+					if (elem.isSelected)
+						aIndices++;
+				});
+			}
+
+			var selectedContextBinding = [];
+			if (aIndices <= 0) {
+				MessageToast.show(that.getResourceBundle().getText("ERR_Selection_Row"));
+				return;
+			}
+
+			// creo modello dati Ordini
+			var oModelSelectedOrderAck = new JSONModel();
+			var dataOrder = [];
+			if (positionRows !== undefined && positionRows.length > 0) {
+				positionRows.forEach(function (elem) {
+					if (elem.isSelected)
+					dataOrder.push(elem);
+				});
+			}
+			// elimino record con lo stesso numero di ordine
+			var dataOrderNoDuplicates = dataOrder.reduce((unique, o) => {
+				if(!unique.some(obj => obj.EBELN === o.EBELN)) {
+				  unique.push(o);
+				}
+				return unique;
+			},[]);
+			//console.log(result);
+
+			oModelSelectedOrderAck.setData(dataOrderNoDuplicates);
+			that.getView().setModel(oModelSelectedOrderAck, "SelectedOrdersAckJSONModel");
+
+			// creo modello dati Posizioni
+			var oModelSelectedPosAck = new JSONModel();
+			var data = [];
+			if (positionRows !== undefined && positionRows.length > 0) {
+				positionRows.forEach(function (elem) {
+					if (elem.isSelected)
+						data.push(elem);
+				});
+			}
+			// verifico se ci sono altre posizioni per lo stesso ordine e le aggiungo
+			var dataMorePositions = []; //data;
+			for(var i=0; i < data.length; i++){
+				for(var y=0; y < positionRows.length; y++){
+					if(data[i].EBELN === positionRows[y].EBELN && data[i].EBELP !== positionRows[y].EBELP ){
+						dataMorePositions.push(positionRows[y]);
+					}
+				}
+			}
+			for(var z=0; z < data.length; z++){
+				dataMorePositions.push(data[z]);
+			}
+			// sorting array
+			dataMorePositions.sort(function (a, b) {
+				return a.EBELN - b.EBELN || a.EBELP - b.EBELP;
+			});
+
+			oModelSelectedPosAck.setData(dataMorePositions);
+			that.getView().setModel(oModelSelectedPosAck, "SelectedPositionsAckJSONModel");
+
+			// apro fragment
+			if (!that.oConfirmPositionsFragmentAck) {
+				that.oConfirmPositionsFragmentAck = sap.ui.xmlfragment(
+					"it.aupsup.purchords.fragments.ConfirmPositionsAck",
+					that);
+				that.getView().addDependent(that.oConfirmPositionsFragmentAck);
+
+				// blocco il bottone di ESC
+				that.oConfirmPositionsFragmentAck.attachBrowserEvent("keydown", function (oEvent) {
+					if (oEvent.keyCode === 27) {
+						oEvent.stopPropagation();
+						oEvent.preventDefault();
+					}
+				});
+
+			}
+			that.oConfirmPositionsFragmentAck.open();
+		},
+
 		onlyPositiveNumber: function (oEvent) {
 			var _oInput = oEvent.getSource();
 			var val = _oInput.getValue();
@@ -1246,6 +1337,17 @@ sap.ui.define([
 				if (needReserarch === true)
 					that.onSearchOrders();
 				that.onDeleteLocks();
+			}
+		},
+
+		onCloseOrderPositionsAck: function (needReserarch) {
+			if (this.oConfirmPositionsFragmentAck) {
+				this.oConfirmPositionsFragmentAck.close();
+				this.oConfirmPositionsFragmentAck.destroy();
+				this.oConfirmPositionsFragmentAck = undefined;
+				//if (needReserarch === true)
+				//	that.onSearchOrders();
+				//that.onDeleteLocks();
 			}
 		},
 
@@ -1549,6 +1651,10 @@ sap.ui.define([
 			} else {
 				that.onConfirmAndClose();
 			}
+
+		},
+
+		onConfirmPositionsDialogAck: function () {
 
 		},
 
@@ -3075,6 +3181,19 @@ sap.ui.define([
 					return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
 				}
 			}
+		},
+
+		onChangeLabnrOrder: function (oEvent) {
+			var value = oEvent.getSource().getValue();
+			var oPath = oEvent.getSource().getBindingContext("SelectedOrdersAckJSONModel").sPath;
+			var mod = that.getModel("SelectedOrdersAckJSONModel").getProperty(oPath);
+			var orderNumber = mod.EBELN;
+			for(var i = 0; i < that.getModel("SelectedPositionsAckJSONModel").oData.length; i++){
+				if(that.getModel("SelectedPositionsAckJSONModel").oData[i].EBELN === orderNumber){
+					that.getModel("SelectedPositionsAckJSONModel").oData[i].LABNR = value;
+				}
+			}
+			that.getModel("SelectedPositionsAckJSONModel").refresh();
 		}
 	});
 
