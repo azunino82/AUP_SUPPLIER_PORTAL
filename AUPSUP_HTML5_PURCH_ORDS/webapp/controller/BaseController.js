@@ -345,7 +345,8 @@ sap.ui.define([
 					//sap.ui.getCore().setModel(custModel, "globalCustomizingJSONModel");
 					that.getView().setModel(custModel, "globalCustomizingJSONModel");
 				} else {
-					return null;
+					var custModel = new JSONModel({'ORD_ACKN':false});
+					that.getView().setModel(custModel, "globalCustomizingJSONModel");
 				}
 			});
 

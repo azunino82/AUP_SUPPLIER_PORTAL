@@ -1084,6 +1084,54 @@
 															<m:Button type="Accept" text="Save" press="onSaveStatoAvvisiQtaList" />
 														</m:Toolbar>
 													</m:IconTabFilter>													
+													<m:IconTabFilter key="19" text="Attivazione funzionalità">
+														<m:Table id="GlobalCustomizingTable" items="{GlobalCustomizingJSONModel>/results}" growingThreshold="200">
+															<m:headerToolbar>
+																<m:OverflowToolbar>
+																	<m:content>
+																		<m:ToolbarSpacer />
+																		<m:Button id="headerGlobalCustomizingRefresh" icon="sap-icon://add" press="onAddGlobalCustomizingRow" type="Transparent" />
+																	</m:content>
+																</m:OverflowToolbar>
+															</m:headerToolbar>
+															<m:columns>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>SYSID}" class="columnLabelStyle" wrapping="true" />
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>APP_ID}" class="columnLabelStyle" wrapping="true" />
+																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>FUNCTIONALITY}" class="columnLabelStyle" wrapping="true" />
+																</m:Column>			
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>ACTIVE}" class="columnLabelStyle" wrapping="true" />
+																</m:Column>																	
+																<m:Column minScreenWidth="Desktop" demandPopin="true" hAlign="End" width="5em">
+																	<m:Label class="columnLabelStyle" />
+																</m:Column>													
+															</m:columns>
+															<m:items>
+																<m:ColumnListItem>
+																	<m:cells>
+																		<m:Input value="{GlobalCustomizingJSONModel>SYSID}" enabled="{= ${GlobalCustomizingJSONModel>SYSID} === ''}" />
+																			<m:ComboBox selectedKey="{GlobalCustomizingJSONModel>APP_ID}" width="auto" items="{ path: 'GlobalCustomizingAppIdJSONModel>/results', sorter: { path: 'DESCRIPTION' } }" enabled="{= ${GlobalCustomizingJSONModel>FUNCTIONALITY} === ''}">
+																				<core:Item key="{GlobalCustomizingAppIdJSONModel>APP_ID}" text="{GlobalCustomizingAppIdJSONModel>DESCRIPTION}"/>
+																			</m:ComboBox>
+																		<m:ComboBox selectedKey="{GlobalCustomizingJSONModel>FUNCTIONALITY}" width="auto" items="{ path: 'GlobalCustomizingFunctionalityJSONModel>/results', sorter: { path: 'DESCRIPTION' } }" enabled="{= ${GlobalCustomizingJSONModel>FUNCTIONALITY} === ''}">
+																			<core:Item key="{GlobalCustomizingFunctionalityJSONModel>FUNCTIONALITY}" text="{GlobalCustomizingFunctionalityJSONModel>DESCRIPTION}"/>
+																		</m:ComboBox>
+																		<m:CheckBox selected="{GlobalCustomizingJSONModel>ACTIVE}" />
+																		<m:Button icon="sap-icon://delete" press="deleteGlobalCustomizingRow" />
+																	</m:cells>
+																</m:ColumnListItem>
+															</m:items>
+														</m:Table>
+														<m:Toolbar>
+															<m:ToolbarSpacer />
+															<m:Button type="Accept" text="Save" press="onSaveGlobalCustomizingList" />
+														</m:Toolbar>
+													</m:IconTabFilter>																							
 												</m:items>
 											</m:IconTabBar>
 										</ObjectPageSubSection>

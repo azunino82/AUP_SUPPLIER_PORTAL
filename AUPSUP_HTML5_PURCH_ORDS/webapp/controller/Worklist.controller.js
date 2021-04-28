@@ -1161,16 +1161,16 @@ sap.ui.define([
 			if (positionRows !== undefined && positionRows.length > 0) {
 				positionRows.forEach(function (elem) {
 					if (elem.isSelected)
-					dataOrder.push(elem);
+						dataOrder.push(elem);
 				});
 			}
 			// elimino record con lo stesso numero di ordine
 			var dataOrderNoDuplicates = dataOrder.reduce((unique, o) => {
-				if(!unique.some(obj => obj.EBELN === o.EBELN)) {
-				  unique.push(o);
+				if (!unique.some(obj => obj.EBELN === o.EBELN)) {
+					unique.push(o);
 				}
 				return unique;
-			},[]);
+			}, []);
 			//console.log(result);
 
 			oModelSelectedOrderAck.setData(dataOrderNoDuplicates);
@@ -1187,14 +1187,14 @@ sap.ui.define([
 			}
 			// verifico se ci sono altre posizioni per lo stesso ordine e le aggiungo
 			var dataMorePositions = []; //data;
-			for(var i=0; i < data.length; i++){
-				for(var y=0; y < positionRows.length; y++){
-					if(data[i].EBELN === positionRows[y].EBELN && data[i].EBELP !== positionRows[y].EBELP ){
+			for (var i = 0; i < data.length; i++) {
+				for (var y = 0; y < positionRows.length; y++) {
+					if (data[i].EBELN === positionRows[y].EBELN && data[i].EBELP !== positionRows[y].EBELP) {
 						dataMorePositions.push(positionRows[y]);
 					}
 				}
 			}
-			for(var z=0; z < data.length; z++){
+			for (var z = 0; z < data.length; z++) {
 				dataMorePositions.push(data[z]);
 			}
 			// sorting array
@@ -1655,6 +1655,124 @@ sap.ui.define([
 		},
 
 		onConfirmPositionsDialogAck: function () {
+
+
+			MessageBox.warning(that.getResourceBundle().getText("MSG_Confirm_Position_Text"), {
+				icon: MessageBox.Icon.WARNING,
+				title: "Warning",
+				actions: [MessageBox.Action.CANCEL, MessageBox.Action.OK],
+				initialFocus: MessageBox.Action.CANCEL,
+				onClose: function (oAction) {
+					if (oAction === MessageBox.Action.OK) {
+
+						var body = {
+							"ekko": [],
+							"ekpo": [],
+							/*"ekes": [],
+							"skipAppBuyer": [],
+							"notaReject": "",
+							"confirmType": "",
+							"t_herder_comment": [],
+							"t_position_comment": [],*/
+							"spras": that.getLanguage()
+						};
+						var ekpoRow = that.getModel("SelectedOrdersAckJSONModel").getData();
+						if (ekpoRow !== undefined) {
+
+							for (var i = 0; i < ekpoRow.length; i++) {
+								var row = ekpoRow[i];
+
+								var singleEkkoModel = {};
+								singleEkkoModel.EBELN = row.EBELN;
+								singleEkkoModel.BSTYP = 'F';
+								singleEkkoModel.LIFNR = row.LIFNR;
+
+								body.ekko.push(singleEkkoModel);
+
+								var singleEkpoModel = {};
+								singleEkpoModel.EBELN= row.EBELN;
+								singleEkpoModel.EBELP= row.EBELP; 
+								singleEkpoModel.MENGE=0;
+								singleEkpoModel.MEINS='';    
+								singleEkpoModel.NETPR=0;
+								singleEkpoModel.PEINH=0;
+								singleEkpoModel.KSCHL='';
+								singleEkpoModel.ZINVALIDITA='';
+								singleEkpoModel.ZFINVALIDATA='';
+								singleEkpoModel.BPRME='';
+								singleEkpoModel.BPUMZ=0;
+								singleEkpoModel.BPUMN=0;
+								singleEkpoModel.UMREZ=0;
+								singleEkpoModel.UMREN=0;
+								singleEkpoModel.UPDKZ='';
+								singleEkpoModel.LABNR = row.LABNR;
+								singleEkpoModel.ZMODPREZZO='';
+								singleEkpoModel.ZMODSCHED='';
+								singleEkpoModel.ZINSCONF='';
+								singleEkpoModel.ZCONFPARZ='';
+								singleEkpoModel.ZORDACK='X';
+								singleEkpoModel.BSTAE='';
+
+								body.ekpo.push(singleEkpoModel);
+							}
+
+						}
+
+						var url = "/backend/OrdersManagement/ConfirmOrdersAckn";
+						that.showBusyDialog();
+						that.ajaxPost(url, body, function (oData) {
+							that.hideBusyDialog();
+							if (oData) {
+								if (oData.errLog) {
+									MessageBox.error(decodeURI(oData.errLog));
+									return;
+								}
+								if (oData.results && oData.results && oData.results.length > 0) {
+									var messageError = "";
+									var messageWarning = "";
+									$.each(oData.results, function (index, item) {
+										if (item.MSGTY !== undefined && item.MSGTY === 'E')
+											messageError = item.MESSAGE + " \n " + messageError;
+										// Escludo i messaggi di tipo W
+										//  if (item.MSGTY !== undefined && (item.MSGTY === 'W' || item.MSGTY === 'I'))
+										if (item.MSGTY !== undefined && item.MSGTY === 'I')
+											messageWarning = item.MESSAGE + " \n " + messageWarning;
+									});
+									if (messageError !== "" && messageWarning !== "") {
+										MessageBox.error(messageError + "\n" + messageWarning);
+									} else {
+										if (messageError !== "")
+											MessageBox.error(messageError);
+										if (messageWarning !== "")
+											MessageBox.warning(messageWarning);
+										if (messageError === "" && messageWarning === "") {
+											MessageBox.success(that.getResourceBundle().getText("correctConfirmPositions"), {
+												title: "Success", // default
+												onClose: function () {
+													that.onCloseOrderPositionsAck(true);
+												} // default
+
+											});
+										}
+									}
+
+								} else {
+									MessageBox.success(that.getResourceBundle().getText("correctConfirmPositions"), {
+										title: "Success", // default
+										onClose: function () {
+											that.onCloseOrderPositionsAck(true);
+										} // default
+
+									});
+
+								}
+							}
+
+						});
+					}
+				}
+			});
+
 
 		},
 
@@ -3188,8 +3306,8 @@ sap.ui.define([
 			var oPath = oEvent.getSource().getBindingContext("SelectedOrdersAckJSONModel").sPath;
 			var mod = that.getModel("SelectedOrdersAckJSONModel").getProperty(oPath);
 			var orderNumber = mod.EBELN;
-			for(var i = 0; i < that.getModel("SelectedPositionsAckJSONModel").oData.length; i++){
-				if(that.getModel("SelectedPositionsAckJSONModel").oData[i].EBELN === orderNumber){
+			for (var i = 0; i < that.getModel("SelectedPositionsAckJSONModel").oData.length; i++) {
+				if (that.getModel("SelectedPositionsAckJSONModel").oData[i].EBELN === orderNumber) {
 					that.getModel("SelectedPositionsAckJSONModel").oData[i].LABNR = value;
 				}
 			}
