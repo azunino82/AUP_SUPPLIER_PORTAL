@@ -39,6 +39,12 @@
                             <Text text="{i18n>EBELP}" />
                         </Column>
                         <Column>
+                            <Text text="{i18n>MATNR}" />
+                        </Column>
+                        <Column>
+                            <Text text="{i18n>TXZ01}" />
+                        </Column>
+                        <Column>
                             <Text text="{i18n>LABNR}" />
                         </Column>
                     </columns>
@@ -47,6 +53,8 @@
                             <cells>
                                 <Text text="{SelectedPositionsAckJSONModel>EBELN}" />
                                 <Text text="{SelectedPositionsAckJSONModel>EBELP}" />
+                                <Text text="{SelectedPositionsAckJSONModel>MATNR}" />
+                                <Text text="{SelectedPositionsAckJSONModel>TXZ01}" />
                                 <Input value="{SelectedPositionsAckJSONModel>LABNR}" type="Number" />
                             </cells>
                         </ColumnListItem>
