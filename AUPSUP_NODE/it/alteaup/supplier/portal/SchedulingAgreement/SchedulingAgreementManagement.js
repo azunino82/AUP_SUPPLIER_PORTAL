@@ -1085,22 +1085,20 @@ module.exports = function () {
     // GET CONFERME QUANTiTA DA APPROVARE
     app.get('/GetConfermeRifiutiForQuant', function (req, res) {
         var userid = req.user.id
-        //var ebeln = req.query.I_EBELN !== null && req.query.I_EBELN !== undefined ? req.query.I_EBELN : ''
-        //var ebelp = req.query.I_EBELP !== null && req.query.I_EBELP !== undefined ? req.query.I_EBELP : ''
+        // var ebeln = req.query.I_EBELN !== null && req.query.I_EBELN !== undefined ? req.query.I_EBELN : ''
+        // var ebelp = req.query.I_EBELP !== null && req.query.I_EBELP !== undefined ? req.query.I_EBELP : ''
         var spras = req.query.I_SPRAS !== null && req.query.I_SPRAS !== undefined ? req.query.I_SPRAS : 'I'
         var bstyp = []
-        debugger;
-        var ebeln = [];
-        var ebelp = [];
+        var ebeln = []
+        var ebelp = []
 
-        for(var i = 0; i < req.query.I_EBELN.split(',').length; i++){
-            ebeln.push({ EBELN: req.query.I_EBELN.split(',')[i] });
+        for (var i = 0; i < req.query.I_EBELN.split(',').length; i++) {
+            ebeln.push({ EBELN: req.query.I_EBELN.split(',')[i] })
         }
 
-        for(var y = 0; y < req.query.I_EBELP.split(',').length; y++){
-            ebelp.push({ EBELP: req.query.I_EBELP.split(',')[y] });
+        for (var y = 0; y < req.query.I_EBELP.split(',').length; y++) {
+            ebelp.push({ EBELP: req.query.I_EBELP.split(',')[y] })
         }
-        
 
         if (req.query.I_BSTYP !== null && req.query.I_BSTYP !== undefined) {
             bstyp.push({ BSTYP: req.query.I_BSTYP })
@@ -1154,19 +1152,13 @@ module.exports = function () {
     app.post('/PostConfermeRifiutiForQuant', function (req, res) {
         const body = req.body
         var userid = req.user.id
-        //var ebeln = req.query.I_EBELN !== null && req.query.I_EBELN !== undefined ? req.query.I_EBELN : ''
-        //var ebelp = req.query.I_EBELP !== null && req.query.I_EBELP !== undefined ? req.query.I_EBELP : ''
+        // var ebeln = req.query.I_EBELN !== null && req.query.I_EBELN !== undefined ? req.query.I_EBELN : ''
+        // var ebelp = req.query.I_EBELP !== null && req.query.I_EBELP !== undefined ? req.query.I_EBELP : ''
         var spras = req.query.I_SPRAS !== null && req.query.I_SPRAS !== undefined ? req.query.I_SPRAS : 'I'
         var bstyp = []
-        var ebeln = [];
-        var ebelp = [];
-        var ebeln = ''
-        var ebelp = ''
+        var ebeln = []
+        var ebelp = []       
         var results = []
-
-        //if (body.ebeln !== null && body.ebeln !== '') {
-        //    ebeln = body.ebeln
-        //}
 
         if (body.ebeln !== null && body.ebeln.length > 0) {
             var oEbeln = []

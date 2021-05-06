@@ -1075,22 +1075,34 @@ sap.ui.define([
 			this.showBusyDialog();
 			that.ajaxPost(url, body, function (oData) {
 				that.hideBusyDialog();
-				if (oData && oData.results && oData.results.length > 0) {
-					if (oData === undefined || oData.results === undefined || oData.results.length === 0) {
-						MessageBox.error(that.getResourceBundle().getText("ERR_Export"));
-						return;
-					}
 
-					var dataS = that.getView().getModel("SchedAgreeJSONModel").oData.results.EkkoEkpo;
-					for(var i = 0; i < dataS.length; i++){
-						if(dataS[i].ZMODPREZZO === 'X'){
-							oData.results.push(dataS[i]);
+				if (that.getView().getModel("SchedAgreeJSONModel") && that.getView().getModel("SchedAgreeJSONModel").oData && that.getView().getModel("SchedAgreeJSONModel").oData.results && that.getView().getModel("SchedAgreeJSONModel").oData.results.EkkoEkpo.length > 0) {
+				
+					if (oData && oData.results && oData.results.length > 0) {
+						var dataS = that.getView().getModel("SchedAgreeJSONModel").oData.results.EkkoEkpo;
+					
+						oData.results.forEach(rigaQuantita => {
+							for (let index = 0; index < dataS.length; index++) {
+								var rigaTabella = dataS[index];
+								if(rigaQuantita.EBELN === rigaTabella.EBELN && rigaQuantita.EBELN === rigaTabella.EBELN){
+									rigaQuantita.MATNR = rigaTabella.MATNR
+									rigaQuantita.TXZ01 = rigaTabella.TXZ01
+									break
+								}
+								
+							}					
+						});
+
+						for(var i = 0; i < dataS.length; i++){
+							if(dataS[i].ZMODPREZZO === 'X'){
+								oData.results.push(dataS[i]);
+							}
 						}
+
+						var oModel = new JSONModel();
+						oModel.setData(oData);
 					}
-
-					var oModel = new JSONModel();
-					oModel.setData(oData);
-
+					
 					var oExport = new Export({
 
 						// Type that will be used to generate the content. Own ExportType's can be created to support other formats
@@ -1158,12 +1170,14 @@ sap.ui.define([
 							template: {
 								content: "{PEINH}"
 							}
-						}, {
+						}, 
+						/*{
 							name: that.getResourceBundle().getText("SchedMod"),
 							template: {
 								content: "{SCHEDMOD}"
 							}
-						}, {
+						},*/ 
+						{
 							name: that.getResourceBundle().getText("dataConferma"),
 							template: {
 								content: {

@@ -21,7 +21,22 @@ sap.ui.define([
 			});
 			that.getView().setModel(jsonModel, "huMandatoryJSONModel");
 
-			that.getBuyerBu();	
+			that.getBuyerBu();
+
+			var url = "/backend/MetasupplierManagement/GetSupplierStates";
+			that.ajaxGet(url, function (oDataRes) {
+
+				var lang = sap.ui.getCore().getConfiguration().getLanguage();
+				var jsonModel = new sap.ui.model.json.JSONModel(); 
+				var data = []
+				for (var i = 0; i < oDataRes.results.length; i++) {
+					data.push({"key": oDataRes.results[i].KEY, "text": (lang === "it-IT") ? oDataRes.results[i].VALUE_IT : oDataRes.results[i].VALUE_EN})
+				}
+
+				jsonModel.setData(data);
+				that.getView().setModel(jsonModel, "supplierStateJSONModel");
+
+			});	
 		},
 
 
