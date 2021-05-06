@@ -20,7 +20,7 @@
                         <ColumnListItem>
                             <cells>
                                 <Text text="{SelectedOrdersAckJSONModel>EBELN}" />
-                                <Input value="{SelectedOrdersAckJSONModel>LABNR}" change="onChangeLabnrOrder" type="Number" />
+                                <Input value="{SelectedOrdersAckJSONModel>LABNR}" change="onChangeLabnrOrder" />
                             </cells>
                         </ColumnListItem>
                     </items>
@@ -47,7 +47,7 @@
                             <cells>
                                 <Text text="{SelectedPositionsAckJSONModel>EBELN}" />
                                 <Text text="{SelectedPositionsAckJSONModel>EBELP}" />
-                                <Input value="{SelectedPositionsAckJSONModel>LABNR}" type="Number" />
+                                <Input value="{SelectedPositionsAckJSONModel>LABNR}" />
                             </cells>
                         </ColumnListItem>
                     </items>

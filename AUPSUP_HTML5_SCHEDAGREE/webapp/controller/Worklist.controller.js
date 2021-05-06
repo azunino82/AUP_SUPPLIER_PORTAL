@@ -2954,6 +2954,8 @@ sap.ui.define([
 				return;
 			}
 
+			var positionRows = JSON.parse(JSON.stringify(positionRows));
+
 			// creo modello dati Ordini
 			var oModelSelectedOrderAck = new JSONModel();
 			var dataOrder = [];
@@ -2963,6 +2965,7 @@ sap.ui.define([
 						dataOrder.push(elem);
 				});
 			}
+
 			// elimino record con lo stesso numero di ordine
 			var dataOrderNoDuplicates = dataOrder.reduce((unique, o) => {
 				if (!unique.some(obj => obj.EBELN === o.EBELN)) {
@@ -2972,8 +2975,16 @@ sap.ui.define([
 			}, []);
 			//console.log(result);
 
+			// pulisco campo LABNR in testata
+			for(var i = 0; i < dataOrderNoDuplicates.length; i++){
+				dataOrderNoDuplicates[i].LABNR = "";
+			}
+
 			oModelSelectedOrderAck.setData(dataOrderNoDuplicates);
 			that.getView().setModel(oModelSelectedOrderAck, "SelectedOrdersAckJSONModel");
+
+			var positionRows = that.getModel("OrderJSONModel").getData().results;
+			positionRows = JSON.parse(JSON.stringify(positionRows));
 
 			// creo modello dati Posizioni
 			var oModelSelectedPosAck = new JSONModel();
@@ -2984,17 +2995,24 @@ sap.ui.define([
 						data.push(elem);
 				});
 			}
+			// elimino record con lo stesso numero di ordine
+			var dataOrderNoDuplicatesPos = data.reduce((unique, o) => {
+				if (!unique.some(obj => obj.EBELN === o.EBELN)) {
+					unique.push(o);
+				}
+				return unique;
+			}, []);
 			// verifico se ci sono altre posizioni per lo stesso ordine e le aggiungo
 			var dataMorePositions = []; //data;
-			for (var i = 0; i < data.length; i++) {
+			for (var i = 0; i < dataOrderNoDuplicatesPos.length; i++) {
 				for (var y = 0; y < positionRows.length; y++) {
-					if (data[i].EBELN === positionRows[y].EBELN && data[i].EBELP !== positionRows[y].EBELP) {
+					if (dataOrderNoDuplicatesPos[i].EBELN === positionRows[y].EBELN && dataOrderNoDuplicatesPos[i].EBELP !== positionRows[y].EBELP) {
 						dataMorePositions.push(positionRows[y]);
 					}
 				}
 			}
-			for (var z = 0; z < data.length; z++) {
-				dataMorePositions.push(data[z]);
+			for (var z = 0; z < dataOrderNoDuplicatesPos.length; z++) {
+				dataMorePositions.push(dataOrderNoDuplicatesPos[z]);
 			}
 			// sorting array
 			dataMorePositions.sort(function (a, b) {
@@ -3045,11 +3063,12 @@ sap.ui.define([
 							"t_position_comment": [],*/
 							"spras": that.getLanguage()
 						};
-						var ekpoRow = that.getModel("SelectedOrdersAckJSONModel").getData();
-						if (ekpoRow !== undefined) {
 
-							for (var i = 0; i < ekpoRow.length; i++) {
-								var row = ekpoRow[i];
+						var ekkoRow = that.getModel("SelectedOrdersAckJSONModel").getData();
+						if (ekkoRow !== undefined) {
+
+							for (var y = 0; y < ekkoRow.length; y++) {
+								var row = ekkoRow[y];
 
 								var singleEkkoModel = {};
 								singleEkkoModel.EBELN = row.EBELN;
@@ -3057,6 +3076,14 @@ sap.ui.define([
 								singleEkkoModel.LIFNR = row.LIFNR;
 
 								body.ekko.push(singleEkkoModel);
+							}
+						}
+
+						var ekpoRow = that.getModel("SelectedPositionsAckJSONModel").getData();
+						if (ekpoRow !== undefined) {
+
+							for (var i = 0; i < ekpoRow.length; i++) {
+								var row = ekpoRow[i];
 
 								var singleEkpoModel = {};
 								singleEkpoModel.EBELN= row.EBELN;

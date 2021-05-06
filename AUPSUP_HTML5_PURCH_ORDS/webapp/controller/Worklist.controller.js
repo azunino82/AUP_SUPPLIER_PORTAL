@@ -1166,6 +1166,7 @@ sap.ui.define([
 						dataOrder.push(elem);
 				});
 			}
+
 			// elimino record con lo stesso numero di ordine
 			var dataOrderNoDuplicates = dataOrder.reduce((unique, o) => {
 				if (!unique.some(obj => obj.EBELN === o.EBELN)) {
@@ -1175,8 +1176,16 @@ sap.ui.define([
 			}, []);
 			//console.log(result);
 
+			// pulisco campo LABNR in testata
+			for(var i = 0; i < dataOrderNoDuplicates.length; i++){
+				dataOrderNoDuplicates[i].LABNR = "";
+			}
+
 			oModelSelectedOrderAck.setData(dataOrderNoDuplicates);
 			that.getView().setModel(oModelSelectedOrderAck, "SelectedOrdersAckJSONModel");
+
+			var positionRows = that.getModel("OrderJSONModel").getData().results;
+			positionRows = JSON.parse(JSON.stringify(positionRows));
 
 			// creo modello dati Posizioni
 			var oModelSelectedPosAck = new JSONModel();

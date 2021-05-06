@@ -557,6 +557,15 @@ sap.ui.define([
 			return sResult;
 		},
 
+		formatDateFromSAP: function (sDate) {
+			var day = sDate.split("-")[2].split(" ")[0];
+			var month = sDate.split("-")[1]
+			var year = sDate.split("-")[0];
+			var dateFormat = year.toString() + month.toString() + day.toString();
+			var sResult = that.formatDate(dateFormat);
+			return sResult;
+		},
+
 		onSendDataForQuantity: function (posToReject, posToApprove, sText) {
 			//	var counter = 0;
 			var body = {
@@ -1032,6 +1041,215 @@ sap.ui.define([
 			});
 
 			// }
+
+		},
+
+		onExportNew: function (oEvent) {
+
+			if (that.getModel("SchedAgreeJSONModel") === undefined ) {
+				MessageBox.error(that.getResourceBundle().getText("ERR_Export"));
+				return;
+			}
+
+			var mod = that.getModel("SchedAgreeJSONModel").oData.results.EkkoEkpo;
+
+			var ebeln = [];
+			var ebelp = [];
+			var bstyp = [];
+			var spras = [];
+
+			for(var i = 0; i < mod.length; i++){
+				ebeln.push(mod[i].EBELN);
+				ebelp.push(mod[i].EBELP);
+				bstyp.push(mod[i].BSTYP);
+			}
+
+			var body = {
+				"ebeln": ebeln,
+				"ebelp": ebelp,
+				"bstyp": bstyp,
+				"spras": that.getLanguage(),
+			};
+
+			var url = "/backend/SchedulingAgreementManagement/PostConfermeRifiutiForQuant";
+			this.showBusyDialog();
+			that.ajaxPost(url, body, function (oData) {
+				that.hideBusyDialog();
+				if (oData && oData.results && oData.results.length > 0) {
+					if (oData === undefined || oData.results === undefined || oData.results.length === 0) {
+						MessageBox.error(that.getResourceBundle().getText("ERR_Export"));
+						return;
+					}
+
+					var dataS = that.getView().getModel("SchedAgreeJSONModel").oData.results.EkkoEkpo;
+					for(var i = 0; i < dataS.length; i++){
+						if(dataS[i].ZMODPREZZO === 'X'){
+							oData.results.push(dataS[i]);
+						}
+					}
+
+					var oModel = new JSONModel();
+					oModel.setData(oData);
+
+					var oExport = new Export({
+
+						// Type that will be used to generate the content. Own ExportType's can be created to support other formats
+						exportType: new ExportTypeCSV({
+							separatorChar: ";"
+						}),
+
+						// Pass in the model created above
+						models: oModel,//this.getView().getModel("SchedAgreeJSONModel"),
+
+						// binding information for the rows aggregation
+						rows: {
+							path: "/results"
+						},
+
+						// column definitions with column name and binding info for the content
+
+						columns: [{
+							name: that.getResourceBundle().getText("EBELN"),
+							template: {
+								content: "{EBELN}"
+							}
+						}, {
+							name: that.getResourceBundle().getText("EBELP"),
+							template: {
+								content: "{EBELP}"
+							}
+						}, {
+							name: that.getResourceBundle().getText("MATNR"),
+							template: {
+								content: "{MATNR}"
+							}
+						}, {
+							name: that.getResourceBundle().getText("TXZ01"),
+							template: {
+								content: "{TXZ01}"
+							}
+						}, {
+							name: that.getResourceBundle().getText("MENGE"),
+							template: {
+								content: "{MENGE_ORIGINAL}"
+							}
+						}, {
+							name: that.getResourceBundle().getText("MENGE_NEW"),
+							template: {
+								content: "{MENGE}"
+							}
+						}, {
+							name: that.getResourceBundle().getText("NETPR"),
+							template: {
+								content: "{NETPR_ORIGINAL}"
+							}
+						}, {
+							name: that.getResourceBundle().getText("NETPR_NEW"),
+							template: {
+								content: "{NETPR}"
+							}
+						}, {
+							name: that.getResourceBundle().getText("PEINH"),
+							template: {
+								content: "{PEINH_ORIGINAL}"
+							}
+						}, {
+							name: that.getResourceBundle().getText("PEINH_NEW"),
+							template: {
+								content: "{PEINH}"
+							}
+						}, {
+							name: that.getResourceBundle().getText("SchedMod"),
+							template: {
+								content: "{SCHEDMOD}"
+							}
+						}, {
+							name: that.getResourceBundle().getText("dataConferma"),
+							template: {
+								content: {
+									path: "EKES_EINDT",
+									formatter: function (sDate) {
+
+										var oFromFormat = sap.ui.core.format.DateFormat.getDateTimeInstance({
+											pattern: "yyyyMMdd"
+										});
+										var oDate = oFromFormat.parse(sDate, true);
+										var oToFormat = sap.ui.core.format.DateFormat.getDateTimeInstance({
+											pattern: "dd MMM yyyy"
+										});
+										if (sDate === "00000000") {
+											return ""; // or whatever special case
+										} else {
+											var sResult = oToFormat.format(oDate);
+											return sResult;
+										}
+									}
+								}
+							}
+						}, {
+							name: that.getResourceBundle().getText("quantitaConferma"),
+							template: {
+								content: "{EKES_MENGE}"
+							}
+						}, {
+							name: that.getResourceBundle().getText("dataRichiesta"),
+							template: {
+								content: {
+									path: "EKET_EINDT",
+									formatter: function (sDate) {
+
+										var oFromFormat = sap.ui.core.format.DateFormat.getDateTimeInstance({
+											pattern: "yyyyMMdd"
+										});
+										var oDate = oFromFormat.parse(sDate, true);
+										var oToFormat = sap.ui.core.format.DateFormat.getDateTimeInstance({
+											pattern: "dd MMM yyyy"
+										});
+										if (sDate === "00000000") {
+											return ""; // or whatever special case
+										} else {
+											var sResult = oToFormat.format(oDate);
+											return sResult;
+										}
+									}
+								}
+							}
+						}, {
+							name: that.getResourceBundle().getText("quantitaRichiesta"),
+							template: {
+								content: "{EKET_MENGE}"
+							}
+						}, {
+							name: that.getResourceBundle().getText("dataCreazione"),
+							template: {
+								content: {
+									path: "CREATION_DATE",
+									formatter: function (sDate) {
+										if(sDate !== null){
+											var day = sDate.split("-")[2].split(" ")[0];
+											var month = sDate.split("-")[1]
+											var year = sDate.split("-")[0];
+											var dateFormat = year.toString() + month.toString() + day.toString();
+											var sResult = that.formatDate(dateFormat);
+											return sResult;
+										}
+									}
+								}
+							}
+						}]
+					});
+
+					// download exported file
+					oExport.saveFile().catch(function (oError) {
+						MessageBox.error("Error when downloading data. Browser might not be supported!\n\n" + oError);
+					}).then(function () {
+						oExport.destroy();
+					});	
+					
+				} else {
+					MessageBox.error(that.getResourceBundle().getText("MSG_NO_TO_CONFIRM"));
+				}
+			});
 
 		},
 
