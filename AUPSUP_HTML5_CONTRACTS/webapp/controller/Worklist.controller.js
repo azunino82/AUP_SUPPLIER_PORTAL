@@ -3286,6 +3286,20 @@ sap.ui.define([
 					return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
 				}
 			}
+		},
+
+		
+		onChangeLabnrOrder: function (oEvent) {
+			var value = oEvent.getSource().getValue();
+			var oPath = oEvent.getSource().getBindingContext("SelectedOrdersAckJSONModel").sPath;
+			var mod = that.getModel("SelectedOrdersAckJSONModel").getProperty(oPath);
+			var orderNumber = mod.EBELN;
+			for (var i = 0; i < that.getModel("SelectedPositionsAckJSONModel").oData.length; i++) {
+				if (that.getModel("SelectedPositionsAckJSONModel").oData[i].EBELN === orderNumber) {
+					that.getModel("SelectedPositionsAckJSONModel").oData[i].LABNR = value;
+				}
+			}
+			that.getModel("SelectedPositionsAckJSONModel").refresh();
 		}
 	});
 

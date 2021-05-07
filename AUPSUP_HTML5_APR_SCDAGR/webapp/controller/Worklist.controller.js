@@ -1082,6 +1082,9 @@ sap.ui.define([
 						var dataS = that.getView().getModel("SchedAgreeJSONModel").oData.results.EkkoEkpo;
 					
 						oData.results.forEach(rigaQuantita => {
+
+							rigaQuantita.CONF_TYPE = that.getResourceBundle().getText("CONF_TYPE_QUANT")
+
 							for (let index = 0; index < dataS.length; index++) {
 								var rigaTabella = dataS[index];
 								if(rigaQuantita.EBELN === rigaTabella.EBELN && rigaQuantita.EBELN === rigaTabella.EBELN){
@@ -1095,6 +1098,7 @@ sap.ui.define([
 
 						for(var i = 0; i < dataS.length; i++){
 							if(dataS[i].ZMODPREZZO === 'X'){
+								dataS[i].CONF_TYPE = that.getResourceBundle().getText("CONF_TYPE_PREZZO")
 								oData.results.push(dataS[i]);
 							}
 						}
@@ -1140,7 +1144,8 @@ sap.ui.define([
 							template: {
 								content: "{TXZ01}"
 							}
-						}, {
+						},
+						/* {
 							name: that.getResourceBundle().getText("MENGE"),
 							template: {
 								content: "{MENGE_ORIGINAL}"
@@ -1150,7 +1155,8 @@ sap.ui.define([
 							template: {
 								content: "{MENGE}"
 							}
-						}, {
+						},*/ 
+						{
 							name: that.getResourceBundle().getText("NETPR"),
 							template: {
 								content: "{NETPR_ORIGINAL}"
@@ -1170,7 +1176,7 @@ sap.ui.define([
 							template: {
 								content: "{PEINH}"
 							}
-						}, 
+						},
 						/*{
 							name: that.getResourceBundle().getText("SchedMod"),
 							template: {
@@ -1250,7 +1256,12 @@ sap.ui.define([
 									}
 								}
 							}
-						}]
+						}, {
+							name: that.getResourceBundle().getText("CONF_TYPE"),
+							template: {
+								content: "{CONF_TYPE}"
+							}
+						}, ]
 					});
 
 					// download exported file

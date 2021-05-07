@@ -3177,8 +3177,8 @@ sap.ui.define([
 				this.oConfirmPositionsFragmentAck.close();
 				this.oConfirmPositionsFragmentAck.destroy();
 				this.oConfirmPositionsFragmentAck = undefined;
-				//if (needReserarch === true)
-				//	that.onSearchOrders();
+				if (needReserarch === true)
+					that.onSearchOrders();
 				//that.onDeleteLocks();
 			}
 		},
