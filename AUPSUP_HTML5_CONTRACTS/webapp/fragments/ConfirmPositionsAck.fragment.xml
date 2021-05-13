@@ -1,0 +1,73 @@
+<Dialog xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" xmlns:u="sap.ui.unified" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:table="sap.ui.table" xmlns:smartFilterBar="sap.ui.comp.smartfilterbar" xmlns:smartTable="sap.ui.comp.smarttable" contentWidth="60%" contentHeight="100%" title="{i18n>LABNR}">
+	<NavContainer id="navConAck">
+		<Page id="p1Ack">
+			<content>
+                <Table width="auto" items="{ path: 'SelectedOrdersAckJSONModel>/' }" growing="true" growingThreshold="4" growingScrollToLoad="false">
+                    <headerToolbar>
+                        <OverflowToolbar>
+                            <Title text="{i18n>orders}" level="H2" />
+                        </OverflowToolbar>
+                    </headerToolbar>
+                    <columns>
+                        <Column>
+                            <Text text="{i18n>EBELN}" />
+                        </Column>
+                        <Column>
+                            <Text text="{i18n>EBELP}" />
+                        </Column>
+                    </columns>
+                    <items textAlign="Center">
+                        <ColumnListItem>
+                            <cells>
+                                <Text text="{SelectedOrdersAckJSONModel>EBELN}" />
+                                <Input value="{SelectedOrdersAckJSONModel>LABNR}" change="onChangeLabnrOrder" />
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+                <Table width="auto" items="{ path: 'SelectedPositionsAckJSONModel>/' }" growing="true" growingThreshold="15" growingScrollToLoad="false">
+                    <headerToolbar>
+                        <OverflowToolbar>
+                            <Title text="{i18n>positions}" level="H2" />
+                        </OverflowToolbar>
+                    </headerToolbar>
+                    <columns>
+                        <Column>
+                            <Text text="{i18n>EBELN}" />
+                        </Column>
+                        <Column>
+                            <Text text="{i18n>EBELP}" />
+                        </Column>
+                        <Column>
+                            <Text text="{i18n>MATNR}" />
+                        </Column>
+                        <Column>
+                            <Text text="{i18n>TXZ01}" />
+                        </Column>
+                        <Column>
+                            <Text text="{i18n>LABNR}" />
+                        </Column>
+                    </columns>
+                    <items textAlign="Center">
+                        <ColumnListItem>
+                            <cells>
+                                <Text text="{SelectedPositionsAckJSONModel>EBELN}" />
+                                <Text text="{SelectedPositionsAckJSONModel>EBELP}" />
+                                <Text text="{SelectedPositionsAckJSONModel>MATNR}" />
+                                <Text text="{SelectedPositionsAckJSONModel>TXZ01}" />
+                                <Input value="{SelectedPositionsAckJSONModel>LABNR}" />
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+            </content>
+            <footer>
+				<Toolbar>
+					<ToolbarSpacer />
+					<Button text="{i18n>close}" press="onCloseOrderPositionsAck" type="Reject" />
+					<Button text="{i18n>Confirm}" press="onConfirmPositionsDialogAck" type="Accept" />
+				</Toolbar>
+			</footer>
+		</Page>
+	</NavContainer>
+</Dialog>

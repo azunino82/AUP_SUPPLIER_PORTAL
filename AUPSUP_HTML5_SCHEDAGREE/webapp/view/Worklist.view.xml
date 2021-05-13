@@ -183,6 +183,9 @@
 													<m:Column id="SECONDO_PERIODO" visible="{columnVisibilityModel>/SECONDO_PERIODO}" minScreenWidth="Desktop" demandPopin="true">
 														<m:Label text="{i18n>SECONDO_PERIODO}" class="columnLabelStyle" wrapping="true"/>
 													</m:Column>
+													<m:Column id="LABNR" visible="{columnVisibilityModel>/LABNR}" minScreenWidth="Desktop" demandPopin="true">
+														<m:Label text="{i18n>LABNR}" class="columnLabelStyle" wrapping="true"/>
+													</m:Column>													
 													<m:Column id="TESTS" minScreenWidth="Desktop" demandPopin="true">
 													</m:Column>
 													<m:Column id="DOWNLOAD" minScreenWidth="Desktop" demandPopin="true">
@@ -206,6 +209,7 @@
 															<m:Text text="{ path: 'OrderJSONModel>LAST_EKES_EINDT', type: 'it.aupsup.schedulingagreement.type.Date' }"/>
 															<m:Text text="{path : 'OrderJSONModel>PRIMO_PERIODO', formatter : '.importFormatter'}"/>
 															<m:Text text="{path : 'OrderJSONModel>SECONDO_PERIODO', formatter : '.importFormatter'}"/>
+															<m:Text text="{OrderJSONModel>LABNR}"/>
 															<m:Button icon="sap-icon://document-text" press="onGetTexts"/>
 															<m:Button icon="sap-icon://download" press="onItemDownload"/>
 														</m:cells>
@@ -226,6 +230,7 @@
 							<footer>
 								<m:Toolbar >
 									<m:ToolbarSpacer/>
+									<m:Button type="Accept" text="{i18n>ConfirmOrdAckn}" press="onConfirmOrderAckn" visible="{= ${VisibilityJSONModel>/isSupplierD} === false &amp;&amp; ${globalCustomizingJSONModel>/ORD_ACKN} === true}"/>
 									<m:Button type="Accept" text="{i18n>Confirm}" press="onConfirmPositions" visible="{= ${VisibilityJSONModel>/isSupplierD} === false}"/>
 								</m:Toolbar>
 							</footer>

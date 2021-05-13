@@ -470,7 +470,7 @@ module.exports = function () {
       }
     })
   })
-  
+
   app.post('/SaveTMatriceCriticita', function (req, res) {
     const body = req.body
 
@@ -792,7 +792,7 @@ module.exports = function () {
       }
     })
   })
-  
+
   app.post('/SaveTTexts', function (req, res) {
     const body = req.body
 
@@ -1780,6 +1780,162 @@ module.exports = function () {
         })
       }
     })
+  })
+
+  app.delete('/TGlobalCustomizing', function (req, res) {
+    var SYSID = req.query.I_SYSID !== undefined && req.query.I_SYSID !== null && req.query.I_SYSID !== '' ? req.query.I_SYSID : ''
+    var APP_ID = req.query.I_APP_ID !== undefined && req.query.I_APP_ID !== null && req.query.I_APP_ID !== '' ? req.query.I_APP_ID : ''
+    var FUNCTIONALITY = req.query.I_FUNCTIONALITY !== undefined && req.query.I_FUNCTIONALITY !== null && req.query.I_FUNCTIONALITY !== '' ? req.query.I_FUNCTIONALITY : ''
+
+    if (SYSID === '' || APP_ID === '' || FUNCTIONALITY === '') {
+      return res.status(500).send('I_SYSID and I_APP_ID and I_FUNCTIONALITY madatory ')
+    }
+    const sql = 'DELETE FROM \"AUPSUP_DATABASE.data.tables::T_CUSTOMIZING_GLOBAL_CONFIG\" WHERE SYSID=\'' + SYSID + '\' AND APP_ID = \'' + APP_ID + '\' AND FUNCTIONALITY = \'' + FUNCTIONALITY + '\''
+
+    hdbext.createConnection(req.tenantContainer, function (error, client) {
+      if (error) {
+        console.error('ERROR :' + stringifyObj(error))
+        return res.status(500).send('TGlobalCustomizing CONNECTION ERROR: ' + stringifyObj(error))
+      }
+      if (client) {
+        async.waterfall([
+
+          function prepare (callback) {
+            client.prepare(sql,
+              function (err, statement) {
+                callback(null, err, statement)
+              })
+          },
+
+          function execute (_err, statement, callback) {
+            statement.exec([], function (execErr, results) {
+              callback(null, execErr, results)
+            })
+          },
+
+          function response (err, results, callback) {
+            if (err) {
+              res.type('application/json').status(500).send({ ERROR: err })
+              return
+            } else {
+              res.type('application/json').status(200).send({ results: results })
+            }
+            callback()
+          }
+        ], function done (err, parameters, rows) {
+          console.log('---->>> CLIENT END TGlobalCustomizing <<<<<-----')
+          client.close()
+          if (err) {
+            return console.error('Done error', err)
+          }
+        })
+      }
+    })
+  })
+
+  app.post('/SaveTGlobalCustomizing', function (req, res) {
+    const body = req.body
+
+    var sql = 'UPSERT \"AUPSUP_DATABASE.data.tables::T_CUSTOMIZING_GLOBAL_CONFIG\" VALUES (\'' + body.SYSID + '\',\'' + body.APP_ID + '\',\'' + body.FUNCTIONALITY + '\',\'' + body.ACTIVE + '\') WITH PRIMARY KEY'
+    console.log('sql: ' + sql)
+    hdbext.createConnection(req.tenantContainer, function (error, client) {
+      if (error) {
+        console.error('ERROR T_CUSTOMIZING_GLOBAL_CONFIG :' + stringifyObj(error))
+        return res.status(500).send('T_CUSTOMIZING_GLOBAL_CONFIG CONNECTION ERROR: ' + stringifyObj(error))
+      }
+      if (client) {
+        async.waterfall([
+
+          function prepare (callback) {
+            client.prepare(sql,
+              function (err, statement) {
+                callback(null, err, statement)
+              })
+          },
+
+          function execute (_err, statement, callback) {
+            statement.exec([], function (execErr, results) {
+              callback(null, execErr, results)
+            })
+          },
+
+          function response (err, results, callback) {
+            if (err) {
+              res.type('application/json').status(500).send({ ERROR: err })
+              return
+            } else {
+              res.type('application/json').status(200).send({ results: 'OK' })
+            }
+            callback()
+          }
+        ], function done (err, parameters, rows) {
+          console.log('---->>> CLIENT END T_CUSTOMIZING_GLOBAL_CONFIG <<<<<-----')
+          client.close()
+          if (err) {
+            return console.error('Done error', err)
+          }
+        })
+      }
+    })
+  })
+
+  app.get('/GetCustomizingGlobalValues', function (req, res) {
+    var appId = req.query.I_APPID !== undefined && req.query.I_APPID !== null && req.query.I_APPID !== '' ? req.query.I_APPID : ''
+    if (appId === '') {
+      return res.status(500).send('I_APPID Mandatory')
+    } else {
+      const sql = 'SELECT * FROM \"AUPSUP_DATABASE.data.tables::T_CUSTOMIZING_GLOBAL_CONFIG\" WHERE APP_ID = \'' + appId + '\''
+
+      try {
+        hdbext.createConnection(req.tenantContainer, function (error, client) {
+          if (error) {
+            console.error('ERROR :' + stringifyObj(error))
+            return res.status(500).send('T_CUSTOMIZING_GLOBAL_CONFIG CONNECTION ERROR: ' + stringifyObj(error))
+          }
+          if (client) {
+            async.waterfall([
+
+              function prepare (callback) {
+                client.prepare(sql,
+                  function (err, statement) {
+                    callback(null, err, statement)
+                  })
+              },
+
+              function execute (_err, statement, callback) {
+                try {
+                  statement.exec([], function (execErr, results) {
+                    callback(null, execErr, results)
+                  })
+                } catch (exc) {
+                  return res.status(500).send('T_CUSTOMIZING_GLOBAL_CONFIG ERROR: ' + stringifyObj(exc))
+                }
+              },
+
+              function response (err, results, callback) {
+                if (err) {
+                  res.type('application/json').status(500).send({ ERROR: err })
+                  return
+                } else {
+                  if (results !== undefined && results !== null && results.length > 0) {
+                    res.type('application/json').status(200).send({ results: results })
+                  }
+                }
+                callback()
+              }
+            ], function done (err, parameters, rows) {
+              console.log('---->>> CLIENT END T_CUSTOMIZING_GLOBAL_CONFIG <<<<<-----')
+              client.close()
+              if (err) {
+                return console.error('Done error', err)
+              }
+            })
+          }
+        })
+      } catch (exc) {
+        return res.status(500).send('T_CUSTOMIZING_GLOBAL_CONFIG ERROR: ' + stringifyObj(exc))
+      }
+    }
   })
 
   // Parse JSON bodies (as sent by API clients)

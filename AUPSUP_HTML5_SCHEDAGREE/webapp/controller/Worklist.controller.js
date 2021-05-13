@@ -28,6 +28,7 @@ sap.ui.define([
 			var startupParams = undefined;
 			that.onGetOdataColumns();
 			that.getCurrentSYSID();
+			that.getGlobalCustomizing();
 
 			// chiamata proveniente da planning
 			var orderToOpen = that.getUrlParameter('orderPos');
@@ -2496,7 +2497,7 @@ sap.ui.define([
 							that.onSavePersonalization();
 						}
 					}), new sap.m.Button({
-						text: "Cancel",
+						text: that.getResourceBundle().getText("Cancel"),
 						press: function () {
 							that.onCancelPersonalization();
 						}
@@ -2930,7 +2931,271 @@ sap.ui.define([
 					return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
 				}
 			}
+		},
+		onConfirmOrderAckn: function (oEvent) {
+			// clear del modello
+			if (that.getView().getModel("SelectedOrdersAckJSONModel") !== undefined)
+				that.getView().getModel("SelectedOrdersAckJSONModel").setData(null);
+			if (that.getView().getModel("SelectedPositionsAckJSONModel") !== undefined)
+				that.getView().getModel("SelectedPositionsAckJSONModel").setData(null);
+
+			var aIndices = 0;
+			var positionRows = that.getModel("OrderJSONModel").getData().results;
+			if (positionRows !== undefined && positionRows.length > 0) {
+				positionRows.forEach(function (elem) {
+					if (elem.isSelected)
+						aIndices++;
+				});
+			}
+
+			var selectedContextBinding = [];
+			if (aIndices <= 0) {
+				MessageToast.show(that.getResourceBundle().getText("ERR_Selection_Row"));
+				return;
+			}
+
+			var positionRows = JSON.parse(JSON.stringify(positionRows));
+
+			// creo modello dati Ordini
+			var oModelSelectedOrderAck = new JSONModel();
+			var dataOrder = [];
+			if (positionRows !== undefined && positionRows.length > 0) {
+				positionRows.forEach(function (elem) {
+					if (elem.isSelected)
+						dataOrder.push(elem);
+				});
+			}
+
+			// elimino record con lo stesso numero di ordine
+			var dataOrderNoDuplicates = dataOrder.reduce((unique, o) => {
+				if (!unique.some(obj => obj.EBELN === o.EBELN)) {
+					unique.push(o);
+				}
+				return unique;
+			}, []);
+			//console.log(result);
+
+			// pulisco campo LABNR in testata
+			for(var i = 0; i < dataOrderNoDuplicates.length; i++){
+				dataOrderNoDuplicates[i].LABNR = "";
+			}
+
+			oModelSelectedOrderAck.setData(dataOrderNoDuplicates);
+			that.getView().setModel(oModelSelectedOrderAck, "SelectedOrdersAckJSONModel");
+
+			var positionRows = that.getModel("OrderJSONModel").getData().results;
+			positionRows = JSON.parse(JSON.stringify(positionRows));
+
+			// creo modello dati Posizioni
+			var oModelSelectedPosAck = new JSONModel();
+			var data = [];
+			if (positionRows !== undefined && positionRows.length > 0) {
+				positionRows.forEach(function (elem) {
+					if (elem.isSelected)
+						data.push(elem);
+				});
+			}
+			// elimino record con lo stesso numero di ordine
+			var dataOrderNoDuplicatesPos = data.reduce((unique, o) => {
+				if (!unique.some(obj => obj.EBELN === o.EBELN)) {
+					unique.push(o);
+				}
+				return unique;
+			}, []);
+			// verifico se ci sono altre posizioni per lo stesso ordine e le aggiungo
+			var dataMorePositions = []; //data;
+			for (var i = 0; i < dataOrderNoDuplicatesPos.length; i++) {
+				for (var y = 0; y < positionRows.length; y++) {
+					if (dataOrderNoDuplicatesPos[i].EBELN === positionRows[y].EBELN && dataOrderNoDuplicatesPos[i].EBELP !== positionRows[y].EBELP) {
+						dataMorePositions.push(positionRows[y]);
+					}
+				}
+			}
+			for (var z = 0; z < dataOrderNoDuplicatesPos.length; z++) {
+				dataMorePositions.push(dataOrderNoDuplicatesPos[z]);
+			}
+			// sorting array
+			dataMorePositions.sort(function (a, b) {
+				return a.EBELN - b.EBELN || a.EBELP - b.EBELP;
+			});
+
+			oModelSelectedPosAck.setData(dataMorePositions);
+			that.getView().setModel(oModelSelectedPosAck, "SelectedPositionsAckJSONModel");
+
+			// apro fragment
+			if (!that.oConfirmPositionsFragmentAck) {
+				that.oConfirmPositionsFragmentAck = sap.ui.xmlfragment(
+					"it.aupsup.schedulingagreement.fragments.ConfirmPositionsAck",
+					that);
+				that.getView().addDependent(that.oConfirmPositionsFragmentAck);
+
+				// blocco il bottone di ESC
+				that.oConfirmPositionsFragmentAck.attachBrowserEvent("keydown", function (oEvent) {
+					if (oEvent.keyCode === 27) {
+						oEvent.stopPropagation();
+						oEvent.preventDefault();
+					}
+				});
+
+			}
+			that.oConfirmPositionsFragmentAck.open();
+		},
+
+		onConfirmPositionsDialogAck: function () {
+
+
+			MessageBox.warning(that.getResourceBundle().getText("MSG_Confirm_Position_Text"), {
+				icon: MessageBox.Icon.WARNING,
+				title: "Warning",
+				actions: [MessageBox.Action.CANCEL, MessageBox.Action.OK],
+				initialFocus: MessageBox.Action.CANCEL,
+				onClose: function (oAction) {
+					if (oAction === MessageBox.Action.OK) {
+
+						var body = {
+							"ekko": [],
+							"ekpo": [],
+							/*"ekes": [],
+							"skipAppBuyer": [],
+							"notaReject": "",
+							"confirmType": "",
+							"t_herder_comment": [],
+							"t_position_comment": [],*/
+							"spras": that.getLanguage()
+						};
+
+						var ekkoRow = that.getModel("SelectedOrdersAckJSONModel").getData();
+						if (ekkoRow !== undefined) {
+
+							for (var y = 0; y < ekkoRow.length; y++) {
+								var row = ekkoRow[y];
+
+								var singleEkkoModel = {};
+								singleEkkoModel.EBELN = row.EBELN;
+								singleEkkoModel.BSTYP = 'L';
+								singleEkkoModel.LIFNR = row.LIFNR;
+
+								body.ekko.push(singleEkkoModel);
+							}
+						}
+
+						var ekpoRow = that.getModel("SelectedPositionsAckJSONModel").getData();
+						if (ekpoRow !== undefined) {
+
+							for (var i = 0; i < ekpoRow.length; i++) {
+								var row = ekpoRow[i];
+
+								var singleEkpoModel = {};
+								singleEkpoModel.EBELN= row.EBELN;
+								singleEkpoModel.EBELP= row.EBELP; 
+								singleEkpoModel.MENGE=0;
+								singleEkpoModel.MEINS='';    
+								singleEkpoModel.NETPR=0;
+								singleEkpoModel.PEINH=0;
+								singleEkpoModel.KSCHL='';
+								singleEkpoModel.ZINVALIDITA='';
+								singleEkpoModel.ZFINVALIDATA='';
+								singleEkpoModel.BPRME='';
+								singleEkpoModel.BPUMZ=0;
+								singleEkpoModel.BPUMN=0;
+								singleEkpoModel.UMREZ=0;
+								singleEkpoModel.UMREN=0;
+								singleEkpoModel.UPDKZ='';
+								singleEkpoModel.LABNR = row.LABNR;
+								singleEkpoModel.ZMODPREZZO='';
+								singleEkpoModel.ZMODSCHED='';
+								singleEkpoModel.ZINSCONF='';
+								singleEkpoModel.ZCONFPARZ='';
+								singleEkpoModel.ZORDACK='X';
+								singleEkpoModel.BSTAE='';
+
+								body.ekpo.push(singleEkpoModel);
+							}
+
+						}
+
+						var url = "/backend/OrdersManagement/ConfirmOrdersAckn";
+						that.showBusyDialog();
+						that.ajaxPost(url, body, function (oData) {
+							that.hideBusyDialog();
+							if (oData) {
+								if (oData.errLog) {
+									MessageBox.error(decodeURI(oData.errLog));
+									return;
+								}
+								if (oData.results && oData.results && oData.results.length > 0) {
+									var messageError = "";
+									var messageWarning = "";
+									$.each(oData.results, function (index, item) {
+										if (item.MSGTY !== undefined && item.MSGTY === 'E')
+											messageError = item.MESSAGE + " \n " + messageError;
+										// Escludo i messaggi di tipo W
+										//  if (item.MSGTY !== undefined && (item.MSGTY === 'W' || item.MSGTY === 'I'))
+										if (item.MSGTY !== undefined && item.MSGTY === 'I')
+											messageWarning = item.MESSAGE + " \n " + messageWarning;
+									});
+									if (messageError !== "" && messageWarning !== "") {
+										MessageBox.error(messageError + "\n" + messageWarning);
+									} else {
+										if (messageError !== "")
+											MessageBox.error(messageError);
+										if (messageWarning !== "")
+											MessageBox.warning(messageWarning);
+										if (messageError === "" && messageWarning === "") {
+											MessageBox.success(that.getResourceBundle().getText("correctConfirmPositions"), {
+												title: "Success", // default
+												onClose: function () {
+													that.onCloseOrderPositionsAck(true);
+												} // default
+
+											});
+										}
+									}
+
+								} else {
+									MessageBox.success(that.getResourceBundle().getText("correctConfirmPositions"), {
+										title: "Success", // default
+										onClose: function () {
+											that.onCloseOrderPositionsAck(true);
+										} // default
+
+									});
+
+								}
+							}
+
+						});
+					}
+				}
+			});
+
+
+		},
+
+		onCloseOrderPositionsAck: function (needReserarch) {
+			if (this.oConfirmPositionsFragmentAck) {
+				this.oConfirmPositionsFragmentAck.close();
+				this.oConfirmPositionsFragmentAck.destroy();
+				this.oConfirmPositionsFragmentAck = undefined;
+				if (needReserarch === true)
+					that.onSearchOrders();
+				//that.onDeleteLocks();
+			}
+		},
+
+		onChangeLabnrOrder: function (oEvent) {
+			var value = oEvent.getSource().getValue();
+			var oPath = oEvent.getSource().getBindingContext("SelectedOrdersAckJSONModel").sPath;
+			var mod = that.getModel("SelectedOrdersAckJSONModel").getProperty(oPath);
+			var orderNumber = mod.EBELN;
+			for (var i = 0; i < that.getModel("SelectedPositionsAckJSONModel").oData.length; i++) {
+				if (that.getModel("SelectedPositionsAckJSONModel").oData[i].EBELN === orderNumber) {
+					that.getModel("SelectedPositionsAckJSONModel").oData[i].LABNR = value;
+				}
+			}
+			that.getModel("SelectedPositionsAckJSONModel").refresh();
 		}
+
 	});
 
 });

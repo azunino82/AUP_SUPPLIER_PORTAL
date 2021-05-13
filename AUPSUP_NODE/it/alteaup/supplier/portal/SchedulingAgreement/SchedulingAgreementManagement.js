@@ -1085,13 +1085,105 @@ module.exports = function () {
     // GET CONFERME QUANTiTA DA APPROVARE
     app.get('/GetConfermeRifiutiForQuant', function (req, res) {
         var userid = req.user.id
-        var ebeln = req.query.I_EBELN !== null && req.query.I_EBELN !== undefined ? req.query.I_EBELN : ''
-        var ebelp = req.query.I_EBELP !== null && req.query.I_EBELP !== undefined ? req.query.I_EBELP : ''
+        // var ebeln = req.query.I_EBELN !== null && req.query.I_EBELN !== undefined ? req.query.I_EBELN : ''
+        // var ebelp = req.query.I_EBELP !== null && req.query.I_EBELP !== undefined ? req.query.I_EBELP : ''
         var spras = req.query.I_SPRAS !== null && req.query.I_SPRAS !== undefined ? req.query.I_SPRAS : 'I'
         var bstyp = []
+        var ebeln = []
+        var ebelp = []
+
+        for (var i = 0; i < req.query.I_EBELN.split(',').length; i++) {
+            ebeln.push({ EBELN: req.query.I_EBELN.split(',')[i] })
+        }
+
+        for (var y = 0; y < req.query.I_EBELP.split(',').length; y++) {
+            ebelp.push({ EBELP: req.query.I_EBELP.split(',')[y] })
+        }
 
         if (req.query.I_BSTYP !== null && req.query.I_BSTYP !== undefined) {
             bstyp.push({ BSTYP: req.query.I_BSTYP })
+        }
+
+        hdbext.createConnection(req.tenantContainer, (err, client) => {
+            if (err) {
+                return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
+            } else {
+                hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.SchedulingAgreement::GetToApproveRject', function (_err, sp) {
+                    console.error('ERROR CONNECTION :' + stringifyObj(_err))
+                    if (_err) {
+                        console.log('---->>> CLIENT END ERR GetConfermeRifiutiForQuant <<<<<-----')
+                        return res.status(500).send('CLIENT END ERR GetConfermeRifiuti: ' + stringifyObj(_err))
+                    }
+                    sp(userid, ebeln, ebelp, bstyp, spras, (err, parameters, results) => {
+                        console.log('---->>> CLIENT END GetConfermeRifiutiForQuant <<<<<-----')
+                        client.close()
+                        if (err) {
+                            console.error('ERROR GetConfermeRifiuti: ' + stringifyObj(err))
+                            return res.status(500).send('ERROR GetConfermeRifiutiForQuant: ' + stringifyObj(err))
+                        } else {
+                            console.log('OK GetConfermeRifiutiForQuant results: ' + (stringifyObj(results)))
+
+                            var outArr = []
+                            var i = 0
+                            results.forEach(element => {
+                                element.RADIO_GRP_NAME = i
+                                element.BSTYP = req.query.I_BSTYP
+                                if (element.ISTOCONFIRM === 'X') {
+                                    element.ISTOCONFIRM = true
+                                    outArr.push(element)
+                                } else {
+                                    if (element.ISTOCONFIRM === '') {
+                                        element.ISTOCONFIRM = false
+                                    }
+                                }
+                                // outArr.push(element)
+                                i++
+                            })
+                            return res.status(200).send({
+                                results: outArr
+                            })
+                        }
+                    })
+                })
+            }
+        })
+    })
+
+    app.post('/PostConfermeRifiutiForQuant', function (req, res) {
+        const body = req.body
+        var userid = req.user.id
+        // var ebeln = req.query.I_EBELN !== null && req.query.I_EBELN !== undefined ? req.query.I_EBELN : ''
+        // var ebelp = req.query.I_EBELP !== null && req.query.I_EBELP !== undefined ? req.query.I_EBELP : ''
+        var spras = req.query.I_SPRAS !== null && req.query.I_SPRAS !== undefined ? req.query.I_SPRAS : 'I'
+        var bstyp = []
+        var ebeln = []
+        var ebelp = []       
+        var results = []
+
+        if (body.ebeln !== null && body.ebeln.length > 0) {
+            var oEbeln = []
+            for (var i = 0; i < body.ebeln.length; i++) {
+                oEbeln.push({ EBELN: body.ebeln[i] })
+            }
+            ebeln = oEbeln
+        }
+
+        if (body.ebelp != null && body.ebelp !== '') {
+            var oEbelp = []
+            // eslint-disable-next-line no-redeclare
+            for (var i = 0; i < body.ebelp.length; i++) {
+                oEbelp.push({ EBELP: body.ebelp[i] })
+            }
+            ebelp = oEbelp
+        }
+
+        if (body.bstyp != null && body.bstyp !== '') {
+            var oBstyp = []
+            // eslint-disable-next-line no-redeclare
+            for (var i = 0; i < body.bstyp.length; i++) {
+                oBstyp.push({ BSTYP: body.bstyp[i] })
+            }
+            bstyp = oBstyp
         }
 
         hdbext.createConnection(req.tenantContainer, (err, client) => {

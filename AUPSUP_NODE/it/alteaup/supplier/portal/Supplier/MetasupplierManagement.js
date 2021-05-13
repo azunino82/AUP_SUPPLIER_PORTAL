@@ -792,6 +792,36 @@ module.exports = function () {
                                                         ])
                                                     })
                                                 })
+
+                                                // AGGIORNO TABELLA BU
+                                                sql = 'UPDATE "AUPSUP_DATABASE.data.tables::T_METAID_BU" SET STATO = \'' + body.STATO_FORNITORE + '\' WHERE METAID =  \'' + metaID + '\''
+                                                body.SUPPLIERS.forEach(element => {
+                                                    async.waterfall([
+
+                                                        function prepare (callback) {
+                                                            client.prepare(sql,
+                                                                function (err, statement) {
+                                                                    callback(null, err, statement)
+                                                                })
+                                                        },
+
+                                                        function execute (_err, statement, callback) {
+                                                            statement.exec([], function (execErr, results) {
+                                                                callback(null, execErr, results)
+                                                            })
+                                                        },
+
+                                                        function response (err, results, callback) {
+                                                            console.error({
+                                                                erroreSUPPLIER: err
+                                                            })
+                                                            if (err) {
+                                                                return
+                                                            }
+                                                            callback()
+                                                        }
+                                                    ])
+                                                })
                                             }
                                         }
                                         callback()

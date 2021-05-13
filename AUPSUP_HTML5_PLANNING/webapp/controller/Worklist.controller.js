@@ -83,6 +83,13 @@ sap.ui.define([
 
 		onAfterRendering: function () {
 			that.createWeekHeaderModel();
+
+			var deliveryTypeArray = [{CODE: "CC", DESCR: this.getResourceBundle().getText("committente")}, {CODE: "CT", DESCR: this.getResourceBundle().getText("terzi")}];
+
+			var oModelDeliveryType = new JSONModel();
+			oModelDeliveryType.setData(deliveryTypeArray);
+			this.getView().setModel(oModelDeliveryType, "DeliveryTypeJSONModel");
+
 		},
 
 		getPurchaseGroup: function () {

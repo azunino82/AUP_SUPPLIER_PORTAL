@@ -242,22 +242,14 @@ sap.ui.define([
 				that.ajaxGet(url, function (oDataRes) {
 
 					var lang = sap.ui.getCore().getConfiguration().getLanguage();
-					var oSelectStatoFornitore = that.getView().byId("InputStatoMetafornitore");
+					var jsonModel = new sap.ui.model.json.JSONModel(); 
+					var data = []
 					for (var i = 0; i < oDataRes.results.length; i++) {
-						//Inserimento Record Vuoto per ComboBox
-						if (i === 0) {
-							var nl = new sap.ui.core.Item({
-								key: "",
-								text: ""
-							});
-							oSelectStatoFornitore.insertItem(nl);
-						}
-						var item = new sap.ui.core.Item({
-							key: oDataRes.results[i].KEY,
-							text: (lang === "it-IT") ? oDataRes.results[i].VALUE_IT : oDataRes.results[i].VALUE_EN
-						});
-						oSelectStatoFornitore.insertItem(item);
+						data.push({"key": oDataRes.results[i].KEY, "text": (lang === "it-IT") ? oDataRes.results[i].VALUE_IT : oDataRes.results[i].VALUE_EN})
 					}
+
+					jsonModel.setData(data);
+					that.getView().setModel(jsonModel, "supplierStateJSONModel");
 
 				});
 
@@ -394,6 +386,11 @@ sap.ui.define([
 				that.getBuyerBu();
 				that.getListMandatoryHUForMetaid();
 				that.oModMetaSupFragment.open();
+
+				if(data.STATO_FORNITORE !== undefined && data.STATO_FORNITORE !== ''){
+					sap.ui.getCore().byId("statoMetafornitore").setSelectedKey(data.STATO_FORNITORE);
+				}				
+
 			}
 		},
 
@@ -529,6 +526,8 @@ sap.ui.define([
 					if (oAction === MessageBox.Action.OK) {
 
 						var data = that.getModel("metasupplierData").getData();
+
+						data.STATO_FORNITORE =  sap.ui.getCore().byId("statoMetafornitore").getSelectedKey()
 
 						if (data !== undefined && data.ATTIVO === true) {
 							data.ATTIVO = 1;
