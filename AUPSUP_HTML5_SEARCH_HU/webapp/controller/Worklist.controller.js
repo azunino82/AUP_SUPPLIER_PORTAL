@@ -805,7 +805,7 @@ sap.ui.define([
 			var footer = new sap.m.Bar({
 				contentLeft: [],
 				contentMiddle: [new sap.m.Button({
-						text: "Cancel",
+						text: that.getResourceBundle().getText("Cancel"),
 						press: function () {
 							that.onCancelPersonalization();
 						}

@@ -2433,7 +2433,7 @@ sap.ui.define([
 							that.onSavePersonalization();
 						}
 					}), new sap.m.Button({
-						text: "Cancel",
+						text:  that.getResourceBundle().getText("Cancel"),
 						press: function () {
 							that.onCancelPersonalization();
 						}
