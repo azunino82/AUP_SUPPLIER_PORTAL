@@ -965,6 +965,61 @@ module.exports = function () {
         }
     })
 
+    app.post('/GetOrderPDF', function (req, res) {
+        const body = req.body
+
+        console.log('INPUT BODY ==========> ' + JSON.stringify(body))
+        if (body !== undefined && body !== '' && body !== null) {
+            var matnr = []
+            var maktx = []
+            var filter = []
+            var userid = req.user.id
+            var ebeln = req.ebeln
+            var bstyp = req.bstyp
+            var spras = body.spras
+
+            if (spras === undefined || spras === null || spras === '') {
+                spras = 'I'
+            }
+
+            if (body.matnr !== null && body.matnr !== undefined && body.matnr.length > 0) {
+                matnr = body.matnr
+            }
+            if (body.maktx !== null && body.maktx !== undefined && body.maktx.length > 0) {
+                maktx = body.maktx
+            }
+            if (body.filter !== null && body.filter !== undefined && body.filter.length > 0) {
+                filter = body.filter
+            }
+
+            hdbext.createConnection(req.tenantContainer, (err, client) => {
+                if (err) {
+                    console.error('ERROR CONNECTION GetOrderPDF:' + stringifyObj(err))
+                    return res.status(500).send('CREATE CONNECTION ERROR GetOrderPDF: ' + stringifyObj(err))
+                } else {
+                    hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Orders::MM00_PURDOC_GET_PRINT', function (_err, sp) {
+                        if (_err) {
+                            console.error('ERROR loadProcedure GetOrderPDF: ' + stringifyObj(_err))
+                            client.close()
+                            return res.status(500).send(stringifyObj(_err))
+                        }
+                        sp(userid, ebeln, bstyp, (err, parameters, results) => {
+                            console.log('---->>> CLIENT END GetOrderPDF <<<<<-----')
+                            client.close()
+                            if (err) {
+                                console.error('ERROR GetOrderPDF SP: ' + stringifyObj(err))
+                                return res.status(500).send(stringifyObj(err))
+                            } else {
+                                return res.status(200).send({
+                                    results: results
+                                })
+                            }
+                        })
+                    })
+                }
+            })
+        }
+    })
 
     // Parse URL-encoded bodies (as sent by HTML forms)
     // app.use(express.urlencoded());

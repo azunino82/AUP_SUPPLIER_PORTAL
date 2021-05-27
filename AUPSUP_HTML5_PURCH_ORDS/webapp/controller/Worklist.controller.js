@@ -11,10 +11,12 @@ sap.ui.define([
 	"sap/ui/core/util/Export",
 	"sap/ui/core/util/ExportTypeCSV",
 	"sap/m/Dialog",
-	"it/aupsup/purchords/js/jszip"
-], function (BaseController, Filter, FilterOperator, JSONModel, MessageBox, MessageToast, Sorter, DateF, Formatter, Export, ExportTypeCSV, Dialog, JSZIP) {
+	"it/aupsup/purchords/js/jszip",
+	"sap/m/PDFViewer"
+], function (BaseController, Filter, FilterOperator, JSONModel, MessageBox, MessageToast, Sorter, DateF, Formatter, Export, ExportTypeCSV, Dialog, JSZIP, PDFViewer) {
 	"use strict";
 	var that;
+	var myPDFViewer;
 	return BaseController.extend("it.aupsup.purchords.controller.Worklist", {
 
 		/**
@@ -2172,8 +2174,7 @@ sap.ui.define([
 		},*/
 		onPrintPDFOrder: function () {
 			var ebeln = that.getView().getModel("OrderJSONModel").getData().EBELN;
-			var url = "/SupplierPortal_OrdersManagement/xsOdata/GetOrderPDF.xsjs?I_USERID=" + this.getCurrentUserId() + "&I_EBELN=" + ebeln +
-				"&I_BSTYP=F";
+			var url = "/backend/OrdersManagement/GetOrderPDF";
 
 			that._pdfViewer = new PDFViewer();
 			that._pdfViewer.setShowDownloadButton(false);
