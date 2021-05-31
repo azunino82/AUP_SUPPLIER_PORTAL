@@ -25,7 +25,14 @@
                         </ColumnListItem>
                     </items>
                 </Table>
-                <Table width="auto" items="{ path: 'SelectedPositionsAckJSONModel>/' }" growing="true" growingThreshold="15" growingScrollToLoad="false">
+                <Table width="auto" items="{ path: 'SelectedPositionsAckJSONModel>/',sorter: [
+					{
+						path: 'EBELN', 
+						descending: false
+					}, {
+						path: 'EBELP', 
+						descending: false
+					}] }" growing="true" growingThreshold="15" growingScrollToLoad="false">
                     <headerToolbar>
                         <OverflowToolbar>
                             <Title text="{i18n>positions}" level="H2" />
@@ -53,7 +60,7 @@
                             <cells>
                                 <Text text="{SelectedPositionsAckJSONModel>EBELN}" />
                                 <Text text="{SelectedPositionsAckJSONModel>EBELP}" />
-                                <Text text="{SelectedPositionsAckJSONModel>MATNR}" />
+                                <Text text="{path : 'SelectedPositionsAckJSONModel>MATNR', formatter : '.removeZeroBefore'}" />
                                 <Text text="{SelectedPositionsAckJSONModel>TXZ01}" />
                                 <Input value="{SelectedPositionsAckJSONModel>LABNR}" />
                             </cells>
