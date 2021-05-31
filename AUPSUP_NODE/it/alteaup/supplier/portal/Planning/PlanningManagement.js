@@ -33,6 +33,7 @@ module.exports = function () {
         var ekgrp = []
         var matnr = []
         var lifnr = []
+        var deliveryType = []
         var langu = ''
         var userid = req.user.id
         
@@ -81,13 +82,21 @@ module.exports = function () {
         if (body.langu !== null && body.langu !== undefined && body.langu !== '') {
             langu = body.langu
         }
+        if (body.deliveryType !== null && body.deliveryType !== undefined && body.deliveryType.length > 0) {
+            var oDeliveryType = [] 
+            // eslint-disable-next-line no-redeclare
+            for (var i = 0; i < body.deliveryType.length; i++) {
+                oDeliveryType.push({ DELIVERY_TYPE: body.deliveryType[i] })
+            }
+            deliveryType = oDeliveryType
+        }
 
         hdbext.createConnection(req.tenantContainer, (err, client) => {
             if (err) {
             return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
             } else {
             hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Planning::MM00_PLANNING_DOC_LIST', function (_err, sp) {
-                sp(userid, ekorg, werks, ekgrp, matnr, ebeln, lifnr, langu, (err, parameters, results) => {
+                sp(userid, ekorg, werks, ekgrp, matnr, ebeln, lifnr, deliveryType, langu, (err, parameters, results) => {
                 if (err) {
                     console.error('ERROR: ' + err)
                     return res.status(500).send(stringifyObj(err))

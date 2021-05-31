@@ -26,6 +26,7 @@ sap.ui.define([
     var originalTexts = [];
     var originalHuExceptions = [];
     var originalStatoAvvisiQta = [];
+    var originalGlobalCustomizing = [];    
 
     return BaseController.extend("it.aupsup.customizing.controller.Worklist", {
         onInit: function () {
@@ -264,6 +265,54 @@ sap.ui.define([
             });
 
         },
+        
+        
+        getGlobalCustomizing: function (fCompletion) {
+
+            var url = "/backend/CustomizingManagement/GetTableData?I_TABLE=T_CUSTOMIZING_APPID";
+            that.ajaxGet(url, function (oData) {
+                if (oData) {
+                    var oModel = new JSONModel();
+                    if (oData.results) {
+                        oModel.setData(oData);
+                        that.getView().setModel(oModel, "GlobalCustomizingAppIdJSONModel");
+                    }
+                }
+            });
+
+            var url = "/backend/CustomizingManagement/GetTableData?I_TABLE=T_CUSTOMIZING_FUNCTIONALITY";
+            that.ajaxGet(url, function (oData) {
+                if (oData) {
+                    var oModel = new JSONModel();
+                    if (oData.results) {
+                        oModel.setData(oData);
+                        that.getView().setModel(oModel, "GlobalCustomizingFunctionalityJSONModel");
+                    }
+                }
+            });
+
+            var url = "/backend/CustomizingManagement/GetTableData?I_TABLE=T_CUSTOMIZING_GLOBAL_CONFIG";
+            that.ajaxGet(url, function (oData) {
+                if (oData) {
+                    var oModel = new JSONModel();
+                    if (oData.results) {
+                        oData.results.forEach(element => {
+                            element.ACTIVE = element.ACTIVE === 'X' ? true : false
+                        });
+                        oModel.setData(oData);
+                        that.getView().setModel(oModel, "GlobalCustomizingJSONModel");
+                        originalGlobalCustomizing = [];
+                        $.each(that.getView().getModel("GlobalCustomizingJSONModel").getData().results, function (index, elem) {
+                            var s_elem = JSON.stringify(elem);
+                            originalGlobalCustomizing.push(jQuery.parseJSON(s_elem));
+                        });
+
+                    }
+                }
+            });
+
+        },
+
         getMatriceCriticita: function (fCompletion) {
 
             var url = "/backend/CustomizingManagement/GetTableData?I_TABLE=T_MATRICE_CRITICITA";
@@ -602,6 +651,21 @@ sap.ui.define([
                 "PROGRESSIVI": ""
             });
             that.getView().getModel("TipoOrdineJSONModel").refresh();
+        },
+
+        onAddGlobalCustomizingRow: function () {
+
+            var currentSYSID = sap.ui.getCore().getModel("sysIdJSONModel") !== undefined && sap.ui.getCore().getModel(
+                "sysIdJSONModel").getData() !==
+            undefined ? sap.ui.getCore().getModel("sysIdJSONModel").getData().SYSID : "";
+
+            that.getView().getModel("GlobalCustomizingJSONModel").getData().results.push({
+                "SYSID": currentSYSID,
+                "APP_ID": "",
+                "FUNCTIONALITY": "",
+                "ACTIVE": false,
+            });
+            that.getView().getModel("GlobalCustomizingJSONModel").refresh();
         },
 
         onAssNotificationMaterRow: function () {
@@ -1030,6 +1094,25 @@ sap.ui.define([
                 });
             }
         },
+
+        onSaveGlobalCustomizingList: function () {
+            if (that.getView().getModel("GlobalCustomizingJSONModel").getData().results) {
+                var promiseArr = []
+                $.each(that.getView().getModel("GlobalCustomizingJSONModel").getData().results, function (index, elem) {
+                    promiseArr.push(new Promise(function (resolve, reject) {
+                        elem.ACTIVE = elem.ACTIVE === true ? 'X' : ''
+                        that.onSaveGlobalCustomizing(elem, function () {
+                            resolve()
+                        })
+                    }))
+                })
+                Promise.all(promiseArr).then(values => {
+                    that.getGlobalCustomizing()
+                });
+            }
+        },
+
+
         saveBuyer: function (buyer, fCompletion) {
             var url = "/backend/CustomizingManagement/SaveTBuyers";
             that.ajaxPost(url, buyer, function (oData) {
@@ -1176,6 +1259,15 @@ sap.ui.define([
 
         onSaveHUException: function (elem, status, fCompletion) {
             var url = "/backend/CustomizingManagement/SaveTHUException";
+            that.ajaxPost(url, elem, function (oData) {
+                if (oData) {
+                    fCompletion(oData);
+                }
+            })
+        },
+
+        onSaveGlobalCustomizing: function (elem, fCompletion) {
+            var url = "/backend/CustomizingManagement/SaveTGlobalCustomizing";
             that.ajaxPost(url, elem, function (oData) {
                 if (oData) {
                     fCompletion(oData);
@@ -1342,6 +1434,16 @@ sap.ui.define([
             })
         },
 
+        
+        deleteGlobalCustomizing: function (sysId, appId, functionality) {
+            var url = "/backend/CustomizingManagement/TGlobalCustomizing?I_SYSID=" + sysId + "&I_APP_ID=" + appId + "&I_FUNCTIONALITY=" + functionality
+            that.ajaxDelete(url, function (oData) {
+                if (oData) {
+                    that.getGlobalCustomizing();
+                }
+            })
+        },
+
         deleteBuyerRow: function (oEvent) {
             var getTabledata = that.getView().getModel("BuyersJSONModel").getData().results;
             var itemPosition = oEvent.getSource().getParent().getParent().indexOfItem(oEvent.getSource().getParent());
@@ -1466,6 +1568,14 @@ sap.ui.define([
             var selctedRowdata = getTabledata[itemPosition];
             that.deleteHuExceptions(selctedRowdata.METAID, selctedRowdata.PLANT);
         },
+
+        deleteGlobalCustomizingRow: function (oEvent) {
+            var getTabledata = that.getView().getModel("GlobalCustomizingJSONModel").getData().results;
+            var itemPosition = oEvent.getSource().getParent().getParent().indexOfItem(oEvent.getSource().getParent());
+            var selctedRowdata = getTabledata[itemPosition];
+            that.deleteGlobalCustomizing(selctedRowdata.SYSID, selctedRowdata.APP_ID, selctedRowdata.FUNCTIONALITY);
+        },
+        
         onTabChange: function (oEvent) {
             var key = oEvent.getParameters().key;
             if (key === "1") {
@@ -1524,6 +1634,9 @@ sap.ui.define([
             }
             if (key === "18") {
                 that.getStatoAvvisiQta();
+            }
+            if (key === "19") {
+                that.getGlobalCustomizing();
             }
 
         },

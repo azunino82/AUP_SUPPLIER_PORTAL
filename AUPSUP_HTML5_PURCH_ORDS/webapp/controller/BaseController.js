@@ -318,7 +318,39 @@ sap.ui.define([
 				return year+month+day;
 			}
 			return date
-		}
+		},
+
+		
+		getGlobalCustomizing: function () {
+
+			var url = "/backend/CustomizingManagement/GetCustomizingGlobalValues?I_APPID=PURCH_ORD";
+			var that = this;
+			this.ajaxGet(url, function (oData) {
+				if (oData && oData.results && oData.results.length > 0) {
+					// modifica DL - 26/04/2021 - costruisco object per biding view
+					var object = new Object();
+					var functionality = "";
+					for(var i = 0; i < oData.results.length; i++){
+						functionality = oData.results[0].FUNCTIONALITY;
+						if(oData.results[0].ACTIVE === 'X'){
+							object[functionality] = true;
+						} else {
+							object[functionality] = false;
+						}
+						//object[functionality] = oData.results[0].ACTIVE;
+					}
+					//var custModel = new JSONModel(oData);
+					var custModel = new JSONModel(object);
+					// modifica DL - 26/04/2021 - costruisco object per biding view - FINE					
+					//sap.ui.getCore().setModel(custModel, "globalCustomizingJSONModel");
+					that.getView().setModel(custModel, "globalCustomizingJSONModel");
+				} else {
+					var custModel = new JSONModel({'ORD_ACKN':false});
+					that.getView().setModel(custModel, "globalCustomizingJSONModel");
+				}
+			});
+
+		},
 
 
 	});

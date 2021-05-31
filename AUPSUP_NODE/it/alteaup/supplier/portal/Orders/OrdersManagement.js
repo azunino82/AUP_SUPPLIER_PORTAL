@@ -910,6 +910,62 @@ module.exports = function () {
         })
     }
 
+    app.post('/ConfirmOrdersAckn', function (req, res) {
+        const body = req.body
+
+        console.log('INPUT BODY ==========> ' + JSON.stringify(body))
+
+        if (body !== undefined && body !== '' && body !== null) {
+            var ekko = []
+            var ekpo = []
+            var ekes = []
+            var userid = req.user.id
+            var spras = body.spras
+
+            if (spras === undefined || spras === null || spras === '') {
+                spras = 'I'
+            }
+
+            if (body.ekko !== null && body.ekko !== undefined && body.ekko.length > 0) {
+                ekko = body.ekko
+            }
+            if (body.ekpo !== null && body.ekpo !== undefined && body.ekpo.length > 0) {
+                ekpo = body.ekpo
+            }
+            if (body.ekes !== null && body.ekes !== undefined && body.ekes.length > 0) {
+                ekes = body.ekes
+            }
+
+            hdbext.createConnection(req.tenantContainer, (err, client) => {
+                if (err) {
+                    console.error('ERROR CONNECTION ConfirmOrdersAckn:' + stringifyObj(err))
+                    return res.status(500).send('CREATE CONNECTION ERROR ConfirmOrdersAckn: ' + stringifyObj(err))
+                } else {
+                    hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Orders::MM00_CONFIRM_ORD_ACK', function (_err, sp) {
+                        if (_err) {
+                            console.error('ERROR loadProcedure ConfirmOrdersAckn: ' + stringifyObj(_err))
+                            client.close()
+                            return res.status(500).send(stringifyObj(_err))
+                        }
+                        sp(userid, ekko, ekpo, ekes, spras, (err, parameters, results) => {
+                            console.log('---->>> CLIENT END ConfirmOrdersAckn <<<<<-----')
+                            client.close()
+                            if (err) {
+                                console.error('ERROR ConfirmOrdersAckn SP: ' + stringifyObj(err))
+                                return res.status(500).send(stringifyObj(err))
+                            } else {
+                                return res.status(200).send({
+                                    results: results
+                                })
+                            }
+                        })
+                    })
+                }
+            })
+        }
+    })
+
+
     // Parse URL-encoded bodies (as sent by HTML forms)
     // app.use(express.urlencoded());
 

@@ -137,7 +137,16 @@ sap.ui.define([
 				that.ajaxGet(url, function (oDataRes) {
 
 					var lang = sap.ui.getCore().getConfiguration().getLanguage();
-					var oSelectStatoFornitore = that.getView().byId("InputStatoMetafornitore");
+					var jsonModel = new sap.ui.model.json.JSONModel();
+					var data = []
+					for (var i = 0; i < oDataRes.results.length; i++) {
+						data.push({"key": oDataRes.results[i].KEY, "text": (lang === "it-IT") ? oDataRes.results[i].VALUE_IT : oDataRes.results[i].VALUE_EN})
+					}
+
+					jsonModel.setData(data);
+					that.getView().setModel(jsonModel, "supplierStateJSONModel");
+
+				/*	var oSelectStatoFornitore = that.getView().byId("InputStatoMetafornitore");
 					for (var i = 0; i < oDataRes.results.length; i++) {
 						//Inserimento Record Vuoto per ComboBox
 						if (i === 0) {
@@ -153,6 +162,7 @@ sap.ui.define([
 						});
 						oSelectStatoFornitore.insertItem(item);
 					}
+					*/
 
 				});
 

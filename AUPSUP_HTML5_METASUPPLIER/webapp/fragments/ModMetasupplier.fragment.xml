@@ -32,11 +32,9 @@
 								<core:Item key="{buyerBuJSONModel>CODE}" text="{buyerBuJSONModel>DESCR}" />
 							</ComboBox>
 							<Label text="{i18n>statoMetafornitore}" labelFor="statoMetafornitore" />
-							<ComboBox id="statoMetafornitore" value="{metasupplierData>/STATO_FORNITORE}" width="100%">
-								<core:Item key="RE" text="{i18n&gt;registrazione}" />
-								<core:Item key="AP" text="{i18n&gt;approvato}" />
-								<core:Item key="OB" text="{i18n&gt;obsoleto}" />
-							</ComboBox>
+							<ComboBox id="statoMetafornitore" width="100%" items="{ path: 'supplierStateJSONModel>/', sorter: { path: 'text' } }">
+								<core:Item key="{supplierStateJSONModel>key}" text="{supplierStateJSONModel>text}" />
+							</ComboBox>			
 							<CheckBox id="active" text="{i18n>active}" selected="{metasupplierData>/ATTIVO}" />
 							<Input id="sapSorgente" type="Text" visible="false" class="sapUiSmallMarginBottom" />
 							<Label text="{i18n>huObbligatoriaPerPlant}"/>

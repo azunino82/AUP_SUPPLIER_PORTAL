@@ -62,6 +62,14 @@
 											</m:MultiComboBox>
 										</fb:control>
 									</fb:FilterItem>
+									<fb:FilterItem name="DeliveryType" label="{i18n>DELIVERY_TYPE}" >
+										<fb:control>
+											<m:MultiComboBox selectedKeys="{filterPlanningJSONModel>/deliveryType}" 
+												items="{ path: 'DeliveryTypeJSONModel>/', sorter: { path: 'CODE' } }">
+												<core:Item key="{DeliveryTypeJSONModel>CODE}" text="{DeliveryTypeJSONModel>DESCR}"/>
+											</m:MultiComboBox>
+										</fb:control>
+									</fb:FilterItem>
 								</fb:filterItems>
 							</fb:FilterBar>
 						</headerContent>
@@ -152,6 +160,36 @@
 														<m:Text text="{PlanningJSONModel>WERKS} - {PlanningJSONModel>WERKS_DESCR}" wrapping="true"/>
 													</ui:template>
 												</ui:Column>
+												<ui:Column id="LGORT" width="6rem">
+													<m:Label text="{i18n>LGORT}" class="columnLabelStyle" wrapping="true"/>
+													<ui:template>
+														<m:Text text="{PlanningJSONModel>LGORT}" wrapping="true"/>
+													</ui:template>
+												</ui:Column>
+												<ui:Column id="LBLKZ" width="6rem">
+													<m:Label text="{i18n>LBLKZ}" class="columnLabelStyle" wrapping="true"/>
+													<ui:template>
+														<m:Text text="{PlanningJSONModel>LBLKZ}" wrapping="true"/>
+													</ui:template>
+												</ui:Column>
+												<ui:Column id="EMLIF" width="6rem">
+													<m:Label text="{i18n>EMLIF}" class="columnLabelStyle" wrapping="true"/>
+													<ui:template>
+														<m:Text text="{PlanningJSONModel>EMLIF}" wrapping="true"/>
+													</ui:template>
+												</ui:Column>
+												<ui:Column id="ADDRESS" width="6rem">
+													<m:Label text="{i18n>ADDRESS}" class="columnLabelStyle" wrapping="true"/>
+													<ui:template>
+														<m:Text text="{PlanningJSONModel>STREET} {PlanningJSONModel>HOUSE_NUM1} {PlanningJSONModel>CITY1} {PlanningJSONModel>COUNTRY} {PlanningJSONModel>POST_CODE1}" wrapping="true"/>
+													</ui:template>
+												</ui:Column>
+												<ui:Column id="ZPROGRESSIVO" width="10rem">
+													<m:Label text="{i18n>ZPROGRESSIVO}" class="columnLabelStyle" wrapping="true"/>
+													<ui:template>
+														<m:Text text="{PlanningJSONModel>ZPROGRESSIVO}" wrapping="true"/>
+													</ui:template>
+												</ui:Column>
 												<!--	<ui:Column id="LWEDT" width="5rem">
 													<m:Label text="{i18n>LWEDT}" class="columnLabelStyle" wrapping="true"/>
 													<ui:template>
@@ -232,11 +270,27 @@
 													</ui:template>
 												</ui:Column>
 											</ui:columns>
-										</ui:Table>
+										</ui:Table>										
 									</ObjectPageSubSection>
 								</subSections>
 							</ObjectPageSection>
 						</sections>
+						<!-- <m:Table id="OrderRowDetailTable" rows="{OrderRowDetailJSONModel>/results}" >
+							<m:columns>
+								<m:Column id="DATE" width="12rem">
+									<m:Label text="{i18n>DATE}" class="columnLabelStyle" wrapping="true"/>
+									<ui:template>
+										<m:Text text="{OrderRowDetailJSONModel>DATE}" wrapping="true"/>
+									</ui:template>
+								</m:Column>
+								<m:Column id="MENGE" width="6rem">
+									<m:Label text="{i18n>MENGE}" class="columnLabelStyle" wrapping="true"/>
+									<ui:template>
+										<m:Text text="{OrderRowDetailJSONModel>MENGE}" wrapping="true"/>
+									</ui:template>
+								</m:Column>
+							</m:columns>
+						</m:Table> -->
 					</ObjectPageLayout>
 				</m:Page>
 			</m:pages>

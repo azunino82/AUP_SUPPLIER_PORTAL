@@ -126,7 +126,8 @@
 														<m:ToolbarSpacer/>
 														<m:Button visible="false" id="headerFilterButton" tooltip="{i18n>clearFilter}" icon="sap-icon://clear-filter" press="onClearFilter" type="Transparent"/>
 														<m:SearchField id="searchField" tooltip="{i18n>worklistSearchTooltip}" search="onGlobalFilter" width="auto" visible="false"/>
-														<m:Button icon="sap-icon://excel-attachment" press="onExport" tooltip="{i18n>Export_Excel}"/>
+														<m:Button icon="sap-icon://excel-attachment" title="test" press="onExportNew" tooltip="{i18n>Export_Excel}"/>
+														<!--<m:Button icon="sap-icon://excel-attachment" press="onExport" tooltip="{i18n>Export_Excel}"/>-->
 														<m:Button icon="sap-icon://vertical-grip" visible="true" press="onColumnSelection" tooltip="{i18n>personalization}"/>
 													</m:content>
 												</m:OverflowToolbar>
