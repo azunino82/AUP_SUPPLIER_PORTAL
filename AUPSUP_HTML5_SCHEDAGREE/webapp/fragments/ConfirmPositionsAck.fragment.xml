@@ -2,7 +2,7 @@
 	<NavContainer id="navConAck">
 		<Page id="p1Ack">
 			<content>
-                <Table width="auto" items="{ path: 'SelectedOrdersAckJSONModel>/' }" growing="true" growingThreshold="4" growingScrollToLoad="false">
+                <Table width="auto" items="{ path: 'SelectedOrdersAckJSONModel>/' }">
                     <headerToolbar>
                         <OverflowToolbar>
                             <Title text="{i18n>orders}" level="H2" />
@@ -25,7 +25,7 @@
                         </ColumnListItem>
                     </items>
                 </Table>
-                <Table width="auto" items="{ path: 'SelectedPositionsAckJSONModel>/' }" growing="true" growingThreshold="15" growingScrollToLoad="false">
+                <Table width="auto" items="{ path: 'SelectedPositionsAckJSONModel>/' }">
                     <headerToolbar>
                         <OverflowToolbar>
                             <Title text="{i18n>positions}" level="H2" />
