@@ -12,9 +12,9 @@ DECLARE exist_metaid INTEGER;
 
 	CALL "AUPSUP_DATABASE.data.virtualProcedures::VIRTUAL_MM00_CONFIRM_ORD"(:IT_EKES,:IT_EKKO,:IT_EKPO,:I_SPRAS,:E_RETURN);
 
-	SELECT COUNT(*) into exist_metaid FROM "AUPSUP_DATABASE.data.tables::T_USERID_METAID" WHERE USERID = :userid;
- 	IF  exist_metaid > 0 THEN	
+/*	SELECT COUNT(*) into exist_metaid FROM "AUPSUP_DATABASE.data.tables::T_USERID_METAID" WHERE USERID = :userid;
+ 	IF  exist_metaid > 0 THEN	*/
 		E_RETURN = SELECT * FROM :E_RETURN WHERE MSGTY = 'E';
-	END IF;
+/*	END IF;*/
  
 END;
