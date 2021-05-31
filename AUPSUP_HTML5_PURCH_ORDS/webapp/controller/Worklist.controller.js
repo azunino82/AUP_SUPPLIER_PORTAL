@@ -2753,6 +2753,11 @@ sap.ui.define([
 						that.getView().addDependent(that.documentListFragment);
 					}
 
+					var oModel = new JSONModel();
+					oModel.setData(null);
+					var oComponent = that.getOwnerComponent();
+					oComponent.setModel(oModel, "DocumentListJSONModel");
+
 					that.documentListFragment.open();
 
 					return;

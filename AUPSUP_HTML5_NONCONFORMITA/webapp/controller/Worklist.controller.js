@@ -65,6 +65,7 @@ sap.ui.define([
 			that.getPlants();
 			that.getTipoAvviso();
 			that.getDocumentCustomizingData();
+			that.getStatus();
 
 			var filterModel = {
 				"matnr": [],
@@ -216,6 +217,17 @@ sap.ui.define([
 
 		},
 
+		getStatus: function () {
+			var url = "/backend/Utils/UtilsManagement/GetStatusQualita?I_LANGU="+ that.getLanguage();
+			that.ajaxGet(url, function (oData) {
+				if (oData) {
+					var oModel = new JSONModel();
+					oModel.setData(oData);
+					that.getView().setModel(oModel, "statusJSONModel");
+				}
+			});
+		},
+
 		onChangeTipoAvviso: function (oEvent) {
 			that.getView().setModel(null, "statusJSONModel");
 			var selectedTipoAvviso = oEvent.oSource.getSelectedKey();
@@ -350,6 +362,10 @@ sap.ui.define([
 						else {
 							oData.results[i].color = ''; //"Default";
 						}
+						// MODIFICA DL - valorizzo descrizione stato
+						var record = that.getView().getModel("statusJSONModel").oData.results.find(x => x.STATUS_CODE === oData.results[i].STAT);
+						oData.results[i].StatusDescr = record.DESCRIPTION;
+						// MODIFICA DL - valorizzo descrizione stato - FINE
 					}
 					that.getView().setModel(oModel, "NCJSONModel");
 					that.getView().byId("NCTable").setModel(oModel);
