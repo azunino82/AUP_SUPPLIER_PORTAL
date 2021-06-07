@@ -1087,7 +1087,7 @@ sap.ui.define([
 
 							for (let index = 0; index < dataS.length; index++) {
 								var rigaTabella = dataS[index];
-								if(rigaQuantita.EBELN === rigaTabella.EBELN && rigaQuantita.EBELN === rigaTabella.EBELN){
+								if(rigaQuantita.EBELN === rigaTabella.EBELN && rigaQuantita.EBELP === rigaTabella.EBELP){
 									rigaQuantita.MATNR = rigaTabella.MATNR
 									rigaQuantita.TXZ01 = rigaTabella.TXZ01
 									break
