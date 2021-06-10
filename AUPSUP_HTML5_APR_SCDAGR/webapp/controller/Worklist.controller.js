@@ -1056,18 +1056,21 @@ sap.ui.define([
 			var ebeln = [];
 			var ebelp = [];
 			var bstyp = [];
+			var meins = [];
 			var spras = [];
 
 			for(var i = 0; i < mod.length; i++){
 				ebeln.push(mod[i].EBELN);
 				ebelp.push(mod[i].EBELP);
 				bstyp.push(mod[i].BSTYP);
+				meins.push(mod[i].MEINS);
 			}
 
 			var body = {
 				"ebeln": ebeln,
 				"ebelp": ebelp,
 				"bstyp": bstyp,
+				"meins": meins,
 				"spras": that.getLanguage(),
 			};
 
@@ -1090,6 +1093,7 @@ sap.ui.define([
 								if(rigaQuantita.EBELN === rigaTabella.EBELN && rigaQuantita.EBELP === rigaTabella.EBELP){
 									rigaQuantita.MATNR = rigaTabella.MATNR
 									rigaQuantita.TXZ01 = rigaTabella.TXZ01
+									rigaQuantita.MEINS = rigaTabella.MEINS
 									break
 								}
 								
@@ -1209,7 +1213,15 @@ sap.ui.define([
 						}, {
 							name: that.getResourceBundle().getText("quantitaConferma"),
 							template: {
-								content: "{EKES_MENGE}"
+								content: {
+									path: "EKES_MENGE",
+									type: 'sap.ui.model.type.Integer'
+								}
+							}
+						}, {
+							name: that.getResourceBundle().getText("UdM"),
+							template: {
+								content: "{MEINS}"
 							}
 						}, {
 							name: that.getResourceBundle().getText("dataRichiesta"),
@@ -1237,7 +1249,15 @@ sap.ui.define([
 						}, {
 							name: that.getResourceBundle().getText("quantitaRichiesta"),
 							template: {
-								content: "{EKET_MENGE}"
+							content: {
+								path: "EKET_MENGE",
+									type: 'sap.ui.model.type.Integer'
+								}
+							}
+						}, {
+							name: that.getResourceBundle().getText("UdM"),
+							template: {
+								content: "{MEINS}"
 							}
 						}, {
 							name: that.getResourceBundle().getText("dataCreazione"),
