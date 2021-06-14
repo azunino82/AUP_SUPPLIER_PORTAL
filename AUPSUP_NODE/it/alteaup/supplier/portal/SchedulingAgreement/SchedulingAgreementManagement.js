@@ -997,6 +997,8 @@ module.exports = function () {
         var ekgrp = []
         var ebeln = ''
         var ebelp = ''
+        var spras = req.query.I_SPRAS !== null && req.query.I_SPRAS !== undefined ? req.query.I_SPRAS : 'I'
+
         var results = []
 
         if (body.ebeln !== null && body.ebeln !== '') {
@@ -1057,7 +1059,7 @@ module.exports = function () {
                         console.log('---->>> CLIENT END ERR GetConfermeRifiuti <<<<<-----')
                         return res.status(500).send('CLIENT END ERR GetConfermeRifiuti: ' + stringifyObj(_err))
                     }
-                    sp(userid, ebeln, ebelp, lifnr, ekorg, matnr, ekgrp, werks, [], (err, parameters, listEkkoEkpo, listEketEkes, listEkehEkek) => {
+                    sp(userid, ebeln, ebelp, lifnr, ekorg, matnr, ekgrp, werks, spras, [], (err, parameters, listEkkoEkpo, listEketEkes, listEkehEkek) => {
                         console.log('---->>> CLIENT END GetConfermeRifiuti <<<<<-----')
                         client.close()
                         if (err) {

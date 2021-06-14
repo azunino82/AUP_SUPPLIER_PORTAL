@@ -21,6 +21,7 @@ sap.ui.define([
 	"use strict";
 	var that = undefined;
 	var ButtonType = Library.ButtonType;
+	var EdmType = Library.EdmType;
 	return BaseController.extend("it.aupsup.aprvschdagr.controller.Worklist", {
 
 		onInit: function () {
@@ -1163,12 +1164,18 @@ sap.ui.define([
 						{
 							name: that.getResourceBundle().getText("NETPR"),
 							template: {
-								content: "{NETPR_ORIGINAL}"
+								content: {
+									path: "NETPR_ORIGINAL",
+									type: EdmType.Currency,
+								}
 							}
 						}, {
 							name: that.getResourceBundle().getText("NETPR_NEW"),
 							template: {
-								content: "{NETPR}"
+								content: {
+									path: "NETPR",
+									type: EdmType.Currency,
+								}
 							}
 						}, {
 							name: that.getResourceBundle().getText("PEINH"),
