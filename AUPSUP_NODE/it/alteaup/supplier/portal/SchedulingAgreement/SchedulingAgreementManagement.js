@@ -1062,7 +1062,7 @@ module.exports = function () {
                         console.log('---->>> CLIENT END ERR GetConfermeRifiuti <<<<<-----')
                         return res.status(500).send('CLIENT END ERR GetConfermeRifiuti: ' + stringifyObj(_err))
                     }
-                    sp(userid, spras, ebeln, ebelp, lifnr, ekorg, matnr, ekgrp, werks, [], (err, parameters, listEkkoEkpo, listEketEkes, listEkehEkek) => {
+                    sp(userid, ebeln, ebelp, spras, lifnr, ekorg, matnr, ekgrp, werks, (err, parameters, listEkkoEkpo, listEketEkes, listEkehEkek) => {
                         console.log('---->>> CLIENT END GetConfermeRifiuti <<<<<-----')
                         client.close()
                         if (err) {
