@@ -21,7 +21,7 @@ sap.ui.define([
 	"use strict";
 	var that = undefined;
 	var ButtonType = Library.ButtonType;
-	var EdmType = Library.EdmType;
+
 	return BaseController.extend("it.aupsup.aprvschdagr.controller.Worklist", {
 
 		onInit: function () {
@@ -47,6 +47,7 @@ sap.ui.define([
 					"ekorg": [],
 					"ekgrp": [],
 					"werks": [],
+					"spras": that.getLanguage()
 				};
 
 				that.showBusyDialog();
@@ -79,6 +80,7 @@ sap.ui.define([
 				"ekorg": [],
 				"ekgrp": [],
 				"werks": [],
+				"spras": that.getLanguage()
 			};
 			var oModelFI = new JSONModel();
 			oModelFI.setData(filter);
@@ -1102,6 +1104,8 @@ sap.ui.define([
 						});
 
 						for(var i = 0; i < dataS.length; i++){
+							dataS[i].NETPR = that.importFormatter(dataS[i].NETPR);
+							dataS[i].NETPR_ORIGINAL = that.importFormatter(dataS[i].NETPR_ORIGINAL);
 							if(dataS[i].ZMODPREZZO === 'X'){
 								dataS[i].CONF_TYPE = that.getResourceBundle().getText("CONF_TYPE_PREZZO")
 								oData.results.push(dataS[i]);
@@ -1164,18 +1168,12 @@ sap.ui.define([
 						{
 							name: that.getResourceBundle().getText("NETPR"),
 							template: {
-								content: {
-									path: "NETPR_ORIGINAL",
-									type: EdmType.Currency,
-								}
+								content: "{NETPR_ORIGINAL}"
 							}
 						}, {
 							name: that.getResourceBundle().getText("NETPR_NEW"),
 							template: {
-								content: {
-									path: "NETPR",
-									type: EdmType.Currency,
-								}
+								content: "{NETPR}"
 							}
 						}, {
 							name: that.getResourceBundle().getText("PEINH"),

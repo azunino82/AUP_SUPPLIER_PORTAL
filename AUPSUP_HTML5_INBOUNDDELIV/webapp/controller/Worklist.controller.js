@@ -87,7 +87,8 @@ sap.ui.define([
 					"werks": [],
 					"matnr": [],
 					"dateFrom": fromD,
-					"dateTo": toD
+					"dateTo": toD,
+					"spras": that.getLanguage()
 				};
 
 				var oModelFI = new JSONModel();
