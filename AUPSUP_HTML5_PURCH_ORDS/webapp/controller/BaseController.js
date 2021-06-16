@@ -290,15 +290,21 @@ sap.ui.define([
 			}
 			if (sap.ui.getCore().getConfiguration().getLanguage() !== undefined && sap.ui.getCore().getConfiguration().getLanguage() === 'it-IT') {
 				return 'I';
-			}
+			}			
 			if (sap.ui.getCore().getConfiguration().getLanguage() !== undefined && sap.ui.getCore().getConfiguration().getLanguage() === 'en') {
 				return 'E';
 			}
 			if (sap.ui.getCore().getConfiguration().getLanguage() !== undefined && sap.ui.getCore().getConfiguration().getLanguage() === 'en-EN') {
 				return 'E';
-			}
+			}			
 			if (sap.ui.getCore().getConfiguration().getLanguage() !== undefined && sap.ui.getCore().getConfiguration().getLanguage() === 'de') {
 				return 'D';
+			}
+			if (sap.ui.getCore().getConfiguration().getLanguage() !== undefined && sap.ui.getCore().getConfiguration().getLanguage() === 'sv-SE') {
+				return 'V';
+			}
+			if (sap.ui.getCore().getConfiguration().getLanguage() !== undefined && sap.ui.getCore().getConfiguration().getLanguage() === 'pl-PL') {
+				return 'L';
 			}
 			return 'E'
 		},
