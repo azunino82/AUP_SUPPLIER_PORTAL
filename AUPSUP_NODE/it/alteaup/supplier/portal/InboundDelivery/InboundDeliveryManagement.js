@@ -154,6 +154,7 @@ module.exports = function () {
             var dateFrom = ''
             var dateTo = ''
             var userid = req.user.id
+            var spras = 'I'
 
             if (body.dateFrom !== null && body.dateFrom !== undefined && body.dateFrom !== '') {
                 dateFrom = body.dateFrom
@@ -208,13 +209,16 @@ module.exports = function () {
                 }
                 werks = oWerks
             }
+            if (body.spras !== null && body.spras !== undefined && body.spras !== '') {
+                spras = body.spras
+            }
 
             hdbext.createConnection(req.tenantContainer, (err, client) => {
                 if (err) {
                     return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
                 } else {
                     hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.InboundDelivery::MM00_INB_DLV_DOC_LIST', function (_err, sp) {
-                        sp(userid, lifnr, ebeln, ekorg, matnr, werks, dateFrom, dateTo, (err, parameters, results) => {
+                        sp(userid, spras, lifnr, ebeln, ekorg, matnr, werks, dateFrom, dateTo, (err, parameters, results) => {
                             if (err) {
                                 console.error('ERROR: ' + err)
                                 return res.status(500).send(stringifyObj(err))

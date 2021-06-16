@@ -997,6 +997,8 @@ module.exports = function () {
         var ekgrp = []
         var ebeln = ''
         var ebelp = ''
+        var spras = 'I'
+
         var results = []
 
         if (body.ebeln !== null && body.ebeln !== '') {
@@ -1046,6 +1048,9 @@ module.exports = function () {
             }
             ekgrp = oEkgrp
         }
+        if (body.spras !== null && body.spras !== undefined && body.spras !== '') {
+            spras = body.spras
+        }
 
         hdbext.createConnection(req.tenantContainer, (err, client) => {
             if (err) {
@@ -1057,7 +1062,7 @@ module.exports = function () {
                         console.log('---->>> CLIENT END ERR GetConfermeRifiuti <<<<<-----')
                         return res.status(500).send('CLIENT END ERR GetConfermeRifiuti: ' + stringifyObj(_err))
                     }
-                    sp(userid, ebeln, ebelp, lifnr, ekorg, matnr, ekgrp, werks, [], (err, parameters, listEkkoEkpo, listEketEkes, listEkehEkek) => {
+                    sp(userid, spras, ebeln, ebelp, spras, lifnr, ekorg, matnr, ekgrp, werks, [], (err, parameters, listEkkoEkpo, listEketEkes, listEkehEkek) => {
                         console.log('---->>> CLIENT END GetConfermeRifiuti <<<<<-----')
                         client.close()
                         if (err) {
