@@ -280,6 +280,12 @@ sap.ui.define([
 			if (sap.ui.getCore().getConfiguration().getLanguage() !== undefined && sap.ui.getCore().getConfiguration().getLanguage() === 'de') {
 				return 'D';
 			}
+			if (sap.ui.getCore().getConfiguration().getLanguage() !== undefined && sap.ui.getCore().getConfiguration().getLanguage() === 'sv-SE') {
+				return 'V';
+			}
+			if (sap.ui.getCore().getConfiguration().getLanguage() !== undefined && sap.ui.getCore().getConfiguration().getLanguage() === 'pl-PL') {
+				return 'L';
+			}
 			return 'E'
 		}
 
