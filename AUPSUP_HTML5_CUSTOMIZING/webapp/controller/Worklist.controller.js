@@ -648,7 +648,8 @@ sap.ui.define([
                 "APPLICATION": "",
                 "TIME_DEPENDENT": "",
                 "GG_ESTRAZIONE": "",
-                "PROGRESSIVI": ""
+                "PROGRESSIVI": "",
+                "ONLY_RELEASED": ""
             });
             that.getView().getModel("TipoOrdineJSONModel").refresh();
         },
