@@ -520,7 +520,7 @@ module.exports = function () {
   app.post('/SaveTOrdersTypes', function (req, res) {
     const body = req.body
 
-    var sql = 'UPSERT \"AUPSUP_DATABASE.data.tables::T_ORDERS_TYPES\" VALUES (\'' + body.SYSID + '\',\'' + body.BSTYP + '\',\'' + body.BSART + '\',\'' + body.LISTA_ODA + '\',\'' + body.LISTA_RESI + '\',\'' + body.LISTA_RFQ + '\',\'' + body.PLANNING + '\',\'' + body.MESSAGE_TYPE + '\',\'' + body.APPLICATION + '\',\'' + body.TIME_DEPENDENT + '\',\'' + body.GG_ESTRAZIONE + '\',\'' + body.PROGRESSIVI + '\') WITH PRIMARY KEY'
+    var sql = 'UPSERT \"AUPSUP_DATABASE.data.tables::T_ORDERS_TYPES\" VALUES (\'' + body.SYSID + '\',\'' + body.BSTYP + '\',\'' + body.BSART + '\',\'' + body.LISTA_ODA + '\',\'' + body.LISTA_RESI + '\',\'' + body.LISTA_RFQ + '\',\'' + body.PLANNING + '\',\'' + body.MESSAGE_TYPE + '\',\'' + body.APPLICATION + '\',\'' + body.TIME_DEPENDENT + '\',\'' + body.GG_ESTRAZIONE + '\',\'' + body.PROGRESSIVI + '\',\''  + body.ONLY_RELEASED + '\') WITH PRIMARY KEY'
     console.log('sql: ' + sql)
     hdbext.createConnection(req.tenantContainer, function (error, client) {
       if (error) {

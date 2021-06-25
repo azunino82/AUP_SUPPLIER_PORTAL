@@ -627,6 +627,9 @@
 																<m:Column minScreenWidth="Desktop" demandPopin="true">
 																	<m:Label text="{i18n>PROGRESSIVI}" class="columnLabelStyle" />
 																</m:Column>
+																<m:Column minScreenWidth="Desktop" demandPopin="true">
+																	<m:Label text="{i18n>NOT_RELEASED}" class="columnLabelStyle" />
+																</m:Column>
 																<m:Column minScreenWidth="Desktop" demandPopin="true" hAlign="End" width="5em">
 																	<m:Label class="columnLabelStyle" />
 																</m:Column>
@@ -646,6 +649,7 @@
 																		<m:Input value="{TipoOrdineJSONModel>TIME_DEPENDENT}" />
 																		<m:Input value="{TipoOrdineJSONModel>GG_ESTRAZIONE}" />
 																		<m:Input value="{TipoOrdineJSONModel>PROGRESSIVI}" />
+																		<m:Input value="{TipoOrdineJSONModel>ONLY_RELEASED}" />
 																		<m:Button icon="sap-icon://delete" press="deleteTipoOrdineRow" />
 																	</m:cells>
 																</m:ColumnListItem>
