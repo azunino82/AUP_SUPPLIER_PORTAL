@@ -166,6 +166,8 @@
 													</m:Column>														
 													<m:Column id="TESTS" minScreenWidth="Desktop" demandPopin="true">
 													</m:Column>
+													<m:Column id="PRINT" minScreenWidth="Desktop" demandPopin="true">
+													</m:Column>
 													<m:Column id="DOWNLOAD" minScreenWidth="Desktop" demandPopin="true">
 													</m:Column>
 												</m:columns>
@@ -189,6 +191,7 @@
 															<m:Text text="{path : 'OrderJSONModel>SECONDO_PERIODO', formatter : '.importFormatter'}"/>
 															<m:Text text="{OrderJSONModel>LABNR}"/>
 															<m:Button icon="sap-icon://document-text" press="onGetTexts"/>
+															<m:Button icon="sap-icon://print" press="onPrintPDFOrder" visible="{OrderJSONModel>PRINT}"/>
 															<m:Button icon="sap-icon://download" press="onItemDownload"/>
 														</m:cells>
 													</m:ColumnListItem>
