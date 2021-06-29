@@ -6,7 +6,7 @@ PROCEDURE "AUPSUP_DATABASE.data.procedures.ContoLav::MM00_CONTO_LAV" (
       IN IT_WERKS TABLE (EWERK NVARCHAR(4),DESCR NVARCHAR(255)),
       IN IT_SPRAS NVARCHAR(1),
       IN IT_DAYS NVARCHAR(3),
-      /--OUT out_Table "AUPSUP_DATABASE.data.structures.Orders::EKKOStructure")
+      --OUT out_Table "AUPSUP_DATABASE.data.structures.Orders::EKKOStructure")
       LANGUAGE SQLSCRIPT 
       SQL SECURITY INVOKER AS 
 BEGIN  
