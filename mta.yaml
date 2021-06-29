@@ -86,6 +86,10 @@ modules:
           artifacts:
             - './*'
           target-path: resources/AUPSUP_HTML5_CONTRACTS
+        - name: AUPSUP_HTML5_CONTO_LAV
+          artifacts:
+            - './*'
+          target-path: resources/AUPSUP_HTML5_CONTO_LAV
   - name: AUPSUP_LAUNCHPAD
     type: com.sap.portal.content
     path: AUPSUP_LAUNCHPAD
@@ -265,6 +269,13 @@ modules:
   - name: AUPSUP_HTML5_CONTRACTS
     type: html5
     path: AUPSUP_HTML5_CONTRACTS
+    build-parameters:
+      builder: grunt
+      supported-platforms: []
+      build-result: dist
+  - name: AUPSUP_HTML5_CONTO_LAV
+    type: html5
+    path: AUPSUP_HTML5_CONTO_LAV
     build-parameters:
       builder: grunt
       supported-platforms: []
