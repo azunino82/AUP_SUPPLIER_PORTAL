@@ -82,6 +82,10 @@
 					"id": "AUPSUP_HTML5_CONTRACTS",
 					"appId": "it.aupsup.contracts",
 					"vizId": "Contracts-Display"
+				}, {
+					"id": "AUPSUP_HTML5_CONTO_LAV",
+					"appId": "it.aupsup.conto_lav",
+					"vizId": "Conto_lav-Display"
 				}]
 			}
 		}],
