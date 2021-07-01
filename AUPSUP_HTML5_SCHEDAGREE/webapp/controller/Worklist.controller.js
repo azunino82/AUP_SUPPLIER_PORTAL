@@ -1995,9 +1995,10 @@ sap.ui.define([
 				});
 			},*/
 		onPrintPDFOrder: function () {
-			var ebeln = that.getView().getModel("OrderJSONModel").getData().EBELN;
-			var url = "/SupplierPortal_OrdersManagement/xsOdata/GetOrderPDF.xsjs?I_USERID=" + this.getCurrentUserId() + "&I_EBELN=" + ebeln +
-				"&I_BSTYP=F";
+			var path = oEvent.getSource().getParent().getBindingContext("OrderJSONModel");
+			var selctedRowdata = that.byId("OrderHeadersTable").getModel("OrderJSONModel").getProperty(path.sPath);
+			var url = "/backend/OrdersManagement/GetOrderPDF?I_USERID=" + "" + "&I_EBELN=" + selctedRowdata.EBELN +
+				"&I_BSTYP=" + selctedRowdata.BSTYP
 
 			that._pdfViewer = new PDFViewer();
 			that._pdfViewer.setShowDownloadButton(false);

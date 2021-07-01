@@ -20,16 +20,6 @@
 							<headerContent>
 								<fb:FilterBar clear="onClearFilters" search="onSearchOrders" showRestoreButton="false" showClearButton="true" showClearOnFB="true">
 									<fb:filterItems>
-										<fb:FilterItem name="Documento" label="{i18n>EBELN}">
-											<fb:control>
-												<m:Input value="{filterOrdersJSONModel>/ebeln}" submit="onSearchOrders"/>
-											</fb:control>
-										</fb:FilterItem>
-										<fb:FilterItem name="Ebelp" label="{i18n>EBELP}">
-											<fb:control>
-												<m:Input value="{filterOrdersJSONModel>/ebelp}" submit="onSearchOrders"/>
-											</fb:control>
-										</fb:FilterItem>
 										<fb:FilterItem name="Metasupplier" label="{i18n>METASUP}"
 											visible="{= ${VisibilityJSONModel>/isBuyer} === true || ${VisibilityJSONModel>/isPlanner} === true || ${VisibilityJSONModel>/isAdministrator} === true }">
 											<fb:control>
@@ -37,16 +27,6 @@
 													items="{ path: 'MetasupplierJSONModel>/results', sorter: { path: 'METAID' } }">
 													<core:Item key="{MetasupplierJSONModel>METAID}" text="{MetasupplierJSONModel>DESCR}"/>
 												</m:MultiComboBox>
-											</fb:control>
-										</fb:FilterItem>
-										<fb:FilterItem name="Cond.Pag" label="{i18n>ZTERM}" visible="false">
-											<fb:control>
-												<m:Input value="{filterOrdersJSONModel>/ZTERM}" submit="onSearchOrders"/>
-											</fb:control>
-										</fb:FilterItem>
-										<fb:FilterItem name="Incoterm" label="{i18n>INCO1}" visible="false">
-											<fb:control>
-												<m:Input value="{filterOrdersJSONModel>/INCO1}" submit="onSearchOrders"/>
 											</fb:control>
 										</fb:FilterItem>
 										<fb:FilterItem name="Lifnr" label="{i18n>supplier}"
@@ -58,28 +38,15 @@
 												</m:MultiComboBox>
 											</fb:control>
 										</fb:FilterItem>
+										<fb:FilterItem name="Ebelp" label="{i18n>EBELP}">
+											<fb:control>
+												<m:Input value="{filterOrdersJSONModel>/ebelp}" submit="onSearchOrders"/>
+											</fb:control>
+										</fb:FilterItem>
 										<fb:FilterItem name="Matnr" label="{i18n>MATNR}">
 											<fb:control>
 												<m:Input type="Text" value="{filterOrdersJSONModel>/MatnrDesc}" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="handleMatnr"
 													class="sapUiSmallMarginBottom" submit="onSearchOrders"/>
-											</fb:control>
-										</fb:FilterItem>
-										<fb:FilterItem name="Ekorg" label="{i18n>purchaseOrganization}"
-											visible="{= ${VisibilityJSONModel>/isBuyer} === true || ${VisibilityJSONModel>/isPlanner} === true || ${VisibilityJSONModel>/isAdministrator} === true }">
-											<fb:control>
-												<m:MultiComboBox selectedKeys="{filterOrdersJSONModel>/ekorg}"
-													items="{ path: 'PurchaseOrganizationJSONModel>/results', sorter: { path: 'PURCH_ORG' } }">
-													<core:Item key="{PurchaseOrganizationJSONModel>PURCH_ORG}" text="{PurchaseOrganizationJSONModel>DESCR}"/>
-												</m:MultiComboBox>
-											</fb:control>
-										</fb:FilterItem>
-										<fb:FilterItem name="GrAcq" label="{i18n>EKGRP}"
-											visible="{= ${VisibilityJSONModel>/isBuyer} === true || ${VisibilityJSONModel>/isPlanner} === true || ${VisibilityJSONModel>/isAdministrator} === true }">
-											<fb:control>
-												<m:MultiComboBox selectedKeys="{filterOrdersJSONModel>/ekgrp}" items="{ path: 'PurchaseGroupJSONModel>/results', sorter: { path: 'CODE' } }"
-													showSecondaryValues="true">
-													<core:ListItem key="{PurchaseGroupJSONModel>CODE}" text="{PurchaseGroupJSONModel>DESCR}" additionalText="{PurchaseGroupJSONModel>CODE}"/>
-												</m:MultiComboBox>
 											</fb:control>
 										</fb:FilterItem>
 										<fb:FilterItem name="Plant" label="{i18n>WERKS}">
@@ -90,31 +57,11 @@
 												</m:MultiComboBox>
 											</fb:control>
 										</fb:FilterItem>
-										<fb:FilterItem name="Prezzo" label="{i18n>Prezzo}">
+										<fb:FilterItem name="Days" label="{i18n>DAYS}">
 											<fb:control>
-												<m:CheckBox selected="{filterOrdersJSONModel>/isPrezzo}"/>
+												<m:Input value="{filterOrdersJSONModel>/days}" submit="onSearchOrders"/>
 											</fb:control>
-										</fb:FilterItem>
-										<fb:FilterItem name="Quantita" label="{i18n>Quantita}">
-											<fb:control>
-												<m:CheckBox selected="{filterOrdersJSONModel>/isQuantita}"/>
-											</fb:control>
-										</fb:FilterItem>
-										<fb:FilterItem name="Schedulazione" label="{i18n>ETENR}">
-											<fb:control>
-												<m:Input value="{filterOrdersJSONModel>/etenr}" submit="onSearchOrders"/>
-											</fb:control>
-										</fb:FilterItem>
-										<fb:FilterItem name="RangeDataSchedulazione" label="{i18n>RangeDataSchedulazione}">
-											<fb:control>
-												<m:DateRangeSelection dateValue="{path:'filterOrdersJSONModel>/schedEindtFrom'}" valueFormat="YYYYMMdd" displayFormat="dd MMM yyyy" secondDateValue="{path:'filterOrdersJSONModel>/schedEindtTo'}"/>
-											</fb:control>
-										</fb:FilterItem>              
-										<fb:FilterItem name="RangeDataInserimento" label="{i18n>RangeDataInserimento}">
-											<fb:control>
-												<m:DateRangeSelection dateValue="{path:'filterOrdersJSONModel>/createEindtFrom'}" valueFormat="YYYYMMdd" displayFormat="dd MMM yyyy" secondDateValue="{path:'filterOrdersJSONModel>/createEindtTo'}"/>
-											</fb:control>
-										</fb:FilterItem>                                                                    
+										</fb:FilterItem>                                                  
 									</fb:filterItems>
 								</fb:FilterBar>
 							</headerContent>
@@ -122,253 +69,49 @@
 								<ObjectPageSection showTitle="false">
 									<subSections>
 										<ObjectPageSubSection >
-											<m:List headerText="{i18n>Documents} {= ${DocumentsJSONModel>/results}.length}" id="positionsList" items="{path:'DocumentsJSONModel>/results'}" includeItemInSelection="true">
-												<m:CustomListItem>
-													<m:VBox>
-														<m:FlexBox alignItems="Center" justifyContent="Start">
-															<m:items>
-																<m:Button icon="{DocumentsJSONModel>IcoArrow}" class="sapUiSmallMarginEnd" press="onOrderPress"></m:Button>
-																<m:Title text="{DocumentsJSONModel>EBELN}" level="H2"/>
-															</m:items>
-														</m:FlexBox>
-														<m:List items="{path:'DocumentsJSONModel>positions'}" includeItemInSelection="true" visible="{DocumentsJSONModel>visibility}">
-															<m:CustomListItem>
-																<m:VBox>
-																	<m:FlexBox alignItems="Center" justifyContent="Start">
-																		<m:items>
-																			<m:Button icon="{DocumentsJSONModel>IcoArrowQuantita}" class="sapUiSmallMarginBegin" press="onPositionPress"></m:Button>
-																			<m:Title text="Pos: {DocumentsJSONModel>EBELP}" class="sapUiSmallMarginBegin" level="H2"/>
-																		</m:items>
-																	</m:FlexBox>
-																	<m:VBox>
-																		<m:Table class="sapUiMediumMarginBegin" width="auto" items="{ path: 'DocumentsJSONModel>ConfermePrezzo' }"
-																			visible="{= ${DocumentsJSONModel>ConfermePrezzoVisibility} &amp;&amp; ${DocumentsJSONModel>ConfermePrezzo}.length > 0}" growing="true" growingThreshold="4" growingScrollToLoad="false">
-																			<m:headerToolbar>
-																				<m:OverflowToolbar>
-																					<m:content>
-																						<m:Title text="{i18n>ConfermePrezzoPos}" level="H2"/>
-																					</m:content>
-																				</m:OverflowToolbar>
-																			</m:headerToolbar>
-																			<m:columns>
-																				<m:Column>
-																					<m:Text text="{i18n>PrezzoPrecedente}"/>
-																				</m:Column>
-																				<m:Column>
-																					<m:Text text="{i18n>UdPPrecedente}"/>
-																				</m:Column>
-																				<m:Column>
-																					<m:Text text="{i18n>DataInizioPrecedente}"/>
-																				</m:Column>
-																				<m:Column>
-																					<m:Text text="{i18n>DataFinePrecedente}"/>
-																				</m:Column>
-																				<m:Column>
-																					<m:Text text="{i18n>NuovoPrezzo}"/>
-																				</m:Column>
-																				<m:Column>
-																					<m:Text text="{i18n>UdPNuova}"/>
-																				</m:Column>
-																				<m:Column>
-																					<m:Text text="{i18n>NuovaDataInizio}"/>
-																				</m:Column>
-																				<m:Column>
-																					<m:Text text="{i18n>NuovaDataFine}"/>
-																				</m:Column>
-																				<m:Column>
-																					<m:Text text="{i18n>DataInserimentoRichiesta}"/>
-																				</m:Column>
-																				<m:Column>
-																					<m:Text text="{i18n>DataApprovazioneRifiuto}"/>
-																				</m:Column>
-																				<m:Column>
-																					<m:Text text="{i18n>ApprovazioneRifiuto}"/>
-																				</m:Column>
-																				<m:Column>
-																					<m:Text text="{i18n>COMMENT}"/>
-																				</m:Column>
-																			</m:columns>
-																			<m:items textAlign="Center">
-																				<m:ColumnListItem>
-																					<m:cells>
-																						<m:Text text="{ path: 'DocumentsJSONModel>actual_price', formatter : '.importFormatter' }"/>
-																						<m:Text text="{path : 'DocumentsJSONModel>actual_UDP'}"/>
-																						<m:Text text="{DocumentsJSONModel>date_start}"/>
-																						<m:Text text="{path : 'DocumentsJSONModel>date_end'}"/>
-																						<m:Text text="{path : 'DocumentsJSONModel>new_price', formatter : '.importFormatter'}"/>
-																						<m:Text text="{path : 'DocumentsJSONModel>new_udp'}"/>
-																						<m:Text text="{path : 'DocumentsJSONModel>new_start_date', type: 'it.aupsup.conto_lav.type.Date' }"/>
-																						<m:Text text="{path : 'DocumentsJSONModel>new_end_date', type: 'it.aupsup.conto_lav.type.Date' }"/>
-																						<m:Text text="{path : 'DocumentsJSONModel>insert_date', type: 'it.aupsup.conto_lav.type.Timestamp' }"/>
-																						<m:Text text="{path : 'DocumentsJSONModel>approve_date', type: 'it.aupsup.conto_lav.type.Timestamp'}"/>
-																						<m:Text text="{= ${DocumentsJSONModel>confirmDirectToSap} === 'X' ? ${i18n>automatica} : ${DocumentsJSONModel>status} === 'RC' ? ${i18n>daElaborare} : ${DocumentsJSONModel>status} === 'AP' || ${DocumentsJSONModel>status} === 'OK' ? ${i18n>approvata} : ${DocumentsJSONModel>status} === 'RF' ? ${i18n>rifiutata} : ${DocumentsJSONModel>status} === 'SK' ? ${i18n>skippata} : '' }"/>
-																						<m:Button icon="sap-icon://notification-2" press="handleTextPopoverPress" visible="{= ${DocumentsJSONModel>comment} !== '' &amp;&amp; ${DocumentsJSONModel>comment} !== null }"/>
-																					</m:cells>
-																				</m:ColumnListItem>
-																			</m:items>
-																		</m:Table>
-																		<m:Table class="sapUiMediumMarginBegin" width="auto" items="{ path: 'DocumentsJSONModel>ConfermeQuantita', sorter: { path: 'sched_date', ascending: true }}"
-																			visible="{= ${DocumentsJSONModel>ConfermeQuantitaVisibility} &amp;&amp; ${DocumentsJSONModel>ConfermeQuantita}.length > 0}" growing="true" growingThreshold="4" growingScrollToLoad="false">
-																			<m:headerToolbar>
-																				<m:OverflowToolbar>
-																					<m:content>
-																						<m:Title text="{i18n>ConfermeQuantita}" level="H2"/>
-																					</m:content>
-																				</m:OverflowToolbar>
-																			</m:headerToolbar>
-																			<m:columns>
-																				<m:Column>
-																					<m:Text text="{i18n>ETENR}"/>
-																				</m:Column>
-																				<m:Column>
-																					<m:Text text="{i18n>RangeDataSchedulazione}"/>
-																				</m:Column>
-																				<m:Column>
-																					<m:Text text="{i18n>QuantitaSchedulazione}"/>
-																				</m:Column>
-																				<m:Column>
-																					<m:Text text="{i18n>DataConfermata}"/>
-																				</m:Column>
-																				<m:Column>
-																					<m:Text text="{i18n>QuantitaConfermata}"/>
-																				</m:Column>
-																				<m:Column>
-																					<m:Text text="{i18n>DataInserimentoConferma}"/>
-																				</m:Column>
-																				<m:Column>
-																					<m:Text text="{i18n>DataApprovazioneRifiuto}"/>
-																				</m:Column>
-																				<m:Column>
-																					<m:Text text="{i18n>ApprovazioneRifiuto}"/>
-																				</m:Column>
-																				<m:Column>
-																					<m:Text text="{i18n>COMMENT}"/>
-																				</m:Column>
-																			</m:columns>
-																			<m:items textAlign="Center">
-																				<m:ColumnListItem>
-																					<m:cells>
-																						<m:Text text="{ path: 'DocumentsJSONModel>sched_numb' }"/>
-																						<m:Text text="{ path: 'DocumentsJSONModel>sched_date', type: 'it.aupsup.conto_lav.type.Date' }"/>
-																						<m:Text text="{ path: 'DocumentsJSONModel>sched_quant', formatter : '.importFormatter' }"/>
-																						<m:Text text="{path : 'DocumentsJSONModel>conf_date', type: 'it.aupsup.conto_lav.type.Timestamp'}"/>
-																						<m:Text text="{path : 'DocumentsJSONModel>conf_quant', formatter : '.importFormatter'}"/>
-																						<m:Text text="{path : 'DocumentsJSONModel>insert_date', type: 'it.aupsup.conto_lav.type.Timestamp'}"/>
-																						<m:Text text="{path : 'DocumentsJSONModel>approve_date', type: 'it.aupsup.conto_lav.type.Timestamp'}"/>
-																						<m:Text text="{= ${DocumentsJSONModel>status} === 'RC' ? ${i18n>daElaborare} : ${DocumentsJSONModel>status} === 'AP' ? ${i18n>approvata} : ${DocumentsJSONModel>status} === 'RF' ? ${i18n>rifiutata} : ${DocumentsJSONModel>status} === 'SK' ? ${i18n>skippata} : '' }"/>
-																						<m:Button icon="sap-icon://notification-2" press="handleTextPopoverPress" visible="{= ${DocumentsJSONModel>comment} !== '' &amp;&amp; ${DocumentsJSONModel>comment} !== null }"/>
-																					</m:cells>
-																				</m:ColumnListItem>
-																			</m:items>
-																		</m:Table>
-																	</m:VBox>
-																</m:VBox>
-															</m:CustomListItem>
-														</m:List>
-													</m:VBox>
-												</m:CustomListItem>
-											</m:List>
-											<table:TreeTable id="TreeTableBasic" selectionMode="None" visibleRowCount="20" visible="false"
-												rows="{path:'DocumentsJSONModel>/catalog/clothing', parameters: {arrayNames:['categories']}}" ariaLabelledBy="title">
-												<table:columns>
-													<table:Column width="13rem">
-														<m:Label text="{i18n>ETENR}"/>
-														<table:template>
-															<m:Text text="{DocumentsJSONModel>sched_numb}" wrapping="false"/>
-														</table:template>
-													</table:Column>
-													<table:Column width="13rem">
-														<m:Label text="{i18n>orderNumber}"/>
-														<table:template>
-															<m:Text text="{DocumentsJSONModel>name}" wrapping="false"/>
-														</table:template>
-													</table:Column>
-													<table:Column width="13rem">
-														<m:Label text="{i18n>RangeDataSchedulazione}"/>
-														<table:template>
-															<m:Text text="{DocumentsJSONModel>sched_date}" wrapping="false"/>
-														</table:template>
-													</table:Column>
-													<table:Column width="13rem">
-														<m:Label text="{i18n>QuantitaSchedulazione}"/>
-														<table:template>
-															<m:Text text="{DocumentsJSONModel>sched_quant}" wrapping="false"/>
-														</table:template>
-													</table:Column>
-													<table:Column width="13rem">
-														<m:Label text="{i18n>DataConfermata}"/>
-														<table:template>
-															<m:Text text="{DocumentsJSONModel>conf_date}" wrapping="false"/>
-														</table:template>
-													</table:Column>
-													<table:Column width="13rem">
-														<m:Label text="{i18n>QuantitaConfermata}"/>
-														<table:template>
-															<m:Text text="{DocumentsJSONModel>conf_quant}" wrapping="false"/>
-														</table:template>
-													</table:Column>
-													<table:Column width="9rem">
-														<m:Label text="{i18n>PrezzoAttuale}"/>
-														<table:template>
-															<m:Text text="{DocumentsJSONModel>actual_price}" wrapping="false"/>
-														</table:template>
-													</table:Column>
-													<table:Column width="9rem">
-														<m:Label text="{i18n>UdPAttuale}"/>
-														<table:template>
-															<m:Text text="{DocumentsJSONModel>actual_UDP}" wrapping="false"/>
-														</table:template>
-													</table:Column>
-													<table:Column width="9rem">
-														<m:Label text="{i18n>DataInizio}"/>
-														<table:template>
-															<m:Text text="{DocumentsJSONModel>date_start}" wrapping="false"/>
-														</table:template>
-													</table:Column>
-													<table:Column width="9rem">
-														<m:Label text="{i18n>DataFine}"/>
-														<table:template>
-															<m:Text text="{DocumentsJSONModel>date_end}" wrapping="false"/>
-														</table:template>
-													</table:Column>
-													<table:Column width="9rem">
-														<m:Label text="{i18n>NuovoPrezzo}"/>
-														<table:template>
-															<m:Text text="{DocumentsJSONModel>new_price}" wrapping="false"/>
-														</table:template>
-													</table:Column>
-													<table:Column width="9rem">
-														<m:Label text="{i18n>UdpNuova}"/>
-														<table:template>
-															<m:Text text="{DocumentsJSONModel>new_udp}" wrapping="false"/>
-														</table:template>
-													</table:Column>
-													<table:Column width="9rem">
-														<m:Label text="{i18n>NuovaDataInizio}"/>
-														<table:template>
-															<m:Text text="{DocumentsJSONModel>new_start_date}" wrapping="false"/>
-														</table:template>
-													</table:Column>
-													<table:Column width="9rem">
-														<m:Label text="{i18n>DataInserimentoRichiesta}"/>
-														<table:template>
-															<m:Text text="{DocumentsJSONModel>insert_date}" wrapping="false"/>
-														</table:template>
-													</table:Column>
-													<table:Column width="9rem">
-														<m:Label text="{i18n>DataApprovazioneRifiuto}"/>
-														<table:template>
-															<m:Text text="{DocumentsJSONModel>approve_date}" wrapping="false"/>
-														</table:template>
-													</table:Column>
-													<table:Column width="9rem">
-														<m:Label text="{i18n>ApprovazioneRifiuto}"/>
-														<table:template>
-															<m:Text text="{DocumentsJSONModel>status}" wrapping="false"/>
-														</table:template>
-													</table:Column>
-												</table:columns>
-											</table:TreeTable>
+											 <TreeTable
+												id="TreeTableBasic"
+												rows="{path:'/catalog/clothing', parameters: {arrayNames:['categories']}}"
+												selectionMode="MultiToggle"
+												enableSelectAll="false"
+												ariaLabelledBy="title">
+											<extension>
+												<m:OverflowToolbar style="Clear">
+													<m:Title id="title" text="Clothing"/>
+													<m:ToolbarSpacer/>
+													<m:Button text="Collapse all" press="onCollapseAll"/>
+													<m:Button text="Collapse selection" press="onCollapseSelection"/>
+													<m:Button text="Expand first level" press="onExpandFirstLevel"/>
+													<m:Button text="Expand selection" press="onExpandSelection"/>
+												</m:OverflowToolbar>
+											</extension>
+											<columns>
+												<Column width="13rem">
+													<m:Label text="Categories"/>
+													<template>
+														<m:Text text="{name}" wrapping="false" />
+													</template>
+												</Column>
+												<Column width="9rem">
+													<m:Label text="Price"/>
+													<template>
+														<u:Currency value="{amount}" currency="{currency}"/>
+													</template>
+												</Column>
+												<Column width="11rem">
+													<m:Label text="Size"/>
+													<template>
+														<m:Select
+																items="{path: '/sizes', templateShareable: true}"
+																selectedKey="{size}"
+																visible="{= !!${size}}"
+																forceSelection="false">
+															<core:Item key="{key}" text="{value}"/>
+														</m:Select>
+													</template>
+												</Column>
+											</columns>
+										</TreeTable>
 										</ObjectPageSubSection>
 									</subSections>
 								</ObjectPageSection>

@@ -149,43 +149,10 @@ sap.ui.define([
 
         onSearchOrders: function () {
 
-            var url = "/backend/Utils/UtilsManagement/GetConfirmStatus";
+            var url = "/backend/ContoLav/ContoLavManagement/GetContoLav";
             var body = that.getModel("filterOrdersJSONModel").getData();
 
             var jsonBody = JSON.parse(JSON.stringify(body));
-
-            if (body !== undefined && body.schedEindtFrom !== undefined && body.schedEindtFrom !== null) {
-                var year = body.schedEindtFrom.getFullYear();
-                var month = (1 + body.schedEindtFrom.getMonth()).toString();
-                month = month.length > 1 ? month : '0' + month;
-                var day = body.schedEindtFrom.getDate().toString();
-                day = day.length > 1 ? day : '0' + day;
-                jsonBody.schedEindtFrom = year + month + day;
-            }
-            if (body !== undefined && body.schedEindtTo !== undefined && body.schedEindtTo !== null) {
-                var year = body.schedEindtTo.getFullYeafr();
-                var month = (1 + body.schedEindtTo.getMonth()).toString();
-                month = month.length > 1 ? month : '0' + month;
-                var day = body.schedEindtTo.getDate().toString();
-                day = day.length > 1 ? day : '0' + day;
-                jsonBody.schedEindtTo = year + month + day;
-            }
-            if (body !== undefined && body.createEindtFrom !== undefined && body.createEindtFrom !== null) {
-                var year = body.createEindtFrom.getFullYear();
-                var month = (1 + body.createEindtFrom.getMonth()).toString();
-                month = month.length > 1 ? month : '0' + month;
-                var day = body.createEindtFrom.getDate().toString();
-                day = day.length > 1 ? day : '0' + day;
-                jsonBody.createEindtFrom = year + month + day;
-            }
-            if (body !== undefined && body.createEindtTo !== undefined && body.createEindtTo !== null) {
-                var year = body.createEindtTo.getFullYear();
-                var month = (1 + body.createEindtTo.getMonth()).toString();
-                month = month.length > 1 ? month : '0' + month;
-                var day = body.createEindtTo.getDate().toString();
-                day = day.length > 1 ? day : '0' + day;
-                jsonBody.createEindtTo = year + month + day;
-            }
 
             // add 0 before ebelp
             if(jsonBody.ebelp !== undefined && jsonBody.ebelp !== ''){
@@ -205,11 +172,7 @@ sap.ui.define([
                     oModel.setData(oData);
                     that.getView().setModel(oModel, "DocumentsJSONModel");
 
-                } else {
-                    var oModel = new JSONModel();
-                    oModel.setData({});
-                    that.getView().setModel(oModel, "OrderJSONModel");
-                }
+                } 
             })
 
         },

@@ -970,60 +970,48 @@ module.exports = function () {
         }
     })
 
-    app.post('/GetOrderPDF', function (req, res) {
-        const body = req.body
-
-        console.log('INPUT BODY ==========> ' + JSON.stringify(body))
-        if (body !== undefined && body !== '' && body !== null) {
-            var matnr = []
-            var maktx = []
-            var filter = []
-            var userid = req.user.id
-            var ebeln = req.ebeln
-            var bstyp = req.bstyp
-            var spras = body.spras
-
-            if (spras === undefined || spras === null || spras === '') {
-                spras = 'I'
-            }
-
-            if (body.matnr !== null && body.matnr !== undefined && body.matnr.length > 0) {
-                matnr = body.matnr
-            }
-            if (body.maktx !== null && body.maktx !== undefined && body.maktx.length > 0) {
-                maktx = body.maktx
-            }
-            if (body.filter !== null && body.filter !== undefined && body.filter.length > 0) {
-                filter = body.filter
-            }
-
-            hdbext.createConnection(req.tenantContainer, (err, client) => {
-                if (err) {
-                    console.error('ERROR CONNECTION GetOrderPDF:' + stringifyObj(err))
-                    return res.status(500).send('CREATE CONNECTION ERROR GetOrderPDF: ' + stringifyObj(err))
-                } else {
-                    hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Orders::MM00_PURDOC_GET_PRINT', function (_err, sp) {
-                        if (_err) {
-                            console.error('ERROR loadProcedure GetOrderPDF: ' + stringifyObj(_err))
-                            client.close()
-                            return res.status(500).send(stringifyObj(_err))
-                        }
-                        sp(userid, ebeln, bstyp, (err, parameters, results) => {
-                            console.log('---->>> CLIENT END GetOrderPDF <<<<<-----')
-                            client.close()
-                            if (err) {
-                                console.error('ERROR GetOrderPDF SP: ' + stringifyObj(err))
+    app.get('/GetOrderPDF', function (req, res) {
+        var userid = req.user.id;
+        var ebeln = req.query.I_EBELN;
+        var bstyp = req.query.I_BSTYP;
+        
+            if(ebeln != null && ebeln!=""){
+                if(bstyp != null && bstyp!=""){
+   
+                    hdbext.createConnection(req.tenantContainer, (err, client) => {
+                        if (err) {
+                          return res.status(500).send('MM00_PURDOC_GET_PRINT CONNECTION ERROR: ' + stringifyObj(err))
+                        } else {
+                          hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Orders::MM00_PURDOC_GET_PRINT', function (_err, sp) {
+                            sp(userid, ebeln, bstyp, (err, parameters, results) => {
+                              console.log('---->>> CLIENT END MM00_PURDOC_GET_PRINT <<<<<-----')
+                              client.close()
+                              if (err) {
                                 return res.status(500).send(stringifyObj(err))
-                            } else {
-                                return res.status(200).send({
-                                    results: results
-                                })
-                            }
-                        })
-                    })
-                }
-            })
-        }
+                              } else {
+                                // reqStr = stringifyObj(results);
+                                // var outJson = {"results":reqStr};
+                                //var outArr = []
+                                //results.forEach(element => {
+                                // outArr.push(element)
+                                //})
+                  
+                                res.setHeader('Content-Type', 'application/pdf')
+                                res.contentType('application/pdf')
+                                //res.setBody(parameters.STREAM);
+                                //$.response.setBody(results);
+                                return res.status(200).send(parameters.STREAM)
+                              }
+                            })
+                          })
+                        }
+                      })
+               }else{
+                   return res.status(500).send("'Error':'I_BSTYP field is mandatory'");
+               }
+           }else{
+               return res.status(500).send("'Error':'I_EBELN field is mandatory'");
+           }
     })
 
     // Parse URL-encoded bodies (as sent by HTML forms)

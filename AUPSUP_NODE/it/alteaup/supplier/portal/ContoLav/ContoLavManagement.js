@@ -31,6 +31,7 @@ module.exports = function () {
         var werks = []
         var matnr = []
         var lifnr = []
+        var ekorg = []
         var days = ''
         var langu = ''
         var userid = req.user.id
@@ -69,21 +70,57 @@ module.exports = function () {
         if (body.days !== null && body.days !== undefined && body.days !== '') {
             days = body.days
         }
-
+        if (body.ekorg !== null && body.ekorg !== undefined && body.ekorg.length > 0) {
+            var oEkorg = []
+            // eslint-disable-next-line no-redeclare
+            for (var i = 0; i < body.ekorg.length; i++) {
+                oEkorg.push({
+                    EKORG: body.ekorg[i]
+                })
+            }
+            ekorg = oEkorg
+        }
         hdbext.createConnection(req.tenantContainer, (err, client) => {
             if (err) {
             return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
             } else {
-            hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.Planning::MM00_PLANNING_DOC_LIST', function (_err, sp) {
-                sp(userid, werks, matnr, ebeln, lifnr, langu, days, (err, parameters, results) => {
+            hdbext.loadProcedure(client, null, 'AUPSUP_DATABASE.data.procedures.ContoLav::MM00_CONTO_LAV', function (_err, sp) {
+                sp(userid, days, ebeln, lifnr, matnr, langu, werks, ekorg, (err, parameters, ET_MATERIAL) => {
                 if (err) {
                     console.error('ERROR: ' + err)
                     return res.status(500).send(stringifyObj(err))
                 } else {
+                    
                     var outArr = []
-                    results.forEach(element => {
-                        outArr.push(element)
-                    })
+                    if (ET_MATERIAL !== undefined && ET_MATERIAL !== null && ET_MATERIAL.length > 0) {
+                        for (var i = 0; i < ET_MATERIAL.length; i++) {
+                            outArrayDoc.push
+                            ({
+                                "ET_MATERIAL": [{"LIFNR": ET_MATERIAL.LIFNR[i],
+                                                "NAME_LIFNR": ET_MATERIAL.NAME_LIFNR[i],
+                                                "WERKS": ET_MATERIAL.WERKS[i],
+                                                "MATNR": ET_MATERIAL.MATNR[i],
+                                                "DESC_MATNR": ET_MATERIAL.DESC_MATNR[i],
+                                                "COMP_MATNR": ET_MATERIAL.COMP_MATNR[i],
+                                                "DESC_COMP": ET_MATERIAL.DESC_COMP[i],
+                                                "LBLAB": ET_MATERIAL.LBLAB[i],
+                                                "LBINS": ET_MATERIAL.LBINS[i],
+                                                "TOT_GIAC": ET_MATERIAL.TOT_GIAC[i],
+                                            "DOC": [{
+                                                "EBELN": ET_MATERIAL.EBELN[i], 
+                                                "EBELP": ET_MATERIAL.EBELP[i],
+                                                "FIRST": ET_MATERIAL.FIRST[i],
+                                            }]
+
+                                }]
+                            })
+                        }
+                    }
+
+                    //var outArr = []
+                    //results.forEach(element => {
+                    //    outArr.push(element)
+                    //})
                     return res.status(200).send({
                         results: outArr
                     })
