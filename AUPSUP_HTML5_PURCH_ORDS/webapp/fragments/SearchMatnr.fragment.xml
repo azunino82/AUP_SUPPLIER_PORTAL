@@ -39,8 +39,8 @@
 					<items>
 						<ColumnListItem>
 							<cells>
-								<Text text="{= parseFloat(${MatnrJSONModel>CODE}) }">
-								<!--<Text text="{MatnrJSONModel>CODE}"/>-->
+								<!--<Text text="{= parseFloat(${MatnrJSONModel>CODE}) }">-->
+								<Text text="{MatnrJSONModel>CODE}"/>
 								<Text text="{MatnrJSONModel>DESCR}"/>
 							</cells>
 						</ColumnListItem>
