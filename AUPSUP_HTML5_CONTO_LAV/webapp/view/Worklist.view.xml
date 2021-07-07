@@ -77,12 +77,6 @@
 												<table:RowSettings highlight="{DocumentsJSONModel>SEMA}"/>
 											</table:rowSettingsTemplate>
 												<table:columns>
-												<table:Column width="13rem">
-														<m:Label text="{i18n>METASUP}"/>
-														<table:template>
-															<m:Text text="{DocumentsJSONModel>METAID}" wrapping="false"/>
-														</table:template>
-													</table:Column>
 													<table:Column width="13rem">
 														<m:Label text="{i18n>DESC_METAID}"/>
 														<table:template>
