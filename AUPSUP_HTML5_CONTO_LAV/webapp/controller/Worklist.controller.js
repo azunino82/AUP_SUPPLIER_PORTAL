@@ -13,7 +13,8 @@ sap.ui.define([
     "sap/ui/core/util/ExportTypeCSV",
     "sap/m/Dialog",
     "sap/ui/core/Fragment",
-], function (BaseController, Filter, FilterOperator, JSONModel, MessageBox, MessageToast, Sorter, DateF, TimestampFormatter, Formatter, Export, ExportTypeCSV, Dialog,Fragment) {
+    "sap/ui/table/RowSettings",
+], function (BaseController, Filter, FilterOperator, JSONModel, MessageBox, MessageToast, Sorter, DateF, TimestampFormatter, Formatter, Export, ExportTypeCSV, Dialog,Fragment,RowSettings) {
     "use strict";
     var that;
 
@@ -149,30 +150,30 @@ sap.ui.define([
 
         onSearchOrders: function () {
 
-            var url = "/backend/ContoLav/ContoLavManagement/GetContoLav";
+            var url = "/backend/ContoLavManagement/GetContoLav";
             var body = that.getModel("filterOrdersJSONModel").getData();
 
             var jsonBody = JSON.parse(JSON.stringify(body));
 
             // add 0 before ebelp
-            if(jsonBody.ebelp !== undefined && jsonBody.ebelp !== ''){
-                if(jsonBody.ebelp.length !== 5){
-                	while(jsonBody.ebelp.length < 5){
-					  jsonBody.ebelp = '0' + jsonBody.ebelp
-					}
-                }
-            }
+            //if(jsonBody.ebelp !== undefined && jsonBody.ebelp !== ''){
+            //    if(jsonBody.ebelp.length !== 5){
+            //    	while(jsonBody.ebelp.length < 5){
+			//		  jsonBody.ebelp = '0' + jsonBody.ebelp
+			//		}
+            //    }
+            //}
 
             that.showBusyDialog();
             that.ajaxPost(url, jsonBody, function (oData) {
                 that.hideBusyDialog();
-                if (oData && oData.results) {
+                if (oData) {
 
                     var oModel = new JSONModel();
                     oModel.setData(oData);
                     that.getView().setModel(oModel, "DocumentsJSONModel");
 
-                } 
+                }
             })
 
         },
@@ -193,14 +194,6 @@ sap.ui.define([
 				that.getModel("filterOrdersJSONModel").getData().ekgrp = [];
 				that.getModel("filterOrdersJSONModel").getData().werks = [];
 				that.getModel("filterOrdersJSONModel").getData().spras = that.getLanguage();
-				that.getModel("filterOrdersJSONModel").getData().schedEindtFrom = null;
-                that.getModel("filterOrdersJSONModel").getData().schedEindtFrom = null;
-                that.getModel("filterOrdersJSONModel").getData().createEindtFrom = null;
-                that.getModel("filterOrdersJSONModel").getData().createEindtTo = null;
-                that.getModel("filterOrdersJSONModel").getData().isPrezzo = true;
-                that.getModel("filterOrdersJSONModel").getData().isQuantita = true;
-                that.getModel("filterOrdersJSONModel").getData().etenr = '';
-
 			}
 			if (that.getModel("MetasupplierJSONModel") !== undefined && that.getModel("MetasupplierJSONModel").getData() !== undefined) {
 				that.getModel("MetasupplierJSONModel").getData().METAID = '';
@@ -427,7 +420,6 @@ sap.ui.define([
 
         },
 
-        
 		handleTextPopoverPress: function (oEvent) {
 			var oPath = oEvent.getSource().getParent().getBindingContext("DocumentsJSONModel").sPath;
 
@@ -451,7 +443,7 @@ sap.ui.define([
 			} else {
 				this._oPopover.openBy(oButton);
 			}
-		},
+		}
     });
 
 });

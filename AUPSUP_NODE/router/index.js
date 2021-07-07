@@ -33,4 +33,7 @@ module.exports = function (app, server) {
 
   // SERVIZI SCHEDULATORE LETTURA ORDINE E PIANI ecc..
   app.use('/SchedulersManagement', require('../it/alteaup/supplier/portal/Schedulers/SchedulersManagement')())
+
+  // SERVIZI CONTO LAVORISTI
+  app.use('/ContoLavManagement', require('../it/alteaup/supplier/portal/ContoLav/ContoLavManagement')())
 }

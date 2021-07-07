@@ -11,8 +11,9 @@ sap.ui.define([
 	"sap/ui/core/util/Export",
 	"sap/ui/core/util/ExportTypeCSV",
 	"sap/m/Dialog",
-	"it/aupsup/contracts/js/jszip"
-], function (BaseController, Filter, FilterOperator, JSONModel, MessageBox, MessageToast, Sorter, DateF, Formatter, Export, ExportTypeCSV, Dialog, JSZIP) {
+	"it/aupsup/contracts/js/jszip",
+	"sap/m/PDFViewer"
+], function (BaseController, Filter, FilterOperator, JSONModel, MessageBox, MessageToast, Sorter, DateF, Formatter, Export, ExportTypeCSV, Dialog, JSZIP, PDFViewer) {
 	"use strict";
 	var that;
 	return BaseController.extend("it.aupsup.contracts.controller.Worklist", {
@@ -2141,7 +2142,7 @@ sap.ui.define([
 				}
 			});
 		},*/
-		onPrintPDFOrder: function () {
+		onPrintPDFOrder: function (oEvent) {
 			var path = oEvent.getSource().getParent().getBindingContext("OrderJSONModel");
 			var selctedRowdata = that.byId("OrderHeadersTable").getModel("OrderJSONModel").getProperty(path.sPath);
 			var url = "/backend/OrdersManagement/GetOrderPDF?I_USERID=" + "" + "&I_EBELN=" + selctedRowdata.EBELN +

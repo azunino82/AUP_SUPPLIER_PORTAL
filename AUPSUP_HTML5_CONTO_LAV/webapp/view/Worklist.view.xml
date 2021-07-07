@@ -1,6 +1,6 @@
 <mvc:View controllerName="it.aupsup.conto_lav.controller.Worklist" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.uxap" xmlns:layout="sap.ui.layout"
 	xmlns:m="sap.m" xmlns:table="sap.ui.table" xmlns:core="sap.ui.core" xmlns:personal="sap.uxap.sample.SharedBlocks.personal"
-	xmlns:form="sap.ui.layout.form" xmlns:fb="sap.ui.comp.filterbar">
+	xmlns:form="sap.ui.layout.form" xmlns:fb="sap.ui.comp.filterbar" xmlns:sts="sap.ui.table.TreeTable">
 	<m:Shell id="shell" appWidthLimited="false">
 		<m:App id="app">
 			<m:pages>
@@ -69,49 +69,112 @@
 								<ObjectPageSection showTitle="false">
 									<subSections>
 										<ObjectPageSubSection >
-											 <TreeTable
-												id="TreeTableBasic"
-												rows="{path:'/catalog/clothing', parameters: {arrayNames:['categories']}}"
-												selectionMode="MultiToggle"
-												enableSelectAll="false"
-												ariaLabelledBy="title">
-											<extension>
-												<m:OverflowToolbar style="Clear">
-													<m:Title id="title" text="Clothing"/>
-													<m:ToolbarSpacer/>
-													<m:Button text="Collapse all" press="onCollapseAll"/>
-													<m:Button text="Collapse selection" press="onCollapseSelection"/>
-													<m:Button text="Expand first level" press="onExpandFirstLevel"/>
-													<m:Button text="Expand selection" press="onExpandSelection"/>
-												</m:OverflowToolbar>
-											</extension>
-											<columns>
-												<Column width="13rem">
-													<m:Label text="Categories"/>
-													<template>
-														<m:Text text="{name}" wrapping="false" />
-													</template>
-												</Column>
-												<Column width="9rem">
-													<m:Label text="Price"/>
-													<template>
-														<u:Currency value="{amount}" currency="{currency}"/>
-													</template>
-												</Column>
-												<Column width="11rem">
-													<m:Label text="Size"/>
-													<template>
-														<m:Select
-																items="{path: '/sizes', templateShareable: true}"
-																selectedKey="{size}"
-																visible="{= !!${size}}"
-																forceSelection="false">
-															<core:Item key="{key}" text="{value}"/>
-														</m:Select>
-													</template>
-												</Column>
-											</columns>
-										</TreeTable>
+										
+										<table:TreeTable id="TreeTableBasic" selectionMode="Single" expandFirstLevel="false"
+											rows="{path:'DocumentsJSONModel>/results', parameters: {arrayNames:['riga']}}"
+											ariaLabelledBy="title">
+											<table:rowSettingsTemplate>
+												<table:RowSettings highlight="{DocumentsJSONModel>SEMA}"/>
+											</table:rowSettingsTemplate>
+												<table:columns>
+												<table:Column width="13rem">
+														<m:Label text="{i18n>METASUP}"/>
+														<table:template>
+															<m:Text text="{DocumentsJSONModel>METAID}" wrapping="false"/>
+														</table:template>
+													</table:Column>
+													<table:Column width="13rem">
+														<m:Label text="{i18n>DESC_METAID}"/>
+														<table:template>
+															<m:Text text="{DocumentsJSONModel>DESC_METAID}" wrapping="false"/>
+														</table:template>
+													</table:Column>
+													<table:Column width="13rem">
+														<m:Label text="{i18n>LIFNR}"/>
+														<table:template>
+															<m:Text text="{DocumentsJSONModel>LIFNR}" wrapping="false"/>
+														</table:template>
+													</table:Column>
+													<table:Column width="13rem">
+														<m:Label text="{i18n>supplierDescr}"/>
+														<table:template>
+															<m:Text text="{DocumentsJSONModel>NAME_LIFNR}" wrapping="false"/>
+														</table:template>
+													</table:Column>
+													<table:Column width="13rem">
+														<m:Label text="{i18n>TXZ01}"/>
+														<table:template>
+															<m:Text text="{DocumentsJSONModel>WERKS}" wrapping="false"/>
+														</table:template>
+													</table:Column>
+													<table:Column width="13rem">
+														<m:Label text="{i18n>WERKS_DESCR}"/>
+														<table:template>
+															<m:Text text="{DocumentsJSONModel>WERKS_DESCR}" wrapping="false"/>
+														</table:template>
+													</table:Column>
+													<table:Column width="13rem">
+														<m:Label text="{i18n>materialCode}"/>
+														<table:template>
+															<m:Text text="{DocumentsJSONModel>MATNR}" wrapping="false"/>
+														</table:template>
+													</table:Column>
+													<table:Column width="13rem">
+														<m:Label text="{i18n>materialDescr}"/>
+														<table:template>
+															<m:Text text="{DocumentsJSONModel>DESC_MATNR}" wrapping="false"/>
+														</table:template>
+													</table:Column>
+													<table:Column width="13rem">
+														<m:Label text="{i18n>COMP_MATNR}"/>
+														<table:template>
+															<m:Text text="{DocumentsJSONModel>COMP_MATNR}" wrapping="false"/>
+														</table:template>
+													</table:Column>
+													<table:Column width="13rem">
+														<m:Label text="{i18n>DESC_COMP}"/>
+														<table:template>
+															<m:Text text="{DocumentsJSONModel>DESC_COMP}" wrapping="false"/>
+														</table:template>
+													</table:Column>
+													<table:Column width="9rem">
+														<m:Label text="{i18n>LBINS}"/>
+														<table:template>
+															<m:Text text="{DocumentsJSONModel>LBINS}" wrapping="false"/>
+														</table:template>
+													</table:Column>
+													<table:Column width="9rem">
+														<m:Label text="{i18n>LBLAB}"/>
+														<table:template>
+															<m:Text text="{DocumentsJSONModel>LBLAB}" wrapping="false"/>
+														</table:template>
+													</table:Column>
+													<table:Column width="9rem">
+														<m:Label text="{i18n>TOT_GIAC}"/>
+														<table:template>
+															<m:Text text="{DocumentsJSONModel>TOT_GIAC}" wrapping="false"/>
+														</table:template>
+													</table:Column>
+													<table:Column width="9rem">
+														<m:Label text="{i18n>EBELN}"/>
+														<table:template>
+															<m:Text text="{DocumentsJSONModel>EBELN}" wrapping="false"/>
+														</table:template>
+													</table:Column>
+													<table:Column width="9rem">
+														<m:Label text="{i18n>EBELP}"/>
+														<table:template>
+															<m:Text text="{DocumentsJSONModel>EBELP}" wrapping="false"/>
+														</table:template>
+													</table:Column>
+													<table:Column width="9rem">
+														<m:Label text="{i18n>FIRST}"/>
+														<table:template>
+															<m:Text text="{DocumentsJSONModel>FIRST}" wrapping="false"/>
+														</table:template>
+													</table:Column>
+												</table:columns>
+											</table:TreeTable>
 										</ObjectPageSubSection>
 									</subSections>
 								</ObjectPageSection>

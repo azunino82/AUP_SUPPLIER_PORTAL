@@ -124,7 +124,7 @@ module.exports = function () {
                 }
                 werks = oWerks
             }
-
+            
             hdbext.createConnection(req.tenantContainer, (err, client) => {
                 if (err) {
                     return res.status(500).send('CREATE CONNECTION ERROR: ' + stringifyObj(err))
@@ -180,7 +180,12 @@ module.exports = function () {
                                             objectCopy.STATUS_PRIORITY = null
                                             objectCopy.STATUS = ''
                                         }
-
+                                        //console.log(objectCopy.PRINT)
+                                        if (objectCopy.PRINT === '' || objectCopy.PRINT === null || objectCopy.PRINT === undefined) {
+                                            objectCopy.PRINT = false
+                                        }else{
+                                            objectCopy.PRINT = true
+            }
                                //         console.log('SKIP_NO_CONFERME: ' + objectCopy.SKIP_NO_CONFERME)
                                         if (objectCopy.SKIP_NO_CONFERME !== null) {
                                             if (objectCopy.SKIP_NO_CONFERME === 'X') {

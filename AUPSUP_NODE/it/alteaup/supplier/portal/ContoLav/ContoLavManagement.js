@@ -27,13 +27,13 @@ module.exports = function () {
         console.log('INPUT BODY ==========> ' + JSON.stringify(body))
 
         if (body !== undefined && body !== '' && body !== null) {
-        var ebeln = ''
+        var ebeln = []
         var werks = []
         var matnr = []
         var lifnr = []
         var ekorg = []
         var days = ''
-        var langu = ''
+        var langu = body.spras
         var userid = req.user.id
 
         if (body.werks !== null && body.werks !== undefined && body.werks.length > 0) {
@@ -90,30 +90,62 @@ module.exports = function () {
                     console.error('ERROR: ' + err)
                     return res.status(500).send(stringifyObj(err))
                 } else {
-                    
-                    var outArr = []
+                    var outArrayDoc = {
+                        results: {
+                            riga: []
+                        }
+                    }
                     if (ET_MATERIAL !== undefined && ET_MATERIAL !== null && ET_MATERIAL.length > 0) {
                         for (var i = 0; i < ET_MATERIAL.length; i++) {
-                            outArrayDoc.push
-                            ({
-                                "ET_MATERIAL": [{"LIFNR": ET_MATERIAL.LIFNR[i],
-                                                "NAME_LIFNR": ET_MATERIAL.NAME_LIFNR[i],
-                                                "WERKS": ET_MATERIAL.WERKS[i],
-                                                "MATNR": ET_MATERIAL.MATNR[i],
-                                                "DESC_MATNR": ET_MATERIAL.DESC_MATNR[i],
-                                                "COMP_MATNR": ET_MATERIAL.COMP_MATNR[i],
-                                                "DESC_COMP": ET_MATERIAL.DESC_COMP[i],
-                                                "LBLAB": ET_MATERIAL.LBLAB[i],
-                                                "LBINS": ET_MATERIAL.LBINS[i],
-                                                "TOT_GIAC": ET_MATERIAL.TOT_GIAC[i],
-                                            "DOC": [{
-                                                "EBELN": ET_MATERIAL.EBELN[i], 
-                                                "EBELP": ET_MATERIAL.EBELP[i],
-                                                "FIRST": ET_MATERIAL.FIRST[i],
+                            var SEMA;
+                            if (ET_MATERIAL[i].TOT_GIAC < 0) {
+                             SEMA = 'Error';
+                            }
+                            else if (ET_MATERIAL[i].TOT_GIAC = 0) {
+                             SEMA ='Warning';
+                            }
+                            else {
+                             SEMA = 'Success';
+                            }
+                            var strutHeader = {
+                                        "METAID": ET_MATERIAL[i].METAID,
+                                        "DESC_METAID": ET_MATERIAL[i].DESC_METAID,
+                                        "LIFNR": ET_MATERIAL[i].LIFNR,
+                                        "NAME_LIFNR": ET_MATERIAL[i].NAME_LIFNR,
+                                        "WERKS": ET_MATERIAL[i].WERKS,
+                                        "WERKS_DESCR": ET_MATERIAL[i].WERKS_DESCR,
+                                        "MATNR": ET_MATERIAL[i].MATNR,
+                                        "DESC_MATNR": ET_MATERIAL[i].DESC_MATNR,
+                                        "COMP_MATNR": ET_MATERIAL[i].COMP_MATNR,
+                                        "DESC_COMP": ET_MATERIAL[i].DESC_COMP,
+                                        "LBLAB": ET_MATERIAL[i].LBLAB,
+                                        "LBINS": ET_MATERIAL[i].LBINS,
+                                        "TOT_GIAC": ET_MATERIAL[i].TOT_GIAC,
+                                        "EBELN": '',
+                                        "EBELP": '',
+                                        "FIRST": '',
+                                        "SEMA" : SEMA,
+                                            "riga":[{
+                                                "LIFNR": '',
+                                                "NAME_LIFNR": '',
+                                                "WERKS": '',
+                                                "MATNR": '',
+                                                "DESC_MATNR": '',
+                                                "COMP_MATNR": '',
+                                                "DESC_COMP": '',
+                                                "LBLAB": '',
+                                                "LBINS": '',
+                                                "TOT_GIAC": '',
+                                                "EBELN": ET_MATERIAL[i].EBELN,
+                                                "EBELP": ET_MATERIAL[i].EBELP,
+                                                "FIRST": ET_MATERIAL[i].FIRST,
+                                                "SEMA" : SEMA
                                             }]
-
-                                }]
-                            })
+                           
+                            }
+                                                                            
+                            outArrayDoc.results.riga.push(strutHeader);
+                            //outArrayDoc.push(strutDoc);
                         }
                     }
 
@@ -121,9 +153,7 @@ module.exports = function () {
                     //results.forEach(element => {
                     //    outArr.push(element)
                     //})
-                    return res.status(200).send({
-                        results: outArr
-                    })
+                    return res.status(200).send(outArrayDoc)
                 }
                 })
             })
