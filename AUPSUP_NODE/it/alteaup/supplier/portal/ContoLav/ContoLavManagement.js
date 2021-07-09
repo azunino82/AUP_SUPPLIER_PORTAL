@@ -93,9 +93,11 @@ module.exports = function () {
                     var outArrayDoc = {
                         results: {
                             riga: []
-                        }
+                        },
+                        export: []
                     }
                     if (ET_MATERIAL !== undefined && ET_MATERIAL !== null && ET_MATERIAL.length > 0) {
+                        outArrayDoc.export.push(ET_MATERIAL);
                         for (var i = 0; i < ET_MATERIAL.length; i++) {
                             var SEMA;
                             if (ET_MATERIAL[i].TOT_GIAC < 0) {
@@ -107,6 +109,12 @@ module.exports = function () {
                             else {
                              SEMA = 'Success';
                             }
+                            
+                            if ((ET_MATERIAL[i].MATNR !== null && ET_MATERIAL[i].MATNR !== undefined && ET_MATERIAL[i].MATNR !== '') ||
+                            (ET_MATERIAL[i].DESC_MATNR !== null && ET_MATERIAL[i].DESC_MATNR !== undefined && ET_MATERIAL[i].DESC_MATNR !== '') ||
+                            (ET_MATERIAL[i].EBELN !== null && ET_MATERIAL[i].EBELN !== undefined && ET_MATERIAL[i].EBELN !== '') ||
+                            (ET_MATERIAL[i].EBELP !== null && ET_MATERIAL[i].EBELP !== undefined && ET_MATERIAL[i].EBELP !== '00000') ||
+                            (ET_MATERIAL[i].FIRST !== null && ET_MATERIAL[i].FIRST !== undefined && ET_MATERIAL[i].FIRST !== '00000000')){
                             var strutHeader = {
                                         "METAID": ET_MATERIAL[i].METAID,
                                         "DESC_METAID": ET_MATERIAL[i].DESC_METAID,
@@ -114,8 +122,8 @@ module.exports = function () {
                                         "NAME_LIFNR": ET_MATERIAL[i].NAME_LIFNR,
                                         "WERKS": ET_MATERIAL[i].WERKS,
                                         "WERKS_DESCR": ET_MATERIAL[i].WERKS_DESCR,
-                                        "MATNR": ET_MATERIAL[i].MATNR,
-                                        "DESC_MATNR": ET_MATERIAL[i].DESC_MATNR,
+                                        "MATNR": '',
+                                        "DESC_MATNR": '',
                                         "COMP_MATNR": ET_MATERIAL[i].COMP_MATNR,
                                         "DESC_COMP": ET_MATERIAL[i].DESC_COMP,
                                         "LBLAB": ET_MATERIAL[i].LBLAB,
@@ -125,12 +133,16 @@ module.exports = function () {
                                         "EBELP": '',
                                         "FIRST": '',
                                         "SEMA" : SEMA,
+                                        "MEINS": ET_MATERIAL[i].MEINS,
+                                        "SOBKZ": ET_MATERIAL[i].SOBKZ,
+                                        "XBLNR": ET_MATERIAL[i].XBLNR,
+                                        "DT_XBLNR": ET_MATERIAL[i].DT_XBLNR,
                                             "riga":[{
                                                 "LIFNR": '',
                                                 "NAME_LIFNR": '',
                                                 "WERKS": '',
-                                                "MATNR": '',
-                                                "DESC_MATNR": '',
+                                                "MATNR": ET_MATERIAL[i].MATNR,
+                                                "DESC_MATNR": ET_MATERIAL[i].DESC_MATNR,
                                                 "COMP_MATNR": '',
                                                 "DESC_COMP": '',
                                                 "LBLAB": '',
@@ -139,9 +151,37 @@ module.exports = function () {
                                                 "EBELN": ET_MATERIAL[i].EBELN,
                                                 "EBELP": ET_MATERIAL[i].EBELP,
                                                 "FIRST": ET_MATERIAL[i].FIRST,
-                                                "SEMA" : SEMA
+                                                "SEMA" : SEMA,
+                                                "MEINS": '',
+                                                "SOBKZ": '',
+                                                "XBLNR": '',
+                                                "DT_XBLNR": '',
                                             }]
-                           
+                                        }
+                            } else {
+                                var strutHeader = {
+                                    "METAID": ET_MATERIAL[i].METAID,
+                                    "DESC_METAID": ET_MATERIAL[i].DESC_METAID,
+                                    "LIFNR": ET_MATERIAL[i].LIFNR,
+                                    "NAME_LIFNR": ET_MATERIAL[i].NAME_LIFNR,
+                                    "WERKS": ET_MATERIAL[i].WERKS,
+                                    "WERKS_DESCR": ET_MATERIAL[i].WERKS_DESCR,
+                                    "MATNR": '',
+                                    "DESC_MATNR": '',
+                                    "COMP_MATNR": ET_MATERIAL[i].COMP_MATNR,
+                                    "DESC_COMP": ET_MATERIAL[i].DESC_COMP,
+                                    "LBLAB": ET_MATERIAL[i].LBLAB,
+                                    "LBINS": ET_MATERIAL[i].LBINS,
+                                    "TOT_GIAC": ET_MATERIAL[i].TOT_GIAC,
+                                    "EBELN": '',
+                                    "EBELP": '',
+                                    "FIRST": '',
+                                    "SEMA" : SEMA,
+                                    "MEINS": ET_MATERIAL[i].MEINS,
+                                    "SOBKZ": ET_MATERIAL[i].SOBKZ,
+                                    "XBLNR": ET_MATERIAL[i].XBLNR,
+                                    "DT_XBLNR": ET_MATERIAL[i].DT_XBLNR
+                                 }
                             }
                                                                             
                             outArrayDoc.results.riga.push(strutHeader);

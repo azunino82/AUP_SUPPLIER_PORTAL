@@ -27,7 +27,6 @@ sap.ui.define([
 		/**
 		 * Called when a controller is instantiated and its View controls (if available) are already created.
 		 * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
-		 * @memberOf it.alteaup.supplier.portal.purchaseorders.PurchaseOrders.view.Worklist
 		 */
         pressDialog: null,
         onInit: function () {
@@ -165,7 +164,7 @@ sap.ui.define([
             //}
 
             that.showBusyDialog();
-            that.ajaxPost(url, jsonBody, function (oData) {
+            that.ajaxPost(url, jsonBody, function (oData,oDati) {
                 that.hideBusyDialog();
                 if (oData) {
 
@@ -419,30 +418,197 @@ sap.ui.define([
             });
 
         },
-
-		handleTextPopoverPress: function (oEvent) {
-			var oPath = oEvent.getSource().getParent().getBindingContext("DocumentsJSONModel").sPath;
-
+        onLegend: function (oEvent) {
 			var oButton = oEvent.getSource();
-
-			if (this._oPopover !== undefined) {
-				this._oPopover = undefined;
-			}
-
 			// create popover
 			if (!this._oPopover) {
-				Fragment.load({
-					name: "it.aupsup.conto_lav.fragments.TextPopOver",
-					controller: this
+				new sap.ui.core.Fragment.load({
+					name: "it.aupsup.conto_lav.fragments.ColorStatus",
+					controller: that
 				}).then(function (pPopover) {
-					this._oPopover = pPopover;
-					this.getView().addDependent(this._oPopover);
-					this._oPopover.bindElement({ path: oPath, model: "DocumentsJSONModel" });
-					this._oPopover.openBy(oButton);
+					that._oPopover = pPopover;
+					that.getView().addDependent(this._oPopover);
+					//that._oPopover.bindElement("/ProductCollection/0");
+					that._oPopover.openBy(oButton);
 				}.bind(this));
 			} else {
 				this._oPopover.openBy(oButton);
 			}
+		},
+        onExport: function (oEvent) {
+
+			var dataS = this.getView().getModel("DocumentsJSONModel");
+			if (dataS === undefined || dataS.getData() === undefined || dataS.getData().results === undefined ||
+				dataS.getData().results.length === 0) {
+				MessageBox.error(that.getResourceBundle().getText("ERR_Export"));
+				return;
+			}
+
+			var oExport = new Export({
+
+				// Type that will be used to generate the content. Own ExportType's can be created to support other formats
+				exportType: new ExportTypeCSV({
+					separatorChar: ";"
+				}),
+
+				// Pass in the model created above
+				models: this.getView().getModel("DocumentsJSONModel"),
+
+				// binding information for the rows aggregation
+				rows: {
+					path: "/export/0"
+				},
+
+				// column definitions with column name and binding info for the content
+				columns: [{
+						name: that.getResourceBundle().getText("DESC_METAID"),
+						template: {
+							content: "{DESC_METAID}"
+						}
+					}, {
+						name: that.getResourceBundle().getText("LIFNR"),
+						template: {
+							content: "{LIFNR}"
+						}
+					}, {
+						name: that.getResourceBundle().getText("NAME_LIFNR"),
+						template: {
+							content: "{NAME_LIFNR}"
+						}
+					}, {
+						name: that.getResourceBundle().getText("WERKS"),
+						template: {
+							content: "{WERKS}"
+						}
+					}, {
+						name: that.getResourceBundle().getText("PLANT_DESCR"),
+						template: {
+							content: "{WERKS_DESCR}"
+						}
+					}, {
+						name: that.getResourceBundle().getText("MATNR"),
+						template: {
+							content: "{MATNR}"
+						}
+					}, {
+						name: that.getResourceBundle().getText("DESC_MATNR"),
+						template: {
+							content: "{DESC_MATNR}"
+						}
+					}, {
+						name: that.getResourceBundle().getText("COMP_MATNR"),
+						template: {
+							content: "{COMP_MATNR}"
+						}
+					}, {
+						name: that.getResourceBundle().getText("DESC_COMP"),
+						template: {
+							content: "{DESC_COMP}"
+						}
+					}, {
+						name: that.getResourceBundle().getText("LBINS"),
+						template: {
+							content:  {
+                                path: "LBINS",
+                                type: 'sap.ui.model.type.Integer'
+                            }
+						}
+					}, {
+						name: that.getResourceBundle().getText("LBLAB"),
+						template: {
+							content: {
+                                path: "LBLAB",
+                                type: 'sap.ui.model.type.Integer'
+                            }
+						}
+					}, {
+						name: that.getResourceBundle().getText("TOT_GIAC"),
+						template: {
+							content: {
+                                path: "TOT_GIAC",
+                                type: 'sap.ui.model.type.Integer'
+                            }
+						}
+                    }, {
+						name: that.getResourceBundle().getText("MEINS"),
+						template: {
+							content: "{MEINS}"
+						}
+                    }, {
+						name: that.getResourceBundle().getText("EBELN"),
+						template: {
+							content: "{EBELN}"
+						}
+                    }, {
+						name: that.getResourceBundle().getText("EBELP"),
+						template: {
+							content: "{EBELP}"
+						}
+                    }, {
+						name: that.getResourceBundle().getText("FIRST"),
+						template: {
+							content: {
+								path: "FIRST",
+								formatter: function (sDate) {
+
+									var oFromFormat = sap.ui.core.format.DateFormat.getDateTimeInstance({
+										pattern: "yyyyMMdd"
+									});
+									var oDate = oFromFormat.parse(sDate, true);
+									var oToFormat = sap.ui.core.format.DateFormat.getDateTimeInstance({
+										pattern: "dd MMM yyyy"
+									});
+									if (sDate === "00000000") {
+										return ""; // or whatever special case
+									} else {
+										var sResult = oToFormat.format(oDate);
+										return sResult;
+									}
+								}
+							}
+						}
+					}					
+				]
+			});
+
+			// download exported file
+			oExport.saveFile().catch(function (oError) {
+				MessageBox.error("Error when downloading data. Browser might not be supported!\n\n" + oError);
+			}).then(function () {
+				oExport.destroy();
+			});
+		},
+		//handleTextPopoverPress: function (oEvent) {
+		//	var oPath = oEvent.getSource().getParent().getBindingContext("DocumentsJSONModel").sPath;
+
+		//	var oButton = oEvent.getSource();
+
+		//	if (this._oPopover !== undefined) {
+		//		this._oPopover = undefined;
+		//	}
+
+			// create popover
+		//	if (!this._oPopover) {
+		//		Fragment.load({
+		//			name: "it.aupsup.conto_lav.fragments.TextPopOver",
+		//			controller: this
+		//		}).then(function (pPopover) {
+		//			this._oPopover = pPopover;
+		//			this.getView().addDependent(this._oPopover);
+		//			this._oPopover.bindElement({ path: oPath, model: "DocumentsJSONModel" });
+		//			this._oPopover.openBy(oButton);
+		//		}.bind(this));
+		//	} else {
+		//		this._oPopover.openBy(oButton);
+		//	}
+		//}
+        onCollapseAll: function() {
+			var oTreeTable = this.byId("TreeTableBasic");
+			oTreeTable.collapseAll();
+		},
+        onExpandAll: function() {
+			var oTreeTable = this.byId("TreeTableBasic");
+			oTreeTable.expandToLevel(1);
 		}
     });
 

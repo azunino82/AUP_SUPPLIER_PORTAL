@@ -5,11 +5,7 @@
 			<items>
 				<ObjectStatus class="sapUiSmallMarginBottom" text="{i18n>statusL}" inverted="true" state="Indication04"/>
 				<HBox></HBox>
-				<ObjectStatus class="sapUiSmallMarginBottom" text="{i18n>statusML}" inverted="true" state="Indication05"/>
-				<HBox></HBox>
 				<ObjectStatus class="sapUiSmallMarginBottom" text="{i18n>statusM}" inverted="true" state="Indication03"/>
-				<HBox></HBox>
-				<ObjectStatus class="sapUiSmallMarginBottom" text="{i18n>statusMH}" inverted="true" state="Indication02"/>
 				<HBox></HBox>
 				<ObjectStatus class="sapUiSmallMarginBottom" text="{i18n>statusH}" inverted="true" state="Indication01"/>				
 			</items>
